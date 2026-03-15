@@ -12,52 +12,56 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* تحميل أفخم خط عربي */
         @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;400;600;700&display=swap');
         
         body { 
             font-family: 'Readex Pro', sans-serif; 
-            margin: 0; 
-            background-color: #fcfcfc; 
-            color: #1a1a1a;
+            background-color: #050505; 
+            color: #ffffff;
+            margin: 0;
         }
 
-        .red-gradient-text {
-            background: linear-gradient(135deg, #e11d48 0%, #9f1239 100%);
+        .gold-gradient-text {
+            background: linear-gradient(to right, #FFD700, #B8860B);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .main-btn {
-            background: linear-gradient(135deg, #e11d48 0%, #9f1239 100%);
-            box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
+        .gold-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+            color: #000;
             transition: all 0.3s ease;
         }
 
-        .main-btn:hover {
+        .gold-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 30px -5px rgba(225, 29, 72, 0.5);
+            box-shadow: 0 10px 20px rgba(184, 134, 11, 0.4);
         }
 
-        .teacher-frame {
-            border: 12px solid white;
-            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.15);
-            border-radius: 60px;
+        .teacher-image-container {
+            border: 8px solid #1a1a1a;
+            box-shadow: 0 0 50px rgba(184, 134, 11, 0.2);
+            border-radius: 40px;
+            overflow: hidden;
+            background: #111;
         }
 
-        .nav-glass {
-            background: rgba(255, 255, 255, 0.85);
+        .nav-blur {
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
+        .video-card {
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            transition: all 0.3s ease;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .video-card:hover {
+            border-color: #B8860B;
+            transform: translateY(-5px);
         }
     </style>
 </head>
@@ -66,150 +70,210 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { Play, Youtube, BookOpen, Trophy, X, Menu, Flame, Send, MessageCircle, ArrowLeft, Video, Star, GraduationCap, Calendar, Facebook, Instagram } = lucide;
+        const { useState } = React;
+        const { Play, Youtube, BookOpen, Star, Menu, X, Flame, Send, MessageCircle, ArrowLeft, Video, GraduationCap, Calendar, Facebook, Instagram, Users } = lucide;
 
         const App = () => {
             const [currentPage, setCurrentPage] = useState('home');
             const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-            // رابط صورتك الشخصية المعتمد
             const teacherImg = "https://i.ibb.co/9j74J07/42938.png";
 
-            const lectures = [
-                { title: "المحاضرة الأولى: أنواع الروابط", url: "https://youtu.be/3SQy6j9qdX0" },
-                { title: "الدرس الثاني: نظرية الثمانيات", url: "https://youtu.be/KIdHLm_BtRt" },
-                { title: "الدرس الثاني: التهجين", url: "https://youtu.be/1JIVypRTUxI" },
-                { title: "الدرس الثالث: نظرية VSEPR", url: "https://youtu.be/u7rTOP0lpak" },
-                { title: "الدرس الثالث والرابع: الروابط الفيزيائية", url: "https://youtu.be/UFOsYtmHuCc" }
-            ];
-
-            const solutions = [
-                { title: "حل كتاب الوافي - الدرس 1", url: "https://youtu.be/hh34oRhXBN8" },
-                { title: "حل كتاب الامتحان - الدرس 1", url: "https://youtu.be/0QY_ZaZ8_40" }
-            ];
+            // دمج كافة البيانات والروابط التي ارسلتها
+            const data = {
+                lectures: [
+                    { title: "المحاضرة الأولى: أنواع الروابط والرابطة الآيونية والتساهمية", url: "https://youtu.be/3SQy6j9qdX0" },
+                    { title: "الدرس الثاني ج1: نظرية الثمانيات", url: "https://youtu.be/KIdHLm_BtRt" },
+                    { title: "الدرس الثاني ج2: أنواع الروابط والتهجين", url: "https://youtu.be/1JIVypRTUxI" },
+                    { title: "الدرس الثالث ج1: نظرية VSEPR", url: "https://youtu.be/u7rTOP0lpak" },
+                    { title: "باقي الدرس الثالث والرابع: الروابط التناسقية والفيزيائية", url: "https://youtu.be/UFOsYtmHuCc" }
+                ],
+                wafi: [
+                    { title: "حل كتاب الوافي: الدرس الأول - ج1", url: "https://youtu.be/hh34oRhXBN8" },
+                    { title: "حل كتاب الوافي: الدرس الأول - ج2", url: "https://youtu.be/gMqM3Uf2mYQ" },
+                    { title: "حل كتاب الوافي: الدرس الثاني - ج1", url: "https://youtu.be/NGF1Fq1C0Ko" },
+                    { title: "حل كتاب الوافي: الدرس الثاني - ج2", url: "https://youtu.be/hzWbMiMdzNM" },
+                    { title: "حل كتاب الوافي: الدرس الثالث - ج1", url: "https://youtu.be/GYMWKuc7DPE" },
+                    { title: "حل كتاب الوافي: الدرس الثالث - ج2", url: "https://youtu.be/-uV1gcbPLok" },
+                    { title: "حل كتاب الوافي: الدرس الرابع", url: "https://youtu.be/OsWMUW2ex54" }
+                ],
+                exam: [
+                    { title: "حل كتاب الامتحان: الدرس الأول - ج1", url: "https://youtu.be/0QY_ZaZ8_40" },
+                    { title: "حل كتاب الامتحان: الدرس الأول - ج2", url: "https://youtu.be/ZgZeeNdcbFE" },
+                    { title: "حل كتاب الامتحان: الدرس الثاني - ج1", url: "https://youtu.be/ILCeerSB1RU" },
+                    { title: "حل كتاب الامتحان: الدرس الثاني - ج2", url: "https://youtu.be/pbzdb3i7DRg" },
+                    { title: "حل كتاب الامتحان: الدرس الثالث - ج1", url: "https://youtu.be/R9_i6tuI58Y" },
+                    { title: "حل كتاب الامتحان: الدرس الثالث - ج2", url: "https://youtu.be/Cfuc-OTXsJ4" },
+                    { title: "حل كتاب الامتحان: الدرس الرابع", url: "https://youtu.be/NJW2hdFXj0Q" }
+                ],
+                quizzes: [
+                    { title: "حل التقييم الأسبوعي الأول", url: "https://youtu.be/EDD1W4C7Ykk" },
+                    { title: "حل التقييم الأسبوعي الثاني", url: "https://youtu.be/EiPquAIt-TM" },
+                    { title: "حل التقييم الأسبوعي الثالث", url: "https://youtu.be/xCi9nv0aYU8" },
+                    { title: "حل التقييم الأسبوعي الرابع", url: "https://youtu.be/Ot74V5TPs04" },
+                    { title: "حل التقييم الأسبوعي الخامس", url: "https://youtu.be/amw7wJxG9T8" }
+                ],
+                camp: [
+                    { title: "شرح الدرس الأول والثاني (معسكر)", url: "https://youtu.be/LzBHDr4xF2A" },
+                    { title: "شرح الدرس الثالث والرابع (معسكر)", url: "https://youtu.be/Pjn6_m6tjT0" },
+                    { title: "حل أسئلة الكتاب المدرسي - الباب الأول", url: "https://youtu.be/9ir3kxBZwCQ" },
+                    { title: "أهم 50 سؤال أزهر - الباب الأول", url: "https://youtu.be/7FslhYxqWiY" },
+                    { title: "اختبار شامل - الباب الأول", url: "https://youtu.be/lpboq-ho2og" }
+                ]
+            };
 
             const navLinks = [
                 { id: 'home', label: 'الرئيسية' },
                 { id: 'lectures', label: 'المحاضرات' },
                 { id: 'solutions', label: 'حل الكتب' },
-                { id: 'camp', label: 'معسكر الشقيان' },
+                { id: 'camp', label: 'المعسكر 🔥' },
                 { id: 'contact', label: 'تواصل معنا' }
             ];
 
             return (
                 <div className="min-h-screen">
                     {/* Navigation */}
-                    <nav className="fixed top-0 w-full z-50 nav-glass h-20 px-6 lg:px-20 flex items-center justify-between">
-                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => setCurrentPage('home')}>
-                            <img src={teacherImg} className="w-12 h-12 rounded-full border-2 border-rose-600 object-cover shadow-sm" alt="Logo" />
-                            <div className="flex flex-col">
-                                <h1 className="text-xl font-bold text-gray-900 leading-none tracking-tighter">يلا كيمياء</h1>
-                                <span className="text-[10px] text-rose-600 font-bold uppercase tracking-widest">Ziad Mabrouk</span>
+                    <nav className="fixed top-0 w-full z-50 nav-blur h-24 px-6 lg:px-20 flex items-center justify-between">
+                        <div className="flex items-center gap-4 cursor-pointer" onClick={() => setCurrentPage('home')}>
+                            <img src={teacherImg} className="w-14 h-14 rounded-2xl border-2 border-yellow-600 object-cover" alt="Ziad" />
+                            <div>
+                                <h1 className="text-2xl font-bold tracking-tighter text-white">يلا كيمياء</h1>
+                                <p className="text-[10px] text-yellow-600 font-bold uppercase tracking-widest leading-none">Ziad Mabrouk</p>
                             </div>
                         </div>
 
-                        <div className="hidden lg:flex gap-8">
+                        <div className="hidden lg:flex gap-10">
                             {navLinks.map(link => (
                                 <button key={link.id} onClick={() => setCurrentPage(link.id)} 
-                                    className={`text-sm font-bold transition-all ${currentPage === link.id ? 'text-rose-600 border-b-2 border-rose-600 pb-1' : 'text-gray-500 hover:text-rose-600'}`}>
+                                    className={`text-sm font-bold transition-all ${currentPage === link.id ? 'text-yellow-500' : 'text-gray-400 hover:text-white'}`}>
                                     {link.label}
                                 </button>
                             ))}
                         </div>
 
-                        <button onClick={() => setIsMenuOpen(true)} className="lg:hidden text-gray-900">
-                            <Menu size={28}/>
-                        </button>
+                        <button onClick={() => setIsMenuOpen(true)} className="lg:hidden text-yellow-500"><Menu size={30}/></button>
                     </nav>
 
-                    {/* Main Content */}
-                    <div className="pt-20">
+                    {/* Content */}
+                    <main className="pt-24">
                         {currentPage === 'home' && (
-                            <div className="animate-in fade-in duration-700">
-                                {/* Hero Section */}
-                                <section className="relative py-16 lg:py-28 px-6 lg:px-20 grid lg:grid-cols-2 gap-12 items-center overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-96 h-96 bg-rose-100 rounded-full blur-3xl opacity-50 -z-10"></div>
-                                    <div className="text-center lg:text-right space-y-8">
-                                        <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-100 px-4 py-2 rounded-full text-xs font-bold text-rose-600 uppercase tracking-tight">
-                                            <Flame size={14}/> المنصة الرسمية لمستر زياد مبروك
-                                        </div>
-                                        <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-[1.1]">
-                                            إمبراطور الكيمياء <br/>
-                                            <span className="red-gradient-text">في ثوبها الجديد</span>
-                                        </h1>
-                                        <p className="text-lg text-gray-500 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                                            مش مجرد شرح، دي تجربة تعليمية هتوصلك للـ 60/60 في الكيمياء. كل محاضرات تانية ثانوي، حل الكتب، والمراجعات في مكان واحد.
-                                        </p>
-                                        <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                                            <button onClick={() => setCurrentPage('lectures')} className="main-btn text-white px-10 py-4 rounded-2xl font-bold text-lg flex items-center gap-2">
-                                                ابدأ المذاكرة الآن <Play size={20} fill="white"/>
-                                            </button>
-                                            <button onClick={() => setCurrentPage('camp')} className="bg-white border-2 border-gray-100 text-gray-700 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all">
-                                                معسكر الشقيان 🔥
-                                            </button>
-                                        </div>
+                            <section className="py-20 px-6 lg:px-20 grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
+                                <div className="text-center lg:text-right space-y-10">
+                                    <div className="inline-flex items-center gap-2 bg-yellow-600/10 border border-yellow-600/20 px-4 py-2 rounded-full text-xs font-bold text-yellow-500 uppercase tracking-widest">
+                                        <Flame size={14}/> أقوى منصة كيمياء مجانية في مصر
                                     </div>
-                                    <div className="flex justify-center relative">
-                                        <div className="teacher-frame w-80 h-80 lg:w-[480px] lg:h-[480px] bg-rose-600 overflow-hidden animate-float">
-                                            <img src={teacherImg} className="w-full h-full object-cover scale-110 mt-10" alt="Master Ziad" />
-                                        </div>
+                                    <h1 className="text-6xl lg:text-8xl font-bold leading-tight">
+                                        تعلم الكيمياء <br/> مع <span className="gold-gradient-text">زياد مبروك</span>
+                                    </h1>
+                                    <p className="text-xl text-gray-400 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
+                                        منصة تعليمية متكاملة تقدم لك شرح المنهج بالتفصيل، حل الكتب الخارجية (الوافي والامتحان)، وتقييمات أسبوعية مجاناً تماماً.
+                                    </p>
+                                    <div className="flex flex-wrap gap-5 justify-center lg:justify-start">
+                                        <button onClick={() => setCurrentPage('lectures')} className="gold-btn px-12 py-5 rounded-2xl font-bold text-xl">ابدأ الآن</button>
+                                        <button onClick={() => setCurrentPage('camp')} className="bg-white/5 border border-white/10 text-white px-12 py-5 rounded-2xl font-bold text-xl hover:bg-white/10 transition-all">معسكر الشقيان</button>
                                     </div>
-                                </section>
-
-                                {/* Stats Section */}
-                                <section className="py-20 px-6 lg:px-20 grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                                    {[
-                                        { title: "محاضرات مجانية", count: "+150", icon: <Video className="text-rose-600"/> },
-                                        { title: "طالب متفوق", count: "+20K", icon: <Star className="text-rose-600"/> },
-                                        { title: "ساعة شرح", count: "+500", icon: <Play className="text-rose-600"/> }
-                                    ].map((stat, i) => (
-                                        <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-gray-50 shadow-sm flex items-center gap-6 hover:shadow-md transition-all">
-                                            <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center">{stat.icon}</div>
-                                            <div>
-                                                <h3 className="text-3xl font-bold text-gray-900">{stat.count}</h3>
-                                                <p className="text-gray-400 font-bold text-sm">{stat.title}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </section>
-                            </div>
+                                </div>
+                                <div className="flex justify-center">
+                                    <div className="teacher-image-container w-80 h-80 lg:w-[500px] lg:h-[500px]">
+                                        <img src={teacherImg} className="w-full h-full object-cover scale-110 mt-10" alt="Ziad Mabrouk" />
+                                    </div>
+                                </div>
+                            </section>
                         )}
 
                         {currentPage === 'lectures' && (
-                            <section className="py-20 px-6 lg:px-20 max-w-7xl mx-auto">
-                                <h2 className="text-4xl font-bold text-center mb-16">محاضرات الشرح - تانية ثانوي</h2>
+                            <div className="py-20 px-6 lg:px-20 max-w-7xl mx-auto space-y-16">
+                                <h2 className="text-5xl font-bold text-center gold-gradient-text">محاضرات الشرح</h2>
                                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                    {lectures.map((video, i) => (
-                                        <div key={i} className="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 group shadow-sm hover:shadow-xl transition-all">
-                                            <div className="aspect-video bg-gray-200 relative">
-                                                <img src={`https://img.youtube.com/vi/${video.url.split('/').pop()}/maxresdefault.jpg`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                                <a href={video.url} target="_blank" className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <div className="w-16 h-16 bg-rose-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-rose-600/50"><Play fill="white"/></div>
+                                    {data.lectures.map((v, i) => (
+                                        <div key={i} className="video-card overflow-hidden group">
+                                            <div className="aspect-video relative">
+                                                <img src={`https://img.youtube.com/vi/${v.url.split('/').pop()}/maxresdefault.jpg`} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all" />
+                                                <a href={v.url} target="_blank" className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110"><Play fill="white" size={24}/></div>
                                                 </a>
                                             </div>
-                                            <div className="p-8">
-                                                <h4 className="font-bold text-lg mb-4 line-clamp-2">{video.title}</h4>
-                                                <a href={video.url} target="_blank" className="text-rose-600 font-bold flex items-center gap-2 hover:gap-4 transition-all">مشاهدة الآن <ArrowLeft size={18}/></a>
+                                            <div className="p-6">
+                                                <h3 className="font-bold text-lg mb-4">{v.title}</h3>
+                                                <a href={v.url} target="_blank" className="text-yellow-600 font-bold text-sm flex items-center gap-2">شاهد الآن <ArrowLeft size={16}/></a>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                            </section>
+                            </div>
                         )}
-                    </div>
+
+                        {currentPage === 'solutions' && (
+                            <div className="py-20 px-6 lg:px-20 max-w-7xl mx-auto space-y-20">
+                                <section>
+                                    <h3 className="text-3xl font-bold mb-10 border-r-4 border-blue-600 pr-4">حل كتاب الوافي</h3>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        {data.wafi.map((v, i) => (
+                                            <a key={i} href={v.url} target="_blank" className="p-6 bg-white/5 rounded-2xl border border-white/5 flex items-center justify-between hover:bg-yellow-600 hover:text-black transition-all">
+                                                <span className="font-bold">{v.title}</span>
+                                                <Play size={20}/>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                <section>
+                                    <h3 className="text-3xl font-bold mb-10 border-r-4 border-green-600 pr-4">حل كتاب الامتحان</h3>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        {data.exam.map((v, i) => (
+                                            <a key={i} href={v.url} target="_blank" className="p-6 bg-white/5 rounded-2xl border border-white/5 flex items-center justify-between hover:bg-yellow-600 hover:text-black transition-all">
+                                                <span className="font-bold">{v.title}</span>
+                                                <Play size={20}/>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+
+                        {currentPage === 'camp' && (
+                            <div className="py-20 px-6 lg:px-20 max-w-7xl mx-auto space-y-16">
+                                <div className="bg-yellow-600/10 p-12 rounded-[3rem] border border-yellow-600/20 text-center space-y-6">
+                                    <h2 className="text-5xl font-bold gold-gradient-text">معسكر الطالب الشقيان 🔥</h2>
+                                    <p className="text-gray-400 max-w-2xl mx-auto">شرح تفصيلي للباب الأول ومستويات عليا كافية جداً لأي طالب لسه مبدأش كيمياء.</p>
+                                </div>
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {data.camp.map((v, i) => (
+                                        <div key={i} className="video-card p-8 space-y-6">
+                                            <Youtube className="text-red-600" size={40}/>
+                                            <h4 className="text-xl font-bold min-h-[60px]">{v.title}</h4>
+                                            <a href={v.url} target="_blank" className="block text-center gold-btn py-4 rounded-xl font-bold">ابدأ المعسكر</a>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {currentPage === 'contact' && (
+                            <div className="py-32 px-6 text-center space-y-16 animate-in zoom-in">
+                                <h2 className="text-6xl font-bold">تواصل مع <span className="gold-gradient-text">المستر</span></h2>
+                                <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
+                                    <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-all shadow-xl shadow-red-600/20"><Youtube color="white"/></a>
+                                    <a href="https://t.me/+b1mElPFg6bdmZmM8" target="_blank" className="w-16 h-16 bg-sky-500 rounded-2xl flex items-center justify-center hover:scale-110 transition-all shadow-xl shadow-sky-500/20"><Send color="white"/></a>
+                                    <a href="https://www.facebook.com/profile.php?id=61586645950011" target="_blank" className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-all shadow-xl shadow-blue-600/20"><Facebook color="white"/></a>
+                                    <a href="https://chat.whatsapp.com/FrYkCnO3DTt3ugCkYKMLJp" target="_blank" className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-all shadow-xl shadow-green-600/20"><MessageCircle color="white"/></a>
+                                </div>
+                                <p className="text-gray-500 font-bold">متواجدون دائماً للرد على استفساراتكم</p>
+                            </div>
+                        )}
+                    </main>
 
                     {/* Mobile Sidebar */}
                     {isMenuOpen && (
-                        <div className="fixed inset-0 z-[100] bg-white p-10 flex flex-col gap-6 lg:hidden animate-in slide-in-from-right">
-                            <button onClick={() => setIsMenuOpen(false)} className="self-end text-rose-600"><X size={40}/></button>
+                        <div className="fixed inset-0 z-[100] bg-black p-10 flex flex-col gap-10 lg:hidden">
+                            <button onClick={() => setIsMenuOpen(false)} className="self-end text-yellow-500"><X size={40}/></button>
                             {navLinks.map(link => (
-                                <button key={link.id} onClick={() => { setCurrentPage(link.id); setIsMenuOpen(false); }} className="text-3xl font-bold text-right border-b border-gray-50 pb-4">{link.label}</button>
+                                <button key={link.id} onClick={() => { setCurrentPage(link.id); setIsMenuOpen(false); }} className="text-4xl font-bold text-right text-white hover:text-yellow-500 transition-colors border-b border-white/5 pb-4">{link.label}</button>
                             ))}
                         </div>
                     )}
-                    
-                    <footer className="py-12 border-t border-gray-100 text-center text-gray-400 font-bold text-sm">
+
+                    <footer className="py-12 border-t border-white/5 text-center text-gray-600 font-bold text-sm">
                         جميع الحقوق محفوظة لمنصة يلا كيمياء - مستر زياد مبروك © 2026
                     </footer>
                 </div>
