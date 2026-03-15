@@ -1,35 +1,140 @@
+// دي أهم خطوة عشان الشاشة تنور.. بنعرف المكتبات من الروابط مباشرة
+const { useState, useEffect } = React;
+const { 
+  Play, FileText, Youtube, Instagram, Facebook, 
+  Send, MessageCircle, Info, ChevronRight, BookOpen, 
+  Trophy, X, UserPlus, LogIn, Atom, Video, 
+  CheckCircle2, Award, User, Smartphone, Zap, 
+  Heart, ShieldCheck, Target, ArrowLeft, Laptop, 
+  GraduationCap, Layout 
+} = lucide;
 
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة يلا كيمياء | مستر زياد مبروك</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
+const App = () => {
+  const [activeTab, setActiveTab] = useState('explanation');
+  const [currentPage, setCurrentPage] = useState('home');
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+  const [completed, setCompleted] = useState([]);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(true);
 
-    <link rel="stylesheet" href="App.css">
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('ziad_chemistry_progress')) || [];
+    setCompleted(saved);
+  }, []);
 
-    <style>
-        /* تأمين إن الخلفية متبقاش سودة سادة لو حصل تأخير */
-        body { background-color: #111d17 !important; }
-        #root { min-height: 100vh; }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
+  const handleCheck = (id) => {
+    const updated = completed.includes(id) 
+      ? completed.filter(i => i !== id) 
+      : [...completed, id];
+    setCompleted(updated);
+    localStorage.setItem('ziad_chemistry_progress', JSON.stringify(updated));
+  };
 
-    <script type="text/babel" src="App.js"></script>
+  const content = {
+    explanation: [
+      { id: "exp_1", title: "المحاضرة الأولى: أنواع الروابط والرابطة الآيونية والتساهمية", url: "https://youtu.be/3SQy6j9qdX0" },
+      { id: "exp_2", title: "شرح الدرس الثاني: الجزء الأول - نظرية الثمانيات", url: "https://youtu.be/KIdHLm_BtRt" },
+      { id: "exp_3", title: "شرح الدرس الثاني: الجزء الثاني - أنواع الروابط والتهجين", url: "https://youtu.be/1JIVypRTUxI" },
+      { id: "exp_4", title: "شرح الدرس الثالث: الجزء الأول - نظرية VSEPR", url: "https://youtu.be/u7rTOP0lpak" },
+      { id: "exp_5", title: "شرح باقي الدرس الثالث والرابع: الروابط التناسقية والفيزيائية", url: "https://youtu.be/UFOsYtmHuCc" }
+    ],
+    wafi: [
+      { id: "wafi_1", title: "حل كتاب الوافي: الدرس الأول - ج1", url: "https://youtu.be/hh34oRhXBN8" },
+      { id: "wafi_2", title: "حل كتاب الوافي: الدرس الأول - ج2", url: "https://youtu.be/gMqM3Uf2mYQ" }
+    ],
+    exam: [
+      { id: "exam_1", title: "حل كتاب الامتحان: الدرس الأول - ج1", url: "https://youtu.be/0QY_ZaZ8_40" },
+      { id: "exam_2", title: "حل كتاب الامتحان: الدرس الأول - ج2", url: "https://youtu.be/ZgZeeNdcbFE" }
+    ],
+    revision: [
+      { id: "rev_1", title: "مراجعة الباب الأول كاملاً", url: "https://youtu.be/lpgNjh3Xpvw" }
+    ]
+  };
 
-    <link rel="manifest" href="manifest.json">
-</body>
-</html>
+  return (
+    <div className="min-h-screen bg-[#111d17] font-['Cairo',sans-serif] text-[#e0e7e1]" dir="rtl">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-[100] bg-[#0c1611]/95 backdrop-blur-md border-b border-[#c5a02e]/10 px-6">
+        <div className="max-w-7xl mx-auto h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4 cursor-pointer" onClick={() => setCurrentPage('home')}>
+             <img src="42938.png" className="w-12 h-12 rounded-xl border border-[#c5a02e]/50" alt="Logo" />
+            <div>
+              <h1 className="text-xl font-black text-[#c5a02e]">يلا كيمياء</h1>
+              <p className="text-[10px] font-bold opacity-40">مستر زياد مبروك</p>
+            </div>
+          </div>
+          <button onClick={() => setShowAuth(true)} className="bg-[#c5a02e] text-[#111d17] px-6 py-2 rounded-full font-black text-sm">دخول الطلاب</button>
+        </div>
+      </nav>
+
+      <div className="pt-24 pb-10 px-6">
+        {currentPage === 'home' ? (
+          <div className="max-w-7xl mx-auto text-center lg:text-right grid lg:grid-cols-2 gap-10 items-center">
+            <div className="space-y-6">
+              <h2 className="text-5xl font-black leading-tight">صمم مستقبل نجاحك في <span className="text-[#c5a02e]">الكيمياء</span></h2>
+              <p className="text-[#a8b3ac] font-bold">رحلة الـ 50 درجة تبدأ بضغطة زر واحدة.</p>
+              <button onClick={() => setCurrentPage('lectures')} className="bg-[#c5a02e] text-[#111d17] px-10 py-4 rounded-2xl font-black text-lg flex items-center gap-3 mx-auto lg:mx-0">
+                ابدأ المذاكرة الآن <ArrowLeft />
+              </button>
+            </div>
+            <div className="bg-[#1a2b23] p-10 rounded-[3rem] border border-[#c5a02e]/20">
+               <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#0c1611] p-6 rounded-2xl">
+                    <Trophy className="text-[#c5a02e] mb-2" />
+                    <h5 className="font-black text-white">إنجازك</h5>
+                    <p className="text-xs text-[#c5a02e]">{completed.length} محاضرة</p>
+                  </div>
+                  <div className="bg-[#0c1611] p-6 rounded-2xl mt-6">
+                    <Video className="text-blue-500 mb-2" />
+                    <h5 className="font-black text-white">المحاضرات</h5>
+                    <p className="text-xs text-blue-400">شرح وحل</p>
+                  </div>
+               </div>
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-2 mb-10 bg-[#0c1611] p-2 rounded-3xl border border-white/5">
+              {['explanation', 'wafi', 'exam', 'revision'].map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 px-4 py-3 rounded-2xl font-black text-sm transition-all ${activeTab === tab ? 'bg-[#c5a02e] text-[#111d17]' : 'opacity-40'}`}>
+                  {tab === 'explanation' ? 'الشرح' : tab === 'wafi' ? 'الوافي' : tab === 'exam' ? 'الامتحان' : 'المراجعة'}
+                </button>
+              ))}
+            </div>
+            <div className="grid gap-4">
+              {content[activeTab].map(item => (
+                <div key={item.id} className="bg-[#1a2b23]/50 border border-white/5 p-5 rounded-3xl flex items-center gap-4">
+                  <button onClick={() => handleCheck(item.id)} className={`w-12 h-12 rounded-xl flex items-center justify-center ${completed.includes(item.id) ? 'bg-[#c5a02e] text-[#111d17]' : 'bg-[#0c1611] text-[#c5a02e]/20'}`}>
+                    <CheckCircle2 size={20} />
+                  </button>
+                  <div className="flex-1">
+                    <h4 className={`font-black text-sm ${completed.includes(item.id) ? 'opacity-30 line-through' : ''}`}>{item.title}</h4>
+                    <a href={item.url} target="_blank" className="text-[#c5a02e] text-[10px] font-black mt-1 flex items-center gap-1"><Youtube size={12}/> مشاهدة</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Install Prompt */}
+      {showInstallPrompt && (
+        <div className="fixed bottom-6 left-6 right-6 bg-gradient-to-br from-[#1a2b23] to-[#0c1611] border-2 border-[#c5a02e] rounded-[30px] p-5 z-[1000] flex items-center gap-5 shadow-2xl">
+          <div className="w-14 h-24 bg-gray-800 rounded-xl border-4 border-gray-700 flex items-center justify-center animate-bounce flex-shrink-0 overflow-hidden">
+            <img src="42938.png" className="w-8 h-8 rounded-full" />
+          </div>
+          <div className="flex-1">
+            <h4 className="text-[#c5a02e] font-black text-sm">ثبت المنصة الآن! ⚡</h4>
+            <p className="text-white/60 text-[10px] leading-tight">عشان تتابع محاضرات مستر زياد مبروك بسرعة، ثبتها على موبايلك دلوقتي.</p>
+          </div>
+          <button onClick={() => setShowInstallPrompt(false)} className="text-white/20"><X size={20}/></button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// دي أهم خطوة للـ GitHub عشان يقرأ الكود
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
