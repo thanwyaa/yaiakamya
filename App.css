@@ -1,34 +1,58 @@
-/* تنسيق الصفحة العامة */
-body { background-color: #111d17; color: #e0e7e1; font-family: 'Cairo', sans-serif; }
+/* تنسيق عام للمنصة */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
-/* اللوجو اللي بينبض */
-.master-logo {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  border: 2px solid #c5a02e;
-  filter: drop-shadow(0 0 10px rgba(197, 160, 46, 0.4));
-  transition: 0.4s;
+body {
+    background-color: #111d17;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
-.master-logo:hover { transform: scale(1.1); filter: drop-shadow(0 0 20px #c5a02e); }
-
-/* كرت المحاضرة */
-.lecture-card {
-  background: rgba(26, 43, 35, 0.6);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 20px;
-  padding: 15px 20px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: 0.3s;
+/* توهج اللوجو الذهبي */
+.shadow-glow {
+    box-shadow: 0 0 25px rgba(197, 160, 46, 0.3);
 }
 
-.lecture-card:hover { border-color: #c5a02e; background: rgba(26, 43, 35, 0.9); }
+/* أنيميشن الموبايل اللي بيشاور (Bounce) */
+.phone-bounce {
+    animation: phoneBounce 2s infinite ease-in-out;
+}
 
-/* علامة الصح الذهبية */
-.check-btn { color: #c5a02e; cursor: pointer; transition: 0.3s; }
-.check-btn.done { opacity: 1; transform: scale(1.2); }
-.check-btn.not-done { opacity: 0.2; }
+@keyframes phoneBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+/* سكرول بار احترافي ذهبي */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0c1611;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c5a02e;
+    border-radius: 10px;
+}
+
+/* أنيميشن ظهور العناصر */
+.animate-in {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* حركة بسيطة للوجو في الهيدر */
+.animate-pulse-slow {
+    animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
