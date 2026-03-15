@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة يلا كيمياء | مستر زياد مبروك</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111d17">
+    
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -12,8 +16,17 @@
 </head>
 <body>
     <div id="root"></div>
+
     <link rel="stylesheet" href="App.css">
     <script type="text/babel" src="LecturesData.js"></script>
     <script type="text/babel" src="App.js"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(err => console.log('Service Worker not registered', err));
+        });
+      }
+    </script>
 </body>
 </html>
