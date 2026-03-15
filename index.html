@@ -8,23 +8,25 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#111d17">
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="App.css">
 </head>
-<body>
+<body class="bg-[#111d17]">
     <div id="root"></div>
 
-    <link rel="stylesheet" href="App.css">
     <script type="text/babel" src="LecturesData.js"></script>
     <script type="text/babel" src="App.js"></script>
 
     <script>
+      // إلغاء كود الـ Service Worker مؤقتاً عشان نتخلص من الشاشة السودة
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(err => console.log('Service Worker not registered', err));
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) { registration.unregister(); }
         });
       }
     </script>
