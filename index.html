@@ -1,238 +1,158 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Play, Youtube, Send, MessageCircle, ChevronRight, 
-  BookOpen, Atom, Zap, Star, LayoutGrid, HelpCircle, 
-  ArrowDownCircle, MousePointer2, Layers, Award, 
-  CheckCircle, Globe, ZapOff, Sparkles, GraduationCap
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>يلا كيمياء | مستر زياد مبروك</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
-const App = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [activeAccordion, setActiveAccordion] = useState(null);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const instructorImage = "https://i.ibb.co/9j74J07/image.png";
-
-  const quickLinks = [
-    { title: "محاضرات الشرح", desc: "شرح المنهج من الصفر", icon: <Play />, color: "bg-yellow-500", link: "#lectures" },
-    { title: "حل الكتب", desc: "الوافي والكتب الخارجية", icon: <BookOpen />, color: "bg-blue-500", link: "#books" },
-    { title: "بنك الأسئلة", desc: "تدريبات على كل درس", icon: <LayoutGrid />, color: "bg-purple-500", link: "#" },
-    { title: "الملازم PDF", desc: "تحميل مذكرات الشرح", icon: <Layers />, color: "bg-green-500", link: "#" },
-  ];
-
-  const faqs = [
-    { q: "ليه منصة يلا كيمياء هي الأفضل؟", a: "لأننا بنجمع بين الفهم العميق للذرة وبين تبسيط المعلومة لأقصى درجة، مع حل آلاف الأسئلة." },
-    { q: "هل المنصة مجانية تماماً؟", a: "نعم، المنصة بتقدم محتوى تعليمي مجاني بجودة بريميوم لكل طلاب مصر." },
-    { q: "ازاي أتابع مع مستر زياد؟", a: "تقدر تتابعنا على قناة اليوتيوب وجروبات التليجرام والواتساب الرسمية." }
-  ];
-
-  return (
-    <div className="min-h-screen bg-[#050505] text-white font-['Cairo',sans-serif] selection:bg-yellow-500 selection:text-black" dir="rtl">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap');
-        html { scroll-behavior: smooth; }
-        .text-gold { background: linear-gradient(135deg, #FFD700, #DAA520); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gold-border { border: 1px solid rgba(255, 215, 0, 0.2); }
-        .glass-card { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .floating { animation: float 6s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .atom-spin { animation: spin 20s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      `}</style>
-
-      {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-black/80 backdrop-blur-lg border-b border-white/10 py-4' : 'bg-transparent py-8'}`}>
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-yellow-500 overflow-hidden shadow-lg shadow-yellow-500/20">
-              <img src={instructorImage} className="w-full h-full object-cover" alt="Logo" />
-            </div>
-            <span className="text-2xl font-black tracking-tighter">يلا كيمياء <span className="text-yellow-500">.</span></span>
-          </div>
-          <div className="hidden md:flex gap-8 font-bold text-sm">
-            <a href="#home" className="hover:text-yellow-500 transition-colors">الرئيسية</a>
-            <a href="#quick-links" className="hover:text-yellow-500 transition-colors">روابط سريعة</a>
-            <a href="#lectures" className="hover:text-yellow-500 transition-colors">المحاضرات</a>
-            <a href="#faq" className="hover:text-yellow-500 transition-colors">الأسئلة</a>
-          </div>
-          <button className="bg-yellow-500 text-black px-6 py-2 rounded-full font-black text-xs hover:scale-105 transition-all">
-            انضم الآن
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        {/* Background Elements */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
-          <Atom className="absolute top-1/4 left-1/4 text-yellow-500/10 atom-spin" size={400} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-yellow-500/5 rounded-full blur-[120px]"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
-          <div className="text-right space-y-8 order-2 lg:order-1">
-            <div className="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 px-4 py-2 rounded-full text-yellow-500 text-xs font-black">
-              <Sparkles size={14} /> أفضل منصة كيمياء مجانية في مصر
-            </div>
-            <h1 className="text-6xl lg:text-8xl font-black leading-[1.1]">
-              كيمياء <br /> <span className="text-gold">مستر زياد</span> <br /> مبروك
-            </h1>
-            <p className="text-lg text-white/50 max-w-lg leading-relaxed font-medium">
-              هنا الكيمياء مش مادة صعبة، هنا الكيمياء متعة وفهم. تابع أقوى شرح وحل لأهم الكتب الخارجية في منصة واحدة مجانية تماماً.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <a href="#lectures" className="bg-yellow-500 text-black px-10 py-5 rounded-2xl font-black text-xl flex items-center gap-3 hover:shadow-[0_0_30px_rgba(255,215,0,0.3)] transition-all">
-                ابدأ رحلتك <ChevronRight size={24} />
-              </a>
-              <div className="flex -space-x-4 space-x-reverse items-center pr-4">
-                {[1,2,3].map(i => (
-                   <div key={i} className="w-12 h-12 rounded-full border-2 border-[#050505] bg-gray-800 flex items-center justify-center text-[10px] font-bold">
-                     {i}+
-                   </div>
-                ))}
-                <span className="mr-6 text-sm font-bold text-white/40">+10,000 طالب بيتابعونا</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative order-1 lg:order-2">
-            <div className="absolute inset-0 bg-yellow-500/10 blur-[100px] rounded-full floating"></div>
-            <img 
-              src={instructorImage} 
-              alt="المستر زياد مبروك" 
-              className="relative z-20 w-full max-w-xl mx-auto drop-shadow-[0_0_80px_rgba(255,215,0,0.2)] floating"
-            />
-          </div>
-        </div>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #020202; color: white; }
+        .gold-gradient { background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%); }
+        .text-gold { background: linear-gradient(to bottom, #FFD700, #DAA520); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-hover:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 215, 0, 0.3); }
         
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <ArrowDownCircle className="text-white/20" size={32} />
-        </div>
-      </section>
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(100px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(100px) rotate(-360deg); }
+        }
+        .orbit-element { animation: orbit 15s linear infinite; }
+        
+        .hero-glow {
+            position: absolute; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, rgba(0,0,0,0) 70%);
+            filter: blur(60px); z-index: 0;
+        }
 
-      {/* Quick Links Section */}
-      <section id="quick-links" className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl font-black">روابط <span className="text-gold">سريعة</span></h2>
-          <p className="text-white/40 font-bold">كل اللي تحتاجه في مكان واحد</p>
-        </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {quickLinks.map((item, i) => (
-            <a key={i} href={item.link} className="glass-card group p-8 rounded-[2.5rem] hover:border-yellow-500/50 transition-all text-center space-y-4">
-              <div className={`w-16 h-16 ${item.color} mx-auto rounded-2xl flex items-center justify-center text-black shadow-lg group-hover:scale-110 transition-transform`}>
-                {item.icon}
-              </div>
-              <h3 className="font-black text-xl">{item.title}</h3>
-              <p className="text-xs text-white/40 font-bold">{item.desc}</p>
-            </a>
-          ))}
-        </div>
-      </section>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #020202; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #B8860B; border-radius: 10px; }
+    </style>
+</head>
+<body x-data="{ scrolled: false, activeTab: 'lectures' }" @scroll.window="scrolled = (window.pageYOffset > 20)">
 
-      {/* Latest Lectures */}
-      <section id="lectures" className="py-24 px-6 bg-[#080808]">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-16">
-            <div className="space-y-4">
-              <h2 className="text-4xl font-black">أحدث <span className="text-gold">المحاضرات</span></h2>
-              <p className="text-white/40 font-bold">اشترك في القناة لضمان وصول كل جديد</p>
-            </div>
-            <a href="https://youtube.com/@ziadmabrouk" className="hidden md:flex items-center gap-2 text-yellow-500 font-bold hover:underline">
-              مشاهدة الكل على يوتيوب <ChevronRight size={18} />
-            </a>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { title: "أنواع الروابط والرابطه الآيونية", id: "3SQy6j9qdX0" },
-              { title: "نظرية الثمانيات بالتفصيل", id: "1JIVypRTUxI" },
-              { title: "نظرية VSEPR والأشكال الفراغية", id: "u7rTOP0lpak" }
-            ].map((v, i) => (
-              <div key={i} className="group relative glass-card rounded-[2rem] overflow-hidden">
-                <div className="aspect-video relative overflow-hidden">
-                  <img 
-                    src={`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                    alt={v.title}
-                  />
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a href={`https://youtu.be/${v.id}`} target="_blank" className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-xl shadow-red-600/20">
-                      <Play fill="white" />
-                    </a>
-                  </div>
+    <nav :class="scrolled ? 'py-4 bg-black/60 backdrop-blur-xl border-b border-white/5' : 'py-8 bg-transparent'" 
+         class="fixed top-0 w-full z-[1000] transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-yellow-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <img src="https://i.ibb.co/9j74J07/image.png" class="relative w-12 h-12 rounded-full border border-yellow-500/50 object-cover" alt="Logo">
                 </div>
-                <div className="p-6">
-                  <h4 className="font-bold text-lg mb-2 line-clamp-1">{v.title}</h4>
-                  <div className="flex items-center justify-between text-white/30 text-xs">
-                    <span className="flex items-center gap-1"><GraduationCap size={14}/> مستر زياد مبروك</span>
-                    <span className="bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded">مجانية</span>
-                  </div>
+                <div>
+                    <h1 class="text-xl font-black leading-tight tracking-tighter uppercase">يلا كيمياء</h1>
+                    <span class="text-[10px] text-yellow-600 font-bold block">MR. ZIAD MABROUK</span>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
 
-      {/* FAQ Section */}
-      <section id="faq" className="py-24 px-6 max-w-4xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl font-black">أسئلة <span className="text-gold">شائعة</span></h2>
-          <p className="text-white/40 font-bold">كل ما يدور في ذهنك عن المادة والمنصة</p>
+            <div class="hidden lg:flex items-center gap-8 bg-white/5 px-8 py-3 rounded-full border border-white/10 font-bold text-sm">
+                <a href="#" class="hover:text-yellow-500 transition-colors">الرئيسية</a>
+                <a href="#" class="hover:text-yellow-500 transition-colors">المحاضرات</a>
+                <a href="#" class="hover:text-yellow-500 transition-colors">حل الكتب</a>
+                <a href="#" class="hover:text-yellow-500 transition-colors">الملازم</a>
+            </div>
+
+            <button class="gold-gradient text-black px-8 py-3 rounded-2xl font-black text-sm shadow-[0_0_20px_rgba(255,215,0,0.2)] hover:scale-105 transition-all active:scale-95">
+                ابدأ الآن
+            </button>
         </div>
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <div key={i} className="glass-card rounded-3xl overflow-hidden">
-              <button 
-                onClick={() => setActiveAccordion(activeAccordion === i ? null : i)}
-                className="w-full p-6 text-right flex justify-between items-center hover:bg-white/5 transition-colors"
-              >
-                <span className="font-black">{faq.q}</span>
-                <HelpCircle className={`text-yellow-500 transition-transform ${activeAccordion === i ? 'rotate-180' : ''}`} />
-              </button>
-              {activeAccordion === i && (
-                <div className="p-6 pt-0 text-white/60 font-medium border-t border-white/5 animate-in fade-in slide-in-from-top-2">
-                  {faq.a}
+    </nav>
+
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <div class="hero-glow top-1/4 right-1/4"></div>
+        <div class="hero-glow bottom-1/4 left-1/4"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="space-y-10 order-2 lg:order-1">
+                <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-2 rounded-full">
+                    <i data-lucide="sparkles" class="text-yellow-500 w-4 h-4"></i>
+                    <span class="text-sm font-bold tracking-wide">المنصة التعليمية الأولى للكيمياء في مصر</span>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
+                
+                <h1 class="text-6xl lg:text-[90px] font-black leading-[0.9] tracking-tighter">
+                    افهم <span class="text-gold">الذرة</span> <br> 
+                    مع <span class="relative">الأسطورة 
+                        <svg class="absolute -bottom-4 left-0 w-full" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="#FFD700" stroke-width="4" fill="none"/></svg>
+                    </span>
+                </h1>
 
-      {/* Footer */}
-      <footer className="py-20 px-6 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 items-center text-center md:text-right">
-          <div className="space-y-6">
-            <h3 className="text-2xl font-black">يلا كيمياء <span className="text-yellow-500">.</span></h3>
-            <p className="text-white/30 text-sm font-bold">المنصة التعليمية الأولى والوحيدة التي تهتم بفهم الطالب قبل حفظه، مع أفضل نظام حل في مصر.</p>
-          </div>
-          <div className="flex flex-col items-center gap-4">
-            <h4 className="font-black text-yellow-500 underline decoration-2 underline-offset-8 mb-4">تواصل سريع</h4>
-            <div className="flex gap-4">
-              <a href="https://t.me/+b1mElPFg6bdmZmM8" className="w-12 h-12 glass-card rounded-2xl flex items-center justify-center text-blue-400 hover:bg-blue-400 hover:text-white transition-all"><Send size={24}/></a>
-              <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" className="w-12 h-12 glass-card rounded-2xl flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all"><Youtube size={24}/></a>
-              <a href="https://chat.whatsapp.com/FrYkCnO3DTt3ugCkYKMLJp" className="w-12 h-12 glass-card rounded-2xl flex items-center justify-center text-green-500 hover:bg-green-500 hover:text-white transition-all"><MessageCircle size={24}/></a>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="glass-card p-6 rounded-3xl inline-block">
-               <span className="block text-xs font-bold text-white/40 mb-1">صُمم لـ</span>
-               <span className="block font-black text-yellow-500">مستر زياد مبروك</span>
-            </div>
-          </div>
-        </div>
-        <div className="mt-20 pt-8 border-t border-white/5 text-center text-[10px] font-bold text-white/20 uppercase tracking-[0.3em]">
-          All Rights Reserved &copy; 2026 Ziad Mabrouk - Chemistry Legend
-        </div>
-      </footer>
-    </div>
-  );
-};
+                <p class="text-xl text-white/50 max-w-xl leading-relaxed font-medium">
+                    رحلتك من الصفر حتى التميز تبدأ من هنا. شرح وافٍ، حل شامل، ومتابعة لا تتوقف. مع مستر زياد مبروك، الكيمياء أصبحت أسهل مما تتخيل.
+                </p>
 
-export default App;
+                <div class="flex flex-wrap gap-6 items-center">
+                    <button class="gold-gradient text-black px-10 py-5 rounded-[2rem] font-black text-xl shadow-2xl hover:translate-y-[-4px] transition-all flex items-center gap-4 group">
+                        ادخل لقلب المعمل <i data-lucide="chevron-right" class="group-hover:translate-x-[-8px] transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="relative order-1 lg:order-2 flex justify-center">
+                <div class="absolute inset-0 bg-yellow-500/10 blur-[120px] rounded-full animate-pulse"></div>
+                <img src="https://i.ibb.co/9j74J07/image.png" class="relative z-10 w-full max-w-2xl transform hover:scale-[1.02] transition-transform duration-700 drop-shadow-[0_0_100px_rgba(255,215,0,0.15)]">
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-[#050505] relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-20">
+                <div class="space-y-4">
+                    <h2 class="text-5xl font-black leading-tight">مركز <span class="text-gold">المحتوى التعليمي</span></h2>
+                    <p class="text-white/40 font-bold">كل ما تحتاجه للوصول للدرجة النهائية متوفر هنا بشكل منظم.</p>
+                </div>
+                
+                <div class="flex bg-white/5 p-2 rounded-3xl border border-white/10 gap-2">
+                    <button @click="activeTab = 'lectures'" :class="activeTab === 'lectures' ? 'gold-gradient text-black shadow-xl' : 'hover:bg-white/5'" class="flex items-center gap-2 px-8 py-4 rounded-2xl font-black transition-all">
+                        المحاضرات
+                    </button>
+                    <button @click="activeTab = 'solutions'" :class="activeTab === 'solutions' ? 'gold-gradient text-black shadow-xl' : 'hover:bg-white/5'" class="flex items-center gap-2 px-8 py-4 rounded-2xl font-black transition-all">
+                        حل الكتب
+                    </button>
+                </div>
+            </div>
+
+            <div x-show="activeTab === 'lectures'" class="grid md:grid-cols-3 gap-8">
+                <template x-for="video in [
+                    {title: 'الروابط الكيميائية', id: '3SQy6j9qdX0'},
+                    {title: 'نظرية الثمانيات', id: '1JIVypRTUxI'},
+                    {title: 'أشكال الجزيئات', id: 'u7rTOP0lpak'}
+                ]">
+                    <div class="group glass rounded-[3rem] overflow-hidden hover:border-yellow-500/40 transition-all shadow-2xl">
+                        <div class="relative aspect-video">
+                            <img :src="`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <a :href="`https://youtu.be/${video.id}`" target="_blank" class="w-14 h-14 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 hover:scale-110 transition-all">
+                                    <i data-lucide="play" fill="white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <h3 class="text-xl font-bold group-hover:text-gold transition-colors" x-text="video.title"></h3>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black pt-32 pb-12 px-6 border-t border-white/5 text-center">
+        <h2 class="text-3xl font-black tracking-tighter mb-4">يلا كيمياء <span class="text-yellow-500">.</span></h2>
+        <p class="text-white/40 font-bold mb-8">جميع الحقوق محفوظة لصالح فريق مستر زياد مبروك 2026</p>
+        <div class="flex justify-center gap-6">
+            <a href="https://youtube.com/@misterziadmabrouk" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-red-600 transition-all"><i data-lucide="youtube"></i></a>
+            <a href="https://t.me/+b1mElPFg6bdmZmM8" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-blue-600 transition-all"><i data-lucide="send"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
