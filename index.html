@@ -1,313 +1,320 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Play, FileText, Youtube, Instagram, Facebook, 
-  Send as Telegram, MessageCircle, Info, 
-  ChevronRight, BookOpen, Trophy, 
-  X, UserPlus, LogIn, Atom, Video, 
-  CheckCircle2, Award, User, Smartphone,
-  Zap, Heart, ShieldCheck, Target, 
-  ArrowLeft, Laptop, GraduationCap,
-  ExternalLink, MousePointer2, Sparkles,
-  Search, BookCheck, ClipboardCheck
-} from 'lucide-react';
-
-const App = () => {
-  const [activeTab, setActiveTab] = useState('explanation');
-  const [currentPage, setCurrentPage] = useState('home');
-  const [showAuth, setShowAuth] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
-
-  // المحتوى التعليمي المحدث بدقة حسب روابط المستر
-  const content = {
-    explanation: [
-      { title: "المحاضرة الأولى: أنواع الروابط والرابطة الآيونية والتساهمية", url: "https://youtu.be/3SQy6j9qdX0" },
-      { title: "شرح الدرس الثاني: الجزء الأول - نظرية الثمانيات", url: "https://youtu.be/1JIVypRTUxI" },
-      { title: "شرح الدرس الثاني: الجزء الثاني - أنواع الروابط والتهجين", url: "https://youtu.be/NGF1Fq1C0Ko" },
-      { title: "شرح الدرس الثالث: الجزء الأول - نظرية VSEPR", url: "https://youtu.be/u7rTOP0lpak" },
-      { title: "شرح باقي الدرس الثالث والرابع: الروابط التناسقية والفيزيائية", url: "https://youtu.be/UFOsYtmHuCc" }
-    ],
-    wafi: [
-      { title: "حل كتاب الوافي: الدرس الأول - ج1", url: "https://youtu.be/hh34oRhXBN8" },
-      { title: "حل كتاب الوافي: الدرس الأول - ج2", url: "https://youtu.be/gMqM3Uf2mYQ" },
-      { title: "حل كتاب الوافي: الدرس الثاني - ج1", url: "https://youtu.be/hzWbMiMdzNM" },
-      { title: "حل كتاب الوافي: الدرس الثاني - ج2", url: "https://youtu.be/ILCeerSB1RU" },
-      { title: "حل كتاب الوافي: الدرس الثالث - ج1", url: "https://youtu.be/GYMWKuc7DPE" },
-      { title: "حل كتاب الوافي: الدرس الثالث - ج2", url: "https://youtu.be/-uV1gcbPLok" },
-      { title: "حل كتاب الوافي: الدرس الرابع", url: "https://youtu.be/OsWMUW2ex54" }
-    ],
-    exam: [
-      { title: "حل كتاب الامتحان: الدرس الأول - ج1", url: "https://youtu.be/0QY_ZaZ8_40" },
-      { title: "حل كتاب الامتحان: الدرس الأول - ج2", url: "https://youtu.be/ZgZeeNdcbFE" },
-      { title: "حل كتاب الامتحان: الدرس الثاني - ج1", url: "https://youtu.be/pbzdb3i7DRg" },
-      { title: "حل كتاب الامتحان: الدرس الثاني - ج2", url: "https://youtu.be/R9_i6tuI58Y" },
-      { title: "حل كتاب الامتحان: الدرس الثالث - ج1", url: "https://youtu.be/Cfuc-OTXsJ4" },
-      { title: "حل كتاب الامتحان: الدرس الثالث - ج2", url: "https://youtu.be/NJW2hdFXj0Q" },
-      { title: "حل كتاب الامتحان: الدرس الرابع", url: "https://youtu.be/lpgNjh3Xpvw" }
-    ],
-    revision: [
-      { title: "مراجعة الباب الأول كاملاً", url: "https://youtu.be/8MMGiSQqf0c" },
-      { title: "حل أسئلة الكتاب المدرسي والمعهد - الباب الأول", url: "https://youtu.be/9ir3kxBZwCQ" },
-      { title: "أهم 50 سؤال على الباب الأول (أزهر)", url: "https://youtu.be/7FslhYxqWiY" },
-      { title: "مراجعة وحل شامل - الباب الأول", url: "https://youtu.be/lpboq-ho2og" }
-    ]
-  };
-
-  const socialLinks = [
-    { icon: <Youtube size={20}/>, color: '#FF0000', label: 'يوتيوب', link: 'https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w?si=Pa22Eq5jH2Ht89fo' },
-    { icon: <Telegram size={20}/>, color: '#0088cc', label: 'تليجرام', link: 'https://t.me/+b1mElPFg6bdmZmM8' },
-    { icon: <Facebook size={20}/>, color: '#1877F2', label: 'البيج', link: 'https://www.facebook.com/profile.php?id=61586645950011&mibextid=ZbWKwL' },
-    { icon: <Facebook size={20}/>, color: '#1877F2', label: 'الجروب', link: 'https://www.facebook.com/groups/1418161436362217/?ref=share&mibextid=NSMWBT' },
-    { icon: <MessageCircle size={20}/>, color: '#25D366', label: 'واتساب', link: 'https://chat.whatsapp.com/FrYkCnO3DTt3ugCkYKMLJp' },
-    { icon: <Instagram size={20}/>, color: '#E4405F', label: 'انستجرام', link: 'https://www.instagram.com/ziad166979?igsh=cmQxaXVtdnM4NXo2' },
-    { icon: <Smartphone size={20}/>, color: '#ffffff', label: 'تيك توك', link: 'https://www.tiktok.com/@user4152435953944?_r=1&_t=ZS-93eQNHkVlzB' }
-  ];
-
-  return (
-    <div className="min-h-screen bg-[#070b09] font-['Cairo',sans-serif] text-slate-200 selection:bg-[#c5a02e]/30 overflow-x-hidden" dir="rtl">
-      
-      {/* --- Navigation Bar --- */}
-      <nav className="fixed top-0 w-full z-[100] bg-[#070b09]/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentPage('home')}>
-            <div className="w-10 h-10 bg-[#c5a02e] rounded-xl flex items-center justify-center text-[#070b09] shadow-lg shadow-[#c5a02e]/20 group-hover:rotate-12 transition-transform">
-              <Atom size={24} />
-            </div>
-            <span className="text-xl font-black text-white tracking-tight">يلا <span className="text-[#c5a02e]">كيمياء</span></span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-8 font-bold text-sm text-slate-400">
-            <button onClick={() => setCurrentPage('home')} className={`hover:text-[#c5a02e] transition-all ${currentPage === 'home' && 'text-[#c5a02e]'}`}>الرئيسية</button>
-            <button onClick={() => setCurrentPage('lectures')} className={`hover:text-[#c5a02e] transition-all ${currentPage === 'lectures' && 'text-[#c5a02e]'}`}>المحاضرات</button>
-            <button onClick={() => setCurrentPage('about')} className={`hover:text-[#c5a02e] transition-all ${currentPage === 'about' && 'text-[#c5a02e]'}`}>لماذا مستر زياد؟</button>
-          </div>
-
-          <button onClick={() => setShowAuth(true)} className="bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-black text-sm hover:bg-[#c5a02e] hover:text-[#070b09] transition-all">دخول الطلاب</button>
-        </div>
-      </nav>
-
-      {/* --- Main Sections --- */}
-      <main className="pt-20">
-        
-        {/* --- Home Page (The Hero Section) --- */}
-        {currentPage === 'home' && (
-          <div className="animate-in fade-in duration-1000">
-            <header className="relative py-24 px-6 overflow-hidden">
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c5a02e]/10 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
-              <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-                <div className="text-center lg:text-right space-y-8">
-                  <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[10px] font-black tracking-widest text-[#c5a02e]">
-                    <Sparkles size={14}/> أكاديمية مستر زياد مبروك الرقمية
-                  </div>
-                  <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1]">
-                    حوّل تعقيد <span className="text-[#c5a02e]">الكيمياء</span> <br/> إلى متعة وتفوق
-                  </h1>
-                  <p className="text-slate-400 text-lg font-bold max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                    هنا نبني الفهم من الجذور.. انضم لأكثر من منصة تعليمية، انضم لعائلة "يلا كيمياء" وابدأ رحلة الـ 50 درجة مع أقوى شرح وحل للكتب الخارجية.
-                  </p>
-                  <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-                    <button onClick={() => setCurrentPage('lectures')} className="bg-[#c5a02e] text-[#070b09] px-10 py-5 rounded-2xl font-black text-lg flex items-center gap-3 shadow-xl hover:-translate-y-1 transition-all">
-                      استكشف المحاضرات <ArrowLeft size={20}/>
-                    </button>
-                    <button onClick={() => setCurrentPage('about')} className="bg-white/5 border border-white/10 text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-white/10 transition-all">
-                      لماذا تختارنا؟
-                    </button>
-                  </div>
-                </div>
-                <div className="relative">
-                   <div className="aspect-square bg-gradient-to-br from-[#1a231f] to-[#070b09] border border-white/5 rounded-[3rem] p-8 relative overflow-hidden group">
-                      <div className="absolute inset-0 bg-[#c5a02e]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                      <div className="grid grid-cols-2 gap-4 h-full">
-                         {[
-                           { label: "شرح وافٍ", icon: <Video className="text-orange-400"/>, count: "25+" },
-                           { label: "حل كتاب الوافي", icon: <BookOpen className="text-blue-400"/>, count: "100% " },
-                           { label: "حل الامتحان", icon: <GraduationCap className="text-green-400"/>, count: "شامل" },
-                           { label: "مراجعات نهائية", icon: <Award className="text-purple-400"/>, count: "قوية" }
-                         ].map((stat, i) => (
-                           <div key={i} className="bg-[#070b09] border border-white/5 rounded-3xl p-6 flex flex-col justify-center items-center text-center space-y-2 hover:border-[#c5a02e]/30 transition-all">
-                              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-2">{stat.icon}</div>
-                              <span className="text-2xl font-black text-white">{stat.count}</span>
-                              <span className="text-xs font-bold text-slate-500">{stat.label}</span>
-                           </div>
-                         ))}
-                      </div>
-                   </div>
-                </div>
-              </div>
-            </header>
-          </div>
-        )}
-
-        {/* --- Lectures Library --- */}
-        {currentPage === 'lectures' && (
-          <div className="max-w-7xl mx-auto px-6 py-20 animate-in slide-in-from-bottom-10 duration-700">
-             <div className="text-center mb-16">
-                <h2 className="text-4xl font-black text-white mb-4">مكتبة <span className="text-[#c5a02e]">المحاضرات</span></h2>
-                <p className="text-slate-500 font-bold">كل ما تحتاجه من شرح وحل ومراجعات في مكان واحد</p>
-             </div>
-
-             {/* Tabs System */}
-             <div className="flex flex-wrap justify-center gap-3 mb-12">
-                {[
-                  { id: 'explanation', label: 'شرح الدروس', icon: <Play size={16}/> },
-                  { id: 'wafi', label: 'حل كتاب الوافي', icon: <BookCheck size={16}/> },
-                  { id: 'exam', label: 'حل كتاب الامتحان', icon: <ClipboardCheck size={16}/> },
-                  { id: 'revision', label: 'المراجعات النهائية', icon: <Sparkles size={16}/> },
-                ].map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-8 py-4 rounded-2xl font-black text-sm flex items-center gap-3 transition-all ${
-                      activeTab === tab.id 
-                      ? 'bg-[#c5a02e] text-[#070b09] shadow-lg shadow-[#c5a02e]/10' 
-                      : 'bg-white/5 text-slate-400 hover:bg-white/10 border border-white/5'
-                    }`}
-                  >
-                    {tab.icon} {tab.label}
-                  </button>
-                ))}
-             </div>
-
-             {/* Grid of Content */}
-             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {content[activeTab].map((item, idx) => (
-                   <div key={idx} className="group relative bg-[#0d1310] border border-white/5 rounded-[2rem] p-6 hover:border-[#c5a02e]/40 transition-all hover:-translate-y-2 shadow-sm">
-                      <div className="aspect-video bg-[#070b09] rounded-2xl mb-6 flex items-center justify-center text-[#c5a02e]/20 group-hover:text-[#c5a02e] transition-colors overflow-hidden relative">
-                         <Play size={48} fill="currentColor" className="relative z-10" />
-                         <div className="absolute inset-0 bg-gradient-to-t from-[#070b09] to-transparent opacity-60"></div>
-                      </div>
-                      <h3 className="text-lg font-black text-white leading-tight mb-6 h-14 overflow-hidden group-hover:text-[#c5a02e] transition-colors">
-                        {item.title}
-                      </h3>
-                      <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                         <a href={item.url} target="_blank" className="flex items-center gap-2 text-xs font-black text-[#c5a02e] hover:underline">
-                           <Youtube size={16}/> شاهد الآن
-                         </a>
-                         <button className="text-[10px] font-black text-slate-600 uppercase tracking-widest hover:text-white transition-colors">
-                           تحميل PDF
-                         </button>
-                      </div>
-                   </div>
-                ))}
-             </div>
-          </div>
-        )}
-
-        {/* --- Why Mr. Ziad? Section --- */}
-        {currentPage === 'about' && (
-          <div className="max-w-7xl mx-auto px-6 py-20 animate-in fade-in duration-700">
-             <div className="text-center mb-20">
-                <h2 className="text-4xl font-black text-white mb-6">ليه تختار <span className="text-[#c5a02e]">مستر زياد مبروك؟</span></h2>
-                <div className="w-20 h-1 bg-[#c5a02e] mx-auto rounded-full"></div>
-             </div>
-
-             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {[
-                  { title: "خبرة في النظام الجديد", desc: "شرحنا مبني على نواتج التعلم والفهم العميق، مش مجرد حفظ معادلات.", icon: <Target className="text-orange-500"/> },
-                  { title: "حل الكتب الخارجية", icon: <BookOpen className="text-blue-500"/>, desc: "بنحل معاك كتاب الوافي والامتحان كلمة بكلمة، عشان نضمن إنك شوفت كل أفكار الأسئلة." },
-                  { title: "تبسيط المعقد", icon: <Zap className="text-yellow-500"/>, desc: "الكيمياء مع مستر زياد مبروك هتتحول من مادة صعبة لمادة ترفيهية بتفهم كل تفصيلة فيها." },
-                  { title: "متابعة دورية", icon: <MessageCircle className="text-green-500"/>, desc: "مش بنسيبك لوحدك، جروبات الواتساب والفيسبوك مفتوحة دايماً للرد على استفساراتك." },
-                  { title: "مذكرات احترافية", icon: <FileText className="text-red-500"/>, desc: "مذكرات ملونة ومنظمة جداً بتلخص لك المنهج في شكل خرائط ذهنية سهلة المذاكرة." },
-                  { title: "توفير وقتك", icon: <Laptop className="text-purple-500"/>, desc: "المنصة منظمة جداً، هتوفر عليك تدوير كتير، كل درس معاه الحل والمراجعة بتوعه." }
-                ].map((feature, i) => (
-                  <div key={i} className="bg-[#0d1310] border border-white/5 p-10 rounded-[2.5rem] relative overflow-hidden group">
-                     <div className="absolute -top-10 -left-10 w-24 h-24 bg-[#c5a02e]/5 rounded-full group-hover:scale-[3] transition-transform duration-700"></div>
-                     <div className="mb-6">{feature.icon}</div>
-                     <h4 className="text-xl font-black text-white mb-4">{feature.title}</h4>
-                     <p className="text-slate-500 font-bold text-sm leading-relaxed">{feature.desc}</p>
-                  </div>
-                ))}
-             </div>
-
-             <div className="mt-20 bg-gradient-to-r from-[#c5a02e] to-[#8a6e1d] rounded-[3rem] p-12 text-[#070b09] text-center relative overflow-hidden">
-                <div className="relative z-10 space-y-6">
-                   <h3 className="text-4xl font-black italic">"الكيمياء مش مادة.. الكيمياء حياة"</h3>
-                   <p className="font-bold text-lg opacity-80 max-w-2xl mx-auto">مستني إيه؟ انضم لعائلة يلا كيمياء دلوقتي واحجز مكانك بين الأوائل.</p>
-                   <button onClick={() => setShowAuth(true)} className="bg-[#070b09] text-white px-12 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-2xl">سجل بياناتك الآن</button>
-                </div>
-                <Atom size={200} className="absolute -bottom-20 -right-20 opacity-10 rotate-12" />
-             </div>
-          </div>
-        )}
-
-      </main>
-
-      {/* --- Footer & Contact Hub --- */}
-      <footer className="mt-40 bg-[#040605] border-t border-white/5 py-24 px-6">
-         <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-16">
-            <div className="lg:col-span-2 space-y-8">
-               <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#c5a02e] rounded-xl flex items-center justify-center text-[#070b09] font-black">Z</div>
-                  <h3 className="text-2xl font-black text-white">زياد مبروك</h3>
-               </div>
-               <p className="text-slate-500 font-bold max-w-md leading-relaxed">
-                  منصة تعليمية متخصصة في مادة الكيمياء للمرحلة الثانوية والأزهرية، نهدف للوصول بالطالب لأعلى مستويات الفهم والإتقان.
-               </p>
-               <div className="flex flex-wrap gap-3">
-                  {socialLinks.map((s, i) => (
-                    <a key={i} href={s.link} target="_blank" className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-slate-400 hover:bg-[#c5a02e] hover:text-[#070b09] transition-all" title={s.label}>
-                      {s.icon}
-                    </a>
-                  ))}
-               </div>
-            </div>
-
-            <div className="space-y-6">
-               <h4 className="text-lg font-black text-white">روابط سريعة</h4>
-               <ul className="space-y-4 text-slate-500 font-bold text-sm">
-                  <li><button onClick={() => setCurrentPage('home')} className="hover:text-[#c5a02e]">الرئيسية</button></li>
-                  <li><button onClick={() => setCurrentPage('lectures')} className="hover:text-[#c5a02e]">المحاضرات</button></li>
-                  <li><button onClick={() => setCurrentPage('about')} className="hover:text-[#c5a02e]">لماذا نحن؟</button></li>
-                  <li><button onClick={() => setShowAuth(true)} className="hover:text-[#c5a02e]">دخول الطلاب</button></li>
-               </ul>
-            </div>
-
-            <div className="space-y-6 text-center lg:text-right">
-               <h4 className="text-lg font-black text-white">تحتاج مساعدة؟</h4>
-               <p className="text-slate-500 font-bold text-sm">تواصل معنا مباشرة عبر الواتساب للاستفسارات الفنية أو التعليمية.</p>
-               <a href="https://chat.whatsapp.com/FrYkCnO3DTt3ugCkYKMLJp" target="_blank" className="inline-flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] px-6 py-3 rounded-xl font-black text-sm border border-[#25D366]/20">
-                 <MessageCircle size={18}/> دعم الطلاب
-               </a>
-            </div>
-         </div>
-         <div className="max-w-7xl mx-auto mt-20 pt-10 border-t border-white/5 text-center">
-            <p className="text-slate-600 text-xs font-bold">جميع الحقوق محفوظة لمنصة يلا كيمياء - مستر زياد مبروك &copy; 2026</p>
-         </div>
-      </footer>
-
-      {/* --- Auth Modal --- */}
-      {showAuth && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/90 backdrop-blur-sm">
-          <div className="bg-[#0d1310] w-full max-w-md rounded-[2.5rem] p-10 border border-white/10 relative shadow-2xl animate-in zoom-in-95">
-            <button onClick={() => setShowAuth(false)} className="absolute top-8 left-8 text-slate-500 hover:text-white transition-colors"><X/></button>
-            <div className="text-center mb-10">
-              <h3 className="text-3xl font-black text-white mb-2">{authMode === 'login' ? 'تسجيل دخول' : 'حساب جديد'}</h3>
-              <p className="text-slate-500 font-bold text-sm">أهلاً بك في عالم الكيمياء</p>
-            </div>
-            <div className="space-y-5">
-               {authMode === 'register' && (
-                 <input className="w-full bg-[#070b09] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none focus:border-[#c5a02e] transition-all" placeholder="الاسم بالكامل"/>
-               )}
-               <input className="w-full bg-[#070b09] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none focus:border-[#c5a02e] transition-all" placeholder={authMode === 'login' ? 'كود الطالب (ID)' : 'رقم الموبايل'}/>
-               <button className="w-full bg-[#c5a02e] text-[#070b09] py-5 rounded-2xl font-black text-lg shadow-xl hover:brightness-110 transition-all">
-                  {authMode === 'login' ? 'دخول للمنصة' : 'تأكيد التسجيل'}
-               </button>
-               <button onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')} className="w-full text-[#c5a02e] font-black text-sm opacity-60 hover:opacity-100 transition-opacity">
-                  {authMode === 'login' ? 'طالب جديد؟ سجل حسابك هنا' : 'لديك حساب؟ سجل دخولك'}
-               </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <style>{`
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>يلا كيمياء | مستر زياد مبروك</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
-        body { background-color: #070b09; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #070b09; }
-        ::-webkit-scrollbar-thumb { background: #c5a02e; border-radius: 10px; }
-      `}</style>
-    </div>
-  );
-};
+        
+        :root {
+            --primary: #00ff88;
+            --secondary: #00d4ff;
+            --dark: #080a0f;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
 
-export default App;
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .bg-animate {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            transition: all 0.4s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+            transform: translateY(-10px);
+        }
+
+        .neon-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .neon-btn:hover {
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+            transform: scale(1.05);
+        }
+
+        .id-card {
+            background: linear-gradient(135deg, #1a1c23 0%, #080a0f 100%);
+            border: 2px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .id-card::after {
+            content: "";
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .lesson-icon {
+            width: 50px; height: 50px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        /* Hide Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animate"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 p-4">
+        <div class="container mx-auto flex justify-between items-center glass-card px-6 py-3">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-atom text-3xl text-[#00ff88] animate-spin-slow"></i>
+                <span class="text-xl font-black tracking-tighter">يلا كيمياء <span class="text-[#00ff88]">زياد مبروك</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 font-bold text-sm">
+                <a href="#" onclick="showPage('home')" class="hover:text-[#00ff88]">الرئيسية</a>
+                <a href="#" onclick="showPage('curriculum')" class="hover:text-[#00ff88]">المنهج</a>
+                <a href="#" onclick="showPage('register')" class="hover:text-[#00ff88]">تسجيل بطل جديد</a>
+            </div>
+            <button onclick="showPage('register')" class="neon-btn px-5 py-2 rounded-xl text-black font-bold text-sm">ابدأ الآن</button>
+        </div>
+    </nav>
+
+    <!-- Page: Home -->
+    <main id="home-page" class="pt-32 container mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+            <div class="flex-1 text-center md:text-right">
+                <h2 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                    الكيمياء أسهل <br> مع <span class="text-[#00ff88]">الوحش</span>
+                </h2>
+                <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                    المنصة الأولى لطلاب تانية ثانوي في مصر. شرح، ملازم، ومتابعة دورية مجاناً تماماً عشان توصل للـ 60/60 وأنت مرتاح.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                    <button onclick="showPage('curriculum')" class="neon-btn px-10 py-4 rounded-2xl text-black font-black text-lg">تصفح الدروس</button>
+                    <button class="glass-card px-10 py-4 rounded-2xl font-bold">جروب التليجرام <i class="fab fa-telegram-plane mr-2 text-blue-400"></i></button>
+                </div>
+            </div>
+            <div class="flex-1 relative">
+                <div class="w-72 h-72 md:w-96 md:h-96 bg-[#00ff88] rounded-full blur-[100px] opacity-20 absolute top-10 left-10"></div>
+                <!-- Placeholder for Logo/Image -->
+                <div class="glass-card p-4 relative z-10">
+                    <img src="https://img.freepik.com/free-vector/chemistry-icons-set_1284-11003.jpg?t=st=1721832000" alt="Logo" class="rounded-2xl opacity-80 grayscale hover:grayscale-0 transition-all">
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-24">
+            <div class="glass-card p-8 text-center">
+                <i class="fas fa-video text-4xl text-[#00ff88] mb-4"></i>
+                <h4 class="text-xl font-bold mb-2">فيديوهات HD</h4>
+                <p class="text-gray-400">شرح تفصيلي لكل أجزاء المنهج بجودة عالية.</p>
+            </div>
+            <div class="glass-card p-8 text-center">
+                <i class="fas fa-file-pdf text-4xl text-red-400 mb-4"></i>
+                <h4 class="text-xl font-bold mb-2">ملازم PDF</h4>
+                <p class="text-gray-400">مذكرات منظمة وشاملة لكل درس جاهزة للتحميل.</p>
+            </div>
+            <div class="glass-card p-8 text-center">
+                <i class="fas fa-user-check text-4xl text-blue-400 mb-4"></i>
+                <h4 class="text-xl font-bold mb-2">متابعة دقيقة</h4>
+                <p class="text-gray-400">تواصل مباشر مع مستر زياد وفريقه للرد على أسئلتك.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Page: Curriculum -->
+    <main id="curriculum-page" class="pt-32 container mx-auto px-6 hidden">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <h3 class="text-3xl font-black">منهج كيمياء تانية ثانوي <span class="text-[#00ff88]">2025</span></h3>
+            <div class="flex gap-2">
+                <button class="bg-[#00ff88] text-black px-4 py-2 rounded-lg font-bold text-sm">الترم الأول</button>
+                <button class="glass-card px-4 py-2 rounded-lg font-bold text-sm">الترم الثاني</button>
+            </div>
+        </div>
+
+        <!-- Semester 1 Content -->
+        <div class="space-y-8">
+            <!-- Unit 1 -->
+            <div class="glass-card p-6 border-r-4 border-[#00ff88]">
+                <h4 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="bg-[#00ff88] text-black w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                    البنية الذرية للمادة
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Lesson Item -->
+                    <div class="bg-black/40 p-5 rounded-2xl border border-white/5 hover:border-[#00ff88]/50 transition-all">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="lesson-icon"><i class="fas fa-flask"></i></div>
+                            <h5 class="font-bold">تطور مفهوم الذرة</h5>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="playVideo('S-JpZ_A0l78')" class="flex-1 py-2 bg-[#00ff88]/10 text-[#00ff88] rounded-lg text-sm font-bold hover:bg-[#00ff88] hover:text-black transition-all">فيديو الشرح</button>
+                            <button class="px-4 py-2 bg-white/5 rounded-lg text-sm"><i class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <!-- Repeat for more lessons -->
+                    <div class="bg-black/40 p-5 rounded-2xl border border-white/5 hover:border-[#00ff88]/50 transition-all">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="lesson-icon"><i class="fas fa-wave-square"></i></div>
+                            <h5 class="font-bold">طيف الانبعاث وبور</h5>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="playVideo('S-JpZ_A0l78')" class="flex-1 py-2 bg-[#00ff88]/10 text-[#00ff88] rounded-lg text-sm font-bold hover:bg-[#00ff88] hover:text-black transition-all">فيديو الشرح</button>
+                            <button class="px-4 py-2 bg-white/5 rounded-lg text-sm"><i class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Page: Register & ID Generation -->
+    <main id="register-page" class="pt-32 container mx-auto px-6 hidden">
+        <div id="form-container" class="max-w-xl mx-auto glass-card p-10">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-[#00ff88]/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-[#00ff88]/30">
+                    <i class="fas fa-user-plus text-3xl text-[#00ff88]"></i>
+                </div>
+                <h3 class="text-2xl font-black">انضم لكتيبة الوحش</h3>
+                <p class="text-gray-500">سجل بياناتك عشان نطلعلك كارنيه المنصة الخاص بيك</p>
+            </div>
+
+            <form onsubmit="generateID(event)" class="space-y-5">
+                <div>
+                    <label class="block text-sm mb-2 text-gray-400">الاسم الثلاثي للطالب</label>
+                    <input type="text" id="studentName" required class="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl focus:outline-none focus:border-[#00ff88] transition-all" placeholder="أحمد محمد علي">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm mb-2 text-gray-400">رقم الهاتف</label>
+                        <input type="tel" id="studentPhone" required class="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl focus:outline-none focus:border-[#00ff88] transition-all" placeholder="01000000000">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2 text-gray-400">رقم ولي الأمر</label>
+                        <input type="tel" id="parentPhone" required class="w-full bg-white/5 border border-white/10 px-5 py-4 rounded-xl focus:outline-none focus:border-[#00ff88] transition-all" placeholder="01000000000">
+                    </div>
+                </div>
+                <button type="submit" class="neon-btn w-full py-4 rounded-2xl text-black font-black text-lg">إنشاء الحساب والكارنيه <i class="fas fa-id-badge mr-2"></i></button>
+            </form>
+        </div>
+
+        <!-- Result Card -->
+        <div id="id-result" class="max-w-md mx-auto hidden animate-bounce-in">
+            <div class="id-card rounded-3xl p-8 text-center shadow-2xl">
+                <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl"><i class="fas fa-atom"></i></div>
+                <div class="w-24 h-24 bg-gray-800 rounded-full mx-auto mb-4 border-4 border-[#00ff88] flex items-center justify-center text-4xl overflow-hidden">
+                    <i class="fas fa-user-tie text-gray-500"></i>
+                </div>
+                <h4 class="text-2xl font-black mb-1" id="res-name">اسم الطالب</h4>
+                <p class="text-[#00ff88] font-bold mb-6">طالب بمنصة يلا كيمياء</p>
+                <div class="grid grid-cols-2 gap-4 text-right text-sm">
+                    <div class="bg-white/5 p-3 rounded-lg">
+                        <span class="text-gray-500 block">كود الطالب</span>
+                        <span class="font-bold" id="res-id">#YM-998</span>
+                    </div>
+                    <div class="bg-white/5 p-3 rounded-lg">
+                        <span class="text-gray-500 block">السنة الدراسية</span>
+                        <span class="font-bold text-[#00ff88]">2025</span>
+                    </div>
+                </div>
+                <p class="mt-6 text-xs text-gray-500 italic">خذ لقطة شاشة (Screenshot) لهذا الكارنيه</p>
+                <button onclick="showPage('curriculum')" class="mt-6 text-sm text-[#00ff88] underline">انتقل للمنهج الآن</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4">
+        <div class="w-full max-w-5xl glass-card relative overflow-hidden">
+            <button onclick="closeVideo()" class="absolute top-4 left-4 text-white hover:text-red-500 text-2xl z-50">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="player" class="aspect-video w-full"></div>
+        </div>
+    </div>
+
+    <!-- Floating Contact -->
+    <div class="fixed bottom-6 left-6 flex flex-col gap-4">
+        <a href="#" class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl shadow-xl hover:rotate-12 transition-all"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl shadow-xl hover:rotate-12 transition-all"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <footer class="py-12 text-center text-gray-600 text-sm mt-20 border-t border-white/5">
+        <p>جميع الحقوق محفوظة لمنصة يلا كيمياء © 2025</p>
+        <p class="mt-2">بإشراف مستر <span class="text-[#00ff88]">زياد مبروك</span></p>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('main').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId + '-page').classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function playVideo(id) {
+            const modal = document.getElementById('videoModal');
+            const player = document.getElementById('player');
+            player.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${id}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            document.getElementById('player').innerHTML = '';
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        function generateID(e) {
+            e.preventDefault();
+            const name = document.getElementById('studentName').value;
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            
+            document.getElementById('res-name').innerText = name;
+            document.getElementById('res-id').innerText = '#YM-' + randomID;
+            
+            document.getElementById('form-container').classList.add('hidden');
+            document.getElementById('id-result').classList.remove('hidden');
+            
+            // Here you can add Firebase code later to save the student info
+        }
+    </script>
+</body>
+</html>
