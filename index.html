@@ -1,276 +1,313 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة يلا كيمياء | الأسطورة زياد مبروك</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+import React, { useState, useEffect } from 'react';
+import { 
+  Play, FileText, Youtube, Instagram, Facebook, 
+  Send as Telegram, MessageCircle, Info, 
+  ChevronRight, BookOpen, Trophy, 
+  X, UserPlus, LogIn, Atom, Video, 
+  CheckCircle2, Award, User, Smartphone,
+  Zap, Heart, ShieldCheck, Target, 
+  ArrowLeft, Laptop, GraduationCap,
+  ExternalLink, MousePointer2, Sparkles,
+  Search, BookCheck, ClipboardCheck
+} from 'lucide-react';
 
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #020202; color: white; overflow-x: hidden; }
-        
-        /* Gradients & Effects */
-        .gold-gradient { background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%); }
-        .text-gold { background: linear-gradient(to bottom, #FFD700, #DAA520); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-card { background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); }
-        
-        /* Animations */
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        
-        .hero-glow {
-            position: absolute; width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(80px); z-index: 0; pointer-events: none;
-        }
+const App = () => {
+  const [activeTab, setActiveTab] = useState('explanation');
+  const [currentPage, setCurrentPage] = useState('home');
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
 
-        .video-card:hover img { transform: scale(1.1) rotate(2deg); }
-        
-        [x-cloak] { display: none !important; }
-    </style>
-</head>
-<body x-data="{ scrolled: false, activeTab: 'lectures', showModal: false }" @scroll.window="scrolled = (window.pageYOffset > 20)">
+  // المحتوى التعليمي المحدث بدقة حسب روابط المستر
+  const content = {
+    explanation: [
+      { title: "المحاضرة الأولى: أنواع الروابط والرابطة الآيونية والتساهمية", url: "https://youtu.be/3SQy6j9qdX0" },
+      { title: "شرح الدرس الثاني: الجزء الأول - نظرية الثمانيات", url: "https://youtu.be/1JIVypRTUxI" },
+      { title: "شرح الدرس الثاني: الجزء الثاني - أنواع الروابط والتهجين", url: "https://youtu.be/NGF1Fq1C0Ko" },
+      { title: "شرح الدرس الثالث: الجزء الأول - نظرية VSEPR", url: "https://youtu.be/u7rTOP0lpak" },
+      { title: "شرح باقي الدرس الثالث والرابع: الروابط التناسقية والفيزيائية", url: "https://youtu.be/UFOsYtmHuCc" }
+    ],
+    wafi: [
+      { title: "حل كتاب الوافي: الدرس الأول - ج1", url: "https://youtu.be/hh34oRhXBN8" },
+      { title: "حل كتاب الوافي: الدرس الأول - ج2", url: "https://youtu.be/gMqM3Uf2mYQ" },
+      { title: "حل كتاب الوافي: الدرس الثاني - ج1", url: "https://youtu.be/hzWbMiMdzNM" },
+      { title: "حل كتاب الوافي: الدرس الثاني - ج2", url: "https://youtu.be/ILCeerSB1RU" },
+      { title: "حل كتاب الوافي: الدرس الثالث - ج1", url: "https://youtu.be/GYMWKuc7DPE" },
+      { title: "حل كتاب الوافي: الدرس الثالث - ج2", url: "https://youtu.be/-uV1gcbPLok" },
+      { title: "حل كتاب الوافي: الدرس الرابع", url: "https://youtu.be/OsWMUW2ex54" }
+    ],
+    exam: [
+      { title: "حل كتاب الامتحان: الدرس الأول - ج1", url: "https://youtu.be/0QY_ZaZ8_40" },
+      { title: "حل كتاب الامتحان: الدرس الأول - ج2", url: "https://youtu.be/ZgZeeNdcbFE" },
+      { title: "حل كتاب الامتحان: الدرس الثاني - ج1", url: "https://youtu.be/pbzdb3i7DRg" },
+      { title: "حل كتاب الامتحان: الدرس الثاني - ج2", url: "https://youtu.be/R9_i6tuI58Y" },
+      { title: "حل كتاب الامتحان: الدرس الثالث - ج1", url: "https://youtu.be/Cfuc-OTXsJ4" },
+      { title: "حل كتاب الامتحان: الدرس الثالث - ج2", url: "https://youtu.be/NJW2hdFXj0Q" },
+      { title: "حل كتاب الامتحان: الدرس الرابع", url: "https://youtu.be/lpgNjh3Xpvw" }
+    ],
+    revision: [
+      { title: "مراجعة الباب الأول كاملاً", url: "https://youtu.be/8MMGiSQqf0c" },
+      { title: "حل أسئلة الكتاب المدرسي والمعهد - الباب الأول", url: "https://youtu.be/9ir3kxBZwCQ" },
+      { title: "أهم 50 سؤال على الباب الأول (أزهر)", url: "https://youtu.be/7FslhYxqWiY" },
+      { title: "مراجعة وحل شامل - الباب الأول", url: "https://youtu.be/lpboq-ho2og" }
+    ]
+  };
 
-    <nav :class="scrolled ? 'py-4 bg-black/80 backdrop-blur-2xl border-b border-white/5' : 'py-8 bg-transparent'" 
-         class="fixed top-0 w-full z-[1000] transition-all duration-500">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <img src="https://i.ibb.co/9j74J07/image.png" class="w-12 h-12 rounded-full border-2 border-yellow-500/50 object-cover shadow-[0_0_15px_rgba(255,215,0,0.3)]">
-                <div>
-                    <h1 class="text-xl font-black tracking-tighter uppercase">يلا كيمياء</h1>
-                    <span class="text-[10px] text-yellow-500 font-bold block tracking-widest">ZIAD MABROUK</span>
-                </div>
+  const socialLinks = [
+    { icon: <Youtube size={20}/>, color: '#FF0000', label: 'يوتيوب', link: 'https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w?si=Pa22Eq5jH2Ht89fo' },
+    { icon: <Telegram size={20}/>, color: '#0088cc', label: 'تليجرام', link: 'https://t.me/+b1mElPFg6bdmZmM8' },
+    { icon: <Facebook size={20}/>, color: '#1877F2', label: 'البيج', link: 'https://www.facebook.com/profile.php?id=61586645950011&mibextid=ZbWKwL' },
+    { icon: <Facebook size={20}/>, color: '#1877F2', label: 'الجروب', link: 'https://www.facebook.com/groups/1418161436362217/?ref=share&mibextid=NSMWBT' },
+    { icon: <MessageCircle size={20}/>, color: '#25D366', label: 'واتساب', link: 'https://chat.whatsapp.com/FrYkCnO3DTt3ugCkYKMLJp' },
+    { icon: <Instagram size={20}/>, color: '#E4405F', label: 'انستجرام', link: 'https://www.instagram.com/ziad166979?igsh=cmQxaXVtdnM4NXo2' },
+    { icon: <Smartphone size={20}/>, color: '#ffffff', label: 'تيك توك', link: 'https://www.tiktok.com/@user4152435953944?_r=1&_t=ZS-93eQNHkVlzB' }
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#070b09] font-['Cairo',sans-serif] text-slate-200 selection:bg-[#c5a02e]/30 overflow-x-hidden" dir="rtl">
+      
+      {/* --- Navigation Bar --- */}
+      <nav className="fixed top-0 w-full z-[100] bg-[#070b09]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setCurrentPage('home')}>
+            <div className="w-10 h-10 bg-[#c5a02e] rounded-xl flex items-center justify-center text-[#070b09] shadow-lg shadow-[#c5a02e]/20 group-hover:rotate-12 transition-transform">
+              <Atom size={24} />
             </div>
+            <span className="text-xl font-black text-white tracking-tight">يلا <span className="text-[#c5a02e]">كيمياء</span></span>
+          </div>
 
-            <div class="hidden lg:flex items-center gap-8 bg-white/5 px-10 py-3 rounded-full border border-white/10 font-bold text-sm">
-                <a href="#home" class="hover:text-yellow-500 transition-all">الرئيسية</a>
-                <a href="#features" class="hover:text-yellow-500 transition-all">لماذا نحن؟</a>
-                <a href="#content" class="hover:text-yellow-500 transition-all">المحاضرات</a>
-                <a href="#faq" class="hover:text-yellow-500 transition-all">الأسئلة</a>
-            </div>
+          <div className="hidden md:flex items-center gap-8 font-bold text-sm text-slate-400">
+            <button onClick={() => setCurrentPage('home')} className={`hover:text-[#c5a02e] transition-all ${currentPage === 'home' && 'text-[#c5a02e]'}`}>الرئيسية</button>
+            <button onClick={() => setCurrentPage('lectures')} className={`hover:text-[#c5a02e] transition-all ${currentPage === 'lectures' && 'text-[#c5a02e]'}`}>المحاضرات</button>
+            <button onClick={() => setCurrentPage('about')} className={`hover:text-[#c5a02e] transition-all ${currentPage === 'about' && 'text-[#c5a02e]'}`}>لماذا مستر زياد؟</button>
+          </div>
 
-            <button @click="showModal = true" class="gold-gradient text-black px-8 py-3 rounded-xl font-black text-sm shadow-xl hover:shadow-yellow-500/20 transition-all active:scale-95">
-                سجل دخولك
-            </button>
+          <button onClick={() => setShowAuth(true)} className="bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-black text-sm hover:bg-[#c5a02e] hover:text-[#070b09] transition-all">دخول الطلاب</button>
         </div>
-    </nav>
+      </nav>
 
-    <section id="home" class="relative min-h-screen flex items-center pt-24 overflow-hidden px-6">
-        <div class="hero-glow -top-20 -right-20"></div>
-        <div class="hero-glow bottom-0 -left-20"></div>
+      {/* --- Main Sections --- */}
+      <main className="pt-20">
         
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
-            <div class="space-y-8 text-center lg:text-right">
-                <div class="inline-flex items-center gap-3 bg-yellow-500/10 border border-yellow-500/20 px-6 py-2 rounded-full">
-                    <i data-lucide="award" class="text-yellow-500 w-5 h-5"></i>
-                    <span class="text-sm font-black text-yellow-500 tracking-wide uppercase">أقوى منصة كيمياء 2026</span>
-                </div>
-                
-                <h1 class="text-6xl lg:text-[100px] font-black leading-[0.85] tracking-tighter">
-                    اصنع <span class="text-gold">مستقبلك</span> <br> 
-                    بيد <span class="relative">الخبير 
-                        <svg class="absolute -bottom-4 left-0 w-full" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="#FFD700" stroke-width="4" fill="none"/></svg>
-                    </span>
-                </h1>
-
-                <p class="text-lg lg:text-xl text-white/60 max-w-xl leading-relaxed font-medium mx-auto lg:mx-0">
-                    لا نعلّمك الكيمياء فقط، بل نجعلك تعيشها. مع مستر زياد مبروك، الدرجة النهائية ليست هدفاً، بل هي نتيجة طبيعية للفهم والتمكن.
-                </p>
-
-                <div class="flex flex-wrap gap-6 justify-center lg:justify-start items-center">
-                    <button @click="document.getElementById('content').scrollIntoView({behavior: 'smooth'})" 
-                            class="gold-gradient text-black px-12 py-6 rounded-[2rem] font-black text-2xl shadow-2xl hover:scale-105 transition-all flex items-center gap-4 group">
-                        ابدأ رحلتك مجاناً <i data-lucide="rocket" class="group-hover:-translate-y-2 group-hover:translate-x-2 transition-transform"></i>
+        {/* --- Home Page (The Hero Section) --- */}
+        {currentPage === 'home' && (
+          <div className="animate-in fade-in duration-1000">
+            <header className="relative py-24 px-6 overflow-hidden">
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c5a02e]/10 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
+              <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+                <div className="text-center lg:text-right space-y-8">
+                  <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[10px] font-black tracking-widest text-[#c5a02e]">
+                    <Sparkles size={14}/> أكاديمية مستر زياد مبروك الرقمية
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1]">
+                    حوّل تعقيد <span className="text-[#c5a02e]">الكيمياء</span> <br/> إلى متعة وتفوق
+                  </h1>
+                  <p className="text-slate-400 text-lg font-bold max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    هنا نبني الفهم من الجذور.. انضم لأكثر من منصة تعليمية، انضم لعائلة "يلا كيمياء" وابدأ رحلة الـ 50 درجة مع أقوى شرح وحل للكتب الخارجية.
+                  </p>
+                  <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <button onClick={() => setCurrentPage('lectures')} className="bg-[#c5a02e] text-[#070b09] px-10 py-5 rounded-2xl font-black text-lg flex items-center gap-3 shadow-xl hover:-translate-y-1 transition-all">
+                      استكشف المحاضرات <ArrowLeft size={20}/>
                     </button>
-                    
-                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/10">
-                        <div class="flex -space-x-3 space-x-reverse">
-                            <div class="w-10 h-10 rounded-full border-2 border-black bg-blue-500 flex items-center justify-center text-[10px]">A</div>
-                            <div class="w-10 h-10 rounded-full border-2 border-black bg-red-500 flex items-center justify-center text-[10px]">M</div>
-                            <div class="w-10 h-10 rounded-full border-2 border-black bg-green-500 flex items-center justify-center text-[10px]">S</div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs font-black">25,000+ طالب</p>
-                            <p class="text-[10px] text-white/40">يثقون في أسطورة الكيمياء</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative flex justify-center items-center">
-                <div class="absolute w-full h-full bg-yellow-500/20 blur-[150px] rounded-full animate-pulse"></div>
-                <div class="relative z-10 animate-float">
-                    <img src="https://i.ibb.co/9j74J07/image.png" class="w-full max-w-xl drop-shadow-[0_0_80px_rgba(255,215,0,0.2)] grayscale-[20%] hover:grayscale-0 transition-all duration-700">
-                    
-                    <div class="absolute -bottom-10 -right-5 glass p-6 rounded-[2.5rem] border-yellow-500/30 shadow-2xl">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 gold-gradient rounded-full flex items-center justify-center text-black">
-                                <i data-lucide="zap"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-black text-xl">100%</h4>
-                                <p class="text-[10px] font-bold opacity-50">نسبة نجاح الطلاب</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features" class="py-32 relative px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-20 space-y-4">
-                <h2 class="text-4xl lg:text-6xl font-black italic uppercase">لماذا نحن <span class="text-gold">الأفضل؟</span></h2>
-                <div class="h-1.5 w-40 gold-gradient mx-auto rounded-full"></div>
-            </div>
-            
-            <div class="grid md:grid-cols-4 gap-8">
-                <template x-for="feat in [
-                    {title: 'شرح سينمائي', desc: 'شرح ممتع يعتمد على الفهم والتجربة لا الحفظ.', icon: 'tv', color: 'text-blue-500'},
-                    {title: 'ملازم PDF', desc: 'مذكرات ملخصة بأعلى جودة جاهزة للتحميل والطباعة.', icon: 'file-text', color: 'text-yellow-500'},
-                    {title: 'متابعة دائمة', desc: 'فريق متخصص للرد على أسئلتك على مدار الساعة.', icon: 'message-circle', color: 'text-green-500'},
-                    {title: 'اختبارات دورية', desc: 'اختبار إلكتروني بعد كل محاضرة لتقييم مستواك.', icon: 'target', color: 'text-red-500'}
-                ]">
-                    <div class="glass p-10 rounded-[3rem] hover:bg-white/[0.05] transition-all group border-b-4 border-b-transparent hover:border-b-yellow-500">
-                        <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                            <i :data-lucide="feat.icon" :class="feat.color"></i>
-                        </div>
-                        <h3 class="text-2xl font-black mb-4" x-text="feat.title"></h3>
-                        <p class="text-white/40 font-bold leading-relaxed text-sm" x-text="feat.desc"></p>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </section>
-
-    <section id="content" class="py-32 bg-[#050505] relative px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col lg:flex-row justify-between items-end gap-10 mb-20">
-                <div class="space-y-6">
-                    <span class="text-gold font-black tracking-[0.3em] uppercase text-xs">مكتبة المحتوى</span>
-                    <h2 class="text-5xl lg:text-7xl font-black italic">اتقن <span class="text-gold">الكيمياء</span> الآن</h2>
-                </div>
-                
-                <div class="flex bg-white/5 p-2 rounded-[2rem] border border-white/10 gap-2">
-                    <button @click="activeTab = 'lectures'" :class="activeTab === 'lectures' ? 'gold-gradient text-black shadow-2xl scale-105' : 'hover:bg-white/5'" class="px-10 py-5 rounded-2xl font-black transition-all text-lg">
-                        المحاضرات
+                    <button onClick={() => setCurrentPage('about')} className="bg-white/5 border border-white/10 text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-white/10 transition-all">
+                      لماذا تختارنا؟
                     </button>
-                    <button @click="activeTab = 'books'" :class="activeTab === 'books' ? 'gold-gradient text-black shadow-2xl scale-105' : 'hover:bg-white/5'" class="px-10 py-5 rounded-2xl font-black transition-all text-lg">
-                        حل الكتب
-                    </button>
+                  </div>
                 </div>
+                <div className="relative">
+                   <div className="aspect-square bg-gradient-to-br from-[#1a231f] to-[#070b09] border border-white/5 rounded-[3rem] p-8 relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-[#c5a02e]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="grid grid-cols-2 gap-4 h-full">
+                         {[
+                           { label: "شرح وافٍ", icon: <Video className="text-orange-400"/>, count: "25+" },
+                           { label: "حل كتاب الوافي", icon: <BookOpen className="text-blue-400"/>, count: "100% " },
+                           { label: "حل الامتحان", icon: <GraduationCap className="text-green-400"/>, count: "شامل" },
+                           { label: "مراجعات نهائية", icon: <Award className="text-purple-400"/>, count: "قوية" }
+                         ].map((stat, i) => (
+                           <div key={i} className="bg-[#070b09] border border-white/5 rounded-3xl p-6 flex flex-col justify-center items-center text-center space-y-2 hover:border-[#c5a02e]/30 transition-all">
+                              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-2">{stat.icon}</div>
+                              <span className="text-2xl font-black text-white">{stat.count}</span>
+                              <span className="text-xs font-bold text-slate-500">{stat.label}</span>
+                           </div>
+                         ))}
+                      </div>
+                   </div>
+                </div>
+              </div>
+            </header>
+          </div>
+        )}
+
+        {/* --- Lectures Library --- */}
+        {currentPage === 'lectures' && (
+          <div className="max-w-7xl mx-auto px-6 py-20 animate-in slide-in-from-bottom-10 duration-700">
+             <div className="text-center mb-16">
+                <h2 className="text-4xl font-black text-white mb-4">مكتبة <span className="text-[#c5a02e]">المحاضرات</span></h2>
+                <p className="text-slate-500 font-bold">كل ما تحتاجه من شرح وحل ومراجعات في مكان واحد</p>
+             </div>
+
+             {/* Tabs System */}
+             <div className="flex flex-wrap justify-center gap-3 mb-12">
+                {[
+                  { id: 'explanation', label: 'شرح الدروس', icon: <Play size={16}/> },
+                  { id: 'wafi', label: 'حل كتاب الوافي', icon: <BookCheck size={16}/> },
+                  { id: 'exam', label: 'حل كتاب الامتحان', icon: <ClipboardCheck size={16}/> },
+                  { id: 'revision', label: 'المراجعات النهائية', icon: <Sparkles size={16}/> },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-8 py-4 rounded-2xl font-black text-sm flex items-center gap-3 transition-all ${
+                      activeTab === tab.id 
+                      ? 'bg-[#c5a02e] text-[#070b09] shadow-lg shadow-[#c5a02e]/10' 
+                      : 'bg-white/5 text-slate-400 hover:bg-white/10 border border-white/5'
+                    }`}
+                  >
+                    {tab.icon} {tab.label}
+                  </button>
+                ))}
+             </div>
+
+             {/* Grid of Content */}
+             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {content[activeTab].map((item, idx) => (
+                   <div key={idx} className="group relative bg-[#0d1310] border border-white/5 rounded-[2rem] p-6 hover:border-[#c5a02e]/40 transition-all hover:-translate-y-2 shadow-sm">
+                      <div className="aspect-video bg-[#070b09] rounded-2xl mb-6 flex items-center justify-center text-[#c5a02e]/20 group-hover:text-[#c5a02e] transition-colors overflow-hidden relative">
+                         <Play size={48} fill="currentColor" className="relative z-10" />
+                         <div className="absolute inset-0 bg-gradient-to-t from-[#070b09] to-transparent opacity-60"></div>
+                      </div>
+                      <h3 className="text-lg font-black text-white leading-tight mb-6 h-14 overflow-hidden group-hover:text-[#c5a02e] transition-colors">
+                        {item.title}
+                      </h3>
+                      <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                         <a href={item.url} target="_blank" className="flex items-center gap-2 text-xs font-black text-[#c5a02e] hover:underline">
+                           <Youtube size={16}/> شاهد الآن
+                         </a>
+                         <button className="text-[10px] font-black text-slate-600 uppercase tracking-widest hover:text-white transition-colors">
+                           تحميل PDF
+                         </button>
+                      </div>
+                   </div>
+                ))}
+             </div>
+          </div>
+        )}
+
+        {/* --- Why Mr. Ziad? Section --- */}
+        {currentPage === 'about' && (
+          <div className="max-w-7xl mx-auto px-6 py-20 animate-in fade-in duration-700">
+             <div className="text-center mb-20">
+                <h2 className="text-4xl font-black text-white mb-6">ليه تختار <span className="text-[#c5a02e]">مستر زياد مبروك؟</span></h2>
+                <div className="w-20 h-1 bg-[#c5a02e] mx-auto rounded-full"></div>
+             </div>
+
+             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                {[
+                  { title: "خبرة في النظام الجديد", desc: "شرحنا مبني على نواتج التعلم والفهم العميق، مش مجرد حفظ معادلات.", icon: <Target className="text-orange-500"/> },
+                  { title: "حل الكتب الخارجية", icon: <BookOpen className="text-blue-500"/>, desc: "بنحل معاك كتاب الوافي والامتحان كلمة بكلمة، عشان نضمن إنك شوفت كل أفكار الأسئلة." },
+                  { title: "تبسيط المعقد", icon: <Zap className="text-yellow-500"/>, desc: "الكيمياء مع مستر زياد مبروك هتتحول من مادة صعبة لمادة ترفيهية بتفهم كل تفصيلة فيها." },
+                  { title: "متابعة دورية", icon: <MessageCircle className="text-green-500"/>, desc: "مش بنسيبك لوحدك، جروبات الواتساب والفيسبوك مفتوحة دايماً للرد على استفساراتك." },
+                  { title: "مذكرات احترافية", icon: <FileText className="text-red-500"/>, desc: "مذكرات ملونة ومنظمة جداً بتلخص لك المنهج في شكل خرائط ذهنية سهلة المذاكرة." },
+                  { title: "توفير وقتك", icon: <Laptop className="text-purple-500"/>, desc: "المنصة منظمة جداً، هتوفر عليك تدوير كتير، كل درس معاه الحل والمراجعة بتوعه." }
+                ].map((feature, i) => (
+                  <div key={i} className="bg-[#0d1310] border border-white/5 p-10 rounded-[2.5rem] relative overflow-hidden group">
+                     <div className="absolute -top-10 -left-10 w-24 h-24 bg-[#c5a02e]/5 rounded-full group-hover:scale-[3] transition-transform duration-700"></div>
+                     <div className="mb-6">{feature.icon}</div>
+                     <h4 className="text-xl font-black text-white mb-4">{feature.title}</h4>
+                     <p className="text-slate-500 font-bold text-sm leading-relaxed">{feature.desc}</p>
+                  </div>
+                ))}
+             </div>
+
+             <div className="mt-20 bg-gradient-to-r from-[#c5a02e] to-[#8a6e1d] rounded-[3rem] p-12 text-[#070b09] text-center relative overflow-hidden">
+                <div className="relative z-10 space-y-6">
+                   <h3 className="text-4xl font-black italic">"الكيمياء مش مادة.. الكيمياء حياة"</h3>
+                   <p className="font-bold text-lg opacity-80 max-w-2xl mx-auto">مستني إيه؟ انضم لعائلة يلا كيمياء دلوقتي واحجز مكانك بين الأوائل.</p>
+                   <button onClick={() => setShowAuth(true)} className="bg-[#070b09] text-white px-12 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-2xl">سجل بياناتك الآن</button>
+                </div>
+                <Atom size={200} className="absolute -bottom-20 -right-20 opacity-10 rotate-12" />
+             </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* --- Footer & Contact Hub --- */}
+      <footer className="mt-40 bg-[#040605] border-t border-white/5 py-24 px-6">
+         <div className="max-w-7xl mx-auto grid lg:grid-cols-4 gap-16">
+            <div className="lg:col-span-2 space-y-8">
+               <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#c5a02e] rounded-xl flex items-center justify-center text-[#070b09] font-black">Z</div>
+                  <h3 className="text-2xl font-black text-white">زياد مبروك</h3>
+               </div>
+               <p className="text-slate-500 font-bold max-w-md leading-relaxed">
+                  منصة تعليمية متخصصة في مادة الكيمياء للمرحلة الثانوية والأزهرية، نهدف للوصول بالطالب لأعلى مستويات الفهم والإتقان.
+               </p>
+               <div className="flex flex-wrap gap-3">
+                  {socialLinks.map((s, i) => (
+                    <a key={i} href={s.link} target="_blank" className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-slate-400 hover:bg-[#c5a02e] hover:text-[#070b09] transition-all" title={s.label}>
+                      {s.icon}
+                    </a>
+                  ))}
+               </div>
             </div>
 
-            <div x-show="activeTab === 'lectures'" x-transition class="grid md:grid-cols-3 gap-10">
-                <template x-for="vid in [
-                    {title: 'الروابط الكيميائية وتهجين الذرات', id: '3SQy6j9qdX0', time: '45 دقيقة', students: '12K'},
-                    {title: 'سر نظرية الثمانيات والويس', id: '1JIVypRTUxI', time: '38 دقيقة', students: '9K'},
-                    {title: 'أشكال الجزيئات الفراغية المعقدة', id: 'u7rTOP0lpak', time: '52 دقيقة', students: '15K'}
-                ]">
-                    <div class="group video-card glass rounded-[4rem] overflow-hidden hover:border-yellow-500/50 transition-all shadow-2xl">
-                        <div class="relative aspect-video overflow-hidden">
-                            <img :src="`https://img.youtube.com/vi/${vid.id}/maxresdefault.jpg`" class="w-full h-full object-cover transition-all duration-700">
-                            <div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-all">
-                                <a :href="`https://youtu.be/${vid.id}`" target="_blank" class="w-20 h-20 bg-yellow-500 text-black rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(255,215,0,0.5)] hover:scale-125 transition-all">
-                                    <i data-lucide="play" fill="black" class="w-8 h-8"></i>
-                                </a>
-                            </div>
-                            <div class="absolute top-6 right-6 glass px-4 py-2 rounded-full text-[10px] font-black" x-text="vid.time"></div>
-                        </div>
-                        <div class="p-10">
-                            <h3 class="text-2xl font-black mb-6 group-hover:text-gold transition-colors" x-text="vid.title"></h3>
-                            <div class="flex items-center justify-between pt-6 border-t border-white/5 text-xs font-bold text-white/40">
-                                <span class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> <span x-text="vid.students"></span> طالب شاهدها</span>
-                                <span class="text-yellow-500 uppercase">شاهد مجاناً</span>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+            <div className="space-y-6">
+               <h4 className="text-lg font-black text-white">روابط سريعة</h4>
+               <ul className="space-y-4 text-slate-500 font-bold text-sm">
+                  <li><button onClick={() => setCurrentPage('home')} className="hover:text-[#c5a02e]">الرئيسية</button></li>
+                  <li><button onClick={() => setCurrentPage('lectures')} className="hover:text-[#c5a02e]">المحاضرات</button></li>
+                  <li><button onClick={() => setCurrentPage('about')} className="hover:text-[#c5a02e]">لماذا نحن؟</button></li>
+                  <li><button onClick={() => setShowAuth(true)} className="hover:text-[#c5a02e]">دخول الطلاب</button></li>
+               </ul>
             </div>
 
-            <div x-show="activeTab === 'books'" x-transition class="py-32 text-center glass rounded-[4rem] border-dashed border-2">
-                <i data-lucide="book-open" class="w-20 h-20 mx-auto mb-6 text-white/20"></i>
-                <h3 class="text-3xl font-black mb-4">يتم الآن رفع حلول كتاب الوافي والامتحان</h3>
-                <p class="text-white/40 font-bold italic">كن مستعداً للمفاجأة القادمة!</p>
+            <div className="space-y-6 text-center lg:text-right">
+               <h4 className="text-lg font-black text-white">تحتاج مساعدة؟</h4>
+               <p className="text-slate-500 font-bold text-sm">تواصل معنا مباشرة عبر الواتساب للاستفسارات الفنية أو التعليمية.</p>
+               <a href="https://chat.whatsapp.com/FrYkCnO3DTt3ugCkYKMLJp" target="_blank" className="inline-flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] px-6 py-3 rounded-xl font-black text-sm border border-[#25D366]/20">
+                 <MessageCircle size={18}/> دعم الطلاب
+               </a>
             </div>
+         </div>
+         <div className="max-w-7xl mx-auto mt-20 pt-10 border-t border-white/5 text-center">
+            <p className="text-slate-600 text-xs font-bold">جميع الحقوق محفوظة لمنصة يلا كيمياء - مستر زياد مبروك &copy; 2026</p>
+         </div>
+      </footer>
+
+      {/* --- Auth Modal --- */}
+      {showAuth && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/90 backdrop-blur-sm">
+          <div className="bg-[#0d1310] w-full max-w-md rounded-[2.5rem] p-10 border border-white/10 relative shadow-2xl animate-in zoom-in-95">
+            <button onClick={() => setShowAuth(false)} className="absolute top-8 left-8 text-slate-500 hover:text-white transition-colors"><X/></button>
+            <div className="text-center mb-10">
+              <h3 className="text-3xl font-black text-white mb-2">{authMode === 'login' ? 'تسجيل دخول' : 'حساب جديد'}</h3>
+              <p className="text-slate-500 font-bold text-sm">أهلاً بك في عالم الكيمياء</p>
+            </div>
+            <div className="space-y-5">
+               {authMode === 'register' && (
+                 <input className="w-full bg-[#070b09] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none focus:border-[#c5a02e] transition-all" placeholder="الاسم بالكامل"/>
+               )}
+               <input className="w-full bg-[#070b09] border border-white/5 rounded-2xl px-6 py-5 text-white font-bold outline-none focus:border-[#c5a02e] transition-all" placeholder={authMode === 'login' ? 'كود الطالب (ID)' : 'رقم الموبايل'}/>
+               <button className="w-full bg-[#c5a02e] text-[#070b09] py-5 rounded-2xl font-black text-lg shadow-xl hover:brightness-110 transition-all">
+                  {authMode === 'login' ? 'دخول للمنصة' : 'تأكيد التسجيل'}
+               </button>
+               <button onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')} className="w-full text-[#c5a02e] font-black text-sm opacity-60 hover:opacity-100 transition-opacity">
+                  {authMode === 'login' ? 'طالب جديد؟ سجل حسابك هنا' : 'لديك حساب؟ سجل دخولك'}
+               </button>
+            </div>
+          </div>
         </div>
-    </section>
+      )}
 
-    <div x-show="showModal" x-cloak class="fixed inset-0 z-[2000] flex items-center justify-center p-6">
-        <div @click="showModal = false" class="absolute inset-0 bg-black/90 backdrop-blur-xl"></div>
-        <div class="glass p-12 rounded-[3rem] max-w-lg w-full relative z-10 border-yellow-500/30">
-            <button @click="showModal = false" class="absolute top-8 left-8 hover:rotate-90 transition-all">
-                <i data-lucide="x"></i>
-            </button>
-            <div class="text-center mb-10">
-                <h3 class="text-3xl font-black mb-2">مرحباً بك يا بطل</h3>
-                <p class="text-white/40 font-bold tracking-wide">ادخل بياناتك للوصول للمحتوى الحصري</p>
-            </div>
-            <form class="space-y-6">
-                <input type="text" placeholder="رقم الموبايل" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-yellow-500 transition-all font-bold">
-                <input type="password" placeholder="كلمة المرور" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-yellow-500 transition-all font-bold">
-                <button type="button" class="w-full gold-gradient text-black py-5 rounded-2xl font-black text-xl shadow-2xl">تسجيل الدخول</button>
-            </form>
-        </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        body { background-color: #070b09; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #070b09; }
+        ::-webkit-scrollbar-thumb { background: #c5a02e; border-radius: 10px; }
+      `}</style>
     </div>
+  );
+};
 
-    <footer class="bg-black pt-40 pb-12 px-6 border-t border-white/5 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid lg:grid-cols-4 gap-20 mb-24">
-                <div class="lg:col-span-2 space-y-10">
-                    <div class="flex items-center gap-6">
-                        <img src="https://i.ibb.co/9j74J07/image.png" class="w-20 h-20 rounded-3xl border border-yellow-500/30">
-                        <div>
-                            <h2 class="text-4xl font-black tracking-tighter">يلا كيمياء <span class="text-yellow-500">.</span></h2>
-                            <p class="text-sm font-black text-yellow-500 uppercase tracking-[0.4em]">Legend of Chemistry</p>
-                        </div>
-                    </div>
-                    <p class="text-xl text-white/40 leading-relaxed font-bold italic">
-                        "هدفنا ليس فقط النجاح، بل بناء عقل يفهم ويدرك جمال العلم."
-                    </p>
-                    <div class="flex gap-6">
-                        <a href="#" class="w-14 h-14 glass rounded-2xl flex items-center justify-center hover:bg-red-600 transition-all hover:scale-110"><i data-lucide="youtube"></i></a>
-                        <a href="#" class="w-14 h-14 glass rounded-2xl flex items-center justify-center hover:bg-blue-600 transition-all hover:scale-110"><i data-lucide="send"></i></a>
-                        <a href="#" class="w-14 h-14 glass rounded-2xl flex items-center justify-center hover:bg-green-600 transition-all hover:scale-110"><i data-lucide="message-circle"></i></a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h4 class="text-xl font-black text-gold mb-8">روابط تهمك</h4>
-                    <ul class="space-y-4 font-bold text-white/40">
-                        <li class="hover:text-white cursor-pointer transition-colors">عن المنصة</li>
-                        <li class="hover:text-white cursor-pointer transition-colors">جدول المذاكرة</li>
-                        <li class="hover:text-white cursor-pointer transition-colors">تواصل مع المستر</li>
-                        <li class="hover:text-white cursor-pointer transition-colors">الدعم الفني</li>
-                    </ul>
-                </div>
-
-                <div class="glass p-8 rounded-[2.5rem] border-yellow-500/20 text-center">
-                    <i data-lucide="shield-check" class="text-yellow-500 w-12 h-12 mx-auto mb-4"></i>
-                    <h5 class="font-black mb-2 uppercase tracking-tighter">حقوق محفوظة 2026</h5>
-                    <p class="text-[10px] text-white/30 font-bold">جميع المواد التعليمية ملك لفريق الأسطورة زياد مبروك.</p>
-                </div>
-            </div>
-            
-            <div class="pt-12 border-t border-white/5 text-center">
-                <p class="text-[10px] font-black text-white/20 uppercase tracking-[0.8em]">Designed for Excellence • By Ziad Mabrouk Team</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Initialize Icons
-        lucide.createIcons();
-        
-        // Dynamic Greeting (Bonus)
-        const hour = new Date().getHours();
-        console.log(hour < 12 ? "صباح الخير يا دكتور المستقبل" : "مساء الخير يا دكتور المستقبل");
-    </script>
-</body>
-</html>
+export default App;
