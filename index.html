@@ -8,22 +8,56 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
     
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
         body {
             font-family: 'Cairo', sans-serif;
             background: #0A0A1A;
             color: white;
             overflow-x: hidden;
+            transition: all 0.3s ease;
         }
         
-        /* Animated Particles */
+        /* Light Mode Styles */
+        body.light-mode {
+            background: #F5F5F5;
+            color: #1A1A2E;
+        }
+        
+        body.light-mode .glass-card {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1A1A2E;
+        }
+        
+        body.light-mode .glass-card:hover {
+            border-color: #00D2FF;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+        }
+        
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .text-gray-400 {
+            color: #6B7280;
+        }
+        
+        /* Particles Animation */
         .particle {
             position: fixed;
             background: radial-gradient(circle, rgba(0,210,255,0.6), rgba(168,85,247,0.3));
@@ -40,7 +74,7 @@
             100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
         }
         
-        /* Glassmorphism Card */
+        /* Glassmorphism */
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -71,10 +105,15 @@
             cursor: pointer;
             transition: all 0.3s ease;
             color: white;
-            font-size: 1rem;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
         }
         
-        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 210, 255, 0.4); }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+        }
         
         .btn-secondary {
             background: rgba(255, 255, 255, 0.05);
@@ -86,9 +125,15 @@
             color: #00D2FF;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
         }
         
-        .btn-secondary:hover { border-color: #00D2FF; box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
+        .btn-secondary:hover {
+            border-color: #00D2FF;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+        }
         
         .input-field {
             width: 100%;
@@ -99,6 +144,12 @@
             color: white;
             font-size: 1rem;
             transition: all 0.3s ease;
+        }
+        
+        body.light-mode .input-field {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1A1A2E;
         }
         
         .input-field:focus {
@@ -122,7 +173,11 @@
             justify-content: center;
         }
         
-        .modal-content { max-width: 450px; width: 90%; padding: 2rem; }
+        .modal-content {
+            max-width: 450px;
+            width: 90%;
+            padding: 2rem;
+        }
         
         /* Toast */
         .toast {
@@ -136,33 +191,22 @@
             animation: slideIn 0.3s ease;
         }
         
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
         
         .toast-success { background: linear-gradient(135deg, #10B981, #059669); }
         .toast-error { background: linear-gradient(135deg, #EF4444, #DC2626); }
         .toast-info { background: linear-gradient(135deg, #00D2FF, #A855F7); }
         
-        /* Spinner */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0A0A1A; }
+        body.light-mode ::-webkit-scrollbar-track { background: #F5F5F5; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #00D2FF, #A855F7); border-radius: 10px; }
         
         /* Badges */
-        .badge { padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; }
         .badge-legend { background: rgba(168,85,247,0.2); color: #A855F7; }
         .badge-diamond { background: rgba(6,182,212,0.2); color: #06B6D4; }
         .badge-platinum { background: rgba(0,210,255,0.2); color: #00D2FF; }
@@ -177,39 +221,166 @@
             left: 0;
             right: 0;
             z-index: 100;
-            background: rgba(10, 10, 26, 0.9);
+            background: rgba(10, 10, 26, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255,255,255,0.1);
             padding: 1rem 2rem;
         }
         
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
-        section { padding: 6rem 0 4rem; }
-        .hero-section { padding: 8rem 0 4rem; }
-        
-        /* Grids */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
-        .lectures-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-        
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #00D2FF; }
-        
-        @media (max-width: 768px) {
-            .hero-title { font-size: 2rem !important; }
-            nav { padding: 1rem; }
-            section { padding: 5rem 0 3rem; }
+        body.light-mode nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
         }
         
-        .hero-title { font-size: 3.5rem; font-weight: bold; margin-bottom: 1rem; }
-        @media (min-width: 768px) { .hero-title { font-size: 4.5rem; } }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
         
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 1rem; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        th { background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(168,85,247,0.1)); }
+        section {
+            padding: 5rem 0;
+        }
+        
+        .hero-section {
+            padding: 8rem 0 4rem;
+        }
+        
+        /* Grids */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .lectures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav { padding: 1rem; }
+            .hero-title { font-size: 2rem !important; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .lectures-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            section { padding: 3rem 0; }
+            .hero-section { padding: 6rem 0 2rem; }
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .hero-title { font-size: 4.5rem; }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        body.light-mode th, body.light-mode td {
+            border-bottom-color: rgba(0,0,0,0.05);
+        }
+        
+        th {
+            background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(168,85,247,0.1));
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00D2FF;
+        }
+        
+        .section-content {
+            display: none;
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+        
+        .nav-link {
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #00D2FF;
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0,210,255,0.3);
+            border-radius: 50%;
+            border-top-color: #00D2FF;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #00D2FF, #A855F7);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
 
+<!-- Particles Container -->
 <div id="particles"></div>
 
 <!-- Navigation -->
@@ -224,14 +395,23 @@
         </div>
         
         <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
-            <a href="#home" style="color: white; text-decoration: none;" onclick="showSection('home')">الرئيسية</a>
-            <a href="#lectures" style="color: white; text-decoration: none;" onclick="showSection('lectures')">المحاضرات</a>
-            <a href="#leaderboard" style="color: white; text-decoration: none;" onclick="showSection('leaderboard')">الترتيب</a>
-            <a href="#profile" style="color: white; text-decoration: none;" onclick="showSection('profile')">ملفي</a>
+            <span class="nav-link active" onclick="showSection('home')">الرئيسية</span>
+            <span class="nav-link" onclick="showSection('lectures')">المحاضرات</span>
+            <span class="nav-link" onclick="showSection('leaderboard')">الترتيب</span>
+            <span class="nav-link" onclick="showSection('whyus')">ليه يلا كيمياء؟</span>
+            <span class="nav-link" onclick="showSection('teacher')">مستر زياد</span>
+            <span class="nav-link" onclick="showSection('profile')">ملفي</span>
         </div>
         
-        <div id="authButtons">
-            <button onclick="showLoginModal()" class="btn-primary" style="padding: 8px 20px; font-size: 0.875rem;">تسجيل الدخول</button>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <i id="themeIcon" class="fas fa-moon" style="font-size: 1.2rem;"></i>
+            </div>
+            <div id="authButtons">
+                <button onclick="showLoginModal()" class="btn-primary" style="padding: 8px 20px; font-size: 0.875rem;">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+            </div>
         </div>
     </div>
 </nav>
@@ -239,83 +419,128 @@
 <!-- Main Content -->
 <main>
     <!-- Home Section -->
-    <section id="home-section" class="hero-section">
-        <div class="container" style="text-align: center;">
-            <div style="display: inline-block; margin-bottom: 1rem; padding: 0.25rem 1rem; background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.3); border-radius: 50px;">
-                <span style="color: #00D2FF;">🧪 منصة تعليمية متكاملة</span>
-            </div>
-            <h1 class="hero-title"><span class="gradient-text">يلا كيمياء</span><br>مع مستر زياد مبروك</h1>
-            <p style="font-size: 1.25rem; color: #00D2FF; margin: 1rem 0 0.5rem;">"الكيمياء بشكل مختلف… فهم + حفظ + حل"</p>
-            <p style="color: #9CA3AF; max-width: 600px; margin: 0 auto 2rem;">انضم إلى آلاف الطلاب الذين حققوا التفوق في الكيمياء</p>
-            
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                <button onclick="showLoginModal()" class="btn-primary">ابدأ رحلتك الآن</button>
-                <button onclick="showSection('lectures')" class="btn-secondary">استعرض المحاضرات</button>
-            </div>
-            
-            <!-- Real Stats from Firebase -->
-            <div class="stats-grid">
-                <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 2rem;">👥</div>
-                    <h3 style="font-size: 1.5rem; font-weight: bold;" id="statStudents">0</h3>
-                    <p style="color: #9CA3AF;">طالب مسجل</p>
+    <div id="home-section" class="section-content active">
+        <div class="hero-section">
+            <div class="container" style="text-align: center;">
+                <div style="display: inline-block; margin-bottom: 1rem; padding: 0.25rem 1rem; background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.3); border-radius: 50px;">
+                    <span style="color: #00D2FF;">🧪 منصة تعليمية متكاملة</span>
                 </div>
-                <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 2rem;">📺</div>
-                    <h3 style="font-size: 1.5rem; font-weight: bold;" id="statHours">0</h3>
-                    <p style="color: #9CA3AF;">ساعة مشاهدة</p>
+                <h1 class="hero-title"><span class="gradient-text">يلا كيمياء</span><br>مع مستر زياد مبروك</h1>
+                <p style="font-size: 1.25rem; color: #00D2FF; margin: 1rem 0 0.5rem;">"الكيمياء بشكل مختلف… فهم + حفظ + حل"</p>
+                <p style="color: #9CA3AF; max-width: 600px; margin: 0 auto 2rem;">انضم إلى آلاف الطلاب الذين حققوا التفوق في الكيمياء</p>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button id="ctaButton" onclick="handleAuthRedirect()" class="btn-primary">ابدأ التعلم الآن</button>
+                    <button onclick="showSection('lectures')" class="btn-secondary">استعرض المحاضرات</button>
                 </div>
-                <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-                    <div style="font-size: 2rem;">🟢</div>
-                    <h3 style="font-size: 1.5rem; font-weight: bold;" id="statOnline">0</h3>
-                    <p style="color: #9CA3AF;">متصل الآن</p>
+                
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                        <div style="font-size: 2rem;">👥</div>
+                        <h3 style="font-size: 1.5rem; font-weight: bold;" id="statStudents">0</h3>
+                        <p style="color: #9CA3AF;">طالب مسجل</p>
+                    </div>
+                    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                        <div style="font-size: 2rem;">📚</div>
+                        <h3 style="font-size: 1.5rem; font-weight: bold;" id="statLectures">6</h3>
+                        <p style="color: #9CA3AF;">محاضرة</p>
+                    </div>
+                    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                        <div style="font-size: 2rem;">⏱️</div>
+                        <h3 style="font-size: 1.5rem; font-weight: bold;" id="statHours">0</h3>
+                        <p style="color: #9CA3AF;">ساعة مشاهدة</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
-
+        
+        <!-- Features Preview -->
+        <div style="padding: 3rem 0; background: rgba(0,0,0,0.2);">
+            <div class="container">
+                <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">مميزات المنصة</h2>
+                <div class="features-grid">
+                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-chalkboard-user" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">شرح متكامل</h3><p style="color: #9CA3AF; font-size: 0.875rem;">منهج كامل بفيديوهات عالية الجودة</p></div>
+                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-chart-line" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">تتبع التقدم</h3><p style="color: #9CA3AF; font-size: 0.875rem;">نظام متابعة يومي للطلاب</p></div>
+                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-medal" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">نقاط وجوائز</h3><p style="color: #9CA3AF; font-size: 0.875rem;">عملات كيميائية وإنجازات</p></div>
+                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-question-circle" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">كويزات تفاعلية</h3><p style="color: #9CA3AF; font-size: 0.875rem;">اختبارات فورية بعد كل محاضرة</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Lectures Section -->
-    <section id="lectures-section" style="display: none;">
-        <div class="container">
+    <div id="lectures-section" class="section-content">
+        <div class="container" style="padding: 6rem 1rem 4rem;">
             <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center;">📚 المحاضرات</h2>
-            <p style="text-align: center; color: #9CA3AF; margin-top: 0.5rem;">اختر محاضرتك وابدأ التعلم</p>
-            
-            <div class="lectures-grid" id="lecturesContainer">
-                <!-- Lectures will be loaded from Firebase -->
+            <p style="text-align: center; color: #9CA3AF; margin-bottom: 2rem;">اختر محاضرتك وابدأ التعلم</p>
+            <div id="lecturesContainer" class="lectures-grid">
+                <!-- Lectures will be loaded here -->
+                <div style="text-align: center; grid-column: 1/-1;"><div class="spinner"></div><p>جاري تحميل المحاضرات...</p></div>
             </div>
         </div>
-    </section>
-
+    </div>
+    
     <!-- Leaderboard Section -->
-    <section id="leaderboard-section" style="display: none;">
-        <div class="container">
+    <div id="leaderboard-section" class="section-content">
+        <div class="container" style="padding: 6rem 1rem 4rem;">
             <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center;">🏆 ترتيب الطلاب</h2>
             <p style="text-align: center; color: #9CA3AF; margin-bottom: 2rem;">متجدد بشكل لحظي - 🧪 العملات الكيميائية</p>
-            
             <div class="glass-card" style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr><th>#</th><th>الطالب</th><th>🧪 العملات</th><th>📚 الساعات</th><th>🔥 الستريك</th><th>🏅 المستوى</th></tr>
                     </thead>
                     <tbody id="leaderboardBody">
-                        <tr><td colspan="6" style="text-align: center;">جاري التحميل...</td></tr>
+                        <tr><td colspan="6" style="text-align: center;"><div class="spinner"></div>جاري التحميل...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    </section>
-
-    <!-- Profile Section -->
-    <section id="profile-section" style="display: none;">
-        <div class="container">
-            <div class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 2rem; text-align: center;">
-                <div id="profileContent">
-                    <p style="color: #9CA3AF;">يرجى تسجيل الدخول لعرض ملفك الشخصي</p>
-                    <button onclick="showLoginModal()" class="btn-primary" style="margin-top: 1rem;">تسجيل الدخول</button>
+    </div>
+    
+    <!-- Why Us Section -->
+    <div id="whyus-section" class="section-content">
+        <div class="container" style="padding: 6rem 1rem 4rem;">
+            <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 1rem;">ليه تختار يلا كيمياء؟</h2>
+            <p style="text-align: center; color: #9CA3AF; margin-bottom: 3rem;">منصة متكاملة تجمع بين الشرح المتميز والتكنولوجيا الحديثة</p>
+            <div class="features-grid">
+                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-book" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">شرح بسيط</h3><p>شرح مبسط ومباشر لكل جزئية في منهج الكيمياء</p></div>
+                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-chalkboard" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">محاضرات منظمة</h3><p>تقسيم منهجي حسب الأبواب والموضوعات ليسهل المذاكرة</p></div>
+                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-tasks" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">كويزات بعد كل درس</h3><p>اختبارات فورية لقياس الفهم وتثبيت المعلومات</p></div>
+                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-coins" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">نظام نقاط</h3><p>العملات الكيميائية تحفزك على المذاكرة المستمرة</p></div>
+                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-chart-simple" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">متابعة حقيقية</h3><p>تتبع تقدمك في المحاضرات والكويزات بشكل لحظي</p></div>
+                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-trophy" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">منافسة ممتعة</h3><p>لوحة متصدرين وتحديات مع زملائك</p></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Teacher Section -->
+    <div id="teacher-section" class="section-content">
+        <div class="container" style="padding: 6rem 1rem 4rem;">
+            <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">👨‍🏫 مستر زياد مبروك</h2>
+            <div class="glass-card" style="padding: 2rem; max-width: 800px; margin: 0 auto; text-align: center;">
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #00D2FF; margin: 0 auto 1rem;">
+                <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">زياد مبروك</h3>
+                <p style="color: #00D2FF; margin-bottom: 1rem;">خبير تدريس الكيمياء - ثانوية عامة</p>
+                <p style="line-height: 1.8; margin-bottom: 1.5rem;">خبرة أكثر من 10 سنوات في تدريس الكيمياء، ساعد آلاف الطلاب على تحقيق التفوق والنجاح. يتميز بأسلوبه المبسط والمبتكر في شرح المنهج وتوصيل المعلومة بطريقة سهلة وممتعة. حاصل على العديد من شهادات التقدير في مجال التعليم.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <span class="glass-card" style="padding: 0.5rem 1rem;"><i class="fas fa-trophy"></i> 10+ سنوات خبرة</span>
+                    <span class="glass-card" style="padding: 0.5rem 1rem;"><i class="fas fa-users"></i> 5000+ طالب</span>
+                    <span class="glass-card" style="padding: 0.5rem 1rem;"><i class="fas fa-star"></i> 98% نسبة رضا</span>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+    
+    <!-- Profile Section -->
+    <div id="profile-section" class="section-content">
+        <div class="container" style="padding: 6rem 1rem 4rem;">
+            <div id="profileContent" class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 2rem; text-align: center;">
+                <div id="profileLoading"><div class="spinner"></div><p>جاري التحميل...</p></div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <!-- Login Modal -->
@@ -325,19 +550,18 @@
         <h2 class="gradient-text" style="margin-bottom: 0.5rem;">مرحباً بك!</h2>
         <p style="color: #9CA3AF; margin-bottom: 1.5rem;">سجل دخولك لتبدأ رحلة التفوق</p>
         
-        <button onclick="signInWithGoogle()" style="width: 100%; background: linear-gradient(135deg, #00D2FF, #A855F7); border: none; padding: 12px; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            🚀 تسجيل الدخول بـ Google
+        <button onclick="signInWithGoogle()" class="btn-primary" style="width: 100%; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fab fa-google"></i> تسجيل الدخول بـ Google
         </button>
         
-        <div style="position: relative; margin: 1rem 0;"><div style="position: absolute; inset: 0; display: flex; align-items: center;"><div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.1);"></div></div>
-        <div style="position: relative; display: flex; justify-content: center;"><span style="background: #0A0A1A; padding: 0 10px; color: #9CA3AF;">أو</span></div></div>
+        <div style="position: relative; margin: 1rem 0;"><div style="position: absolute; inset: 0; display: flex; align-items: center;"><div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.1);"></div></div><div style="position: relative; display: flex; justify-content: center;"><span style="background: #0A0A1A; padding: 0 10px; color: #9CA3AF;">أو</span></div></div>
         
         <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" class="input-field" style="margin-bottom: 1rem;">
         <input type="password" id="loginPassword" placeholder="كلمة المرور" class="input-field" style="margin-bottom: 1rem;">
         <button onclick="signInWithEmail()" class="btn-primary" style="width: 100%;">تسجيل الدخول</button>
         
         <p style="margin-top: 1rem; font-size: 0.875rem;">ليس لديك حساب؟ <a href="#" onclick="showSignupModal(); return false;" style="color: #00D2FF;">إنشاء حساب جديد</a></p>
-        <button onclick="closeLoginModal()" style="margin-top: 1rem; background: none; border: none; color: #9CA3AF; cursor: pointer;">✖ إغلاق</button>
+        <button onclick="closeLoginModal()" style="margin-top: 1rem; background: none; border: none; color: #9CA3AF; cursor: pointer;"><i class="fas fa-times"></i> إغلاق</button>
     </div>
 </div>
 
@@ -346,7 +570,7 @@
     <div class="modal-content glass-card" style="text-align: center;">
         <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 1rem; border: 2px solid #00D2FF;">
         <h2 class="gradient-text" style="margin-bottom: 0.5rem;">إنشاء حساب جديد</h2>
-        <p style="color: #9CA3AF; margin-bottom: 1.5rem;">انضم إلى آلاف الطلاب</p>
+        <p style="color: #9CA3AF; margin-bottom: 1.5rem;">انضم إلى آلاف الطلاب وحقق التفوق</p>
         
         <input type="text" id="signupName" placeholder="الاسم الكامل" class="input-field" style="margin-bottom: 1rem;">
         <input type="email" id="signupEmail" placeholder="البريد الإلكتروني" class="input-field" style="margin-bottom: 1rem;">
@@ -354,7 +578,7 @@
         <button onclick="signUp()" class="btn-primary" style="width: 100%;">إنشاء حساب</button>
         
         <p style="margin-top: 1rem; font-size: 0.875rem;">لديك حساب؟ <a href="#" onclick="showLoginModal(); return false;" style="color: #00D2FF;">تسجيل الدخول</a></p>
-        <button onclick="closeSignupModal()" style="margin-top: 1rem; background: none; border: none; color: #9CA3AF; cursor: pointer;">✖ إغلاق</button>
+        <button onclick="closeSignupModal()" style="margin-top: 1rem; background: none; border: none; color: #9CA3AF; cursor: pointer;"><i class="fas fa-times"></i> إغلاق</button>
     </div>
 </div>
 
@@ -364,260 +588,4 @@
         apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
         authDomain: "yalla-kimya.firebaseapp.com",
         projectId: "yalla-kimya",
-        storageBucket: "yalla-kimya.firebasestorage.app",
-        messagingSenderId: "1052374689829",
-        appId: "1:1052374689829:web:fbb815ab42d753e63377cc"
-    };
-    
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    
-    // Enable offline persistence
-    db.enablePersistence().catch(err => console.log(err));
-    
-    // Current user
-    let currentUser = null;
-    
-    // ============ PARTICLES BACKGROUND ============
-    function createParticles() {
-        const container = document.getElementById('particles');
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            const size = Math.random() * 4 + 2;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDuration = Math.random() * 15 + 10 + 's';
-            particle.style.animationDelay = Math.random() * 10 + 's';
-            container.appendChild(particle);
-        }
-    }
-    createParticles();
-    
-    // ============ TOAST NOTIFICATIONS ============
-    function showToast(message, type = 'info') {
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.innerHTML = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
-    
-    // ============ SECTION NAVIGATION ============
-    function showSection(sectionId) {
-        document.querySelectorAll('main section').forEach(section => {
-            section.style.display = 'none';
-        });
-        document.getElementById(`${sectionId}-section`).style.display = 'block';
-        
-        if (sectionId === 'lectures') loadLectures();
-        if (sectionId === 'leaderboard') loadLeaderboard();
-        if (sectionId === 'profile') loadProfile();
-    }
-    
-    // ============ AUTH FUNCTIONS ============
-    function showLoginModal() {
-        document.getElementById('loginModal').style.display = 'flex';
-    }
-    
-    function closeLoginModal() {
-        document.getElementById('loginModal').style.display = 'none';
-    }
-    
-    function showSignupModal() {
-        closeLoginModal();
-        document.getElementById('signupModal').style.display = 'flex';
-    }
-    
-    function closeSignupModal() {
-        document.getElementById('signupModal').style.display = 'none';
-    }
-    
-    async function signInWithGoogle() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        try {
-            const result = await auth.signInWithPopup(provider);
-            await createUserIfNeeded(result.user);
-            showToast('تم تسجيل الدخول بنجاح! 🎉', 'success');
-            closeLoginModal();
-            updateUIForUser(result.user);
-            showSection('home');
-        } catch (error) {
-            showToast(error.message, 'error');
-        }
-    }
-    
-    async function signInWithEmail() {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        try {
-            const result = await auth.signInWithEmailAndPassword(email, password);
-            await createUserIfNeeded(result.user);
-            showToast('تم تسجيل الدخول بنجاح! 🎉', 'success');
-            closeLoginModal();
-            updateUIForUser(result.user);
-            showSection('home');
-        } catch (error) {
-            showToast(error.message, 'error');
-        }
-    }
-    
-    async function signUp() {
-        const name = document.getElementById('signupName').value;
-        const email = document.getElementById('signupEmail').value;
-        const password = document.getElementById('signupPassword').value;
-        
-        if (!name || !email || !password) {
-            showToast('يرجى ملء جميع الحقول', 'error');
-            return;
-        }
-        
-        try {
-            const result = await auth.createUserWithEmailAndPassword(email, password);
-            await result.user.updateProfile({ displayName: name });
-            await createUserIfNeeded(result.user, name);
-            showToast('تم إنشاء الحساب بنجاح! 🎉', 'success');
-            closeSignupModal();
-            updateUIForUser(result.user);
-            showSection('home');
-        } catch (error) {
-            showToast(error.message, 'error');
-        }
-    }
-    
-    async function signOut() {
-        await auth.signOut();
-        currentUser = null;
-        updateUIForUser(null);
-        showToast('تم تسجيل الخروج', 'info');
-        showSection('home');
-    }
-    
-    async function createUserIfNeeded(user, customName = null) {
-        const userRef = db.collection('users').doc(user.uid);
-        const doc = await userRef.get();
-        
-        if (!doc.exists) {
-            await userRef.set({
-                uid: user.uid,
-                email: user.email,
-                displayName: customName || user.displayName || user.email.split('@')[0],
-                photoURL: user.photoURL || null,
-                chemicalCoins: 100,
-                totalStudyHours: 0,
-                currentStreak: 0,
-                longestStreak: 0,
-                quizzesCompleted: 0,
-                lecturesWatched: [],
-                role: 'student',
-                isBanned: false,
-                level: 'Bronze',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                lastActive: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            showToast('مرحباً بك في يلا كيمياء! 🧪', 'success');
-        } else {
-            await userRef.update({
-                lastActive: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        }
-    }
-    
-    function updateUIForUser(user) {
-        const authButtons = document.getElementById('authButtons');
-        if (user) {
-            authButtons.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    ${user.photoURL ? `<img src="${user.photoURL}" class="user-avatar">` : '<div class="user-avatar" style="background: linear-gradient(135deg, #00D2FF, #A855F7); display: flex; align-items: center; justify-content: center;">👤</div>'}
-                    <span style="font-size: 0.875rem;">${user.displayName || user.email}</span>
-                    <button onclick="signOut()" class="btn-secondary" style="padding: 6px 16px; font-size: 0.75rem;">تسجيل خروج</button>
-                </div>
-            `;
-        } else {
-            authButtons.innerHTML = `<button onclick="showLoginModal()" class="btn-primary" style="padding: 8px 20px; font-size: 0.875rem;">تسجيل الدخول</button>`;
-        }
-    }
-    
-    // ============ LOAD REAL DATA FROM FIREBASE ============
-    async function loadStats() {
-        const usersSnapshot = await db.collection('users').get();
-        const studentsCount = usersSnapshot.size;
-        document.getElementById('statStudents').innerText = studentsCount;
-        
-        let totalHours = 0;
-        usersSnapshot.forEach(doc => {
-            totalHours += doc.data().totalStudyHours || 0;
-        });
-        document.getElementById('statHours').innerText = Math.floor(totalHours);
-    }
-    
-    async function loadLectures() {
-        const lecturesData = [
-            { id: 1, title: 'الباب الأول - الكيمياء العامة', videoId: 'xDgzehlarWo', pdfUrl: 'https://t.me/yala_kamya_ziad_mabrok/533', views: 342, duration: 45, chapter: 1 },
-            { id: 2, title: 'الباب الثاني - المحاليل', videoId: 'bLY1TDI9Mm4', pdfUrl: 'https://t.me/yala_kamya_ziad_mabrok/534', views: 289, duration: 52, chapter: 2 },
-            { id: 3, title: 'الباب الثالث - الحرارة', videoId: 'ywrKtjJmzd4', pdfUrl: 'https://t.me/yala_kamya_ziad_mabrok/535', views: 256, duration: 48, chapter: 3 },
-            { id: 4, title: 'المنهج في 3 ساعات', videoId: '_LeKR7weATE', pdfUrl: null, views: 512, duration: 180, chapter: 0 },
-            { id: 5, title: 'حل كتاب المعهد', videoId: 'O2LJqeoUJoM', pdfUrl: null, views: 198, duration: 65, chapter: 0 },
-            { id: 6, title: 'حل أهم 150 سؤال', videoId: 'LPXRrqsRjRg', pdfUrl: 'https://t.me/yala_kamya_ziad_mabrok/551', views: 423, duration: 120, chapter: 0 }
-        ];
-        
-        const container = document.getElementById('lecturesContainer');
-        container.innerHTML = lecturesData.map(lecture => `
-            <div class="glass-card" style="overflow: hidden;">
-                <img src="https://img.youtube.com/vi/${lecture.videoId}/hqdefault.jpg" style="width: 100%; height: 200px; object-fit: cover;">
-                <div style="padding: 1.5rem;">
-                    <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">${lecture.title}</h3>
-                    <div style="display: flex; justify-content: space-between; color: #9CA3AF; font-size: 0.875rem; margin-bottom: 1rem;">
-                        <span>👁️ ${lecture.views} مشاهدة</span>
-                        <span>⏱️ ${lecture.duration} دقيقة</span>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <a href="https://youtu.be/${lecture.videoId}" target="_blank" class="btn-primary" style="flex: 1; text-align: center; font-size: 0.875rem; padding: 10px;">▶ مشاهدة</a>
-                        ${lecture.pdfUrl ? `<a href="${lecture.pdfUrl}" target="_blank" class="btn-secondary" style="padding: 10px 15px;">📄 PDF</a>` : ''}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    async function loadLeaderboard() {
-        const snapshot = await db.collection('users')
-            .where('isBanned', '==', false)
-            .orderBy('chemicalCoins', 'desc')
-            .limit(20)
-            .get();
-        
-        const leaderboardBody = document.getElementById('leaderboardBody');
-        if (snapshot.empty) {
-            leaderboardBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">لا يوجد طلاب حتى الآن</td></tr>';
-            return;
-        }
-        
-        let rank = 1;
-        leaderboardBody.innerHTML = '';
-        snapshot.forEach(doc => {
-            const user = doc.data();
-            const medals = {1: '🥇', 2: '🥈', 3: '🥉'};
-            const rankDisplay = medals[rank] || `#${rank}`;
-            
-            let levelClass = 'badge-bronze';
-            if (user.level === 'Legend') levelClass = 'badge-legend';
-            else if (user.level === 'Diamond') levelClass = 'badge-diamond';
-            else if (user.level === 'Platinum') levelClass = 'badge-platinum';
-            else if (user.level === 'Gold') levelClass = 'badge-gold';
-            else if (user.level === 'Silver') levelClass = 'badge-silver';
-            
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="padding: 1rem;">${rankDisplay}</td>
-                <td style="padding: 1rem;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        ${user.photoURL ? `<img src="${user.photoURL}" style="width: 32px; height: 32px; border-radius: 50%;">` : '<div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #00D2FF, #A855F7); display: flex; align-items: center; justify-content: center;">👤</div>'}
-                        <span>${user.displayName || user.email}</span>
-                    </div>
-                </td>
-                <td style="padding: 1rem; color: #00D2FF; font-weight: bold;">${user.chemicalCoins || 0} 🧪</td>
-                <td style="padding: 1rem;">
+        storageBucket
