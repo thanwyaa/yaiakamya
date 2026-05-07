@@ -1,29 +1,18 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '@/lib/firebase/config';
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  onAuthStateChanged,
-  User as FirebaseUser,
-} from 'firebase/auth';
-import { createUser, getUser } from '@/lib/firebase/firestore';
-import { toast } from 'sonner';
+import { useState, useEffect, createContext, useContext } from 'react';
+import { auth, db, doc, getDoc, setDoc, serverTimestamp } from '@/lib/firebase';
+import { onAuthStateChanged, User, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 interface AuthContextType {
-  user: FirebaseUser | null;
+  user: User | null;
   userData: any | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, displayName: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
   isAdmin: boolean;
-  isModerator: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -31,71 +20,69 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
-      
       if (firebaseUser) {
-        let dbUser = await getUser(firebaseUser.uid);
-        if (!dbUser) {
-          await createUser(firebaseUser.uid, {
+        const userRef = doc(db, 'students', firebaseUser.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUserData(userSnap.data());
+        } else {
+          const newUser = {
             uid: firebaseUser.uid,
-            email: firebaseUser.email!,
-            displayName: firebaseUser.displayName || firebaseUser.email!.split('@')[0],
-            photoURL: firebaseUser.photoURL || undefined,
+            email: firebaseUser.email,
+            displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0],
+            photoURL: firebaseUser.photoURL,
+            chemicalCoins: 100,
+            totalStudyHours: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+            quizzesCompleted: 0,
+            lecturesWatched: [],
             role: 'student',
-          });
-          dbUser = await getUser(firebaseUser.uid);
+            level: 'Bronze',
+            createdAt: serverTimestamp(),
+            lastActive: serverTimestamp(),
+          };
+          await setDoc(userRef, newUser);
+          setUserData(newUser);
         }
-        setUserData(dbUser);
       } else {
         setUserData(null);
       }
-      
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast.success('تم تسجيل الدخول بنجاح!');
-    } catch (error: any) {
-      toast.error(error.message);
-      throw error;
-    }
-  };
-
-  const signUp = async (email: string, password: string, displayName: string) => {
-    try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      await createUser(result.user.uid, {
-        uid: result.user.uid,
-        email,
-        displayName,
-        role: 'student',
-      });
-      toast.success('تم إنشاء الحساب بنجاح!');
-    } catch (error: any) {
-      toast.error(error.message);
-      throw error;
-    }
-  };
-
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const dbUser = await getUser(result.user.uid);
-      if (!dbUser) {
-        await createUser(result.user.uid, {
-          uid: result.user.uid,
-          email: result.user.email!,
-          displayName: result.user.displayName || result.user.email!.split('@')[0],
-          photoURL
+    await signInWithPopup(auth, provider);
+  };
+
+  const signInWithEmail = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const signUpWithEmail = async (email: string, password: string, name: string) => {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    await result.user.updateProfile({ displayName: name });
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+  };
+
+  const isAdmin = userData?.role === 'admin';
+
+  return (
+    <AuthContext.Provider value={{ user, userData, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, logout, isAdmin }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
