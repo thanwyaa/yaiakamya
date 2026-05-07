@@ -2,550 +2,263 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Yalla Kimya | مع مستر زياد مبروك - منصة تعليم الكيمياء المتكاملة</title>
-    <meta name="description" content="منصة Yalla Kimya التعليمية مع مستر زياد مبروك - أسهل وأسرع طريقة لفهم الكيمياء مع محاضرات وكويزات ونظام عملات وتحديات يومية">
-    <meta name="keywords" content="كيمياء, تعليم كيمياء, مستر زياد مبروك, Yalla Kimya, منصة تعليمية, كيمياء ثانوية عامة, شرح كيمياء">
-    <meta name="author" content="Mr. Ziad Mabrouk">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yalla-kimya.com/">
-    <meta property="og:title" content="Yalla Kimya | مع مستر زياد مبروك">
-    <meta property="og:description" content="أسهل وأسرع طريقة لفهم الكيمياء - منصة تعليمية متكاملة">
-    <meta property="og:image" content="https://yalla-kimya.com/og-image.jpg">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://yalla-kimya.com/">
-    <meta property="twitter:title" content="Yalla Kimya | مع مستر زياد مبروك">
-    <meta property="twitter:description" content="أسهل وأسرع طريقة لفهم الكيمياء - منصة تعليمية متكاملة">
-    <meta property="twitter:image" content="https://yalla-kimya.com/og-image.jpg">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yalla Kimya | مع مستر زياد مبروك</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Framer Motion -->
-    <script src="https://unpkg.com/framer-motion@10.16.16/dist/framer-motion.js"></script>
-    
-    <!-- React & ReactDOM -->
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        /* Custom Animations */
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-gradient {
-            background-size: 200% 200%;
-            animation: gradient 8s linear infinite;
-        }
-        
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .animate-pulse-slow {
-            animation: pulse 3s ease-in-out infinite;
-        }
-        
-        .animate-slide-in {
-            animation: slideIn 0.8s ease-out forwards;
-        }
-        
-        .glassmorphism {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .neon-text {
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5),
-                         0 0 20px rgba(0, 255, 255, 0.3),
-                         0 0 30px rgba(0, 255, 255, 0.1);
-        }
-        
-        .neon-border {
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3),
-                        0 0 20px rgba(0, 255, 255, 0.2);
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #1a1a2e;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(45deg, #00d4ff, #7b2cbf);
-            border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(45deg, #7b2cbf, #00d4ff);
-        }
-        
-        /* Loading Spinner */
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: #00d4ff;
+            width: 50px;
+            height: 50px;
             animation: spin 1s ease-in-out infinite;
         }
-        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
-        /* RTL Support */
-        [dir="rtl"] {
-            text-align: right;
+        .glass-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
     </style>
 </head>
-<body>
-    <div id="root" class="min-h-screen">
-        <!-- Loading Screen -->
-        <div class="min-h-screen flex flex-col items-center justify-center">
-            <div class="spinner mb-6"></div>
-            <div class="text-white text-xl font-semibold mb-2">🧪 Yalla Kimya</div>
-            <div class="text-white/70 text-sm">جاري تحميل المنصة...</div>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900 min-h-screen">
+    <div id="app" class="min-h-screen">
+        <!-- Loading -->
+        <div class="flex flex-col items-center justify-center min-h-screen">
+            <div class="loading-spinner mb-4"></div>
+            <p class="text-white text-lg">🧪 Yalla Kimya | جاري التحميل...</p>
         </div>
     </div>
 
-    <!-- Main Application -->
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        
-        // Firebase Configuration (استبدل ببيانات Firebase الحقيقية)
+    <script>
+        // Firebase Configuration - ضع بياناتك الحقيقية هنا يا باشا!
         const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyExample123456",
+            apiKey: "AIzaSyDummyKeyExample123456",  // ❗غيرها ببياناتك الحقيقية
             authDomain: "yalla-kimya.firebaseapp.com",
             projectId: "yalla-kimya",
             storageBucket: "yalla-kimya.appspot.com",
             messagingSenderId: "123456789012",
             appId: "1:123456789012:web:abc123def456"
         };
-        
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        
-        // Auth Context
-        const AuthContext = React.createContext();
-        
-        function AuthProvider({ children }) {
-            const [user, setUser] = useState(null);
-            const [loading, setLoading] = useState(true);
+
+        // Main App
+        async function initApp() {
+            const appDiv = document.getElementById('app');
             
-            useEffect(() => {
-                const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-                    if (firebaseUser) {
-                        const userDoc = await db.collection('users').doc(firebaseUser.uid).get();
-                        const userData = userDoc.data();
-                        setUser({
-                            uid: firebaseUser.uid,
-                            email: firebaseUser.email,
-                            name: userData?.name || firebaseUser.displayName,
-                            coins: userData?.coins || 100,
-                            role: userData?.role || 'student'
-                        });
-                    } else {
-                        setUser(null);
-                    }
-                    setLoading(false);
-                });
-                return unsubscribe;
-            }, []);
-            
-            const loginWithGoogle = async () => {
+            // Check if user is logged in
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    // Get user data
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    const userData = userDoc.data();
+                    showMainApp(user, userData);
+                } else {
+                    showLoginScreen();
+                }
+            });
+        }
+
+        function showLoginScreen() {
+            const appDiv = document.getElementById('app');
+            appDiv.innerHTML = `
+                <div class="min-h-screen flex items-center justify-center p-4">
+                    <div class="glass-card rounded-2xl p-8 max-w-md w-full text-center">
+                        <div class="text-6xl mb-4">🧪</div>
+                        <h1 class="text-3xl font-bold text-white mb-2">Yalla Kimya</h1>
+                        <p class="text-white/70 mb-8">مع مستر زياد مبروك</p>
+                        
+                        <div class="space-y-4">
+                            <button onclick="loginWithGoogle()" class="w-full py-3 bg-white/20 rounded-xl text-white font-semibold hover:bg-white/30 transition">
+                                🍕 تسجيل الدخول بجوجل
+                            </button>
+                            
+                            <div class="relative my-6">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-white/20"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-2 bg-transparent text-white/50">أو</span>
+                                </div>
+                            </div>
+                            
+                            <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" class="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/50 border border-white/20 focus:outline-none focus:border-cyan-500">
+                            <input type="password" id="loginPassword" placeholder="كلمة المرور" class="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/50 border border-white/20 focus:outline-none focus:border-cyan-500">
+                            <button onclick="loginWithEmail()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold">
+                                دخول
+                            </button>
+                            
+                            <p class="text-white/50 text-sm mt-4">
+                                ليس لديك حساب؟ 
+                                <a href="#" onclick="showRegister()" class="text-cyan-400">إنشاء حساب</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showRegister() {
+            const appDiv = document.getElementById('app');
+            appDiv.innerHTML = `
+                <div class="min-h-screen flex items-center justify-center p-4">
+                    <div class="glass-card rounded-2xl p-8 max-w-md w-full text-center">
+                        <div class="text-6xl mb-4">📝</div>
+                        <h1 class="text-3xl font-bold text-white mb-2">إنشاء حساب</h1>
+                        <p class="text-white/70 mb-8">انضم إلى Yalla Kimya</p>
+                        
+                        <div class="space-y-4">
+                            <input type="text" id="regName" placeholder="الاسم الكامل" class="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/50 border border-white/20 focus:outline-none focus:border-cyan-500">
+                            <input type="email" id="regEmail" placeholder="البريد الإلكتروني" class="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/50 border border-white/20 focus:outline-none focus:border-cyan-500">
+                            <input type="password" id="regPassword" placeholder="كلمة المرور" class="w-full px-4 py-3 bg-white/10 rounded-xl text-white placeholder-white/50 border border-white/20 focus:outline-none focus:border-cyan-500">
+                            <button onclick="registerWithEmail()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl text-white font-semibold">
+                                إنشاء حساب
+                            </button>
+                            
+                            <p class="text-white/50 text-sm mt-4">
+                                لديك حساب؟ 
+                                <a href="#" onclick="showLoginScreen()" class="text-cyan-400">تسجيل الدخول</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showMainApp(user, userData) {
+            const appDiv = document.getElementById('app');
+            appDiv.innerHTML = `
+                <div class="min-h-screen">
+                    <!-- Navbar -->
+                    <nav class="fixed top-0 w-full bg-black/50 backdrop-blur-lg border-b border-white/10 z-50">
+                        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl">🧪</span>
+                                <span class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">Yalla Kimya</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-yellow-400">🪙 ${userData?.coins || 0}</span>
+                                <button onclick="logout()" class="px-4 py-2 bg-red-500 rounded-lg text-sm">خروج</button>
+                            </div>
+                        </div>
+                    </nav>
+                    
+                    <!-- Hero Section -->
+                    <div class="pt-20 min-h-screen flex items-center justify-center text-center px-4">
+                        <div>
+                            <h1 class="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                Yalla Kimya
+                            </h1>
+                            <p class="text-2xl text-white mb-2">مع <span class="text-yellow-400 font-bold">مستر زياد مبروك</span></p>
+                            <p class="text-white/70 mb-8 max-w-2xl">👨‍🔬 أسهل وأسرع طريقة لفهم الكيمياء</p>
+                            
+                            <div class="flex flex-wrap gap-4 justify-center">
+                                <button onclick="showLectures()" class="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl font-bold">
+                                    🚀 ابدأ التعلم
+                                </button>
+                            </div>
+                            
+                            <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+                                <div><div class="text-2xl font-bold text-white">5000+</div><div class="text-white/50 text-sm">طالب</div></div>
+                                <div><div class="text-2xl font-bold text-white">50+</div><div class="text-white/50 text-sm">محاضرة</div></div>
+                                <div><div class="text-2xl font-bold text-white">1000+</div><div class="text-white/50 text-sm">سؤال</div></div>
+                                <div><div class="text-2xl font-bold text-white">4.9</div><div class="text-white/50 text-sm">تقييم</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Auth Functions
+        window.loginWithGoogle = async () => {
+            try {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 const result = await auth.signInWithPopup(provider);
                 const userRef = db.collection('users').doc(result.user.uid);
                 const userSnap = await userRef.get();
-                
                 if (!userSnap.exists) {
                     await userRef.set({
-                        uid: result.user.uid,
                         name: result.user.displayName,
                         email: result.user.email,
                         coins: 100,
                         role: 'student',
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        createdAt: new Date()
                     });
                 }
-                return result;
-            };
-            
-            const loginWithEmail = async (email, password) => {
-                return await auth.signInWithEmailAndPassword(email, password);
-            };
-            
-            const register = async (email, password, name) => {
+                alert('تم تسجيل الدخول بنجاح!');
+            } catch (error) {
+                alert('خطأ: ' + error.message);
+            }
+        };
+
+        window.loginWithEmail = async () => {
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+            if (!email || !password) {
+                alert('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
+                return;
+            }
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert('تم تسجيل الدخول بنجاح!');
+            } catch (error) {
+                alert('خطأ: ' + error.message);
+            }
+        };
+
+        window.registerWithEmail = async () => {
+            const name = document.getElementById('regName')?.value;
+            const email = document.getElementById('regEmail')?.value;
+            const password = document.getElementById('regPassword')?.value;
+            if (!name || !email || !password) {
+                alert('الرجاء ملء جميع الحقول');
+                return;
+            }
+            try {
                 const result = await auth.createUserWithEmailAndPassword(email, password);
                 await db.collection('users').doc(result.user.uid).set({
-                    uid: result.user.uid,
                     name: name,
                     email: email,
                     coins: 100,
                     role: 'student',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: new Date()
                 });
-                return result;
-            };
-            
-            const logout = async () => {
-                await auth.signOut();
-                setUser(null);
-            };
-            
-            return (
-                <AuthContext.Provider value={{ user, loading, loginWithGoogle, loginWithEmail, register, logout }}>
-                    {children}
-                </AuthContext.Provider>
-            );
-        }
-        
-        function useAuth() {
-            return useContext(AuthContext);
-        }
-        
-        // Navbar Component
-        function Navbar() {
-            const { user, logout } = useAuth();
-            const [theme, setTheme] = useState('dark');
-            
-            const toggleTheme = () => {
-                const newTheme = theme === 'dark' ? 'light' : 'dark';
-                setTheme(newTheme);
-                document.documentElement.classList.toggle('dark', newTheme === 'dark');
-                localStorage.setItem('theme', newTheme);
-            };
-            
-            useEffect(() => {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
-                setTheme(savedTheme);
-                document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-            }, []);
-            
-            return (
-                <nav className={`fixed w-full z-50 ${
-                    theme === 'dark' 
-                        ? 'bg-gray-900/80 backdrop-blur-lg border-gray-700' 
-                        : 'bg-white/80 backdrop-blur-lg border-gray-200'
-                } border-b`}>
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex justify-between items-center h-16">
-                            <div className="flex items-center gap-2">
-                                <span className="text-2xl">🧪</span>
-                                <span className="text-xl font-bold bg-gradient-to-r from-cyan-500 to-purple-500 bg-clip-text text-transparent">
-                                    Yalla Kimya
-                                </span>
-                            </div>
-                            
-                            <div className="flex items-center gap-4">
-                                <button onClick={toggleTheme} className="text-2xl">
-                                    {theme === 'dark' ? '☀️' : '🌙'}
-                                </button>
-                                
-                                {user ? (
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/20">
-                                            <span>🪙</span>
-                                            <span className="font-bold text-yellow-500">{user.coins}</span>
-                                        </div>
-                                        <button onClick={logout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm">
-                                            خروج
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <a href="/login">
-                                        <button className="px-4 py-2 bg-cyan-500 text-white rounded-lg text-sm">
-                                            دخول
-                                        </button>
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            );
-        }
-        
-        // Hero Section
-        function HeroSection() {
-            const { user } = useAuth();
-            
-            return (
-                <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900">
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1440 320\"><path fill=\"rgba(255,255,255,0.05)\" d=\"M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z\"></path></svg>')] opacity-20 bg-cover"></div>
-                    
-                    <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-                        <div className="animate-slide-in">
-                            <div className="text-8xl mb-6 animate-bounce">🧪</div>
-                            
-                            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-                                Yalla Kimya
-                            </h1>
-                            
-                            <p className="text-2xl md:text-3xl text-white mb-4">
-                                مع <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">مستر زياد مبروك</span>
-                            </p>
-                            
-                            <p className="text-lg md:text-xl text-gray-200 mb-12 max-w-3xl mx-auto">
-                                👨‍🔬 أسهل وأسرع طريقة لفهم الكيمياء - مع نظام متكامل من المحاضرات والكويزات والتحديات اليومية
-                            </p>
-                            
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <a href={user ? "/lectures" : "/register"}>
-                                    <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:scale-105">
-                                        🚀 ابدأ التعلم الآن
-                                    </button>
-                                </a>
-                                
-                                {!user && (
-                                    <a href="/login">
-                                        <button className="px-8 py-4 bg-white/10 backdrop-blur-lg border border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
-                                            🔐 تسجيل الدخول
-                                        </button>
-                                    </a>
-                                )}
-                            </div>
-                            
-                            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white animate-pulse-slow">5000+</div>
-                                    <div className="text-sm text-gray-300">طالب</div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white animate-pulse-slow">50+</div>
-                                    <div className="text-sm text-gray-300">محاضرة</div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white animate-pulse-slow">1000+</div>
-                                    <div className="text-sm text-gray-300">سؤال</div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white animate-pulse-slow">4.9</div>
-                                    <div className="text-sm text-gray-300">تقييم</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        
-        // Features Section
-        function FeaturesSection() {
-            const features = [
-                { icon: '📚', title: 'محاضرات منظمة', desc: 'محاضرات مرتبة حسب الباب والموضوع مع فيديوهات شرح عالية الجودة' },
-                { icon: '📝', title: 'كويزات تفاعلية', desc: 'اختبر فهمك بعد كل محاضرة واحصل على عملات كيميائية' },
-                { icon: '🪙', title: 'نظام العملات', desc: 'اربح عملات كيميائية مع كل إنجاز وتمريرة ناجحة' },
-                { icon: '📊', title: 'متابعة حقيقية', desc: 'تتبع تقدمك بشكل لحظي وشوف نقاط قوتك وضعفك' },
-                { icon: '🏆', title: 'منافسات يومية', desc: 'تنافس مع زملائك على لوحة المتصدرين وجوائز أسبوعية' },
-                { icon: '🎯', title: 'تدريبات مكثفة', desc: 'أكثر من 150 سؤال للامتحان مع حلول نموذجية' }
-            ];
-            
-            return (
-                <div className="py-20 px-4 bg-gray-50 dark:bg-gray-900">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="text-center mb-12">
-                            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-500 to-purple-500 bg-clip-text text-transparent">
-                                🌟 ليه تختار Yalla Kimya؟
-                            </h2>
-                            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
-                                منصة متكاملة لكل احتياجاتك الدراسية مع نظام تعليمي حديث
-                            </p>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {features.map((feature, index) => (
-                                <div key={index} className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-cyan-500">
-                                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                                        {feature.icon}
-                                    </div>
-                                    <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">{feature.title}</h3>
-                                    <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        
-        // Live Stats Section
-        function LiveStatsSection() {
-            const [stats, setStats] = useState({ students: 0, lectures: 0, hours: 0 });
-            
-            useEffect(() => {
-                const fetchStats = async () => {
-                    const usersSnap = await db.collection('users').where('role', '==', 'student').get();
-                    const lecturesSnap = await db.collection('lectures').get();
-                    setStats({
-                        students: usersSnap.size,
-                        lectures: lecturesSnap.size,
-                        hours: usersSnap.size * 12
-                    });
-                };
-                fetchStats();
-                
-                // Real-time listener
-                const unsubscribe = db.collection('users').where('role', '==', 'student')
-                    .onSnapshot((snapshot) => {
-                        setStats(prev => ({ ...prev, students: snapshot.size }));
-                    });
-                
-                return () => unsubscribe();
-            }, []);
-            
-            return (
-                <div className="py-16 bg-gradient-to-r from-cyan-500 to-blue-500">
-                    <div className="max-w-7xl mx-auto px-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="text-center">
-                                <div className="text-5xl font-bold text-white mb-2 animate-pulse">{stats.students}+</div>
-                                <div className="text-white/90 text-lg">👨‍🎓 طالب مسجل</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-5xl font-bold text-white mb-2 animate-pulse">{stats.lectures}+</div>
-                                <div className="text-white/90 text-lg">📚 محاضرة</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-5xl font-bold text-white mb-2 animate-pulse">{stats.hours}+</div>
-                                <div className="text-white/90 text-lg">⏱️ ساعة مذاكرة</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        
-        // Instructor Section
-        function InstructorSection() {
-            return (
-                <div className="py-20 px-4 bg-gradient-to-br from-purple-600 to-blue-600">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="flex flex-col md:flex-row items-center gap-12">
-                            <div className="flex-1 text-center">
-                                <div className="relative inline-block">
-                                    <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 p-1">
-                                        <div className="w-full h-full rounded-full bg-gray-800 flex items-center justify-center text-7xl">
-                                            👨‍🔬
-                                        </div>
-                                    </div>
-                                    <div className="absolute -bottom-2 -right-2 text-5xl animate-bounce">⭐</div>
-                                </div>
-                            </div>
-                            
-                            <div className="flex-1 text-center md:text-right">
-                                <h2 className="text-4xl font-bold text-white mb-4">
-                                    مستر <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">زياد مبروك</span>
-                                </h2>
-                                
-                                <div className="flex justify-center md:justify-start gap-2 mb-6">
-                                    <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">🏆 10+ سنوات خبرة</span>
-                                    <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">📚 5000+ طالب</span>
-                                    <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">⭐ 4.9 تقييم</span>
-                                </div>
-                                
-                                <p className="text-white/90 text-lg leading-relaxed mb-6">
-                                    مستر زياد مبروك، خبير في تدريس الكيمياء بأسلوب مبسط ومبتكر. 
-                                    ساعد آلاف الطلاب على تحقيق أعلى الدرجات وتجاوز صعوبات المادة. 
-                                    يتميز بقدرته على توصيل المعلومات المعقدة بأسهل الطرق مع أمثلة واقعية 
-                                    وتطبيقات عملية.
-                                </p>
-                                
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
-                                        <div className="text-2xl mb-1">🎯</div>
-                                        <div className="text-white font-bold">95%</div>
-                                        <div className="text-white/80 text-sm">نسبة النجاح</div>
-                                    </div>
-                                    <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
-                                        <div className="text-2xl mb-1">⏱️</div>
-                                        <div className="text-white font-bold">15K+</div>
-                                        <div className="text-white/80 text-sm">ساعة تدريس</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-        
-        // Main App Component
-        function App() {
-            return (
-                <AuthProvider>
-                    <Navbar />
-                    <HeroSection />
-                    <FeaturesSection />
-                    <LiveStatsSection />
-                    <InstructorSection />
-                </AuthProvider>
-            );
-        }
-        
-        // Render App
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+                alert('تم إنشاء الحساب بنجاح!');
+            } catch (error) {
+                alert('خطأ: ' + error.message);
+            }
+        };
+
+        window.logout = async () => {
+            await auth.signOut();
+            showLoginScreen();
+        };
+
+        window.showLectures = () => {
+            alert('جاري تحميل المحاضرات... سيتم إضافتها قريباً!');
+        };
+
+        window.showRegister = showRegister;
+        window.showLoginScreen = showLoginScreen;
+
+        // Start the app
+        initApp();
     </script>
 </body>
 </html>
