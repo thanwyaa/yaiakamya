@@ -2,19 +2,47 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>يلا كيمياء | مع مستر زياد مبروك - منصة تعليم كيمياء حقيقية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Yalla Kimya | مع مستر زياد مبروك - منصة تعليم الكيمياء المتكاملة</title>
+    <meta name="description" content="منصة Yalla Kimya التعليمية مع مستر زياد مبروك - أسهل وأسرع طريقة لفهم الكيمياء مع محاضرات وكويزات ونظام عملات وتحديات يومية">
+    <meta name="keywords" content="كيمياء, تعليم كيمياء, مستر زياد مبروك, Yalla Kimya, منصة تعليمية, كيمياء ثانوية عامة, شرح كيمياء">
+    <meta name="author" content="Mr. Ziad Mabrouk">
+    <meta name="robots" content="index, follow">
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yalla-kimya.com/">
+    <meta property="og:title" content="Yalla Kimya | مع مستر زياد مبروك">
+    <meta property="og:description" content="أسهل وأسرع طريقة لفهم الكيمياء - منصة تعليمية متكاملة">
+    <meta property="og:image" content="https://yalla-kimya.com/og-image.jpg">
     
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://yalla-kimya.com/">
+    <meta property="twitter:title" content="Yalla Kimya | مع مستر زياد مبروك">
+    <meta property="twitter:description" content="أسهل وأسرع طريقة لفهم الكيمياء - منصة تعليمية متكاملة">
+    <meta property="twitter:image" content="https://yalla-kimya.com/og-image.jpg">
     
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.16/dist/framer-motion.js"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
     
     <style>
         * {
@@ -24,568 +52,500 @@
         }
         
         body {
-            font-family: 'Cairo', sans-serif;
-            background: #0A0A1A;
-            color: white;
-            overflow-x: hidden;
-            transition: all 0.3s ease;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         
-        /* Light Mode Styles */
-        body.light-mode {
-            background: #F5F5F5;
-            color: #1A1A2E;
+        /* Custom Animations */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
-        body.light-mode .glass-card {
-            background: rgba(0, 0, 0, 0.03);
-            border-color: rgba(0, 0, 0, 0.1);
-            color: #1A1A2E;
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
         
-        body.light-mode .glass-card:hover {
-            border-color: #00D2FF;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
-        }
-        
-        body.light-mode nav {
-            background: rgba(255, 255, 255, 0.95);
-            border-bottom-color: rgba(0, 0, 0, 0.1);
-        }
-        
-        body.light-mode .text-gray-400 {
-            color: #6B7280;
-        }
-        
-        /* Particles Animation */
-        .particle {
-            position: fixed;
-            background: radial-gradient(circle, rgba(0,210,255,0.6), rgba(168,85,247,0.3));
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            animation: floatParticle linear infinite;
-        }
-        
-        @keyframes floatParticle {
-            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
-        }
-        
-        /* Glassmorphism */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            transition: all 0.3s ease;
-        }
-        
-        .glass-card:hover {
-            border-color: rgba(0, 210, 255, 0.5);
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.15);
-            transform: translateY(-5px);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #00D2FF 0%, #A855F7 50%, #06B6D4 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #00D2FF 0%, #A855F7 100%);
-            padding: 12px 28px;
-            border-radius: 50px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
-            display: inline-block;
-            text-align: center;
-            text-decoration: none;
-        }
-        
-        .btn-primary:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 210, 255, 0.3);
-            padding: 12px 28px;
-            border-radius: 50px;
-            font-weight: bold;
-            color: #00D2FF;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-            text-align: center;
-            text-decoration: none;
-        }
-        
-        .btn-secondary:hover {
-            border-color: #00D2FF;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
-        }
-        
-        .input-field {
-            width: 100%;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        body.light-mode .input-field {
-            background: rgba(0, 0, 0, 0.05);
-            border-color: rgba(0, 0, 0, 0.1);
-            color: #1A1A2E;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #00D2FF;
-            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
-        }
-        
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            max-width: 450px;
-            width: 90%;
-            padding: 2rem;
-        }
-        
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            border-radius: 12px;
-            color: white;
-            z-index: 2000;
-            animation: slideIn 0.3s ease;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        .toast-success { background: linear-gradient(135deg, #10B981, #059669); }
-        .toast-error { background: linear-gradient(135deg, #EF4444, #DC2626); }
-        .toast-info { background: linear-gradient(135deg, #00D2FF, #A855F7); }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0A0A1A; }
-        body.light-mode ::-webkit-scrollbar-track { background: #F5F5F5; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #00D2FF, #A855F7); border-radius: 10px; }
-        
-        /* Badges */
-        .badge-legend { background: rgba(168,85,247,0.2); color: #A855F7; }
-        .badge-diamond { background: rgba(6,182,212,0.2); color: #06B6D4; }
-        .badge-platinum { background: rgba(0,210,255,0.2); color: #00D2FF; }
-        .badge-gold { background: rgba(245,158,11,0.2); color: #F59E0B; }
-        .badge-silver { background: rgba(156,163,175,0.2); color: #9CA3AF; }
-        .badge-bronze { background: rgba(180,83,9,0.2); color: #B45309; }
-        
-        /* Layout */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(10, 10, 26, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 1rem 2rem;
+        .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient 8s linear infinite;
         }
         
-        body.light-mode nav {
-            background: rgba(255, 255, 255, 0.95);
-            border-bottom-color: rgba(0, 0, 0, 0.1);
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        .animate-pulse-slow {
+            animation: pulse 3s ease-in-out infinite;
         }
         
-        section {
-            padding: 5rem 0;
+        .animate-slide-in {
+            animation: slideIn 0.8s ease-out forwards;
         }
         
-        .hero-section {
-            padding: 8rem 0 4rem;
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        /* Grids */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5),
+                         0 0 20px rgba(0, 255, 255, 0.3),
+                         0 0 30px rgba(0, 255, 255, 0.1);
         }
         
-        .lectures-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+        .neon-border {
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3),
+                        0 0 20px rgba(0, 255, 255, 0.2);
         }
         
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
         }
         
-        /* Theme Toggle */
-        .theme-toggle {
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            transition: all 0.3s;
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
         }
         
-        .theme-toggle:hover {
-            transform: scale(1.1);
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #00d4ff, #7b2cbf);
+            border-radius: 5px;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav { padding: 1rem; }
-            .hero-title { font-size: 2rem !important; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .lectures-grid { grid-template-columns: 1fr; }
-            .features-grid { grid-template-columns: 1fr; }
-            section { padding: 3rem 0; }
-            .hero-section { padding: 6rem 0 2rem; }
-        }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-        
-        @media (min-width: 768px) {
-            .hero-title { font-size: 4.5rem; }
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 1rem;
-            text-align: right;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        body.light-mode th, body.light-mode td {
-            border-bottom-color: rgba(0,0,0,0.05);
-        }
-        
-        th {
-            background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(168,85,247,0.1));
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #00D2FF;
-        }
-        
-        .section-content {
-            display: none;
-        }
-        
-        .section-content.active {
-            display: block;
-        }
-        
-        .nav-link {
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            color: #00D2FF;
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #7b2cbf, #00d4ff);
         }
         
         /* Loading Spinner */
         .spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(0,210,255,0.3);
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            border-top-color: #00D2FF;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            border-top-color: #00d4ff;
+            animation: spin 1s ease-in-out infinite;
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        /* Progress Bar */
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #00D2FF, #A855F7);
-            border-radius: 3px;
-            transition: width 0.3s ease;
+        /* RTL Support */
+        [dir="rtl"] {
+            text-align: right;
         }
     </style>
 </head>
 <body>
-
-<!-- Particles Container -->
-<div id="particles"></div>
-
-<!-- Navigation -->
-<nav>
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #00D2FF;">
-            <div>
-                <h1 style="font-size: 1.25rem; font-weight: bold;" class="gradient-text">يلا كيمياء</h1>
-                <p style="font-size: 0.7rem; color: #9CA3AF;">مع مستر زياد مبروك</p>
-            </div>
-        </div>
-        
-        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
-            <span class="nav-link active" onclick="showSection('home')">الرئيسية</span>
-            <span class="nav-link" onclick="showSection('lectures')">المحاضرات</span>
-            <span class="nav-link" onclick="showSection('leaderboard')">الترتيب</span>
-            <span class="nav-link" onclick="showSection('whyus')">ليه يلا كيمياء؟</span>
-            <span class="nav-link" onclick="showSection('teacher')">مستر زياد</span>
-            <span class="nav-link" onclick="showSection('profile')">ملفي</span>
-        </div>
-        
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="theme-toggle" onclick="toggleTheme()">
-                <i id="themeIcon" class="fas fa-moon" style="font-size: 1.2rem;"></i>
-            </div>
-            <div id="authButtons">
-                <button onclick="showLoginModal()" class="btn-primary" style="padding: 8px 20px; font-size: 0.875rem;">
-                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
-                </button>
-            </div>
+    <div id="root" class="min-h-screen">
+        <!-- Loading Screen -->
+        <div class="min-h-screen flex flex-col items-center justify-center">
+            <div class="spinner mb-6"></div>
+            <div class="text-white text-xl font-semibold mb-2">🧪 Yalla Kimya</div>
+            <div class="text-white/70 text-sm">جاري تحميل المنصة...</div>
         </div>
     </div>
-</nav>
 
-<!-- Main Content -->
-<main>
-    <!-- Home Section -->
-    <div id="home-section" class="section-content active">
-        <div class="hero-section">
-            <div class="container" style="text-align: center;">
-                <div style="display: inline-block; margin-bottom: 1rem; padding: 0.25rem 1rem; background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.3); border-radius: 50px;">
-                    <span style="color: #00D2FF;">🧪 منصة تعليمية متكاملة</span>
-                </div>
-                <h1 class="hero-title"><span class="gradient-text">يلا كيمياء</span><br>مع مستر زياد مبروك</h1>
-                <p style="font-size: 1.25rem; color: #00D2FF; margin: 1rem 0 0.5rem;">"الكيمياء بشكل مختلف… فهم + حفظ + حل"</p>
-                <p style="color: #9CA3AF; max-width: 600px; margin: 0 auto 2rem;">انضم إلى آلاف الطلاب الذين حققوا التفوق في الكيمياء</p>
+    <!-- Main Application -->
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Firebase Configuration (استبدل ببيانات Firebase الحقيقية)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyExample123456",
+            authDomain: "yalla-kimya.firebaseapp.com",
+            projectId: "yalla-kimya",
+            storageBucket: "yalla-kimya.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Auth Context
+        const AuthContext = React.createContext();
+        
+        function AuthProvider({ children }) {
+            const [user, setUser] = useState(null);
+            const [loading, setLoading] = useState(true);
+            
+            useEffect(() => {
+                const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+                    if (firebaseUser) {
+                        const userDoc = await db.collection('users').doc(firebaseUser.uid).get();
+                        const userData = userDoc.data();
+                        setUser({
+                            uid: firebaseUser.uid,
+                            email: firebaseUser.email,
+                            name: userData?.name || firebaseUser.displayName,
+                            coins: userData?.coins || 100,
+                            role: userData?.role || 'student'
+                        });
+                    } else {
+                        setUser(null);
+                    }
+                    setLoading(false);
+                });
+                return unsubscribe;
+            }, []);
+            
+            const loginWithGoogle = async () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const result = await auth.signInWithPopup(provider);
+                const userRef = db.collection('users').doc(result.user.uid);
+                const userSnap = await userRef.get();
                 
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <button id="ctaButton" onclick="handleAuthRedirect()" class="btn-primary">ابدأ التعلم الآن</button>
-                    <button onclick="showSection('lectures')" class="btn-secondary">استعرض المحاضرات</button>
+                if (!userSnap.exists) {
+                    await userRef.set({
+                        uid: result.user.uid,
+                        name: result.user.displayName,
+                        email: result.user.email,
+                        coins: 100,
+                        role: 'student',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                return result;
+            };
+            
+            const loginWithEmail = async (email, password) => {
+                return await auth.signInWithEmailAndPassword(email, password);
+            };
+            
+            const register = async (email, password, name) => {
+                const result = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(result.user.uid).set({
+                    uid: result.user.uid,
+                    name: name,
+                    email: email,
+                    coins: 100,
+                    role: 'student',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                return result;
+            };
+            
+            const logout = async () => {
+                await auth.signOut();
+                setUser(null);
+            };
+            
+            return (
+                <AuthContext.Provider value={{ user, loading, loginWithGoogle, loginWithEmail, register, logout }}>
+                    {children}
+                </AuthContext.Provider>
+            );
+        }
+        
+        function useAuth() {
+            return useContext(AuthContext);
+        }
+        
+        // Navbar Component
+        function Navbar() {
+            const { user, logout } = useAuth();
+            const [theme, setTheme] = useState('dark');
+            
+            const toggleTheme = () => {
+                const newTheme = theme === 'dark' ? 'light' : 'dark';
+                setTheme(newTheme);
+                document.documentElement.classList.toggle('dark', newTheme === 'dark');
+                localStorage.setItem('theme', newTheme);
+            };
+            
+            useEffect(() => {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                setTheme(savedTheme);
+                document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+            }, []);
+            
+            return (
+                <nav className={`fixed w-full z-50 ${
+                    theme === 'dark' 
+                        ? 'bg-gray-900/80 backdrop-blur-lg border-gray-700' 
+                        : 'bg-white/80 backdrop-blur-lg border-gray-200'
+                } border-b`}>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between items-center h-16">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">🧪</span>
+                                <span className="text-xl font-bold bg-gradient-to-r from-cyan-500 to-purple-500 bg-clip-text text-transparent">
+                                    Yalla Kimya
+                                </span>
+                            </div>
+                            
+                            <div className="flex items-center gap-4">
+                                <button onClick={toggleTheme} className="text-2xl">
+                                    {theme === 'dark' ? '☀️' : '🌙'}
+                                </button>
+                                
+                                {user ? (
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-500/20">
+                                            <span>🪙</span>
+                                            <span className="font-bold text-yellow-500">{user.coins}</span>
+                                        </div>
+                                        <button onClick={logout} className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm">
+                                            خروج
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <a href="/login">
+                                        <button className="px-4 py-2 bg-cyan-500 text-white rounded-lg text-sm">
+                                            دخول
+                                        </button>
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            );
+        }
+        
+        // Hero Section
+        function HeroSection() {
+            const { user } = useAuth();
+            
+            return (
+                <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-cyan-900">
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1440 320\"><path fill=\"rgba(255,255,255,0.05)\" d=\"M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z\"></path></svg>')] opacity-20 bg-cover"></div>
+                    
+                    <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
+                        <div className="animate-slide-in">
+                            <div className="text-8xl mb-6 animate-bounce">🧪</div>
+                            
+                            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
+                                Yalla Kimya
+                            </h1>
+                            
+                            <p className="text-2xl md:text-3xl text-white mb-4">
+                                مع <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">مستر زياد مبروك</span>
+                            </p>
+                            
+                            <p className="text-lg md:text-xl text-gray-200 mb-12 max-w-3xl mx-auto">
+                                👨‍🔬 أسهل وأسرع طريقة لفهم الكيمياء - مع نظام متكامل من المحاضرات والكويزات والتحديات اليومية
+                            </p>
+                            
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <a href={user ? "/lectures" : "/register"}>
+                                    <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:scale-105">
+                                        🚀 ابدأ التعلم الآن
+                                    </button>
+                                </a>
+                                
+                                {!user && (
+                                    <a href="/login">
+                                        <button className="px-8 py-4 bg-white/10 backdrop-blur-lg border border-white/20 text-white rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
+                                            🔐 تسجيل الدخول
+                                        </button>
+                                    </a>
+                                )}
+                            </div>
+                            
+                            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-white animate-pulse-slow">5000+</div>
+                                    <div className="text-sm text-gray-300">طالب</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-white animate-pulse-slow">50+</div>
+                                    <div className="text-sm text-gray-300">محاضرة</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-white animate-pulse-slow">1000+</div>
+                                    <div className="text-sm text-gray-300">سؤال</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-white animate-pulse-slow">4.9</div>
+                                    <div className="text-sm text-gray-300">تقييم</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            );
+        }
+        
+        // Features Section
+        function FeaturesSection() {
+            const features = [
+                { icon: '📚', title: 'محاضرات منظمة', desc: 'محاضرات مرتبة حسب الباب والموضوع مع فيديوهات شرح عالية الجودة' },
+                { icon: '📝', title: 'كويزات تفاعلية', desc: 'اختبر فهمك بعد كل محاضرة واحصل على عملات كيميائية' },
+                { icon: '🪙', title: 'نظام العملات', desc: 'اربح عملات كيميائية مع كل إنجاز وتمريرة ناجحة' },
+                { icon: '📊', title: 'متابعة حقيقية', desc: 'تتبع تقدمك بشكل لحظي وشوف نقاط قوتك وضعفك' },
+                { icon: '🏆', title: 'منافسات يومية', desc: 'تنافس مع زملائك على لوحة المتصدرين وجوائز أسبوعية' },
+                { icon: '🎯', title: 'تدريبات مكثفة', desc: 'أكثر من 150 سؤال للامتحان مع حلول نموذجية' }
+            ];
+            
+            return (
+                <div className="py-20 px-4 bg-gray-50 dark:bg-gray-900">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-500 to-purple-500 bg-clip-text text-transparent">
+                                🌟 ليه تختار Yalla Kimya؟
+                            </h2>
+                            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+                                منصة متكاملة لكل احتياجاتك الدراسية مع نظام تعليمي حديث
+                            </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {features.map((feature, index) => (
+                                <div key={index} className="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-cyan-500">
+                                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                                        {feature.icon}
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">{feature.title}</h3>
+                                    <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Live Stats Section
+        function LiveStatsSection() {
+            const [stats, setStats] = useState({ students: 0, lectures: 0, hours: 0 });
+            
+            useEffect(() => {
+                const fetchStats = async () => {
+                    const usersSnap = await db.collection('users').where('role', '==', 'student').get();
+                    const lecturesSnap = await db.collection('lectures').get();
+                    setStats({
+                        students: usersSnap.size,
+                        lectures: lecturesSnap.size,
+                        hours: usersSnap.size * 12
+                    });
+                };
+                fetchStats();
                 
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-                        <div style="font-size: 2rem;">👥</div>
-                        <h3 style="font-size: 1.5rem; font-weight: bold;" id="statStudents">0</h3>
-                        <p style="color: #9CA3AF;">طالب مسجل</p>
-                    </div>
-                    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-                        <div style="font-size: 2rem;">📚</div>
-                        <h3 style="font-size: 1.5rem; font-weight: bold;" id="statLectures">6</h3>
-                        <p style="color: #9CA3AF;">محاضرة</p>
-                    </div>
-                    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-                        <div style="font-size: 2rem;">⏱️</div>
-                        <h3 style="font-size: 1.5rem; font-weight: bold;" id="statHours">0</h3>
-                        <p style="color: #9CA3AF;">ساعة مشاهدة</p>
+                // Real-time listener
+                const unsubscribe = db.collection('users').where('role', '==', 'student')
+                    .onSnapshot((snapshot) => {
+                        setStats(prev => ({ ...prev, students: snapshot.size }));
+                    });
+                
+                return () => unsubscribe();
+            }, []);
+            
+            return (
+                <div className="py-16 bg-gradient-to-r from-cyan-500 to-blue-500">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="text-center">
+                                <div className="text-5xl font-bold text-white mb-2 animate-pulse">{stats.students}+</div>
+                                <div className="text-white/90 text-lg">👨‍🎓 طالب مسجل</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-5xl font-bold text-white mb-2 animate-pulse">{stats.lectures}+</div>
+                                <div className="text-white/90 text-lg">📚 محاضرة</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-5xl font-bold text-white mb-2 animate-pulse">{stats.hours}+</div>
+                                <div className="text-white/90 text-lg">⏱️ ساعة مذاكرة</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            );
+        }
         
-        <!-- Features Preview -->
-        <div style="padding: 3rem 0; background: rgba(0,0,0,0.2);">
-            <div class="container">
-                <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">مميزات المنصة</h2>
-                <div class="features-grid">
-                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-chalkboard-user" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">شرح متكامل</h3><p style="color: #9CA3AF; font-size: 0.875rem;">منهج كامل بفيديوهات عالية الجودة</p></div>
-                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-chart-line" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">تتبع التقدم</h3><p style="color: #9CA3AF; font-size: 0.875rem;">نظام متابعة يومي للطلاب</p></div>
-                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-medal" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">نقاط وجوائز</h3><p style="color: #9CA3AF; font-size: 0.875rem;">عملات كيميائية وإنجازات</p></div>
-                    <div class="glass-card" style="padding: 1.5rem; text-align: center;"><i class="fas fa-question-circle" style="font-size: 2.5rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold;">كويزات تفاعلية</h3><p style="color: #9CA3AF; font-size: 0.875rem;">اختبارات فورية بعد كل محاضرة</p></div>
+        // Instructor Section
+        function InstructorSection() {
+            return (
+                <div className="py-20 px-4 bg-gradient-to-br from-purple-600 to-blue-600">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="flex flex-col md:flex-row items-center gap-12">
+                            <div className="flex-1 text-center">
+                                <div className="relative inline-block">
+                                    <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 p-1">
+                                        <div className="w-full h-full rounded-full bg-gray-800 flex items-center justify-center text-7xl">
+                                            👨‍🔬
+                                        </div>
+                                    </div>
+                                    <div className="absolute -bottom-2 -right-2 text-5xl animate-bounce">⭐</div>
+                                </div>
+                            </div>
+                            
+                            <div className="flex-1 text-center md:text-right">
+                                <h2 className="text-4xl font-bold text-white mb-4">
+                                    مستر <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">زياد مبروك</span>
+                                </h2>
+                                
+                                <div className="flex justify-center md:justify-start gap-2 mb-6">
+                                    <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">🏆 10+ سنوات خبرة</span>
+                                    <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">📚 5000+ طالب</span>
+                                    <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">⭐ 4.9 تقييم</span>
+                                </div>
+                                
+                                <p className="text-white/90 text-lg leading-relaxed mb-6">
+                                    مستر زياد مبروك، خبير في تدريس الكيمياء بأسلوب مبسط ومبتكر. 
+                                    ساعد آلاف الطلاب على تحقيق أعلى الدرجات وتجاوز صعوبات المادة. 
+                                    يتميز بقدرته على توصيل المعلومات المعقدة بأسهل الطرق مع أمثلة واقعية 
+                                    وتطبيقات عملية.
+                                </p>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
+                                        <div className="text-2xl mb-1">🎯</div>
+                                        <div className="text-white font-bold">95%</div>
+                                        <div className="text-white/80 text-sm">نسبة النجاح</div>
+                                    </div>
+                                    <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
+                                        <div className="text-2xl mb-1">⏱️</div>
+                                        <div className="text-white font-bold">15K+</div>
+                                        <div className="text-white/80 text-sm">ساعة تدريس</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Lectures Section -->
-    <div id="lectures-section" class="section-content">
-        <div class="container" style="padding: 6rem 1rem 4rem;">
-            <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center;">📚 المحاضرات</h2>
-            <p style="text-align: center; color: #9CA3AF; margin-bottom: 2rem;">اختر محاضرتك وابدأ التعلم</p>
-            <div id="lecturesContainer" class="lectures-grid">
-                <!-- Lectures will be loaded here -->
-                <div style="text-align: center; grid-column: 1/-1;"><div class="spinner"></div><p>جاري تحميل المحاضرات...</p></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Leaderboard Section -->
-    <div id="leaderboard-section" class="section-content">
-        <div class="container" style="padding: 6rem 1rem 4rem;">
-            <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center;">🏆 ترتيب الطلاب</h2>
-            <p style="text-align: center; color: #9CA3AF; margin-bottom: 2rem;">متجدد بشكل لحظي - 🧪 العملات الكيميائية</p>
-            <div class="glass-card" style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr><th>#</th><th>الطالب</th><th>🧪 العملات</th><th>📚 الساعات</th><th>🔥 الستريك</th><th>🏅 المستوى</th></tr>
-                    </thead>
-                    <tbody id="leaderboardBody">
-                        <tr><td colspan="6" style="text-align: center;"><div class="spinner"></div>جاري التحميل...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Why Us Section -->
-    <div id="whyus-section" class="section-content">
-        <div class="container" style="padding: 6rem 1rem 4rem;">
-            <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 1rem;">ليه تختار يلا كيمياء؟</h2>
-            <p style="text-align: center; color: #9CA3AF; margin-bottom: 3rem;">منصة متكاملة تجمع بين الشرح المتميز والتكنولوجيا الحديثة</p>
-            <div class="features-grid">
-                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-book" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">شرح بسيط</h3><p>شرح مبسط ومباشر لكل جزئية في منهج الكيمياء</p></div>
-                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-chalkboard" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">محاضرات منظمة</h3><p>تقسيم منهجي حسب الأبواب والموضوعات ليسهل المذاكرة</p></div>
-                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-tasks" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">كويزات بعد كل درس</h3><p>اختبارات فورية لقياس الفهم وتثبيت المعلومات</p></div>
-                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-coins" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">نظام نقاط</h3><p>العملات الكيميائية تحفزك على المذاكرة المستمرة</p></div>
-                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-chart-simple" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">متابعة حقيقية</h3><p>تتبع تقدمك في المحاضرات والكويزات بشكل لحظي</p></div>
-                <div class="glass-card" style="padding: 2rem;"><i class="fas fa-trophy" style="font-size: 2rem; color: #00D2FF; margin-bottom: 1rem; display: block;"></i><h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">منافسة ممتعة</h3><p>لوحة متصدرين وتحديات مع زملائك</p></div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Teacher Section -->
-    <div id="teacher-section" class="section-content">
-        <div class="container" style="padding: 6rem 1rem 4rem;">
-            <h2 class="gradient-text" style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 2rem;">👨‍🏫 مستر زياد مبروك</h2>
-            <div class="glass-card" style="padding: 2rem; max-width: 800px; margin: 0 auto; text-align: center;">
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #00D2FF; margin: 0 auto 1rem;">
-                <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">زياد مبروك</h3>
-                <p style="color: #00D2FF; margin-bottom: 1rem;">خبير تدريس الكيمياء - ثانوية عامة</p>
-                <p style="line-height: 1.8; margin-bottom: 1.5rem;">خبرة أكثر من 10 سنوات في تدريس الكيمياء، ساعد آلاف الطلاب على تحقيق التفوق والنجاح. يتميز بأسلوبه المبسط والمبتكر في شرح المنهج وتوصيل المعلومة بطريقة سهلة وممتعة. حاصل على العديد من شهادات التقدير في مجال التعليم.</p>
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <span class="glass-card" style="padding: 0.5rem 1rem;"><i class="fas fa-trophy"></i> 10+ سنوات خبرة</span>
-                    <span class="glass-card" style="padding: 0.5rem 1rem;"><i class="fas fa-users"></i> 5000+ طالب</span>
-                    <span class="glass-card" style="padding: 0.5rem 1rem;"><i class="fas fa-star"></i> 98% نسبة رضا</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Profile Section -->
-    <div id="profile-section" class="section-content">
-        <div class="container" style="padding: 6rem 1rem 4rem;">
-            <div id="profileContent" class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 2rem; text-align: center;">
-                <div id="profileLoading"><div class="spinner"></div><p>جاري التحميل...</p></div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<!-- Login Modal -->
-<div id="loginModal" class="modal">
-    <div class="modal-content glass-card" style="text-align: center;">
-        <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 1rem; border: 2px solid #00D2FF;">
-        <h2 class="gradient-text" style="margin-bottom: 0.5rem;">مرحباً بك!</h2>
-        <p style="color: #9CA3AF; margin-bottom: 1.5rem;">سجل دخولك لتبدأ رحلة التفوق</p>
+            );
+        }
         
-        <button onclick="signInWithGoogle()" class="btn-primary" style="width: 100%; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <i class="fab fa-google"></i> تسجيل الدخول بـ Google
-        </button>
+        // Main App Component
+        function App() {
+            return (
+                <AuthProvider>
+                    <Navbar />
+                    <HeroSection />
+                    <FeaturesSection />
+                    <LiveStatsSection />
+                    <InstructorSection />
+                </AuthProvider>
+            );
+        }
         
-        <div style="position: relative; margin: 1rem 0;"><div style="position: absolute; inset: 0; display: flex; align-items: center;"><div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.1);"></div></div><div style="position: relative; display: flex; justify-content: center;"><span style="background: #0A0A1A; padding: 0 10px; color: #9CA3AF;">أو</span></div></div>
-        
-        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" class="input-field" style="margin-bottom: 1rem;">
-        <input type="password" id="loginPassword" placeholder="كلمة المرور" class="input-field" style="margin-bottom: 1rem;">
-        <button onclick="signInWithEmail()" class="btn-primary" style="width: 100%;">تسجيل الدخول</button>
-        
-        <p style="margin-top: 1rem; font-size: 0.875rem;">ليس لديك حساب؟ <a href="#" onclick="showSignupModal(); return false;" style="color: #00D2FF;">إنشاء حساب جديد</a></p>
-        <button onclick="closeLoginModal()" style="margin-top: 1rem; background: none; border: none; color: #9CA3AF; cursor: pointer;"><i class="fas fa-times"></i> إغلاق</button>
-    </div>
-</div>
-
-<!-- Signup Modal -->
-<div id="signupModal" class="modal">
-    <div class="modal-content glass-card" style="text-align: center;">
-        <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 1rem; border: 2px solid #00D2FF;">
-        <h2 class="gradient-text" style="margin-bottom: 0.5rem;">إنشاء حساب جديد</h2>
-        <p style="color: #9CA3AF; margin-bottom: 1.5rem;">انضم إلى آلاف الطلاب وحقق التفوق</p>
-        
-        <input type="text" id="signupName" placeholder="الاسم الكامل" class="input-field" style="margin-bottom: 1rem;">
-        <input type="email" id="signupEmail" placeholder="البريد الإلكتروني" class="input-field" style="margin-bottom: 1rem;">
-        <input type="password" id="signupPassword" placeholder="كلمة المرور" class="input-field" style="margin-bottom: 1rem;">
-        <button onclick="signUp()" class="btn-primary" style="width: 100%;">إنشاء حساب</button>
-        
-        <p style="margin-top: 1rem; font-size: 0.875rem;">لديك حساب؟ <a href="#" onclick="showLoginModal(); return false;" style="color: #00D2FF;">تسجيل الدخول</a></p>
-        <button onclick="closeSignupModal()" style="margin-top: 1rem; background: none; border: none; color: #9CA3AF; cursor: pointer;"><i class="fas fa-times"></i> إغلاق</button>
-    </div>
-</div>
-
-<script>
-    // ============ FIREBASE CONFIGURATION ============
-    const firebaseConfig = {
-        apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
-        authDomain: "yalla-kimya.firebaseapp.com",
-        projectId: "yalla-kimya",
-        storageBucket
+        // Render App
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
