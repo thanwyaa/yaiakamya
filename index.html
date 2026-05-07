@@ -1,0 +1,444 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>يلا كيمياء | مع مستر زياد مبروك</title>
+    <meta name="description" content="منصة تعليم الكيمياء بشكل مختلف… فهم + حفظ + حل">
+    <meta name="keywords" content="كيمياء, تعليم, ثانوية عامة, مستر زياد مبروك">
+    <meta name="author" content="مستر زياد مبروك">
+    <meta property="og:title" content="يلا كيمياء | مع مستر زياد مبروك">
+    <meta property="og:description" content="الكيمياء بشكل مختلف… فهم + حفظ + حل">
+    <meta property="og:image" content="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/jpeg" href="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg">
+    
+    <!-- Tailwind CSS CDN (حل سريع للـ CSS) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&family=Alexandria:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Alexandria', sans-serif;
+            background: linear-gradient(135deg, #0A0A1A 0%, #03030A 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            border-color: rgba(0, 210, 255, 0.5);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.15);
+            transform: scale(1.02);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #00D2FF 0%, #A855F7 50%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00D2FF 0%, #A855F7 100%);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            color: #00D2FF;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #00D2FF;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        /* Animation for particles */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0; }
+            10%, 90% { opacity: 0.5; }
+            50% { transform: translateY(-100px) translateX(50px); opacity: 1; }
+        }
+        
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(0, 210, 255, 0.2);
+            pointer-events: none;
+            animation: float linear infinite;
+            z-index: 0;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0A0A1A; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #00D2FF, #A855F7); border-radius: 10px; }
+        
+        .neon-border {
+            border: 1px solid #00D2FF;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+        }
+        
+        /* Loading animation */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(0, 210, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00D2FF;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Particles Background -->
+<div id="particles"></div>
+
+<!-- Navigation -->
+<nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 10, 26, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" 
+                 style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #00D2FF;">
+            <div>
+                <h1 style="font-size: 1.25rem; font-weight: bold;" class="gradient-text">يلا كيمياء</h1>
+                <p style="font-size: 0.7rem; color: #9CA3AF;">مع مستر زياد مبروك</p>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+            <a href="#home" style="color: white; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#00D2FF'" onmouseout="this.style.color='white'">الرئيسية</a>
+            <a href="#lectures" style="color: white; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#00D2FF'" onmouseout="this.style.color='white'">المحاضرات</a>
+            <a href="#features" style="color: white; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#00D2FF'" onmouseout="this.style.color='white'">المميزات</a>
+            <a href="#leaderboard" style="color: white; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#00D2FF'" onmouseout="this.style.color='white'">الترتيب</a>
+        </div>
+        
+        <div>
+            <button onclick="showLoginModal()" class="btn-primary" style="font-size: 0.875rem; padding: 8px 20px;">
+                تسجيل الدخول
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Login Modal -->
+<div id="loginModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="glass-card" style="max-width: 450px; width: 90%; padding: 2rem; text-align: center;">
+        <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" 
+             style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 1rem; border: 2px solid #00D2FF;">
+        <h2 class="gradient-text" style="font-size: 1.5rem; margin-bottom: 0.5rem;">مرحباً بك!</h2>
+        <p style="color: #9CA3AF; margin-bottom: 1.5rem;">سجل دخولك لتبدأ رحلة التفوق في الكيمياء</p>
+        
+        <button onclick="signInWithGoogle()" style="width: 100%; background: linear-gradient(135deg, #00D2FF, #A855F7); border: none; padding: 12px; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            🚀 تسجيل الدخول بـ Google
+        </button>
+        
+        <div style="position: relative; margin: 1rem 0;">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center;">
+                <div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.1);"></div>
+            </div>
+            <div style="position: relative; display: flex; justify-content: center;">
+                <span style="background: #0A0A1A; padding: 0 10px; color: #9CA3AF;">أو</span>
+            </div>
+        </div>
+        
+        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 1rem;">
+        <input type="password" id="loginPassword" placeholder="كلمة المرور" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 1rem;">
+        <button onclick="signInWithEmail()" class="btn-primary" style="width: 100%;">تسجيل الدخول</button>
+        
+        <p style="color: #9CA3AF; margin-top: 1rem; font-size: 0.875rem;">
+            ليس لديك حساب؟ <a href="#" onclick="showSignupModal(); return false;" style="color: #00D2FF;">إنشاء حساب جديد</a>
+        </p>
+        <button onclick="closeLoginModal()" style="margin-top: 1rem; color: #9CA3AF; background: none; border: none; cursor: pointer;">✖ إغلاق</button>
+    </div>
+</div>
+
+<!-- Signup Modal -->
+<div id="signupModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="glass-card" style="max-width: 450px; width: 90%; padding: 2rem; text-align: center;">
+        <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" 
+             style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 1rem; border: 2px solid #00D2FF;">
+        <h2 class="gradient-text" style="font-size: 1.5rem; margin-bottom: 0.5rem;">إنشاء حساب جديد</h2>
+        <p style="color: #9CA3AF; margin-bottom: 1.5rem;">انضم إلى آلاف الطلاب وحقق التفوق</p>
+        
+        <input type="text" id="signupName" placeholder="الاسم الكامل" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 1rem;">
+        <input type="email" id="signupEmail" placeholder="البريد الإلكتروني" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 1rem;">
+        <input type="password" id="signupPassword" placeholder="كلمة المرور" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 1rem;">
+        <button onclick="signUp()" class="btn-primary" style="width: 100%;">إنشاء حساب</button>
+        
+        <p style="color: #9CA3AF; margin-top: 1rem; font-size: 0.875rem;">
+            لديك حساب؟ <a href="#" onclick="showLoginModal(); return false;" style="color: #00D2FF;">تسجيل الدخول</a>
+        </p>
+        <button onclick="closeSignupModal()" style="margin-top: 1rem; color: #9CA3AF; background: none; border: none; cursor: pointer;">✖ إغلاق</button>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main style="max-width: 1200px; margin: 0 auto; padding: 6rem 1rem 2rem;">
+    
+    <!-- Hero Section -->
+    <section id="home" style="text-align: center; padding: 3rem 0 5rem;">
+        <div style="display: inline-block; margin-bottom: 1rem; padding: 0.25rem 1rem; background: rgba(0,210,255,0.1); border: 1px solid rgba(0,210,255,0.3); border-radius: 50px;">
+            <span style="color: #00D2FF; font-size: 0.875rem;">🧪 منصة تعليمية متكاملة</span>
+        </div>
+        <h1 style="font-size: 3rem; font-weight: bold; margin-bottom: 1rem;">
+            <span class="gradient-text">يلا كيمياء</span><br>
+            <span style="color: white;">مع مستر زياد مبروك</span>
+        </h1>
+        <p style="font-size: 1.25rem; color: #00D2FF; margin-bottom: 0.5rem; font-weight: bold;">
+            "الكيمياء بشكل مختلف… فهم + حفظ + حل"
+        </p>
+        <p style="color: #9CA3AF; max-width: 600px; margin: 0 auto 2rem;">
+            انضم إلى آلاف الطلاب الذين حققوا التفوق في الكيمياء مع أقوى منصة تعليمية في مصر
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button onclick="showLoginModal()" class="btn-primary">ابدأ رحلتك الآن مجاناً</button>
+            <a href="#lectures" class="btn-secondary">استعرض المحاضرات</a>
+        </div>
+        
+        <!-- Stats -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 4rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem;">👥</div>
+                <h3 style="font-size: 1.5rem; font-weight: bold;" id="studentCount">1,247</h3>
+                <p style="color: #9CA3AF;">طالب منضم</p>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem;">📺</div>
+                <h3 style="font-size: 1.5rem; font-weight: bold;">3,420+</h3>
+                <p style="color: #9CA3AF;">ساعة مشاهدة</p>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem;">🏆</div>
+                <h3 style="font-size: 1.5rem; font-weight: bold;">94%</h3>
+                <p style="color: #9CA3AF;">نسبة النجاح</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" style="padding: 4rem 0;">
+        <h2 style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 1rem;" class="gradient-text">ليه تذاكر مع يلا كيمياء؟</h2>
+        <p style="text-align: center; color: #9CA3AF; margin-bottom: 3rem;">منصة متكاملة تجمع بين الشرح المتميز والتكنولوجيا الحديثة</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">👨‍🏫</div>
+                <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">شرح متكامل</h3>
+                <p style="color: #9CA3AF; font-size: 0.875rem;">منهج كامل بفيديوهات عالية الجودة</p>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
+                <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">تتبع التقدم</h3>
+                <p style="color: #9CA3AF; font-size: 0.875rem;">نظام متابعة يومي للطلاب</p>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">🏅</div>
+                <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">نقاط وجوائز</h3>
+                <p style="color: #9CA3AF; font-size: 0.875rem;">عملات كيميائية وإنجازات</p>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">📝</div>
+                <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem;">كويزات وتقييم</h3>
+                <p style="color: #9CA3AF; font-size: 0.875rem;">اختبارات فورية بعد كل محاضرة</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Lectures Section -->
+    <section id="lectures" style="padding: 4rem 0;">
+        <h2 style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 2rem;" class="gradient-text">📚 المحاضرات</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <!-- Lecture 1 -->
+            <div class="glass-card" style="overflow: hidden;">
+                <img src="https://img.youtube.com/vi/xDgzehlarWo/hqdefault.jpg" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem;">الباب الأول - الكيمياء العامة</h3>
+                    <div style="display: flex; justify-content: space-between; color: #9CA3AF; font-size: 0.875rem; margin-bottom: 1rem;">
+                        <span>👁️ 342 مشاهدة</span>
+                        <span>⏱️ 45 دقيقة</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="https://youtu.be/xDgzehlarWo" target="_blank" class="btn-primary" style="flex: 1; text-align: center; font-size: 0.875rem; padding: 8px;">مشاهدة</a>
+                        <a href="https://t.me/yala_kamya_ziad_mabrok/533" target="_blank" class="btn-secondary" style="padding: 8px 12px;">📄</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lecture 2 -->
+            <div class="glass-card" style="overflow: hidden;">
+                <img src="https://img.youtube.com/vi/bLY1TDI9Mm4/hqdefault.jpg" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem;">الباب الثاني - المحاليل</h3>
+                    <div style="display: flex; justify-content: space-between; color: #9CA3AF; font-size: 0.875rem; margin-bottom: 1rem;">
+                        <span>👁️ 289 مشاهدة</span>
+                        <span>⏱️ 52 دقيقة</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="https://youtu.be/bLY1TDI9Mm4" target="_blank" class="btn-primary" style="flex: 1; text-align: center; font-size: 0.875rem; padding: 8px;">مشاهدة</a>
+                        <a href="https://t.me/yala_kamya_ziad_mabrok/534" target="_blank" class="btn-secondary" style="padding: 8px 12px;">📄</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lecture 3 -->
+            <div class="glass-card" style="overflow: hidden;">
+                <img src="https://img.youtube.com/vi/ywrKtjJmzd4/hqdefault.jpg" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem;">الباب الثالث - الحرارة</h3>
+                    <div style="display: flex; justify-content: space-between; color: #9CA3AF; font-size: 0.875rem; margin-bottom: 1rem;">
+                        <span>👁️ 256 مشاهدة</span>
+                        <span>⏱️ 48 دقيقة</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="https://youtu.be/ywrKtjJmzd4" target="_blank" class="btn-primary" style="flex: 1; text-align: center; font-size: 0.875rem; padding: 8px;">مشاهدة</a>
+                        <a href="https://t.me/yala_kamya_ziad_mabrok/535" target="_blank" class="btn-secondary" style="padding: 8px 12px;">📄</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lecture 4 -->
+            <div class="glass-card" style="overflow: hidden;">
+                <img src="https://img.youtube.com/vi/_LeKR7weATE/hqdefault.jpg" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem;">المنهج في 3 ساعات</h3>
+                    <div style="display: flex; justify-content: space-between; color: #9CA3AF; font-size: 0.875rem; margin-bottom: 1rem;">
+                        <span>👁️ 512 مشاهدة</span>
+                        <span>⏱️ 180 دقيقة</span>
+                    </div>
+                    <a href="https://youtu.be/_LeKR7weATE" target="_blank" class="btn-primary" style="display: block; text-align: center; font-size: 0.875rem; padding: 8px;">مشاهدة</a>
+                </div>
+            </div>
+            
+            <!-- Lecture 5 -->
+            <div class="glass-card" style="overflow: hidden;">
+                <img src="https://img.youtube.com/vi/O2LJqeoUJoM/hqdefault.jpg" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem;">حل كتاب المعهد</h3>
+                    <div style="display: flex; justify-content: space-between; color: #9CA3AF; font-size: 0.875rem; margin-bottom: 1rem;">
+                        <span>👁️ 198 مشاهدة</span>
+                        <span>⏱️ 65 دقيقة</span>
+                    </div>
+                    <a href="https://youtu.be/O2LJqeoUJoM" target="_blank" class="btn-primary" style="display: block; text-align: center; font-size: 0.875rem; padding: 8px;">مشاهدة</a>
+                </div>
+            </div>
+            
+            <!-- Lecture 6 -->
+            <div class="glass-card" style="overflow: hidden;">
+                <img src="https://img.youtube.com/vi/LPXRrqsRjRg/hqdefault.jpg" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: bold; margin-bottom: 0.5rem;">حل أهم 150 سؤال</h3>
+                    <div style="display: flex; justify-content: space-between; color: #9CA3AF; font-size: 0.875rem; margin-bottom: 1rem;">
+                        <span>👁️ 423 مشاهدة</span>
+                        <span>⏱️ 120 دقيقة</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="https://youtu.be/LPXRrqsRjRg" target="_blank" class="btn-primary" style="flex: 1; text-align: center; font-size: 0.875rem; padding: 8px;">مشاهدة</a>
+                        <a href="https://t.me/yala_kamya_ziad_mabrok/551" target="_blank" class="btn-secondary" style="padding: 8px 12px;">📄</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" style="padding: 4rem 0;">
+        <h2 style="font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 1rem;" class="gradient-text">🏆 ترتيب الطلاب</h2>
+        <p style="text-align: center; color: #9CA3AF; margin-bottom: 2rem;">متجدد بشكل لحظي - 🧪 العملات الكيميائية</p>
+        
+        <div class="glass-card" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(168,85,247,0.1)); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <tr>
+                        <th style="padding: 1rem; text-align: right;">#</th>
+                        <th style="padding: 1rem; text-align: right;">الطالب</th>
+                        <th style="padding: 1rem; text-align: right;">🧪 العملات</th>
+                        <th style="padding: 1rem; text-align: right;">📚 الساعات</th>
+                        <th style="padding: 1rem; text-align: right;">🔥 الستريك</th>
+                        <th style="padding: 1rem; text-align: right;">🏅 المستوى</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem;">🥇</td>
+                        <td style="padding: 1rem;">محمد أحمد</td>
+                        <td style="padding: 1rem; color: #00D2FF; font-weight: bold;">2,850 🧪</td>
+                        <td style="padding: 1rem;">48 ساعة</td>
+                        <td style="padding: 1rem;">15 🔥</td>
+                        <td style="padding: 1rem;"><span style="background: rgba(168,85,247,0.2); color: #A855F7; padding: 0.25rem 0.5rem; border-radius: 50px; font-size: 0.75rem;">Legend</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem;">🥈</td>
+                        <td style="padding: 1rem;">يوسف علي</td>
+                        <td style="padding: 1rem; color: #00D2FF; font-weight: bold;">2,720 🧪</td>
+                        <td style="padding: 1rem;">42 ساعة</td>
+                        <td style="padding: 1rem;">12 🔥</td>
+                        <td style="padding: 1rem;"><span style="background: rgba(6,182,212,0.2); color: #06B6D4; padding: 0.25rem 0.5rem; border-radius: 50px; font-size: 0.75rem;">Diamond</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem;">🥉</td>
+                        <td style="padding: 1rem;">فاطمة حسن</td>
+                        <td style="padding: 1rem; color: #00D2FF; font-weight: bold;">2,680 🧪</td>
+                        <td style="padding: 1rem;">40 ساعة</td>
+                        <td style="padding: 1rem;">10 🔥</td>
+                        <td style="padding: 1rem;"><span style="background: rgba(0,210,255,0.2); color: #00D2FF; padding: 0.25rem 0.5rem; border-radius: 50px; font-size: 0.75rem;">Platinum</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <button onclick="showLoginModal()" class="btn-primary">سجل الآن وابدأ المنافسة</button>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section style="padding
