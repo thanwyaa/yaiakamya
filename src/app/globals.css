@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&family=Alexandria:wght@100;200;300;400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-dark-500 text-white font-cairo overflow-x-hidden;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-300;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-neon-blue to-neon-purple rounded-full;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl transition-all duration-300;
+  }
+  
+  .glass-card-glow {
+    @apply glass-card hover:border-neon-blue/50 hover:shadow-[0_0_30px_rgba(0,210,255,0.15)] hover:scale-[1.02];
+  }
+
+  .neon-text {
+    @apply text-neon-blue animate-glow;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-cyan bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-neon-blue to-neon-purple rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(0,210,255,0.4)] active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 glass-card border-neon-blue/30 text-neon-blue font-bold transition-all duration-300 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,210,255,0.2)] hover:scale-105;
+  }
+
+  .input-primary {
+    @apply w-full px-4 py-3 bg-dark-300/50 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-blue focus:ring-1 focus:ring-neon-blue transition-all duration-300;
+  }
+}
+
+@keyframes float-particle {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(100px);
+    opacity: 0;
+  }
+}
+
+.animate-float-particle {
+  animation: float-particle linear infinite;
+}
