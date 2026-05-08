@@ -1,426 +1,721 @@
-// app.js - كل كود المنصة في ملف واحد
-
-// ========== البيانات الأساسية ==========
-const lectures = [
-  {
-    id: 1,
-    title: "الباب الأول - أساسيات الكيمياء",
-    youtubeUrl: "https://www.youtube.com/embed/xDgzehlarWo",
-    pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/533",
-    chapter: "الباب الأول",
-    duration: "2:30:00",
-    cover: "https://img.youtube.com/vi/xDgzehlarWo/maxresdefault.jpg",
-    views: 0
-  },
-  {
-    id: 2,
-    title: "الباب الثاني - التفاعلات الكيميائية",
-    youtubeUrl: "https://www.youtube.com/embed/bLY1TDI9Mm4",
-    pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/534",
-    chapter: "الباب الثاني",
-    duration: "2:45:00",
-    cover: "https://img.youtube.com/vi/bLY1TDI9Mm4/maxresdefault.jpg",
-    views: 0
-  },
-  {
-    id: 3,
-    title: "الباب الثالث - الكيمياء العضوية",
-    youtubeUrl: "https://www.youtube.com/embed/ywrKtjJmzd4",
-    pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/535",
-    chapter: "الباب الثالث",
-    duration: "3:00:00",
-    cover: "https://img.youtube.com/vi/ywrKtjJmzd4/maxresdefault.jpg",
-    views: 0
-  },
-  {
-    id: 4,
-    title: "المنهج في 3 ساعات - مراجعة شاملة",
-    youtubeUrl: "https://www.youtube.com/embed/_LeKR7weATE",
-    chapter: "مراجعة نهائية",
-    duration: "3:00:00",
-    cover: "https://img.youtube.com/vi/_LeKR7weATE/maxresdefault.jpg",
-    views: 0
-  },
-  {
-    id: 5,
-    title: "حل كتاب المعهد بالكامل",
-    youtubeUrl: "https://www.youtube.com/embed/O2LJqeoUJoM",
-    chapter: "تدريبات",
-    duration: "2:15:00",
-    cover: "https://img.youtube.com/vi/O2LJqeoUJoM/maxresdefault.jpg",
-    views: 0
-  },
-  {
-    id: 6,
-    title: "حل أهم 150 سؤال في المنهج",
-    youtubeUrl: "https://www.youtube.com/embed/LPXRrqsRjRg",
-    pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/551",
-    chapter: "أسئلة متوقعة",
-    duration: "1:45:00",
-    cover: "https://img.youtube.com/vi/LPXRrqsRjRg/maxresdefault.jpg",
-    views: 0
-  }
-];
-
-const quizzes = [
-  {
-    id: 1,
-    lectureId: 1,
-    title: "كويز الباب الأول",
-    questions: [
-      { q: "ما هو عدد أفوجادرو؟", options: ["6.02×10²³", "3.01×10²³", "1.66×10⁻²⁴", "9.11×10⁻²⁸"], correct: 0 },
-      { q: "الكتلة الذرية لعنصر الصوديوم Na", options: ["23", "11", "12", "39"], correct: 0 },
-      { q: "ما هو العنصر الذي عدده الذري 17؟", options: ["الكلور", "الأكسجين", "النيتروجين", "الكربون"], correct: 0 }
-    ]
-  },
-  {
-    id: 2,
-    lectureId: 2,
-    title: "كويز الباب الثاني",
-    questions: [
-      { q: "التفاعل الطارد للحرارة يكون ΔH", options: ["سالب", "موجب", "صفر", "غير محدد"], correct: 0 },
-      { q: "ما هو قانون هس؟", options: ["المحتوى الحراري", "السرعة", "الضغط", "الحجم"], correct: 0 }
-    ]
-  }
-];
-
-// ========== حالة التطبيق ==========
-let currentUser = null;
-let isDarkMode = true;
-let currentPage = 'home';
-
-// ========== Firebase Listeners ==========
-function initFirebase() {
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      const userRef = firebase.database().ref(`users/${user.uid}`);
-      userRef.on('value', snapshot => {
-        currentUser = { uid: user.uid, email: user.email, ...snapshot.val() };
-        if (!snapshot.exists()) {
-          userRef.set({
-            email: user.email,
-            displayName: user.displayName || 'طالب',
-            photoURL: user.photoURL || '',
-            coins: 0,
-            totalWatchTime: 0,
-            lastActive: Date.now(),
-            createdAt: Date.now(),
-            role: 'student',
-            isBlocked: false
-          });
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 يلا كيمياء | مع مستر زياد مبروك</title>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========== كل التنسيقات هنا ========== */
+        :root {
+            --bg-dark: #0a0a1a;
+            --bg-light: #f0f4ff;
+            --purple: #b366ff;
+            --pink: #ff66b2;
+            --gold: #ffd700;
+            --card-dark: rgba(255,255,255,0.05);
+            --card-light: rgba(255,255,255,0.9);
+            --text-dark: #ffffff;
+            --text-light: #1a1a2e;
+            --border-dark: rgba(255,255,255,0.15);
+            --border-light: rgba(0,0,0,0.1);
         }
-        updateUI();
-      });
-    } else {
-      currentUser = null;
-      updateUI();
-    }
-  });
 
-  // لوحة المتصدرين Live
-  firebase.database().ref('users').on('value', snapshot => {
-    renderLeaderboard();
-  });
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  // الإشعارات
-  firebase.database().ref('notifications').on('child_added', snapshot => {
-    const notif = snapshot.val();
-    if (!notif.read) showToast(notif.message);
-  });
-}
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-dark);
+            transition: all 0.5s ease;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
 
-// ========== المصادقة ==========
-async function loginGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  try {
-    await firebase.auth().signInWithPopup(provider);
-    showToast('✅ تم تسجيل الدخول بنجاح');
-  } catch (error) {
-    showToast('❌ فشل تسجيل الدخول');
-  }
-}
+        body.light-mode {
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
 
-async function loginEmail(email, password) {
-  try {
-    await firebase.auth().signInWithEmailAndPassword(email, password);
-  } catch (error) {
-    showToast('❌ بيانات غير صحيحة');
-  }
-}
+        /* ========== جسيمات متحركة ========== */
+        #particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
 
-async function register(email, password, name) {
-  try {
-    const result = await firebase.auth().createUserWithEmailAndPassword(email, password);
-    await result.user.updateProfile({ displayName: name });
-    showToast('✅ تم إنشاء الحساب');
-  } catch (error) {
-    showToast('❌ فشل إنشاء الحساب');
-  }
-}
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--purple);
+            border-radius: 50%;
+            animation: floatParticle 12s infinite;
+        }
 
-function logout() {
-  firebase.auth().signOut();
-}
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
 
-// ========== العملات الكيميائية ==========
-function addCoins(amount, reason) {
-  if (!currentUser) return;
-  const userRef = firebase.database().ref(`users/${currentUser.uid}`);
-  userRef.transaction(user => {
-    if (user) {
-      user.coins = (user.coins || 0) + amount;
-      return user;
-    }
-    return user;
-  });
-  
-  firebase.database().ref('coins_transactions').push({
-    userId: currentUser.uid,
-    amount,
-    reason,
-    timestamp: Date.now()
-  });
+        /* ========== شريط التنقل ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10,10,26,0.85);
+            backdrop-filter: blur(20px);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-dark);
+            transition: all 0.3s;
+        }
 
-  showCoinAnimation(`+${amount} 🧪`);
-}
+        body.light-mode nav {
+            background: rgba(255,255,255,0.9);
+            border-bottom: 1px solid var(--border-light);
+        }
 
-// ========== عرض الصفحات (SPA Routing) ==========
-function navigate(page) {
-  currentPage = page;
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const target = document.getElementById(`page-${page}`);
-  if (target) target.classList.add('active');
-  
-  if (page === 'lectures') renderLectures();
-  if (page === 'quizzes') renderQuizzes();
-  if (page === 'leaderboard') renderLeaderboard();
-  if (page === 'admin') renderAdminPanel();
-  
-  window.scrollTo(0, 0);
-}
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
 
-// ========== تحديث الواجهة ==========
-function updateUI() {
-  const authButtons = document.getElementById('auth-buttons');
-  const userInfo = document.getElementById('user-info');
-  const userCoins = document.getElementById('user-coins');
-  const userAvatar = document.getElementById('user-avatar');
+        .nav-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--purple);
+            object-fit: cover;
+        }
 
-  if (currentUser) {
-    if (authButtons) authButtons.style.display = 'none';
-    if (userInfo) userInfo.style.display = 'flex';
-    if (userCoins) userCoins.textContent = `🧪 ${currentUser.coins || 0}`;
-    if (userAvatar) userAvatar.src = currentUser.photoURL || 'https://via.placeholder.com/40';
-    
-    // إظهار رابط الأدمن إذا كان Admin
-    const adminLink = document.getElementById('admin-link');
-    if (adminLink) {
-      adminLink.style.display = currentUser.role === 'admin' ? 'block' : 'none';
-    }
-  } else {
-    if (authButtons) authButtons.style.display = 'flex';
-    if (userInfo) userInfo.style.display = 'none';
-    const adminLink = document.getElementById('admin-link');
-    if (adminLink) adminLink.style.display = 'none';
-  }
-}
+        .nav-logo span {
+            font-weight: 900;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-// ========== عرض المحاضرات ==========
-function renderLectures() {
-  const container = document.getElementById('lectures-container');
-  if (!container) return;
-  
-  container.innerHTML = lectures.map((lec, i) => `
-    <div class="lecture-card" onclick="openLecture('${lec.id}')" style="animation: fadeInUp ${0.3 + i * 0.1}s ease both">
-      <img src="${lec.cover}" alt="${lec.title}" class="lecture-cover" loading="lazy" 
-           onerror="this.src='https://via.placeholder.com/320x200/1a1a2e/b366ff?text=${encodeURIComponent(lec.chapter)}'">
-      <div class="lecture-info">
-        <span style="color: var(--purple); font-size: 0.8rem; font-weight: 700;">📖 ${lec.chapter}</span>
-        <h3>${lec.title}</h3>
-        <p>⏱️ ${lec.duration} | 👁️ ${lec.views} مشاهدة</p>
-        ${lec.pdfUrl ? '<p style="color: #22c55e;">📄 يتضمن ملف PDF</p>' : ''}
-      </div>
-    </div>
-  `).join('');
-}
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
-// ========== فتح المحاضرة ==========
-function openLecture(id) {
-  const lecture = lectures.find(l => l.id == id);
-  if (!lecture) return;
+        .nav-links a {
+            color: #bbb;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.95rem;
+            padding: 6px 0;
+        }
 
-  lecture.views++;
-  firebase.database().ref(`lectures/${id}`).set(lecture);
+        .nav-links a:hover { color: var(--purple); }
 
-  if (!currentUser) {
-    document.getElementById('modal-locked').style.display = 'flex';
-    return;
-  }
+        body.light-mode .nav-links a { color: #555; }
+        body.light-mode .nav-links a:hover { color: #7c3aed; }
 
-  document.getElementById('player-title').textContent = lecture.title;
-  document.getElementById('player-iframe').src = lecture.youtubeUrl + '?autoplay=1';
-  document.getElementById('player-pdf').href = lecture.pdfUrl || '#';
-  document.getElementById('player-pdf').style.display = lecture.pdfUrl ? 'inline-flex' : 'none';
-  document.getElementById('modal-player').style.display = 'flex';
+        .btn-sm {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-family: 'Cairo', sans-serif;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
 
-  // منح عملات بعد 60 ثانية مشاهدة
-  setTimeout(() => {
-    if (document.getElementById('modal-player').style.display === 'flex') {
-      addCoins(50, `مشاهدة ${lecture.title}`);
-    }
-  }, 60000);
-}
+        .btn-purple {
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: white;
+        }
 
-function closePlayer() {
-  document.getElementById('player-iframe').src = '';
-  document.getElementById('modal-player').style.display = 'none';
-}
+        .btn-purple:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(179,102,255,0.4); }
 
-function closeLockedModal() {
-  document.getElementById('modal-locked').style.display = 'none';
-  navigate('login');
-}
+        .btn-outline {
+            border: 2px solid var(--purple);
+            color: var(--purple);
+            background: transparent;
+        }
 
-// ========== الكويزات ==========
-function renderQuizzes() {
-  const container = document.getElementById('quizzes-container');
-  if (!container) return;
+        .btn-outline:hover { background: var(--purple); color: white; }
 
-  if (!currentUser) {
-    container.innerHTML = `
-      <div class="glass" style="text-align: center; padding: 4rem 2rem;">
-        <h2>🔒 يجب تسجيل الدخول لدخول الكويزات</h2>
-        <button class="btn btn-primary" onclick="navigate('login')" style="margin-top: 1rem;">سجل دخول</button>
-      </div>`;
-    return;
-  }
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border-dark);
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
 
-  container.innerHTML = quizzes.map(q => `
-    <div class="glass" style="padding: 2rem; cursor: pointer;" onclick="startQuiz('${q.id}')">
-      <h3>🧪 ${q.title}</h3>
-      <p>عدد الأسئلة: ${q.questions.length}</p>
-      <button class="btn btn-primary" style="margin-top: 1rem;">ابدأ الكويز</button>
-    </div>
-  `).join('');
-}
+        .theme-toggle:hover { border-color: var(--purple); }
 
-let currentQuiz = null;
-let quizScore = 0;
-let currentQuestionIndex = 0;
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
 
-function startQuiz(id) {
-  currentQuiz = quizzes.find(q => q.id == id);
-  if (!currentQuiz) return;
-  
-  quizScore = 0;
-  currentQuestionIndex = 0;
-  
-  document.getElementById('quiz-title').textContent = currentQuiz.title;
-  document.getElementById('modal-quiz').style.display = 'flex';
-  showQuestion();
-}
+        /* ========== المحتوى الرئيسي ========== */
+        main {
+            position: relative;
+            z-index: 1;
+            padding-top: 80px;
+        }
 
-function showQuestion() {
-  const container = document.getElementById('quiz-content');
-  if (currentQuestionIndex >= currentQuiz.questions.length) {
-    finishQuiz();
-    return;
-  }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-  const q = currentQuiz.questions[currentQuestionIndex];
-  container.innerHTML = `
-    <h3 style="margin-bottom: 1.5rem;">سؤال ${currentQuestionIndex + 1}/${currentQuiz.questions.length}</h3>
-    <p style="font-size: 1.2rem; margin-bottom: 1.5rem; font-weight: 600;">${q.q}</p>
-    ${q.options.map((opt, i) => `
-      <button class="quiz-option" onclick="checkAnswer(${i})">${opt}</button>
-    `).join('')}
-  `;
-}
+        /* ========== Hero Section ========== */
+        #hero {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
 
-function checkAnswer(index) {
-  const q = currentQuiz.questions[currentQuestionIndex];
-  const options = document.querySelectorAll('.quiz-option');
-  
-  options.forEach((opt, i) => {
-    opt.style.pointerEvents = 'none';
-    if (i === q.correct) opt.classList.add('correct');
-    if (i === index && i !== q.correct) opt.classList.add('wrong');
-  });
+        #hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            background: linear-gradient(to right, var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
 
-  if (index === q.correct) quizScore++;
+        #hero .teacher-name {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin: 10px 0 20px;
+            font-weight: 700;
+        }
 
-  setTimeout(() => {
-    currentQuestionIndex++;
-    showQuestion();
-  }, 1500);
-}
+        #hero .slogan {
+            font-size: clamp(1.1rem, 3vw, 1.8rem);
+            color: var(--purple);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
 
-function finishQuiz() {
-  const percentage = Math.round((quizScore / currentQuiz.questions.length) * 100);
-  const coins = Math.floor(percentage / 10);
-  
-  firebase.database().ref(`progress/${currentUser.uid}/quizzes/${currentQuiz.id}`).set({
-    score: quizScore,
-    total: currentQuiz.questions.length,
-    percentage,
-    completedAt: Date.now()
-  });
+        #hero .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-  addCoins(coins, `كويز ${currentQuiz.title} - ${percentage}%`);
+        .btn {
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-  document.getElementById('quiz-content').innerHTML = `
-    <div style="text-align: center;">
-      <h2 style="font-size: 3rem;">${percentage >= 70 ? '🎉' : '💪'}</h2>
-      <p style="font-size: 1.5rem; font-weight: 700;">النتيجة: ${quizScore}/${currentQuiz.questions.length}</p>
-      <p style="font-size: 1.2rem; color: var(--purple);">النسبة: ${percentage}%</p>
-      <p style="color: gold; font-weight: 700;">+${coins} 🧪 عملات كيميائية</p>
-      <button class="btn btn-primary" onclick="closeQuiz()" style="margin-top: 1rem;">حسناً</button>
-      <button class="btn btn-outline" onclick="startQuiz('${currentQuiz.id}')" style="margin-top: 0.5rem;">إعادة المحاولة</button>
-    </div>
-  `;
-}
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: white;
+            box-shadow: 0 8px 25px rgba(179,102,255,0.35);
+        }
 
-function closeQuiz() {
-  document.getElementById('modal-quiz').style.display = 'none';
-  currentQuiz = null;
-}
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(255,102,178,0.45); }
 
-// ========== المتصدرين ==========
-function renderLeaderboard() {
-  const container = document.getElementById('leaderboard-list');
-  if (!container) return;
+        /* ========== Grid Cards ========== */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 30px 0;
+        }
 
-  firebase.database().ref('users').orderByChild('coins').limitToLast(10).once('value', snapshot => {
-    const users = [];
-    snapshot.forEach(child => {
-      users.push({ id: child.key, ...child.val() });
-    });
-    users.reverse();
-    
-    container.innerHTML = users.map((user, i) => `
-      <div class="leaderboard-item" style="animation: fadeInUp ${0.2 + i * 0.1}s ease both">
-        <div class="rank rank-${i + 1}">${i + 1}</div>
-        <img src="${user.photoURL || 'https://via.placeholder.com/40'}" 
-             style="width: 40px; height: 40px; border-radius: 50%;" alt="">
-        <div style="flex: 1;">
-          <strong>${user.displayName || 'طالب'}</strong>
-          <p style="color: #aaa; font-size: 0.8rem;">${user.email}</p>
+        /* ========== Glass Card ========== */
+        .glass-card {
+            background: var(--card-dark);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 28px;
+            border: 1px solid var(--border-dark);
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+
+        body.light-mode .glass-card {
+            background: var(--card-light);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--purple);
+            box-shadow: 0 20px 50px rgba(179,102,255,0.2);
+        }
+
+        body.light-mode .glass-card:hover {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+
+        /* ========== Lecture Cover ========== */
+        .lecture-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .lecture-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            background: rgba(179,102,255,0.2);
+            color: var(--purple);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .lecture-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .lecture-meta {
+            font-size: 0.85rem;
+            color: #999;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== الإحصائيات ========== */
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* ========== Modal ========== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #1a1a2e;
+            border-radius: 24px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-dark);
+            position: relative;
+        }
+
+        body.light-mode .modal-box {
+            background: white;
+            border-color: var(--border-light);
+        }
+
+        .modal-close {
+            position: sticky;
+            top: 10px;
+            float: left;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin: 10px;
+        }
+
+        .video-wrap {
+            position: relative;
+            padding-top: 56.25%;
+        }
+
+        .video-wrap iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* ========== الكويز ========== */
+        .quiz-option-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            margin: 8px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-dark);
+            border-radius: 14px;
+            color: inherit;
+            cursor: pointer;
+            text-align: right;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .quiz-option-btn:hover { border-color: var(--purple); background: rgba(179,102,255,0.1); }
+        .quiz-option-btn.correct { background: rgba(34,197,94,0.25); border-color: #22c55e; }
+        .quiz-option-btn.wrong { background: rgba(239,68,68,0.25); border-color: #ef4444; }
+
+        /* ========== Leaderboard ========== */
+        .lb-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            background: var(--card-dark);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-dark);
+            transition: 0.3s;
+        }
+
+        .lb-row:hover { border-color: var(--purple); transform: translateX(-6px); }
+
+        .lb-rank {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+        }
+
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #808080); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #a0522d); color: #fff; }
+        .rank-other { background: rgba(255,255,255,0.1); }
+
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            color: white;
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            z-index: 3000;
+            animation: toastIn 0.4s ease, toastOut 0.4s ease 2.5s forwards;
+            box-shadow: 0 10px 30px rgba(179,102,255,0.5);
+        }
+
+        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(-40px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateX(-50%) translateY(0); } to { opacity: 0; transform: translateX(-50%) translateY(-40px); } }
+
+        /* ========== Section Titles ========== */
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 50px 0 30px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* ========== Footer ========== */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            border-top: 1px solid var(--border-dark);
+            margin-top: 60px;
+        }
+
+        body.light-mode footer { border-top-color: var(--border-light); }
+
+        .hidden { display: none !important; }
+
+        /* ========== Mobile ========== */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(10,10,26,0.95); padding: 20px; gap: 15px; }
+            body.light-mode .nav-links.open { background: rgba(255,255,255,0.98); }
+            .menu-toggle { display: block; }
+            .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الجسيمات -->
+    <div id="particles"></div>
+
+    <!-- شريط التنقل -->
+    <nav>
+        <div class="nav-logo" onclick="showPage('home')">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="logo" onerror="this.src='https://ui-avatars.com/api/?name=YK&background=b366ff&color=fff&size=100'">
+            <span>يلا كيمياء</span>
         </div>
-        <span style="color: gold; font-weight: 700;">🧪 ${user.coins || 0}</span>
-      </div>
-    `).join('');
-  });
-}
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+        <div class="nav-links" id="nav-links">
+            <a onclick="showPage('home')">🏠 الرئيسية</a>
+            <a onclick="showPage('lectures')">📚 المحاضرات</a>
+            <a onclick="showPage('quizzes')">🧠 الكويزات</a>
+            <a onclick="showPage('leaderboard')">🏆 المتصدرين</a>
+            <span id="admin-link-nav" class="hidden"><a onclick="showPage('admin')">👑 الأدمن</a></span>
+            <span id="auth-btns">
+                <button class="btn-sm btn-purple" onclick="showPage('login')">🔑 دخول</button>
+            </span>
+            <span id="user-info-nav" class="hidden" style="display:flex;align-items:center;gap:10px;">
+                <span id="coins-display" style="color:var(--gold);font-weight:700;">🧪 0</span>
+                <img id="user-avatar-nav" src="" style="width:35px;height:35px;border-radius:50%;border:2px solid var(--purple);" alt="">
+                <button class="btn-sm btn-outline" onclick="logout()">خروج</button>
+            </span>
+            <button class="theme-toggle" onclick="toggleTheme()" title="تبديل الوضع">🌓</button>
+        </div>
+    </nav>
 
-// ========== لوحة الأدمن ==========
-function renderAdminPanel() {
-  if (!currentUser || currentUser.role !== 'admin') {
-    navigate('home');
-    return;
-  }
+    <!-- ========== المحتوى الرئيسي ========== -->
+    <main>
+        <!-- الصفحة الرئيسية -->
+        <section id="page-home" class="container">
+            <div id="hero">
+                <div>
+                    <h1>🧪 يلا كيمياء</h1>
+                    <p class="teacher-name">مع مستر زياد مبروك</p>
+                    <p class="slogan">"الكيمياء مش حفظ… الكيمياء فهم"</p>
+                    <p style="color:#aaa;margin-bottom:25px;font-size:1.1rem;">شرح مبسط، مراجعات قوية، وكل اللي تحتاجه عشان تفهم الكيمياء بسهولة</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="showPage('lectures')">🚀 ابدأ التعلم</button>
+                        <button class="btn btn-outline" onclick="showPage('lectures')" style="background:transparent;border:2px solid var(--purple);color:var(--purple);">📚 تصفح المحاضرات</button>
+                        <button class="btn btn-outline" onclick="showPage('login')" id="hero-login-btn" style="background:transparent;border:2px solid var(--purple);color:var(--purple);">🔑 سجل دخول</button>
+                    </div>
+                    <div style="margin-top:40px;">
+                        <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="مستر زياد مبروك" style="width:180px;height:180px;border-radius:50%;border:4px solid var(--purple);object-fit:cover;box-shadow:0 0 60px rgba(179,102,255,0.3);" onerror="this.src='https://ui-avatars.com/api/?name=Ziad+Mabrouk&background=b366ff&color=fff&size=200'">
+                    </div>
+                </div>
+            </div>
 
-  const container = document.getElementById('admin-content');
-  if (!container) return;
+            <!-- ليه تتابع مستر زياد مبروك -->
+            <h2 class="section-title">👨‍🏫 ليه تتابع مستر زياد مبروك؟</h2>
+            <p class="section-subtitle">أسباب تخليك تختار مستر زياد عشان تفهم الكيمياء صح</p>
+            <div class="grid-3">
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">📖 شرح مبسط</h3><p style="color:#aaa;">بيوصل المعلومة بأسهل طريقة ومن غير تعقيد</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">🗂️ ترتيب المنهج</h3><p style="color:#aaa;">المنهج متقسم بطريقة منظمة وسهلة المذاكرة</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">🔥 مراجعات قوية</h3><p style="color:#aaa;">مراجعات شاملة قبل الامتحانات تغطي كل الأفكار</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">💡 أفكار الامتحانات</h3><p style="color:#aaa;">حل أسئلة متوقعة وأفكار الامتحانات الحديثة</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">📞 متابعة مستمرة</h3><p style="color:#aaa;">متابعة دورية للطلاب والتأكد من فهمهم</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">✍️ حل تدريبات</h3><p style="color:#aaa;">تدريبات عملية بعد كل درس عشان تثبت المعلومة</p></div>
+            </div>
 
-  firebase.database().ref('users').once('value', snapshot => {
-    const users
+            <!-- ليه تختار منصة يلا كيمياء -->
+            <h2 class="section-title">🧪 ليه تختار منصة يلا كيمياء؟</h2>
+            <p class="section-subtitle">مميزات المنصة اللي هتساعدك تذاكر بذكاء</p>
+            <div class="grid-3">
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">📚 محاضرات مرتبة</h3><p style="color:#aaa;">كل المحاضرات متقسمة أبواب ومرتبة</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">🧠 كويزات بعد كل درس</h3><p style="color:#aaa;">اختبر نفسك بعد كل محاضرة</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">🧪 عملات كيميائية</h3><p style="color:#aaa;">اجمع عملات مع كل نشاط</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">📊 متابعة تقدمك</h3><p style="color:#aaa;">شوف مستواك أول بأول</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">🏆 ترتيب الطلاب</h3><p style="color:#aaa;">نافس زمايلك في لوحة الشرف</p></div>
+                <div class="glass-card"><h3 style="color:var(--purple);margin-bottom:10px;">📄 ملفات PDF</h3><p style="color:#aaa;">حمل الملازم والمراجعات</p></div>
+            </div>
+
+            <!-- إحصائيات حية -->
+            <h2 class="section-title">📊 إحصائيات المنصة</h2>
+            <div class="grid-3" id="live-stats">
+                <div class="glass-card" style="text-align:center;"><div class="stat-number" id="stat-students">0</div><div class="stat-label">👥 طالب مسجل</div></div>
+                <div class="glass-card" style="text-align:center;"><div class="stat-number" id="stat-lectures">6</div><div class="stat-label">📚 محاضرة</div></div>
+                <div class="glass-card" style="text-align:center;"><div class="stat-number" id="stat-hours">0</div><div class="stat-label">⏱️ ساعة مشاهدة</div></div>
+            </div>
+        </section>
+
+        <!-- صفحة المحاضرات -->
+        <section id="page-lectures" class="container hidden">
+            <h2 class="section-title">📚 المكتبة الكيميائية</h2>
+            <p class="section-subtitle">جميع المحاضرات بتقنية Netflix Style</p>
+            <div class="grid-3" id="lectures-grid"></div>
+        </section>
+
+        <!-- صفحة الكويزات -->
+        <section id="page-quizzes" class="container hidden">
+            <h2 class="section-title">🧠 الكويزات</h2>
+            <p class="section-subtitle">اختبر نفسك بعد كل محاضرة</p>
+            <div class="grid-3" id="quizzes-grid"></div>
+        </section>
+
+        <!-- صفحة المتصدرين -->
+        <section id="page-leaderboard" class="container hidden">
+            <h2 class="section-title">🏆 لوحة المتصدرين</h2>
+            <p class="section-subtitle">أفضل 10 طلاب من حيث العملات الكيميائية</p>
+            <div id="leaderboard-list" style="max-width:650px;margin:0 auto;"></div>
+        </section>
+
+        <!-- صفحة تسجيل الدخول -->
+        <section id="page-login" class="container hidden">
+            <div style="max-width:420px;margin:60px auto;">
+                <div class="glass-card">
+                    <h2 style="text-align:center;margin-bottom:25px;">🔑 تسجيل الدخول</h2>
+                    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:15px;" onclick="loginGoogle()">
+                        🟡 تسجيل بـ Google
+                    </button>
+                    <div style="text-align:center;color:#999;margin:15px 0;">أو</div>
+                    <input type="text" id="login-name" placeholder="الاسم (للتسجيل الجديد)" style="width:100%;padding:12px;margin:8px 0;border-radius:12px;border:1px solid var(--border-dark);background:rgba(255,255,255,0.05);color:inherit;font-family:'Cairo',sans-serif;">
+                    <input type="email" id="login-email" placeholder="البريد الإلكتروني" style="width:100%;padding:12px;margin:8px 0;border-radius:12px;border:1px solid var(--border-dark);background:rgba(255,255,255,0.05);color:inherit;font-family:'Cairo',sans-serif;">
+                    <input type="password" id="login-password" placeholder="كلمة المرور" style="width:100%;padding:12px;margin:8px 0;border-radius:12px;border:1px solid var(--border-dark);background:rgba(255,255,255,0.05);color:inherit;font-family:'Cairo',sans-serif;">
+                    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;" onclick="loginEmail()">📧 تسجيل الدخول</button>
+                    <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:10px;" onclick="registerUser()">✨ إنشاء حساب جديد</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- صفحة الأدمن -->
+        <section id="page-admin" class="container hidden">
+            <h2 class="section-title">👑 لوحة الأدمن</h2>
+            <div class="grid-3" id="admin-stats">
+                <div class="glass-card" style="text-align:center;"><div class="stat-number" id="admin-total-students">0</div><div class="stat-label">إجمالي الطلاب</div></div>
+                <div class="glass-card" style="text-align:center;"><div class="stat-number" id="admin-total-hours">0</div><div class="stat-label">ساعات المشاهدة</div></div>
+                <div class="glass-card" style="text-align:center;"><div class="stat-number" id="admin-total-coins">0</div><div class="stat-label">إجمالي العملات</div></div>
+            </div>
+            <h3 style="margin-top:30px;">👥 قائمة الطلاب</h3>
+            <div id="admin-students-list"></div>
+        </section>
+    </main>
+
+    <!-- ========== Modal: مشغل المحاضرة ========== -->
+    <div id="player-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closePlayer()">✕</button>
+            <div class="video-wrap"><iframe id="player-iframe" src="" allowfullscreen allow="autoplay"></iframe></div>
+            <div class="modal-body">
+                <h2 id="player-title" style="margin-bottom:15px;"></h2>
+                <a id="player-pdf-btn" href="#" target="_blank" class="btn btn-primary" style="display:none;">📄 تحميل PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: القفل -->
+    <div id="lock-modal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:420px;text-align:center;">
+            <div class="modal-body">
+                <h2 style="font-size:3rem;">🔒</h2>
+                <h3 style="margin:15px 0;">محتوى حصري</h3>
+                <p style="color:#aaa;margin-bottom:20px;">يجب تسجيل الدخول لمشاهدة المحاضرات وتحميل الملفات</p>
+                <button class="btn btn-primary" onclick="closeLockAndGoLogin()">سجل دخول الآن</button>
+                <button class="btn btn-outline" style="margin-top:10px;" onclick="document.getElementById('lock-modal').classList.add('hidden')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: الكويز -->
+    <div id="quiz-modal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:650px;">
+            <div class="modal-body">
+                <h2 id="quiz-title" style="margin-bottom:20px;"></h2>
+                <div id="quiz-content"></div>
+                <button class="btn btn-outline" style="margin-top:20px;" onclick="closeQuiz()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>🧪 يلا كيمياء | مع مستر زياد مبروك © 2024</p>
+        <p style="margin-top:5px;">الكيمياء مش حفظ… الكيمياء فهم</p>
+    </footer>
+
+    <!-- ========== كل كود JavaScript ========== -->
+    <script>
+        // ========== Firebase Init ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
+            authDomain: "yalla-kimya.firebaseapp.com",
+            databaseURL: "https://yalla-kimya-default-rtdb.firebaseio.com",
+            projectId: "yalla-kimya",
+            storageBucket: "yalla-kimya.firebasestorage.app",
+            messagingSenderId: "1052374689829",
+            appId: "1:1052374689829:web:fbb815ab42d753e63377cc"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // ========== بيانات المحاضرات ==========
+        const lectures = [
+            { id: 1, title: "الباب الأول - أساسيات الكيمياء", youtubeId: "xDgzehlarWo", pdf: "https://t.me/yala_kamya_ziad_mabrok/533", chapter: "الباب الأول", duration: "2:30" },
+            { id: 2, title: "الباب الثاني - التفاعلات الكيميائية", youtubeId: "bLY1TDI9Mm4", pdf: "https://t.me/yala_kamya_ziad_m
