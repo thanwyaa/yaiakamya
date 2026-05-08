@@ -1,0 +1,43 @@
+// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        arabic: ['Cairo', 'sans-serif'],
+      },
+      colors: {
+        neon: {
+          purple: '#b366ff',
+          blue: '#00d4ff',
+          pink: '#ff66b2',
+        }
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
+        'particle': 'particle 10s linear infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        glow: {
+          '0%': { boxShadow: '0 0 20px rgba(179, 102, 255, 0.5)' },
+          '100%': { boxShadow: '0 0 40px rgba(179, 102, 255, 0.8)' },
+        },
+        particle: {
+          '0%': { transform: 'translate(0, 0) rotate(0deg)' },
+          '100%': { transform: 'translate(100px, -100px) rotate(360deg)' },
+        }
+      }
+    },
+  },
+  plugins: [],
+}
