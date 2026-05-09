@@ -3,134 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>يلا كيمياء | مستر زياد مبروك</title>
+    <title>يلا كيمياء | مستر زياد مبروك - المنصة الرسمية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * { font-family: 'Tajawal', 'Cairo', sans-serif; }
-        
-        @keyframes floatLogo {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0,255,255,0.3); }
-            50% { box-shadow: 0 0 50px rgba(0,255,255,0.7); }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            70% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
+        @keyframes floatLogo { 0%,100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+        @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(0,255,255,0.3); } 50% { box-shadow: 0 0 50px rgba(0,255,255,0.7); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
         .float-logo { animation: floatLogo 4s ease-in-out infinite; }
         .glow-border { animation: glowPulse 2s ease-in-out infinite; }
-        .glass-card {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-            animation: slideUp 0.5s ease-out forwards;
-        }
-        .glass-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(0,200,255,0.6);
-        }
-        
-        .modal-notification {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #0f0c29, #302b63);
-            border-radius: 2rem;
-            padding: 2rem;
-            z-index: 1000;
-            animation: popIn 0.4s ease-out;
-            box-shadow: 0 0 50px rgba(0,255,255,0.5);
-            border: 2px solid #00c6ff;
-            min-width: 300px;
-            max-width: 500px;
-            text-align: center;
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 999;
-        }
-        
+        .glass-card { background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; animation: slideUp 0.5s ease-out forwards; }
+        .glass-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); border-color: rgba(0,200,255,0.6); }
+        .modal-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #0f0c29, #302b63); border-radius: 2rem; padding: 2rem; z-index: 1000; border: 2px solid #00c6ff; max-width: 500px; width: 90%; text-align: center; animation: popIn 0.3s; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 999; }
         body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
         body.light { background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #d9e2ec); color: #1a202c; }
         body.light .glass-card { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.1); color: #1a202c; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         body.light .glass-card:hover { background: #ffffff; border-color: #00c6ff; }
-        body.light .text-gray-300 { color: #4a5568; }
-        body.light .text-gray-400 { color: #718096; }
-        body.light .bg-black\/20 { background: rgba(0,0,0,0.05); }
-        body.light nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.1); }
-        body.light nav a { color: #2d3748; }
-        body.light nav a:hover { color: #00c6ff; }
-        
-        * { transition: background 0.3s, color 0.2s, border-color 0.2s; }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 10px; }
-        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-        
-        .toast-points {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            padding: 15px 25px;
-            border-radius: 50px;
-            z-index: 1000;
-            animation: slideUp 0.3s ease-out;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .quiz-modal {
-            max-width: 90%;
-            width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .quiz-option {
-            background: rgba(255,255,255,0.1);
-            border-radius: 1rem;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        body.light nav { background: rgba(255,255,255,0.95); border-bottom: 1px solid rgba(0,0,0,0.1); }
+        * { transition: background 0.3s, color 0.2s; }
+        .toast-points { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #00c6ff, #0072ff); padding: 12px 20px; border-radius: 50px; z-index: 1000; color: white; font-weight: bold; animation: slideUp 0.3s; }
+        .quiz-option { background: rgba(255,255,255,0.1); border-radius: 1rem; padding: 0.75rem; margin-bottom: 0.5rem; cursor: pointer; transition: 0.2s; }
         .quiz-option:hover { background: rgba(0,200,255,0.3); transform: scale(1.02); }
         .quiz-option.selected { background: rgba(0,200,255,0.5); border: 1px solid #00c6ff; }
-        body.light .quiz-option { background: rgba(0,0,0,0.06); }
-        body.light .quiz-option:hover { background: rgba(0,200,255,0.2); }
-        
-        .progress-bar {
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            height: 8px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s;
-        }
+        .progress-bar { background: rgba(255,255,255,0.2); border-radius: 10px; height: 8px; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, #00c6ff, #0072ff); height: 100%; width: 0%; transition: width 0.5s; }
+        .watched-badge { color: #10b981; font-size: 1.2rem; margin-right: 0.5rem; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1e1e2f; }
+        ::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 10px; }
+        .student-table tbody tr:hover { background: rgba(0,200,255,0.1); }
+        .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 0.5rem; }
     </style>
 </head>
 <body class="dark">
@@ -138,7 +43,7 @@
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, update, onValue, push, increment } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, onValue, push, remove } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -152,7 +57,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
-
     const ADMIN_UIDS = ["PuWOEV9HUtcPyd1HwJZVhsQQWBn2", "PgIttA5EeuQ0N67EL5QDeaRUYei2"];
     let currentUser = null;
     let timeInterval = null;
@@ -160,73 +64,57 @@
     let currentQuiz = null;
     let currentQuestionIndex = 0;
     let userAnswers = [];
-    let quizStartTime = null;
+    let quizStartTime = 0;
 
-    function showBigModal(title, message, type = 'info') {
-        const oldModal = document.getElementById('bigModal');
-        if (oldModal) oldModal.remove();
-        const oldOverlay = document.getElementById('modalOverlay');
-        if (oldOverlay) oldOverlay.remove();
-        
-        const overlay = document.createElement('div');
-        overlay.id = 'modalOverlay';
-        overlay.className = 'modal-overlay';
-        document.body.appendChild(overlay);
-        
-        const modal = document.createElement('div');
-        modal.id = 'bigModal';
-        modal.className = 'modal-notification';
-        modal.innerHTML = `
-            <div class="text-6xl mb-4">${type === 'ban' ? '⛔' : type === 'notification' ? '📢' : '🎉'}</div>
-            <h3 class="text-2xl font-bold mb-3">${title}</h3>
-            <p class="mb-6">${message}</p>
-            <button onclick="closeModalAndProceed()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition text-white">😊 فهمت</button>
-        `;
-        document.body.appendChild(modal);
-        document.body.style.overflow = 'hidden';
-    }
-    
-    window.closeModalAndProceed = () => {
-        const modal = document.getElementById('bigModal');
-        const overlay = document.getElementById('modalOverlay');
-        if (modal) modal.remove();
-        if (overlay) overlay.remove();
-        document.body.style.overflow = '';
-    };
-    
-    function showToastPoints(msg) {
-        const toast = document.createElement('div');
-        toast.className = 'toast-points';
-        toast.innerHTML = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    function showToast(msg) { let t = document.createElement('div'); t.className = 'toast-points'; t.innerText = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+    function showModal(title, msg) { let old = document.getElementById('globalModal'); if(old) old.remove(); let div = document.createElement('div'); div.id = 'globalModal'; div.className = 'modal-overlay'; div.innerHTML = `<div class="modal-notification"><h2 class="text-2xl font-bold mb-3">${title}</h2><p class="mb-4">${msg}</p><button onclick="this.closest('.modal-overlay').remove()" class="bg-cyan-500 px-6 py-2 rounded-full text-white">حسنًا</button></div>`; document.body.appendChild(div); }
+
+    async function refreshUserStats() {
+        if (!currentUser) return;
+        const snap = await get(ref(db, 'users/' + currentUser.uid));
+        if (!snap.exists()) return;
+        const d = snap.val();
+        document.getElementById('userName').innerText = d.name || d.email.split('@')[0];
+        document.getElementById('userPoints').innerText = d.points || 0;
+        document.getElementById('watchedCount').innerText = d.lecturesWatched || 0;
+        document.getElementById('quizzesCompletedCount').innerText = d.quizzesCompleted || 0;
+        document.getElementById('userPointsStat').innerText = d.points || 0;
+        document.getElementById('userEmail').innerText = d.email;
+        document.getElementById('userJoinDate').innerText = d.createdAt ? new Date(d.createdAt).toLocaleDateString('ar-EG') : '-';
+
+        const totalLectures = 6;
+        let pct = Math.min(100, Math.round(((d.lecturesWatched||0)/totalLectures)*100));
+        document.getElementById('progressFill').style.width = pct+'%';
+        document.getElementById('progressPercent').innerText = pct+'%';
+
+        let badges = [];
+        if(d.lecturesWatched>=3) badges.push({n:'🥉 بادرات برونزية',c:'3 محاضرات'});
+        if(d.lecturesWatched>=6) badges.push({n:'🥈 بادرات فضية',c:'6 محاضرات'});
+        if(d.lecturesWatched>=10) badges.push({n:'🥇 بادرات ذهبية',c:'10 محاضرات'});
+        if(d.quizzesCompleted>=2) badges.push({n:'📝 بادرة كويزات',c:'2 كويزات'});
+        if(d.points>=50) badges.push({n:'⭐ بادرة نقاط',c:'50 نقطة'});
+        let cont = document.getElementById('badgesContainer');
+        if(badges.length) cont.innerHTML = badges.map(b=>`<div class="glass-card p-2 text-center"><div class="font-bold">${b.n}</div><div class="text-xs">${b.c}</div></div>`).join('');
+        else cont.innerHTML = '<div class="text-center text-gray-400">📌 أكمل التحديات لكسب الشارات</div>';
     }
 
-    // عرض المحاضرات
+    // عرض المحاضرات مع علامة الصح
     function displayLectures() {
         const lecturesRef = ref(db, 'lectures');
-        onValue(lecturesRef, (snapshot) => {
-            const container = document.getElementById('lecturesContainer');
-            if (!container) return;
-            
-            if (!snapshot.exists()) {
-                container.innerHTML = '<div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div>';
-                return;
+        onValue(lecturesRef, async (snapshot) => {
+            let lectures = []; snapshot.forEach(c=>lectures.push({id:c.key,...c.val()}));
+            let watched = {};
+            if(currentUser){
+                let w = await get(ref(db, 'users/'+currentUser.uid+'/watchedLectures'));
+                if(w.exists()) watched = w.val();
             }
-            
-            const lectures = [];
-            snapshot.forEach((child) => {
-                lectures.push({ id: child.key, ...child.val() });
-            });
-            
-            lectures.sort((a, b) => (a.order || a.createdAt || 0) - (b.order || b.createdAt || 0));
-            
-            container.innerHTML = lectures.map((lecture) => `
+            let container = document.getElementById('lecturesContainer');
+            container.innerHTML = lectures.map(l=>`
                 <div class="glass-card rounded-2xl overflow-hidden">
                     <div class="relative overflow-hidden">
-                        <img src="${lecture.thumb || 'https://img.youtube.com/vi/default/maxresdefault.jpg'}" class="w-full h-56 object-cover transition duration-500 hover:scale-105" onerror="this.src='https://img.youtube.com/vi/default/maxresdefault.jpg'">
-                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-white">📺 ${lecture.title?.split(' ')[0] || 'محاضرة'}</div>
-                        <div class="absolute bottom-3 left-3 bg-gradient-to-r from-cyan-500 to-purple-600 px-3 py-1 rounded-full text-xs font-bold shadow-lg text-white">👁️ ${lecture.views || 0} مشاهدة</div>
+                        <img src="${l.thumb||'https://img.youtube.com/vi/default/maxresdefault.jpg'}" class="w-full h-56 object-cover transition duration-500 hover:scale-105" onerror="this.src='https://img.youtube.com/vi/default/maxresdefault.jpg'">
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-white">📺 ${l.title?.split(' ')[0] || 'محاضرة'}</div>
+                        <div class="absolute bottom-3 left-3 bg-gradient-to-r from-cyan-500 to-purple-600 px-3 py-1 rounded-full text-xs font-bold shadow-lg text-white">👁️ ${l.views || 0} مشاهدة</div>
                         ${!currentUser ? `
                             <div class="absolute inset-0 bg-black/85 flex items-center justify-center backdrop-blur-sm">
                                 <div class="text-center p-5">
@@ -239,12 +127,12 @@
                         ` : ''}
                     </div>
                     <div class="p-5">
-                        <h3 class="text-xl font-extrabold mb-2">${lecture.title}</h3>
-                        <p class="text-gray-500 text-sm mb-4">${lecture.desc || 'شرح كامل ومبسط للمنهج'}</p>
+                        <div class="flex items-center gap-2"><span class="text-xl">${watched[l.id]?'✅':'📘'}</span><h3 class="text-xl font-extrabold">${l.title}</h3></div>
+                        <p class="text-gray-500 text-sm my-2">${l.desc || 'شرح كامل ومبسط للمنهج'}</p>
                         ${currentUser ? `
-                            <div class="flex gap-3">
-                                <a href="${lecture.videoUrl}" target="_blank" onclick="recordView('${lecture.id}')" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">▶️ مشاهدة</a>
-                                ${lecture.pdfUrl && lecture.pdfUrl !== '#' ? `<a href="${lecture.pdfUrl}" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">📄 PDF</a>` : ''}
+                            <div class="flex gap-3 mt-3">
+                                <a href="${l.videoUrl}" target="_blank" onclick="markWatched('${l.id}')" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">▶️ مشاهدة</a>
+                                ${l.pdfUrl && l.pdfUrl !== '#' ? `<a href="${l.pdfUrl}" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">📄 PDF</a>` : ''}
                             </div>
                         ` : ''}
                     </div>
@@ -252,574 +140,243 @@
             `).join('');
         });
     }
-    
-    async function recordView(lectureId) {
-        if (currentUser) {
-            const lectureRef = ref(db, 'lectures/' + lectureId);
-            const snapshot = await get(lectureRef);
-            if (snapshot.exists()) {
-                await update(lectureRef, { views: (snapshot.val().views || 0) + 1 });
-                // تسجيل أن الطالب شاهد هذه المحاضرة
-                const watchedRef = ref(db, 'users/' + currentUser.uid + '/watchedLectures');
-                const watchedSnap = await get(watchedRef);
-                const watched = watchedSnap.exists() ? watchedSnap.val() : {};
-                if (!watched[lectureId]) {
-                    watched[lectureId] = true;
-                    await set(watchedRef, watched);
-                    // تحديث عدد المحاضرات التي شاهدها الطالب
-                    const count = Object.keys(watched).length;
-                    await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: count });
-                    updateUserStats();
-                }
-            }
-        }
-    }
 
-    // نظام المكافآت والتوقيت
-    function startTimeTracking(userId) {
-        if (timeInterval) clearInterval(timeInterval);
-        
-        const storageKey = `timeSpent_${userId}`;
-        const lastResetKey = `lastReset_${userId}`;
-        let savedTime = localStorage.getItem(storageKey);
-        let lastReset = localStorage.getItem(lastResetKey);
-        let today = new Date().toDateString();
-        
-        if (lastReset !== today) {
-            localStorage.setItem(storageKey, '0');
-            localStorage.setItem(lastResetKey, today);
-            savedTime = '0';
+    window.markWatched = async (lectureId) => {
+        if(!currentUser) return;
+        let refLec = ref(db,'lectures/'+lectureId);
+        let snap = await get(refLec);
+        if(snap.exists()) await update(refLec,{views:(snap.val().views||0)+1});
+        let watchedRef = ref(db,'users/'+currentUser.uid+'/watchedLectures/'+lectureId);
+        let already = await get(watchedRef);
+        if(!already.exists()){
+            await set(watchedRef,true);
+            let countRef = ref(db,'users/'+currentUser.uid+'/lecturesWatched');
+            let cnt = await get(countRef);
+            await set(countRef, (cnt.val()||0)+1);
+            refreshUserStats();
+            showToast('🎉 تم تسجيل المشاهدة + تقدم في حسابك');
+            displayLectures();
         }
-        
-        timeSpent = parseInt(savedTime) || 0;
-        
-        timeInterval = setInterval(async () => {
-            if (currentUser) {
-                timeSpent++;
-                localStorage.setItem(storageKey, timeSpent.toString());
-                
-                if (timeSpent >= 10) {
-                    timeSpent = 0;
-                    localStorage.setItem(storageKey, '0');
-                    
-                    const userRef = ref(db, 'users/' + currentUser.uid);
-                    const snapshot = await get(userRef);
-                    const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
-                    await update(userRef, { points: currentPoints + 1, lastActive: Date.now() });
-                    
-                    showToastPoints('🎉 مبروك! كسبت 1 نقطة كيمياء! زاكر أكثر، اكسب أكثر');
-                    showLeaderboard();
-                    updateUserStats();
+    };
+
+    // نظام التوقيت والمكافآت والمتصدرين
+    function startTimeTracking(uid){
+        if(timeInterval) clearInterval(timeInterval);
+        let t = 0;
+        timeInterval = setInterval(async ()=>{
+            if(currentUser){
+                t++;
+                if(t>=10){
+                    t=0;
+                    let userRef = ref(db,'users/'+uid);
+                    let snap = await get(userRef);
+                    let pts = (snap.val().points||0)+1;
+                    await update(userRef,{points:pts,lastActive:Date.now()});
+                    refreshUserStats();
+                    showToast('🎉 كسبت نقطة كيمياء! زاكر أكثر');
                 } else {
-                    // تحديث آخر نشاط كل دقيقة
-                    await update(ref(db, 'users/' + currentUser.uid), { lastActive: Date.now() });
+                    await update(ref(db,'users/'+uid),{lastActive:Date.now()});
                 }
             }
-        }, 60000);
+        },60000);
     }
 
-    function stopTimeTracking() {
-        if (timeInterval) { clearInterval(timeInterval); timeInterval = null; }
-    }
+    function stopTimeTracking() { if(timeInterval) clearInterval(timeInterval); timeInterval=null; }
 
     async function showLeaderboard() {
         const usersRef = ref(db, 'users');
         onValue(usersRef, (snapshot) => {
-            if (!snapshot.exists()) {
-                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 كن أول المتصدرين!</div>';
-                return;
-            }
-            
+            if (!snapshot.exists()) { document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 كن أول المتصدرين!</div>'; return; }
             const users = [];
-            snapshot.forEach((child) => {
-                if (!ADMIN_UIDS.includes(child.key)) {
-                    users.push({ id: child.key, ...child.val() });
-                }
-            });
+            snapshot.forEach((child) => { if (!ADMIN_UIDS.includes(child.key)) users.push({ id: child.key, ...child.val() }); });
             users.sort((a, b) => (b.points || 0) - (a.points || 0));
             const top3 = users.slice(0, 3);
-            
-            if (top3.length === 0) {
-                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 سجل دخولك لتبدأ المنافسة!</div>';
-                return;
-            }
-            
+            if (top3.length === 0) { document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 سجل دخولك لتبدأ المنافسة!</div>'; return; }
             document.getElementById('leaderboardList').innerHTML = top3.map((u, idx) => `
                 <div class="flex items-center justify-between p-4 glass-card rounded-xl mb-3">
                     <div class="flex items-center gap-4">
                         <span class="text-4xl font-bold ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-gray-400' : 'text-orange-500'}">#${idx + 1}</span>
-                        <div>
-                            <p class="font-bold text-lg">${u.name || u.email?.split('@')[0] || 'طالب'}</p>
-                            <p class="text-sm text-gray-500">🔬 ${u.points || 0} نقطة</p>
-                        </div>
+                        <div><p class="font-bold text-lg">${u.name || u.email?.split('@')[0] || 'طالب'}</p><p class="text-sm text-gray-500">🔬 ${u.points || 0} نقطة</p></div>
                     </div>
                     <div class="text-3xl">🏆 ${u.points || 0}</div>
                 </div>
             `).join('');
         });
     }
-    
-    async function updateUserStats() {
-        if (currentUser) {
-            const userRef = ref(db, 'users/' + currentUser.uid);
-            const snapshot = await get(userRef);
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                document.getElementById('userPoints').textContent = userData.points || 0;
-                document.getElementById('userName').textContent = userData.name || userData.email?.split('@')[0];
-                
-                // تحديث الإحصائيات الشخصية
-                const watchedCount = userData.lecturesWatched || 0;
-                const quizzesCompleted = userData.quizzesCompleted || 0;
-                document.getElementById('watchedCount').textContent = watchedCount;
-                document.getElementById('quizzesCompletedCount').textContent = quizzesCompleted;
-                
-                // تحديث شريط التقدم
-                const totalLectures = 6; // العدد الكلي للمحاضرات
-                const progress = Math.min(100, Math.round((watchedCount / totalLectures) * 100));
-                document.getElementById('progressFill').style.width = progress + '%';
-                document.getElementById('progressPercent').textContent = progress + '%';
-                
-                // تحديث الشارات
-                updateBadges(watchedCount, quizzesCompleted, userData.points || 0);
+
+    // عرض الكويزات (يمنع الحل أكثر من مرة)
+    async function loadQuizzes() {
+        let snap = await get(ref(db,'quizzes'));
+        let quizzes = []; snap.forEach(c=>quizzes.push({id:c.key,...c.val()}));
+        let completed = {};
+        if(currentUser){
+            let comp = await get(ref(db,'quiz_results'));
+            if(comp.exists()){
+                for(let qid in comp.val()){
+                    if(comp.val()[qid][currentUser.uid]) completed[qid]=true;
+                }
             }
         }
-    }
-    
-    function updateBadges(watchedCount, quizzesCompleted, points) {
-        const badgesContainer = document.getElementById('badgesContainer');
-        if (!badgesContainer) return;
-        
-        let badges = [];
-        if (watchedCount >= 3) badges.push({ name: '🥉 بادرة برونزية', condition: 'شاهد 3 محاضرات' });
-        if (watchedCount >= 6) badges.push({ name: '🥈 بادرة فضية', condition: 'شاهد 6 محاضرات' });
-        if (watchedCount >= 10) badges.push({ name: '🥇 بادرة ذهبية', condition: 'شاهد 10 محاضرات' });
-        if (quizzesCompleted >= 2) badges.push({ name: '📝 بادرة الكويزات', condition: 'حل 2 كويزات' });
-        if (points >= 50) badges.push({ name: '⭐ بادرة النقاط', condition: 'اجمع 50 نقطة' });
-        
-        if (badges.length === 0) {
-            badgesContainer.innerHTML = '<div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>';
-            return;
-        }
-        
-        badgesContainer.innerHTML = badges.map(b => `
-            <div class="glass-card p-2 text-center">
-                <div class="text-2xl">${b.name}</div>
-                <div class="text-xs text-gray-400">${b.condition}</div>
+        let cont = document.getElementById('quizzesContainer');
+        if(!quizzes.length){ cont.innerHTML = '<div class="text-center text-gray-400 col-span-3">لا توجد كويزات حالياً</div>'; return; }
+        cont.innerHTML = quizzes.map(q=>`
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-3xl mb-2">📝</div>
+                <h3 class="font-bold text-lg">${q.title}</h3>
+                <p class="text-sm text-gray-500">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة | 📋 ${q.questions?.length || 0} سؤال</p>
+                ${completed[q.id]?'<p class="text-green-500 text-sm mt-2">✅ تم الحل سابقاً</p>':`<button onclick="startQuiz('${q.id}')" class="mt-3 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-full text-sm font-bold text-white">🚀 ابدأ الكويز</button>`}
             </div>
         `).join('');
+    }
+
+    window.startQuiz = async (quizId) => {
+        let completed = await get(ref(db,'quiz_results/'+quizId+'/'+currentUser.uid));
+        if(completed.exists()){ showToast('😄 متبقاش طماع! انت خلاص حلّيت الكويز ده قبل كده'); return; }
+        let snap = await get(ref(db,'quizzes/'+quizId));
+        if(!snap.exists()) return;
+        currentQuiz = {id:quizId, ...snap.val()};
+        currentQuestionIndex = 0;
+        userAnswers = [];
+        quizStartTime = Date.now();
+        showQuestion();
+    };
+
+    function showQuestion(){
+        if(!currentQuiz || currentQuestionIndex >= currentQuiz.questions.length) return finishQuiz();
+        let q = currentQuiz.questions[currentQuestionIndex];
+        let modal = document.createElement('div'); modal.className='modal-overlay';
+        modal.innerHTML = `<div class="modal-notification"><div class="text-xl font-bold mb-2">📝 ${currentQuiz.title}</div><div class="text-sm text-cyan-400 mb-2">${currentQuestionIndex+1}/${currentQuiz.questions.length}</div><div class="text-right"><p class="font-bold mb-3">${q.text}</p><div id="quizOpts"></div></div><button id="nextBtn" class="bg-gradient-to-r from-cyan-500 to-blue-500 w-full py-2 rounded-full font-bold text-white mt-4">التالي ➡️</button><button onclick="this.closest('.modal-overlay').remove()" class="text-gray-400 text-sm w-full mt-2">إلغاء الكويز</button></div>`;
+        document.body.appendChild(modal);
+        let optsDiv = modal.querySelector('#quizOpts');
+        let selected = null;
+        q.options.forEach((opt,i)=>{
+            let btn = document.createElement('div'); btn.className='quiz-option'; btn.innerText=`${i+1}. ${opt}`;
+            btn.onclick=()=>{ optsDiv.querySelectorAll('.quiz-option').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); selected=i+1; };
+            optsDiv.appendChild(btn);
+        });
+        modal.querySelector('#nextBtn').onclick=()=>{
+            if(!selected){ showToast('❌ اختر إجابة أولاً'); return; }
+            userAnswers.push(selected);
+            currentQuestionIndex++;
+            modal.remove();
+            showQuestion();
+        };
+    }
+
+    async function finishQuiz(){
+        let score=0;
+        for(let i=0;i<currentQuiz.questions.length;i++) if(userAnswers[i]===currentQuiz.questions[i].correct) score++;
+        let timeSpentSec = Math.floor((Date.now()-quizStartTime)/1000);
+        let resultRef = ref(db,'quiz_results/'+currentQuiz.id+'/'+currentUser.uid);
+        await set(resultRef,{score,total:currentQuiz.questions.length,answers:userAnswers,timeSpent:timeSpentSec,completedAt:Date.now()});
+        let userRef = ref(db,'users/'+currentUser.uid);
+        let snap = await get(userRef);
+        let newPts = (snap.val().points||0) + currentQuiz.points;
+        await update(userRef,{points:newPts, quizzesCompleted:(snap.val().quizzesCompleted||0)+1});
+        refreshUserStats();
+        showToast(`🎉 جاوبت ${score}/${currentQuiz.questions.length} صح (+${currentQuiz.points} نقطة)`);
+        loadQuizzes();
+        showLeaderboard();
+        currentQuiz=null;
     }
 
     function watchNotifications() {
         const notifRef = ref(db, 'notifications');
         onValue(notifRef, (snapshot) => {
             if (!snapshot.exists()) return;
-            
-            const seen = localStorage.getItem('seenNotifications') || '[]';
-            const seenArray = JSON.parse(seen);
-            
+            const seen = JSON.parse(localStorage.getItem('seenNotifications') || '[]');
             snapshot.forEach((child) => {
                 const notif = child.val();
-                if (!seenArray.includes(child.key) && currentUser) {
-                    showBigModal('📢 إشعار من المنصة', notif.message, 'notification');
-                    seenArray.push(child.key);
-                    localStorage.setItem('seenNotifications', JSON.stringify(seenArray));
+                if (!seen.includes(child.key) && currentUser) {
+                    showModal('📢 إشعار من المنصة', notif.message);
+                    seen.push(child.key);
+                    localStorage.setItem('seenNotifications', JSON.stringify(seen));
                 }
             });
         });
     }
-    
-    // نظام الكويزات المتعددة (أكثر من سؤال)
-    async function loadAvailableQuizzes() {
-        const quizzesRef = ref(db, 'quizzes');
-        const snapshot = await get(quizzesRef);
-        const container = document.getElementById('quizzesContainer');
-        if (!container) return;
-        
-        if (!snapshot.exists() || !currentUser) {
-            container.innerHTML = '<div class="text-center text-gray-500">لا توجد كويزات متاحة حالياً</div>';
-            return;
-        }
-        
-        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
-        const quizzes = [];
-        snapshot.forEach((child) => {
-            quizzes.push({ id: child.key, ...child.val() });
-        });
-        
-        container.innerHTML = quizzes.map(q => `
-            <div class="glass-card rounded-2xl p-4 text-center">
-                <div class="text-3xl mb-2">📝</div>
-                <h3 class="font-bold text-lg">${q.title}</h3>
-                <p class="text-sm text-gray-500">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة | 📋 ${q.questions?.length || 0} سؤال</p>
-                ${completed.includes(q.id) ? 
-                    '<p class="text-green-500 text-sm mt-2">✅ تم الحل سابقاً</p>' : 
-                    `<button onclick="startQuiz('${q.id}')" class="mt-3 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-full text-sm font-bold text-white">🚀 ابدأ الكويز</button>`}
-            </div>
-        `).join('');
-    }
-    
-    window.startQuiz = async (quizId) => {
-        // التحقق من عدم الحل سابقاً
-        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
-        if (completed.includes(quizId)) {
-            showToastPoints('😄 متبقاش طماع! انت خلاص حلّيت الكويز ده قبل كده. جرب كويز تاني!');
-            return;
-        }
-        
-        const quizRef = ref(db, 'quizzes/' + quizId);
-        const snapshot = await get(quizRef);
-        if (!snapshot.exists()) return;
-        
-        currentQuiz = { id: quizId, ...snapshot.val() };
-        currentQuestionIndex = 0;
-        userAnswers = [];
-        quizStartTime = Date.now();
-        showQuizQuestion();
-    };
-    
-    function showQuizQuestion() {
-        if (!currentQuiz || currentQuestionIndex >= currentQuiz.questions.length) {
-            submitQuizResults();
-            return;
-        }
-        
-        const question = currentQuiz.questions[currentQuestionIndex];
-        const modal = document.getElementById('quizInterface');
-        if (modal) modal.remove();
-        
-        const newModal = document.createElement('div');
-        newModal.id = 'quizInterface';
-        newModal.className = 'modal-overlay';
-        newModal.innerHTML = `
-            <div class="modal-notification quiz-modal" style="width: 500px;">
-                <div class="text-center">
-                    <div class="text-3xl mb-2">📝 ${currentQuiz.title}</div>
-                    <div class="text-sm text-gray-400 mb-1">⏱️ ${currentQuiz.duration} دقيقة | 🪙 ${currentQuiz.points} نقطة</div>
-                    <div class="text-sm text-cyan-400 mb-3">السؤال ${currentQuestionIndex + 1} من ${currentQuiz.questions.length}</div>
-                    <div class="text-right mb-4">
-                        <p class="font-bold mb-3">${question.text}</p>
-                        <div id="quizOptions"></div>
-                    </div>
-                    <button onclick="answerCurrentQuestion()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full font-bold text-white">التالي ➡️</button>
-                    <button onclick="closeQuiz()" class="mt-3 text-gray-500 text-sm block w-full">إلغاء الكويز</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(newModal);
-        
-        const optionsDiv = document.getElementById('quizOptions');
-        let selected = null;
-        
-        question.options.forEach((opt, idx) => {
-            const optDiv = document.createElement('div');
-            optDiv.className = 'quiz-option';
-            optDiv.innerHTML = `${idx + 1}. ${opt}`;
-            optDiv.onclick = () => {
-                document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
-                optDiv.classList.add('selected');
-                selected = idx + 1;
-            };
-            optionsDiv.appendChild(optDiv);
-        });
-        
-        window.answerCurrentQuestion = () => {
-            if (!selected) {
-                showToastPoints('❌ اختر إجابة أولاً');
-                return;
-            }
-            userAnswers.push(selected);
-            currentQuestionIndex++;
-            showQuizQuestion();
-        };
-    }
-    
-    async function submitQuizResults() {
-        if (!currentQuiz) return;
-        
-        const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
-        let score = 0;
-        for (let i = 0; i < currentQuiz.questions.length; i++) {
-            if (userAnswers[i] === currentQuiz.questions[i].correct) {
-                score++;
-            }
-        }
-        
-        // تسجيل النتيجة
-        const resultRef = ref(db, 'quiz_results/' + currentQuiz.id + '/' + currentUser.uid);
-        await set(resultRef, {
-            score: score,
-            total: currentQuiz.questions.length,
-            answers: userAnswers,
-            timeSpent: timeSpent,
-            completedAt: Date.now()
-        });
-        
-        // إضافة النقاط
-        const userRef = ref(db, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
-        const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
-        await update(userRef, { 
-            points: currentPoints + currentQuiz.points,
-            quizzesCompleted: (snapshot.val().quizzesCompleted || 0) + 1
-        });
-        
-        // تسجيل الكويز كمكتمل
-        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
-        completed.push(currentQuiz.id);
-        localStorage.setItem(`completedQuizzes_${currentUser.uid}`, JSON.stringify(completed));
-        
-        const percent = Math.round((score / currentQuiz.questions.length) * 100);
-        showToastPoints(`🎉 مبروك! جاوبت ${score} من ${currentQuiz.questions.length} إجابة صحيحة (${percent}%)! كسبت ${currentQuiz.points} نقطة`);
-        
-        updateUserStats();
-        showLeaderboard();
-        closeQuiz();
-        loadAvailableQuizzes();
-    }
-    
-    window.closeQuiz = () => {
-        const modal = document.getElementById('quizInterface');
-        if (modal) modal.remove();
-        currentQuiz = null;
-        currentQuestionIndex = 0;
-    };
 
-    // مراقبة حالة تسجيل الدخول
     onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const loginBtn = document.getElementById('loginBtn');
         const userMenu = document.getElementById('userMenu');
-        const userName = document.getElementById('userName');
         const userStatsPanel = document.getElementById('userStatsPanel');
-        
+        const userStatsGuest = document.getElementById('userStatsGuest');
         if (user) {
             if (loginBtn) loginBtn.classList.add('hidden');
             if (userMenu) userMenu.classList.remove('hidden');
             if (userStatsPanel) userStatsPanel.classList.remove('hidden');
-            
+            if (userStatsGuest) userStatsGuest.classList.add('hidden');
             const userRef = ref(db, 'users/' + user.uid);
             const snapshot = await get(userRef);
-            
             if (snapshot.exists() && snapshot.val().banned === true) {
-                showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${snapshot.val().banReason || 'مخالفة قواعد المنصة'}`, 'ban');
+                showModal('⛔ تم حظر حسابك', `سبب الحظر: ${snapshot.val().banReason || 'مخالفة قواعد المنصة'}`);
                 setTimeout(() => signOut(auth), 5000);
                 return;
             }
-            
             if (!snapshot.exists()) {
-                await set(userRef, { 
-                    email: user.email, 
-                    name: user.displayName || user.email?.split('@')[0], 
-                    points: 0, 
-                    lecturesWatched: 0,
-                    quizzesCompleted: 0,
-                    createdAt: Date.now(), 
-                    banned: false 
-                });
+                await set(userRef, { email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, lecturesWatched: 0, quizzesCompleted: 0, createdAt: Date.now(), banned: false });
             }
-            
-            onValue(userRef, (snap) => {
-                if (snap.exists()) {
-                    const userData = snap.val();
-                    document.getElementById('userPoints').textContent = userData.points || 0;
-                    if (userName) userName.textContent = userData.name || userData.email?.split('@')[0];
-                    if (userData.banned === true) {
-                        showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${userData.banReason || 'مخالفة القواعد'}`, 'ban');
-                        setTimeout(() => signOut(auth), 4000);
-                    }
-                }
-            });
-            
-            showLeaderboard();
+            refreshUserStats();
             watchNotifications();
-            loadAvailableQuizzes();
-            updateUserStats();
             startTimeTracking(user.uid);
         } else {
             if (loginBtn) loginBtn.classList.remove('hidden');
             if (userMenu) userMenu.classList.add('hidden');
             if (userStatsPanel) userStatsPanel.classList.add('hidden');
+            if (userStatsGuest) userStatsGuest.classList.remove('hidden');
             stopTimeTracking();
         }
-        
         displayLectures();
+        if(user) loadQuizzes();
+        showLeaderboard();
     });
 
     window.signOutUser = () => signOut(auth);
-    window.toggleTheme = () => {
-        const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
-        document.body.className = newTheme;
-        localStorage.setItem('theme', newTheme);
-    };
-    
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.body.className = savedTheme;
-    
-    displayLectures();
+    window.toggleTheme = () => { let newTheme = document.body.classList.contains('dark')?'light':'dark'; document.body.className=newTheme; localStorage.setItem('theme',newTheme); };
+    if(localStorage.getItem('theme')) document.body.className = localStorage.getItem('theme');
+    else document.body.className='dark';
 </script>
 
 <nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b py-3">
     <div class="container mx-auto px-4 flex justify-between items-center flex-wrap gap-2">
         <div class="flex items-center gap-3">
             <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-12 h-12 rounded-full border-2 border-cyan-400">
-            <div>
-                <h1 class="text-xl md:text-2xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
-                <p class="text-xs text-gray-500">مستر زياد مبروك</p>
-            </div>
+            <div><h1 class="text-xl md:text-2xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1><p class="text-xs text-gray-500">مستر زياد مبروك</p></div>
         </div>
-        <div class="hidden md:flex gap-6">
-            <a href="#" class="hover:text-cyan-500 transition font-medium">الرئيسية</a>
-            <a href="#lectures" class="hover:text-cyan-500 transition font-medium">المحاضرات</a>
-            <a href="#quizzes" class="hover:text-cyan-500 transition font-medium">الكويزات</a>
-            <a href="#leaderboard" class="hover:text-cyan-500 transition font-medium">المتصدرين</a>
-            <a href="#myStats" class="hover:text-cyan-500 transition font-medium">حسابي</a>
-        </div>
-        <div class="flex gap-2 items-center">
-            <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full transition">🌓</button>
-            <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-1.5 rounded-full text-sm font-bold shadow-md hover:scale-105 transition text-white">🚀 دخول</button>
-            <div id="userMenu" class="hidden items-center gap-3">
-                <div class="text-right">
-                    <span id="userName" class="text-sm font-bold"></span>
-                    <div class="text-xs text-cyan-500">🔬 <span id="userPoints">0</span> نقطة</div>
-                </div>
-                <button onclick="signOutUser()" class="bg-red-500/20 hover:bg-red-500/30 px-3 py-1 rounded-full text-sm transition">خروج</button>
-            </div>
-        </div>
+        <div class="hidden md:flex gap-6"><a href="#" class="hover:text-cyan-500 transition font-medium">الرئيسية</a><a href="#lectures" class="hover:text-cyan-500 transition font-medium">المحاضرات</a><a href="#quizzes" class="hover:text-cyan-500 transition font-medium">الكويزات</a><a href="#leaderboard" class="hover:text-cyan-500 transition font-medium">المتصدرين</a><a href="#myStats" class="hover:text-cyan-500 transition font-medium">حسابي</a></div>
+        <div class="flex gap-2 items-center"><button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full transition">🌓</button><button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-1.5 rounded-full text-sm font-bold shadow-md hover:scale-105 transition text-white">🚀 دخول</button><div id="userMenu" class="hidden items-center gap-3"><div class="text-right"><span id="userName" class="text-sm font-bold"></span><div class="text-xs text-cyan-500">🔬 <span id="userPoints">0</span> نقطة</div></div><button onclick="signOutUser()" class="bg-red-500/20 hover:bg-red-500/30 px-3 py-1 rounded-full text-sm transition">خروج</button></div></div>
     </div>
 </nav>
 
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
     <div class="absolute top-1/4 left-10 w-80 h-80 bg-cyan-400 rounded-full filter blur-3xl opacity-20 float-logo"></div>
     <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 float-logo" style="animation-delay: 2s;"></div>
-    
     <div class="container mx-auto px-4 text-center relative z-10">
         <div class="relative inline-block mb-8">
             <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-60" style="width: 280px; height: 280px; left: -20px; top: -20px;"></div>
             <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-cyan-400 shadow-2xl float-logo glow-border relative z-10">
             <div class="absolute -bottom-3 -right-3 bg-green-500 rounded-full w-8 h-8 border-4 border-white shadow-xl z-20"></div>
         </div>
-        
         <h1 class="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">يلا كيمياء</h1>
         <p class="text-2xl md:text-3xl mb-4">مع <span class="text-cyan-500 font-bold border-b-4 border-cyan-500">مستر زياد مبروك</span></p>
         <p class="text-base max-w-2xl mx-auto text-gray-600 mb-8">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
-        
-        <div class="flex gap-4 justify-center flex-wrap">
-            <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">🎓 استكشف المحاضرات</a>
-            <a href="#quizzes" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">📝 اختبر نفسك</a>
-            <a href="#leaderboard" class="bg-white/10 backdrop-blur-sm px-8 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition">🏆 المتصدرين</a>
-        </div>
+        <div class="flex gap-4 justify-center flex-wrap"><a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">🎓 استكشف المحاضرات</a><a href="#quizzes" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">📝 اختبر نفسك</a><a href="#leaderboard" class="bg-white/10 backdrop-blur-sm px-8 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition">🏆 المتصدرين</a></div>
     </div>
 </section>
 
-<section class="py-20">
-    <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-black text-center mb-12">✨ مميزات منصة يلا كيمياء</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🎥</div><h3 class="font-bold text-lg">فيديوهات HD</h3><p class="text-sm text-gray-500">جودة عالية وشرح وافي</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">📄</div><h3 class="font-bold text-lg">ملفات PDF</h3><p class="text-sm text-gray-500">ملخصات وأسئلة شاملة</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🏆</div><h3 class="font-bold text-lg">نقاط كيمياء</h3><p class="text-sm text-gray-500">كل 10 دقائق = نقطة</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">⚡</div><h3 class="font-bold text-lg">كويزات تفاعلية</h3><p class="text-sm text-gray-500">اختبر فهمك فوراً</p></div>
-        </div>
-    </div>
-</section>
+<section class="py-20"><div class="container mx-auto px-4"><h2 class="text-4xl font-black text-center mb-12">✨ مميزات منصة يلا كيمياء</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-6"><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🎥</div><h3 class="font-bold text-lg">فيديوهات HD</h3><p class="text-sm text-gray-500">جودة عالية وشرح وافي</p></div><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">📄</div><h3 class="font-bold text-lg">ملفات PDF</h3><p class="text-sm text-gray-500">ملخصات وأسئلة شاملة</p></div><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🏆</div><h3 class="font-bold text-lg">نقاط كيمياء</h3><p class="text-sm text-gray-500">كل 10 دقائق = نقطة</p></div><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">⚡</div><h3 class="font-bold text-lg">كويزات تفاعلية</h3><p class="text-sm text-gray-500">اختبر فهمك فوراً</p></div></div></div></section>
 
-<section id="lectures" class="py-20 bg-black/10">
-    <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-black text-center mb-4">📚 المحاضرات</h2>
-        <p class="text-center text-gray-500 mb-12">اختر محاضرتك وابدأ التعلم</p>
-        <div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div>
-        </div>
-    </div>
-</section>
+<section id="lectures" class="py-20 bg-black/10"><div class="container mx-auto px-4"><h2 class="text-4xl font-black text-center mb-4">📚 المحاضرات</h2><p class="text-center text-gray-500 mb-12">اختر محاضرتك وابدأ التعلم</p><div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div></div></div></section>
 
-<section id="quizzes" class="py-20">
-    <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-black text-center mb-4">📝 الكويزات والامتحانات</h2>
-        <p class="text-center text-gray-500 mb-12">اختبر معلوماتك واكسب نقاط إضافية</p>
-        <div id="quizzesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="text-center text-gray-400 col-span-3">جاري تحميل الكويزات...</div>
-        </div>
-    </div>
-</section>
+<section id="quizzes" class="py-20"><div class="container mx-auto px-4"><h2 class="text-4xl font-black text-center mb-4">📝 الكويزات والامتحانات</h2><p class="text-center text-gray-500 mb-12">اختبر معلوماتك واكسب نقاط إضافية</p><div id="quizzesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><div class="text-center text-gray-400 col-span-3">جاري تحميل الكويزات...</div></div></div></section>
 
-<section id="leaderboard" class="py-20 bg-black/10">
-    <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-black text-center mb-4">🏆 المتصدرين</h2>
-        <p class="text-center text-gray-500 mb-12">أكثر 3 طلاب حصداً للنقاط</p>
-        <div class="max-w-2xl mx-auto glass-card rounded-2xl p-6">
-            <div id="leaderboardList">جاري تحميل المتصدرين...</div>
-        </div>
-    </div>
-</section>
+<section id="leaderboard" class="py-20 bg-black/10"><div class="container mx-auto px-4"><h2 class="text-4xl font-black text-center mb-4">🏆 المتصدرين</h2><p class="text-center text-gray-500 mb-12">أكثر 3 طلاب حصداً للنقاط</p><div class="max-w-2xl mx-auto glass-card rounded-2xl p-6"><div id="leaderboardList">جاري تحميل المتصدرين...</div></div></div></section>
 
-<!-- قسم حسابي وإحصائياتي الشخصية -->
-<section id="myStats" class="py-20">
-    <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-black text-center mb-4">👤 حسابي الشخصي</h2>
-        <p class="text-center text-gray-500 mb-12">تقدمك وإنجازاتك في المنصة</p>
-        
-        <div id="userStatsPanel" class="hidden max-w-4xl mx-auto">
-            <!-- شريط التقدم -->
-            <div class="glass-card rounded-2xl p-6 mb-6">
-                <h3 class="text-2xl font-bold mb-4">📊 مستوى التقدم</h3>
-                <div class="progress-bar mb-2">
-                    <div id="progressFill" class="progress-fill"></div>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span>📚 المحاضرات: <span id="watchedCount">0</span>/6</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-            </div>
-            
-            <!-- الإحصائيات -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="glass-card rounded-2xl p-6 text-center">
-                    <div class="text-4xl mb-3">📚</div>
-                    <div class="text-3xl font-bold text-cyan-400" id="watchedCount">0</div>
-                    <div class="text-sm">محاضرات تمت مشاهدتها</div>
-                </div>
-                <div class="glass-card rounded-2xl p-6 text-center">
-                    <div class="text-4xl mb-3">📝</div>
-                    <div class="text-3xl font-bold text-green-400" id="quizzesCompletedCount">0</div>
-                    <div class="text-sm">كويزات تم حلها</div>
-                </div>
-                <div class="glass-card rounded-2xl p-6 text-center">
-                    <div class="text-4xl mb-3">🏆</div>
-                    <div class="text-3xl font-bold text-yellow-400" id="userPointsStat">0</div>
-                    <div class="text-sm">نقاط الكيمياء</div>
-                </div>
-            </div>
-            
-            <!-- الشارات -->
-            <div class="glass-card rounded-2xl p-6">
-                <h3 class="text-2xl font-bold mb-4">🎖️ شارات الإنجاز</h3>
-                <div id="badgesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="userStatsGuest" class="text-center text-gray-500 py-8">
-            🔐 سجل دخولك لعرض إحصائياتك الشخصية
-        </div>
-    </div>
-</section>
+<section id="myStats" class="py-20"><div class="container mx-auto px-4"><h2 class="text-4xl font-black text-center mb-4">👤 حسابي الشخصي</h2><p class="text-center text-gray-500 mb-12">تقدمك وإنجازاتك في المنصة</p><div id="userStatsGuest" class="text-center text-gray-500 py-8">🔐 سجل دخولك لعرض إحصائياتك الشخصية</div><div id="userStatsPanel" class="hidden max-w-4xl mx-auto"><div class="glass-card rounded-2xl p-6 mb-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"><div class="glass-card p-3 text-center"><div class="text-sm text-gray-400">📧 البريد الإلكتروني</div><div id="userEmail" class="font-bold text-lg">-</div></div><div class="glass-card p-3 text-center"><div class="text-sm text-gray-400">📅 تاريخ التسجيل</div><div id="userJoinDate" class="font-bold text-lg">-</div></div></div><div class="progress-bar mb-2"><div id="progressFill" class="progress-fill"></div></div><div class="flex justify-between text-sm"><span>📚 المحاضرات: <span id="watchedCount">0</span>/6</span><span id="progressPercent">0%</span></div></div><div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6"><div class="glass-card rounded-2xl p-6 text-center"><div class="text-4xl mb-3">📚</div><div class="text-3xl font-bold text-cyan-400" id="watchedCount">0</div><div class="text-sm">محاضرات تمت مشاهدتها</div></div><div class="glass-card rounded-2xl p-6 text-center"><div class="text-4xl mb-3">📝</div><div class="text-3xl font-bold text-green-400" id="quizzesCompletedCount">0</div><div class="text-sm">كويزات تم حلها</div></div><div class="glass-card rounded-2xl p-6 text-center"><div class="text-4xl mb-3">🏆</div><div class="text-3xl font-bold text-yellow-400" id="userPointsStat">0</div><div class="text-sm">نقاط الكيمياء</div></div></div><div class="glass-card rounded-2xl p-6"><h3 class="text-2xl font-bold mb-4">🎖️ شارات الإنجاز</h3><div id="badgesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3"><div class="text-center text-gray-500 col-span-3">📌 أكمل التحديات لكسب الشارات</div></div></div></div></div></section>
 
-<section class="py-16">
-    <div class="container mx-auto px-4 text-center">
-        <h3 class="text-2xl font-bold mb-6">📱 تابع منصة يلا كيمياء</h3>
-        <div class="flex justify-center gap-4 flex-wrap">
-            <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-green-500/30 flex items-center gap-2">📱 واتساب</a>
-            <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-blue-500/30 flex items-center gap-2">📢 تليجرام</a>
-        </div>
-    </div>
-</section>
+<section class="py-16"><div class="container mx-auto px-4 text-center"><h3 class="text-2xl font-bold mb-6">📱 تابع منصة يلا كيمياء</h3><div class="flex justify-center gap-4 flex-wrap"><a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-green-500/30 flex items-center gap-2">📱 واتساب</a><a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-blue-500/30 flex items-center gap-2">📢 تليجرام</a></div></div></section>
 
-<footer class="py-8 border-t border-white/10 text-center text-gray-500 text-sm">
-    <p>© 2026 يلا كيمياء - مستر زياد مبروك. جميع الحقوق محفوظة</p>
-    <p class="text-xs mt-1">⏱️ كل 10 دقائق تصفح = 1 نقطة كيمياء | زاكر أكثر، اكسب أكثر</p>
-</footer>
+<footer class="py-8 border-t border-white/10 text-center text-gray-500 text-sm"><p>© 2026 يلا كيمياء - مستر زياد مبروك. جميع الحقوق محفوظة</p><p class="text-xs mt-1">⏱️ كل 10 دقائق تصفح = 1 نقطة كيمياء | زاكر أكثر، اكسب أكثر</p></footer>
 </body>
 </html>
