@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - Admin | يلا كيمياء</title>
+    
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, setDoc, addDoc, getDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEFAULT_REPLACE_WITH_YOURS",
+            authDomain: "yalla-chemistry.firebaseapp.com",
+            projectId: "yalla-chemistry",
+            storageBucket: "yalla-chemistry.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // 🔐 قائمة UIDs المسموح لهم كأدمن - ضع UID الخاص بك هنا
+        const ADMIN_UIDS = [
+            "YOUR_ADMIN_UID_HERE",  // 👈 ضع UID حسابك هنا
+            "ANOTHER_ADMIN_UID"      // يمكن إضافة أكثر من أدمن
+        ];
+
+        let currentUser = null;
+
+        // التحقق من صلاحيات الأدمن
+        async function checkAdminAccess(user) {
+            if (!user) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            if (!ADMIN_UIDS.includes(user.uid)) {
+                document.body.innerHTML = `
+                    <div class="min-h-screen bg-gradient-to-br from-red-900 to-gray-900 flex items-center justify-center">
+                        <div class="text-center p-8">
+                            <div class="text-8xl mb-4">⛔</div>
+                            <h1 class="text-3xl font-bold mb-2">غير مصرح بالدخول</h1>
+                            <p class="text-gray-400 mb-6">ليس لديك صلاحيات الوصول إلى لوحة التحكم</p>
+                            <a href="index.html" class="bg-cyan-500 px-6 py-2 rounded-lg">العودة للرئيسية</a>
+                        </div>
+                    </div>
+                `;
+                return false;
+            }
+            return true;
+        }
+
+        // جلب جميع المستخدمين
+        async function fetchUsers() {
+            const snapshot = await getDocs(collection(db, "users"));
+            const users = [];
+            snapshot.forEach(doc => {
+                users.push({ id: doc.id, ...doc.data() });
+            });
+            return users;
+        }
+
+        // جلب المحاضرات
+        async function fetchLectures() {
+            const snapshot = await getDocs(collection(db, "lectures"));
+            const lectures = [];
+            snapshot.forEach(doc => {
+                lectures.push({ id: doc.id, ...doc.data() });
+            });
+            return lectures;
+        }
+
+        // عرض الإحصائيات
+        async function loadStats() {
+            const users = await fetchUsers();
+            const lectures = await fetchLectures();
+            let totalViews = 0;
+            lectures.forEach(l => totalViews += l.views || 0);
+            
+            document.getElementById('totalStudents').textContent = users.length;
+            document.getElementById('totalLectures').textContent = lectures.length;
+            document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+            document.getElementById('totalPoints').textContent = users.reduce((sum, u) => sum + (u.points || 0), 0).toLocaleString();
+        }
+
+        // عرض جدول الطلاب
+        async function displayUsers() {
+            const users = await fetchUsers();
+            const container = document.getElementById('usersTable');
+            container.innerHTML = users.map(user => `
+                <tr class="border-b border-gray-700 hover:bg-white/5">
+                    <td class="p-3">${user.name || '—'}</td>
+                    <td class="p-3">${user.email}</td>
+                    <td class="p-3">${user.points || 0}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-1 rounded-full text-xs ${user.banned ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">
+                            ${user.banned ? 'محظور' : 'نشط'}
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        <button onclick="banUser('${user.id}', ${!user.banned})" class="bg-yellow-600/20 px-3 py-1 rounded text-sm hover:bg-yellow-600/40 ml-2">
+                            ${user.banned ? 'إلغاء الحظر' : 'حظر'}
+                        </button>
+                        <button onclick="deleteUser('${user.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm hover:bg-red-600/40">
+                            حذف
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // عرض جدول المحاضرات
+        async function displayLectures() {
+            const lectures = await fetchLectures();
+            const container = document.getElementById('lecturesTable');
+            if (lectures.length === 0) {
+                container.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-gray-400">لا توجد محاضرات حتى الآن</td></tr>';
+                return;
+            }
+            container.innerHTML = lectures.map(lecture => `
+                <tr class="border-b border-gray-700 hover:bg-white/5">
+                    <td class="p-3">${lecture.title || '—'}</td>
+                    <td class="p-3">${lecture.views || 0}</td>
+                    <td class="p-3">
+                        ${lecture.pdfUrl ? '<span class="text-green-400">✅</span>' : '<span class="text-red-400">❌</span>'}
+                    </td>
+                    <td class="p-3">
+                        <button onclick="deleteLecture('${lecture.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm hover:bg-red-600/40">
+                            🗑️ حذف
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // إضافة محاضرة جديدة
+        window.addLecture = async () => {
+            const title = document.getElementById('lectureTitle').value;
+            const videoUrl = document.getElementById('lectureVideo').value;
+            const pdfUrl = document.getElementById('lecturePdf').value;
+            const thumbnail = document.getElementById('lectureThumb').value || 'https://img.youtube.com/vi/default/maxresdefault.jpg';
+            
+            if (!title || !videoUrl) {
+                alert('❌ الرجاء إدخال عنوان ورابط الفيديو');
+                return;
+            }
+            
+            await addDoc(collection(db, "lectures"), {
+                title: title,
+                videoUrl: videoUrl,
+                pdfUrl: pdfUrl || '#',
+                thumbnail: thumbnail,
+                views: 0,
+                createdAt: new Date()
+            });
+            
+            document.getElementById('lectureTitle').value = '';
+            document.getElementById('lectureVideo').value = '';
+            document.getElementById('lecturePdf').value = '';
+            document.getElementById('lectureThumb').value = '';
+            
+            await displayLectures();
+            await loadStats();
+            alert('✅ تم إضافة المحاضرة بنجاح');
+        };
+
+        window.banUser = async (userId, ban) => {
+            await updateDoc(doc(db, "users", userId), { banned: ban });
+            await displayUsers();
+        };
+
+        window.deleteUser = async (userId) => {
+            if (confirm('⚠️ هل أنت متأكد من حذف هذا المستخدم؟')) {
+                await deleteDoc(doc(db, "users", userId));
+                await displayUsers();
+                await loadStats();
+            }
+        };
+
+        window.deleteLecture = async (lectureId) => {
+            if (confirm('⚠️ هل أنت متأكد من حذف هذه المحاضرة؟')) {
+                await deleteDoc(doc(db, "lectures", lectureId));
+                await displayLectures();
+                await loadStats();
+            }
+        };
+
+        window.signOutAdmin = async () => {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        };
+
+        // تهيئة بيانات أولية للمحاضرات (مرة واحدة)
+        async function initDefaultLectures() {
+            const snapshot = await getDocs(collection(db, "lectures"));
+            if (snapshot.empty) {
+                const defaultLectures = [
+                    { title: "الباب الأول - الكيمياء العامة", videoUrl: "https://youtu.be/xDgzehlarWo?si=SM75HhzgVi6snR0n", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/533", views: 0 },
+                    { title: "الباب الثاني - الكيمياء التحليلية", videoUrl: "https://youtu.be/bLY1TDI9Mm4?si=j2FD4sAuoTtmrTsj", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/534", views: 0 },
+                    { title: "الباب الثالث - الكيمياء العضوية", videoUrl: "https://youtu.be/ywrKtjJmzd4?si=Iu0AdLu2KrmBPEqf", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/535", views: 0 }
+                ];
+                for (const lecture of defaultLectures) {
+                    await addDoc(collection(db, "lectures"), lecture);
+                }
+                console.log("تم إضافة المحاضرات الافتراضية");
+            }
+        }
+
+        // مراقبة حالة المصادقة
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const hasAccess = await checkAdminAccess(user);
+            if (!hasAccess) return;
+            
+            document.getElementById('adminName').textContent = user.email;
+            await loadStats();
+            await displayUsers();
+            await displayLectures();
+            await initDefaultLectures();
+        });
+    </script>
+
+    <style>
+        .sidebar {
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(30,0,60,0.9) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(0,255,255,0.3); }
+            50% { box-shadow: 0 0 20px rgba(0,255,255,0.6); }
+        }
+        
+        .glow-button:hover {
+            animation: glow 1s ease-in-out;
+        }
+    </style>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-cairo bg-gradient-to-br from-gray-900 to-purple-950 min-h-screen text-white">
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 min-h-screen fixed right-0 border-l border-white/10 p-6">
+            <div class="text-center mb-8">
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="Logo" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-cyan-400">
+                <h2 class="text-xl font-bold">لوحة التحكم</h2>
+                <p class="text-xs text-gray-400" id="adminName">جاري التحميل...</p>
+            </div>
+            
+            <nav class="space-y-2">
+                <div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400 font-bold">📊 Dashboard</div>
+                <div class="p-3 text-gray-400 hover:bg-white/10 rounded-lg transition cursor-pointer" onclick="location.reload()">🔄 تحديث</div>
+                <div class="p-3 text-red-400 hover:bg-red-500/10 rounded-lg transition cursor-pointer" onclick="signOutAdmin()">🚪 خروج</div>
+            </nav>
+            
+            <div class="absolute bottom-6 right-6 text-center text-xs text-gray-500">
+                <p>يلا كيمياء</p>
+                <p>v1.0 © 2024</p>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 mr-64 p-8">
+            <h1 class="text-3xl font-bold mb-8">✨ لوحة تحكم الأدمن</h1>
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">👨‍🎓</div>
+                    <div class="text-2xl font-bold" id="totalStudents">0</div>
+                    <div class="text-gray-400 text-sm">عدد الطلاب</div>
+                </div>
+                <div class="stat-card rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">📚</div>
+                    <div class="text-2xl font-bold" id="totalLectures">0</div>
+                    <div class="text-gray-400 text-sm">المحاضرات</div>
+                </div>
+                <div class="stat-card rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">👁️</div>
+                    <div class="text-2xl font-bold" id="totalViews">0</div>
+                    <div class="text-gray-400 text-sm">إجمالي المشاهدات</div>
+                </div>
+                <div class="stat-card rounded-xl p-6 text-center">
+                    <div class="text-3xl mb-2">🪙</div>
+                    <div class="text-2xl font-bold" id="totalPoints">0</div>
+                    <div class="text-gray-400 text-sm">إجمالي النقاط</div>
+                </div>
+            </div>
+            
+            <!-- Add Lecture Form -->
+            <div class="bg-white/5 rounded-xl p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-4">➕ إضافة محاضرة جديدة</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="lectureTitle" placeholder="عنوان المحاضرة" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+                    <input type="text" id="lectureVideo" placeholder="رابط الفيديو (YouTube)" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+                    <input type="text" id="lecturePdf" placeholder="رابط PDF (اختياري)" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+                    <input type="text" id="lectureThumb" placeholder="رابط الصورة المصغرة (اختياري)" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+                </div>
+                <button onclick="addLecture()" class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-lg font-bold glow-button">
+                    ✨ إضافة المحاضرة
+                </button>
+            </div>
+            
+            <!-- Users Table -->
+            <div class="bg-white/5 rounded-xl p-6 mb-8">
+                <h2 class="text-2xl font-bold mb-4">👨‍🎓 إدارة الطلاب</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="text-right p-3">الاسم</th>
+                                <th class="text-right p-3">البريد الإلكتروني</th>
+                                <th class="text-right p-3">النقاط</th>
+                                <th class="text-right p-3">الحالة</th>
+                                <th class="text-right p-3">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr><td colspan="5" class="text-center p-8">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Lectures Table -->
+            <div class="bg-white/5 rounded-xl p-6">
+                <h2 class="text-2xl font-bold mb-4">📚 إدارة المحاضرات</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="text-right p-3">عنوان المحاضرة</th>
+                                <th class="text-right p-3">المشاهدات</th>
+                                <th class="text-right p-3">PDF</th>
+                                <th class="text-right p-3">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lecturesTable">
+                            <tr><td colspan="4" class="text-center p-8">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
