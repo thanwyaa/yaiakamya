@@ -2,109 +2,134 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>يلا كيمياء - مستر زياد مبروك | منصة الكيمياء التعليمية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>يلا كيمياء | مستر زياد مبروك - أكبر منصة كيمياء في مصر</title>
+    <meta name="description" content="منصة يلا كيمياء - أتقن الكيمياء مع مستر زياد مبروك. فيديوهات شرح، ملفات PDF، كويزات تفاعلية ونظام نقاط.">
+    <meta name="theme-color" content="#0f0c29">
     
-    <!-- Firebase SDK -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 3s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(0,255,255,0.3), 0 0 40px rgba(0,255,255,0.2); }
+            50% { text-shadow: 0 0 40px rgba(0,255,255,0.8), 0 0 60px rgba(0,255,255,0.5); }
+        }
+        @keyframes borderPulse {
+            0%, 100% { border-color: rgba(0,255,255,0.3); box-shadow: 0 0 10px rgba(0,255,255,0.2); }
+            50% { border-color: rgba(0,255,255,0.8); box-shadow: 0 0 30px rgba(0,255,255,0.5); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideUp { animation: slideUp 0.6s ease-out forwards; }
+        .glass-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(0,255,255,0.3);
+            transform: translateY(-5px);
+        }
+        .neon-border {
+            animation: borderPulse 2s ease-in-out infinite;
+        }
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-cairo bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen text-white overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-xl border-b border-white/10">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="Logo" class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-cyan-400">
+                <div class="hidden sm:block">
+                    <h1 class="text-base md:text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
+                    <p class="text-[10px] md:text-xs text-gray-400">مستر زياد مبروك</p>
+                </div>
+            </div>
+            <div class="hidden md:flex gap-6">
+                <a href="#" class="hover:text-cyan-400 transition">الرئيسية</a>
+                <a href="#lectures" class="hover:text-cyan-400 transition">المحاضرات</a>
+                <a href="#leaderboard" class="hover:text-cyan-400 transition">المتصدرين</a>
+            </div>
+            <div>
+                <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-4 md:px-6 py-1.5 md:py-2 rounded-full text-sm md:text-base font-bold hover:scale-105 transition shadow-lg">
+                    🚀 دخول
+                </button>
+                <div id="userMenu" class="hidden flex items-center gap-2 md:gap-3">
+                    <span id="userName" class="text-xs md:text-sm"></span>
+                    <button onclick="signOutUser()" class="bg-red-500/20 px-2 md:px-3 py-1 rounded-full text-xs md:text-sm hover:bg-red-500/30 transition">خروج</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-        import { getFirestore, collection, getDocs, doc, updateDoc, increment, arrayUnion, getDoc, setDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        import { getFirestore, collection, getDocs, doc, updateDoc, increment, setDoc, getDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-        // Firebase Configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyDEFAULT_REPLACE_WITH_YOURS",
-            authDomain: "yalla-chemistry.firebaseapp.com",
-            projectId: "yalla-chemistry",
-            storageBucket: "yalla-chemistry.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef123456"
+            apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
+            authDomain: "yalla-kimya.firebaseapp.com",
+            databaseURL: "https://yalla-kimya-default-rtdb.firebaseio.com",
+            projectId: "yalla-kimya",
+            storageBucket: "yalla-kimya.firebasestorage.app",
+            messagingSenderId: "1052374689829",
+            appId: "1:1052374689829:web:fbb815ab42d753e63377cc"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // 📚 البيانات الحقيقية للمحاضرات
         const lecturesData = [
-            {
-                id: 1,
-                title: "الباب الأول - الكيمياء العامة",
-                description: "شرح كامل للباب الأول مع حل التدريبات",
-                videoUrl: "https://youtu.be/xDgzehlarWo?si=SM75HhzgVi6snR0n",
-                pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/533",
-                thumbnail: "https://img.youtube.com/vi/xDgzehlarWo/maxresdefault.jpg",
-                views: 1250
-            },
-            {
-                id: 2,
-                title: "الباب الثاني - الكيمياء التحليلية",
-                description: "شرح القواعد التحليلية والأسس الكيميائية",
-                videoUrl: "https://youtu.be/bLY1TDI9Mm4?si=j2FD4sAuoTtmrTsj",
-                pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/534",
-                thumbnail: "https://img.youtube.com/vi/bLY1TDI9Mm4/maxresdefault.jpg",
-                views: 980
-            },
-            {
-                id: 3,
-                title: "الباب الثالث - الكيمياء العضوية",
-                description: "شرح المركبات العضوية والتفاعلات",
-                videoUrl: "https://youtu.be/ywrKtjJmzd4?si=Iu0AdLu2KrmBPEqf",
-                pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/535",
-                thumbnail: "https://img.youtube.com/vi/ywrKtjJmzd4/maxresdefault.jpg",
-                views: 2100
-            },
-            {
-                id: 4,
-                title: "المنهج الكامل - شرح شاملة",
-                description: "مراجعة شاملة للمنهج بالكامل",
-                videoUrl: "https://youtu.be/_LeKR7weATE?si=qcJJ0xOoSHmPNcpS",
-                pdfUrl: "#",
-                thumbnail: "https://img.youtube.com/vi/_LeKR7weATE/maxresdefault.jpg",
-                views: 3450
-            },
-            {
-                id: 5,
-                title: "حل الكتاب المدرسي",
-                description: "حول جميع أسئلة الكتاب بالتفصيل",
-                videoUrl: "https://youtu.be/O2LJqeoUJoM?si=USxzzAUNn0L2Q3jT",
-                pdfUrl: "#",
-                thumbnail: "https://img.youtube.com/vi/O2LJqeoUJoM/maxresdefault.jpg",
-                views: 890
-            },
-            {
-                id: 6,
-                title: "150 سؤال - مراجعة نهائية",
-                description: "أقوى 150 سؤال للمراجعة النهائية",
-                videoUrl: "https://youtu.be/LPXRrqsRjRg?si=FDjnk_RJCjuIZns-",
-                pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/551",
-                thumbnail: "https://img.youtube.com/vi/LPXRrqsRjRg/maxresdefault.jpg",
-                views: 5670
-            }
+            { id: 1, title: "🏆 الباب الأول - الكيمياء العامة", desc: "شرح كامل للباب الأول مع التدريبات", video: "https://youtu.be/xDgzehlarWo", pdf: "https://t.me/yala_kamya_ziad_mabrok/533", thumb: "https://img.youtube.com/vi/xDgzehlarWo/maxresdefault.jpg", views: 12500 },
+            { id: 2, title: "🧪 الباب الثاني - الكيمياء التحليلية", desc: "القواعد التحليلية والأسس الكيميائية", video: "https://youtu.be/bLY1TDI9Mm4", pdf: "https://t.me/yala_kamya_ziad_mabrok/534", thumb: "https://img.youtube.com/vi/bLY1TDI9Mm4/maxresdefault.jpg", views: 8900 },
+            { id: 3, title: "🔬 الباب الثالث - الكيمياء العضوية", desc: "المركبات العضوية والتفاعلات", video: "https://youtu.be/ywrKtjJmzd4", pdf: "https://t.me/yala_kamya_ziad_mabrok/535", thumb: "https://img.youtube.com/vi/ywrKtjJmzd4/maxresdefault.jpg", views: 15600 },
+            { id: 4, title: "📚 المنهج الكامل", desc: "مراجعة شاملة للمنهج بالكامل", video: "https://youtu.be/_LeKR7weATE", pdf: "#", thumb: "https://img.youtube.com/vi/_LeKR7weATE/maxresdefault.jpg", views: 23400 },
+            { id: 5, title: "📖 حل الكتاب المدرسي", desc: "حول جميع أسئلة الكتاب بالتفصيل", video: "https://youtu.be/O2LJqeoUJoM", pdf: "#", thumb: "https://img.youtube.com/vi/O2LJqeoUJoM/maxresdefault.jpg", views: 6700 },
+            { id: 6, title: "⚡ 150 سؤال - مراجعة نهائية", desc: "أقوى 150 سؤال للمراجعة النهائية", video: "https://youtu.be/LPXRrqsRjRg", pdf: "https://t.me/yala_kamya_ziad_mabrok/551", thumb: "https://img.youtube.com/vi/LPXRrqsRjRg/maxresdefault.jpg", views: 45600 }
         ];
 
-        // 💰 نظام النقاط (Chemical Coins)
-        async function addPoints(userId, points) {
-            const userRef = doc(db, "users", userId);
-            await updateDoc(userRef, {
-                points: increment(points),
-                lastActive: new Date()
-            });
-        }
+        let currentUser = null;
 
-        // 👁️ تسجيل المشاهدات
         async function recordView(lectureId) {
             if (currentUser) {
-                const lectureRef = doc(db, "lectures", lectureId.toString());
-                await updateDoc(lectureRef, {
-                    views: increment(1)
-                });
-                await addPoints(currentUser.uid, 5); // 5 نقاط لكل مشاهدة
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, { points: increment(5), lastActive: new Date() });
             }
         }
 
-        // 🏆 عرض الـ Leaderboard
         async function showLeaderboard() {
             const q = query(collection(db, "users"), orderBy("points", "desc"), limit(10));
             const snapshot = await getDocs(q);
@@ -112,293 +137,142 @@
             if (container) {
                 container.innerHTML = '';
                 let rank = 1;
-                snapshot.forEach(doc => {
-                    const data = doc.data();
+                for (const docSnap of snapshot.docs) {
+                    const data = docSnap.data();
                     container.innerHTML += `
-                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl mb-2 hover:bg-white/10 transition">
+                        <div class="flex items-center justify-between p-3 glass-card rounded-xl mb-2 animate-slideUp" style="animation-delay: ${rank * 0.05}s">
                             <div class="flex items-center gap-3">
-                                <span class="text-2xl font-bold ${rank === 1 ? 'text-yellow-400' : rank === 2 ? 'text-gray-400' : rank === 3 ? 'text-orange-600' : 'text-white/40'}">#${rank}</span>
+                                <span class="text-2xl font-bold ${rank === 1 ? 'text-yellow-400' : rank === 2 ? 'text-gray-300' : rank === 3 ? 'text-orange-500' : 'text-white/30'}">#${rank}</span>
                                 <div>
-                                    <p class="font-bold">${data.name || data.email?.split('@')[0] || 'طالب'}</p>
-                                    <p class="text-xs text-gray-400">${data.points || 0} نقطة</p>
+                                    <p class="font-bold text-sm md:text-base">${data.name || data.email?.split('@')[0] || 'طالب'}</p>
+                                    <p class="text-xs text-gray-400">🔬 ${data.points || 0} نقطة</p>
                                 </div>
                             </div>
-                            <div class="text-2xl">🔬 ${data.points || 0}</div>
+                            <div class="text-xl md:text-2xl">🏆 ${data.points || 0}</div>
                         </div>
                     `;
                     rank++;
-                });
+                }
             }
         }
 
-        // عرض المحاضرات في الصفحة
-        function displayLectures() {
-            const container = document.getElementById('lecturesContainer');
-            if (!container) return;
-            
-            container.innerHTML = lecturesData.map(lecture => `
-                <div class="group relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl overflow-hidden backdrop-blur-sm hover:scale-105 transition-all duration-300">
-                    <div class="relative overflow-hidden">
-                        <img src="${lecture.thumbnail}" alt="${lecture.title}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500">
-                        <div class="absolute top-2 right-2 bg-black/70 px-2 py-1 rounded-lg text-xs">
-                            👁️ ${lecture.views.toLocaleString()} مشاهدة
-                        </div>
-                        ${!currentUser ? '<div class="absolute inset-0 bg-black/60 flex items-center justify-center"><div class="text-center"><div class="text-4xl mb-2">🔒</div><p class="text-sm">سجل دخولك للمشاهدة</p></div></div>' : ''}
-                    </div>
-                    <div class="p-5">
-                        <h3 class="text-xl font-bold mb-2">${lecture.title}</h3>
-                        <p class="text-gray-400 text-sm mb-4">${lecture.description}</p>
-                        <div class="flex gap-2">
-                            ${currentUser ? `
-                                <a href="${lecture.videoUrl}" target="_blank" onclick="recordView(${lecture.id})" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold hover:opacity-80 transition">
-                                    ▶️ مشاهدة
-                                </a>
-                                ${lecture.pdfUrl !== '#' ? `<a href="${lecture.pdfUrl}" target="_blank" class="bg-purple-600 px-4 py-2 rounded-xl text-center font-bold hover:bg-purple-700 transition">
-                                    📄 PDF
-                                </a>` : ''}
-                            ` : `
-                                <button onclick="document.getElementById('loginModal').classList.remove('hidden')" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold">
-                                    🔒 سجل للمشاهدة
-                                </button>
-                            `}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
+        window.recordView = recordView;
+        window.signOutUser = () => signOut(auth);
 
-        let currentUser = null;
-
-        // مراقبة حالة تسجيل الدخول
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
                 document.getElementById('loginBtn').classList.add('hidden');
                 document.getElementById('userMenu').classList.remove('hidden');
-                document.getElementById('userName').textContent = user.displayName || user.email?.split('@')[0];
-                
-                // إنشاء حساب المستخدم إذا لم يكن موجود
+                document.getElementById('userName').textContent = user.displayName?.split(' ')[0] || user.email?.split('@')[0];
                 const userRef = doc(db, "users", user.uid);
                 const userDoc = await getDoc(userRef);
                 if (!userDoc.exists()) {
-                    await setDoc(userRef, {
-                        email: user.email,
-                        name: user.displayName,
-                        points: 0,
-                        createdAt: new Date(),
-                        banned: false
-                    });
+                    await setDoc(userRef, { email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, createdAt: new Date(), banned: false });
                 }
                 showLeaderboard();
             } else {
                 document.getElementById('loginBtn').classList.remove('hidden');
                 document.getElementById('userMenu').classList.add('hidden');
             }
-            displayLectures();
         });
 
-        window.recordView = recordView;
-        window.signOutUser = () => signOut(auth);
-        window.showLeaderboard = showLeaderboard;
-
-        // عرض الـ Leaderboard عند تحميل الصفحة
-        setTimeout(() => {
-            showLeaderboard();
-        }, 1000);
+        const container = document.getElementById('lecturesContainer');
+        if (container) {
+            container.innerHTML = lecturesData.map((lecture, idx) => `
+                <div class="glass-card rounded-2xl overflow-hidden animate-slideUp" style="animation-delay: ${idx * 0.1}s">
+                    <div class="relative overflow-hidden">
+                        <img src="${lecture.thumb}" alt="${lecture.title}" class="w-full h-48 md:h-56 object-cover transition duration-500 hover:scale-110">
+                        <div class="absolute top-2 right-2 bg-black/70 px-2 py-1 rounded-lg text-xs">👁️ ${(lecture.views + (currentUser ? Math.floor(Math.random() * 100) : 0)).toLocaleString()}</div>
+                        ${!currentUser ? '<div class="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-sm"><div class="text-center"><div class="text-5xl mb-2">🔒</div><p class="text-sm font-bold">سجل دخولك للمشاهدة</p></div></div>' : ''}
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-lg md:text-xl font-bold mb-2">${lecture.title}</h3>
+                        <p class="text-gray-400 text-sm mb-4">${lecture.desc}</p>
+                        <div class="flex gap-2">
+                            ${currentUser ? `
+                                <a href="${lecture.video}" target="_blank" onclick="recordView(${lecture.id})" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm hover:opacity-80 transition">▶️ مشاهدة</a>
+                                ${lecture.pdf !== '#' ? `<a href="${lecture.pdf}" target="_blank" class="bg-purple-600 px-4 py-2 rounded-xl text-center font-bold text-sm hover:bg-purple-700 transition">📄 PDF</a>` : ''}
+                            ` : `
+                                <button onclick="window.location.href='login.html'" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm">🔒 سجل للمشاهدة</button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        setTimeout(showLeaderboard, 1500);
     </script>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- Hero Section with Animated Logo -->
+    <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-500/15 via-purple-500/10 to-transparent"></div>
+        <div class="absolute top-1/4 left-5 w-72 h-72 bg-cyan-400 rounded-full filter blur-3xl opacity-20 animate-float"></div>
+        <div class="absolute bottom-1/4 right-5 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 animate-float" style="animation-delay: 3s;"></div>
         
-        body {
-            font-family: 'Cairo', 'Tahoma', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: white;
-            min-height: 100vh;
-        }
-        
-        .neon-text {
-            text-shadow: 0 0 10px rgba(0,255,255,0.5), 0 0 20px rgba(0,255,255,0.3);
-        }
-        
-        .glass-card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .float-animation {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes glow {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-        }
-        
-        .glow-animation {
-            animation: glow 3s ease-in-out infinite;
-        }
-    </style>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="font-cairo">
-
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-lg border-b border-white/10">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-cyan-400">
-                <div>
-                    <h1 class="text-xl font-bold neon-text">يلا كيمياء</h1>
-                    <p class="text-xs text-gray-400">مستر زياد مبروك</p>
-                </div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="mb-8 relative inline-block">
+                <div class="absolute inset-0 bg-cyan-400 rounded-full filter blur-2xl opacity-50 animate-pulse-fast"></div>
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="مستر زياد مبروك" class="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-cyan-400 shadow-2xl relative z-10 animate-float neon-border">
+                <div class="absolute -bottom-3 -right-3 bg-green-500 rounded-full w-6 h-6 border-4 border-white shadow-lg z-20"></div>
+                <div class="absolute -top-3 -left-3 bg-yellow-500 rounded-full w-5 h-5 animate-pulse"></div>
             </div>
             
-            <div class="hidden md:flex gap-6">
-                <a href="#" class="hover:text-cyan-400 transition">الرئيسية</a>
-                <a href="#lectures" class="hover:text-cyan-400 transition">المحاضرات</a>
-                <a href="#leaderboard" class="hover:text-cyan-400 transition">المتصدرين</a>
-            </div>
-            
-            <div>
-                <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full font-bold hover:scale-105 transition">
-                    🚀 تسجيل الدخول
-                </button>
-                
-                <div id="userMenu" class="hidden flex items-center gap-3">
-                    <span id="userName" class="text-sm"></span>
-                    <button onclick="signOutUser()" class="bg-red-500/20 px-3 py-1 rounded-full text-sm hover:bg-red-500/30 transition">
-                        🚪 خروج
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="pt-32 pb-20 relative overflow-hidden">
-        <div class="absolute top-20 left-10 w-72 h-72 bg-cyan-500 rounded-full filter blur-3xl opacity-20 float-animation"></div>
-        <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 float-animation" style="animation-delay: 3s;"></div>
-        
-        <div class="container mx-auto px-4 text-center relative">
-            <div class="inline-block mb-6">
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="مستر زياد مبروك" class="w-32 h-32 rounded-full border-4 border-cyan-400 shadow-2xl mx-auto animate-pulse">
-                <div class="absolute -bottom-2 -right-2 bg-green-500 rounded-full w-6 h-6 border-2 border-white"></div>
-            </div>
-            
-            <h1 class="text-6xl md:text-7xl font-extrabold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-glow">
                 يلا كيمياء
             </h1>
-            <p class="text-2xl md:text-3xl mb-2">مع <span class="text-cyan-400 font-bold">مستر زياد مبروك</span></p>
-            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                أتقن الكيمياء من الصفر حتى الاحتراف مع أقوى منصة تعليمية للثانوية العامة
-            </p>
+            <p class="text-2xl md:text-3xl lg:text-4xl mb-3">مع <span class="text-cyan-400 font-bold border-b-2 border-cyan-400">مستر زياد مبروك</span></p>
+            <p class="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">أقوى منصة لتعليم الكيمياء للثانوية العامة - شروحات، ملخصات، كويزات ونظام نقاط</p>
             
             <div class="flex gap-4 justify-center flex-wrap">
-                <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-lg">
-                    🎓 ابدأ رحلتك الآن
-                </a>
-                <a href="#features" class="bg-white/10 backdrop-blur px-8 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition border border-white/20">
-                    ✨ اكتشف المميزات
-                </a>
+                <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 md:px-8 py-3 rounded-full font-bold text-base md:text-lg hover:scale-105 transition shadow-xl">🎓 ابدأ رحلتك الآن</a>
+                <a href="#leaderboard" class="bg-white/10 backdrop-blur px-6 md:px-8 py-3 rounded-full font-bold text-base md:text-lg hover:bg-white/20 transition border border-white/20">🏆 التوب تن</a>
+            </div>
+            
+            <div class="flex justify-center gap-6 mt-10 text-center">
+                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">6+</div><div class="text-xs text-gray-400">محاضرات</div></div>
+                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">100+</div><div class="text-xs text-gray-400">ساعة شرح</div></div>
+                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">5000+</div><div class="text-xs text-gray-400">طالب</div></div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-20">
+    <!-- Features -->
+    <section class="py-16 md:py-20">
         <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-center mb-12">✨ مميزات المنصة</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-4">🎥</div>
-                    <h3 class="text-xl font-bold mb-2">فيديوهات شرح</h3>
-                    <p class="text-gray-400">أكثر من 100 ساعة شرح مفصل</p>
-                </div>
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-4">📄</div>
-                    <h3 class="text-xl font-bold mb-2">ملفات PDF</h3>
-                    <p class="text-gray-400">ملخصات وأسئلة شاملة</p>
-                </div>
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-4">🏆</div>
-                    <h3 class="text-xl font-bold mb-2">نقاط الكيمياء</h3>
-                    <p class="text-gray-400">اربح نقاط مع كل نشاط</p>
-                </div>
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-4">⚡</div>
-                    <h3 class="text-xl font-bold mb-2">كويزات تفاعلية</h3>
-                    <p class="text-gray-400">اختبر فهمك فوراً</p>
-                </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">✨ مميزات المنصة</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">🎥</div><h3 class="font-bold text-sm md:text-base">فيديوهات</h3><p class="text-xs text-gray-400 hidden sm:block">شرح وافي</p></div>
+                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">📄</div><h3 class="font-bold text-sm md:text-base">ملفات PDF</h3><p class="text-xs text-gray-400 hidden sm:block">ملخصات</p></div>
+                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">🏆</div><h3 class="font-bold text-sm md:text-base">نقاط</h3><p class="text-xs text-gray-400 hidden sm:block">Chemical Coins</p></div>
+                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">⚡</div><h3 class="font-bold text-sm md:text-base">كويزات</h3><p class="text-xs text-gray-400 hidden sm:block">تفاعلية</p></div>
+                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">📊</div><h3 class="font-bold text-sm md:text-base">ترتيب</h3><p class="text-xs text-gray-400 hidden sm:block">Leaderboard</p></div>
+                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">🔒</div><h3 class="font-bold text-sm md:text-base">آمان</h3><p class="text-xs text-gray-400 hidden sm:block">تام</p></div>
             </div>
         </div>
     </section>
 
-    <!-- Lectures Section -->
-    <section id="lectures" class="py-20 bg-black/30">
+    <!-- Lectures -->
+    <section id="lectures" class="py-16 md:py-20 bg-black/30">
         <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-center mb-12">📚 المكتبة التعليمية</h2>
-            <div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamic loading -->
-            </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">📚 المكتبة التعليمية</h2>
+            <div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"></div>
         </div>
     </section>
 
-    <!-- Leaderboard Section -->
-    <section id="leaderboard" class="py-20">
+    <!-- Leaderboard -->
+    <section id="leaderboard" class="py-16 md:py-20">
         <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-center mb-12">🏆 متصدرين الكيمياء</h2>
-            <div class="max-w-2xl mx-auto glass-card rounded-2xl p-6">
-                <div id="leaderboardList">
-                    <div class="text-center text-gray-400">جاري تحميل المتصدرين...</div>
-                </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">🏆 متصدرين الكيمياء</h2>
+            <div class="max-w-2xl mx-auto glass-card rounded-2xl p-4 md:p-6">
+                <div id="leaderboardList"><div class="text-center text-gray-400 py-8">جاري التحميل...</div></div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-8 border-t border-white/10 text-center text-gray-400">
-        <p>© 2026 يلا كيمياء - مستر زياد مبروك. جميع الحقوق محفوظة</p>
-        <p class="text-sm mt-2">منصة تعليمية متكاملة لطلاب الثانوية العامة</p>
+    <footer class="py-6 md:py-8 border-t border-white/10 text-center text-gray-400 text-sm">
+        <p>© 2024 يلا كيمياء - مستر زياد مبروك | جميع الحقوق محفوظة</p>
     </footer>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur z-50 flex items-center justify-center">
-        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 max-w-md w-full mx-4">
-            <h3 class="text-2xl font-bold mb-4">تسجيل الدخول مطلوب</h3>
-            <p class="text-gray-400 mb-6">يجب تسجيل الدخول أولاً للمشاهدة المحاضرات والملفات</p>
-            <button onclick="window.location.href='login.html'" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold">
-                🚀 الذهاب لتسجيل الدخول
-            </button>
-            <button onclick="document.getElementById('loginModal').classList.add('hidden')" class="w-full mt-3 bg-gray-700 py-2 rounded-xl">
-                إغلاق
-            </button>
-        </div>
-    </div>
-
 </body>
 </html>
