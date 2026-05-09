@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - يلا كيمياء</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -14,9 +14,13 @@
         .glass-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
         .btn { transition: 0.2s; cursor: pointer; }
         .btn:active { transform: scale(0.97); }
+        .stat-card { background: linear-gradient(135deg, rgba(0,200,255,0.15), rgba(128,0,255,0.15)); transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #1e1e2f; }
         ::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 10px; }
+        .modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #1a1a3a, #0f0f2a); border-radius: 2rem; padding: 2rem; z-index: 1000; border: 2px solid #00c6ff; max-width: 90%; max-height: 90%; overflow-y: auto; }
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 999; }
     </style>
 </head>
 <body class="text-white">
@@ -24,9 +28,8 @@
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, update, remove, onValue, push, child } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, remove, onValue, push, query, orderByChild, orderByKey } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
-    // ===================== الإعدادات الثابتة =====================
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
         authDomain: "yalla-chemistry-github.firebaseapp.com",
@@ -40,28 +43,17 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // 🔐 قائمة الأدمن (اتنين زى ما طلبت)
-    const ADMIN_UIDS = [
-        "PuWOEV9HUtcPyd1HwJZVhsQQWBn2",   // الأدمن القديم
-        "PgIttA5EeuQ0N67EL5QDeaRUYei2"    // الأدمن الجديد
-    ];
-
+    const ADMIN_UIDS = ["PuWOEV9HUtcPyd1HwJZVhsQQWBn2", "PgIttA5EeuQ0N67EL5QDeaRUYei2"];
     let currentUser = null;
-    let currentTab = 'active';  // 'active' or 'banned'
+    let currentTab = 'active';
 
-    // ========== وظائف عامة ==========
     function showToast(msg, type = 'success') {
         let toast = document.getElementById('toastMsg');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toastMsg';
-            toast.className = 'fixed bottom-5 right-5 px-6 py-3 rounded-full text-white font-bold z-50 shadow-lg transition-all duration-300';
-            document.body.appendChild(toast);
-        }
+        if (!toast) { toast = document.createElement('div'); toast.id = 'toastMsg'; toast.className = 'fixed bottom-5 right-5 px-6 py-3 rounded-full text-white font-bold z-50 transition-all duration-300'; document.body.appendChild(toast); }
         toast.innerText = msg;
         toast.style.backgroundColor = type === 'success' ? '#10b981' : '#ef4444';
         toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        setTimeout(() => toast.style.display = 'none', 3000);
     }
 
     async function checkAdmin(user) {
@@ -73,19 +65,23 @@
         return true;
     }
 
-    // ========== 1. الإحصائيات الرئيسية وعدد المشاهدات ==========
-    async function loadMainStats() {
+    // الإحصائيات الكاملة
+    async function loadStats() {
         const usersSnap = await get(ref(db, 'users'));
         const lecturesSnap = await get(ref(db, 'lectures'));
+        const quizzesSnap = await get(ref(db, 'quizzes'));
         
-        let totalStudents = 0, totalPoints = 0, bannedCount = 0;
+        let totalStudents = 0, totalPoints = 0, bannedCount = 0, activeToday = 0;
+        let today = new Date().toDateString();
+        
         if (usersSnap.exists()) {
             const users = usersSnap.val();
             for (let id in users) {
                 if (!ADMIN_UIDS.includes(id)) {
                     totalStudents++;
                     totalPoints += users[id].points || 0;
-                    if (users[id].banned === true) bannedCount++;
+                    if (users[id].banned) bannedCount++;
+                    if (users[id].lastActive && new Date(users[id].lastActive).toDateString() === today) activeToday++;
                 }
             }
         }
@@ -97,344 +93,224 @@
             totalLectures = Object.keys(lectures).length;
             for (let id in lectures) {
                 totalViews += lectures[id].views || 0;
-                lecturesList.push({ id, title: lectures[id].title, views: lectures[id].views || 0, pdf: lectures[id].pdfUrl });
+                lecturesList.push({ id, title: lectures[id].title, views: lectures[id].views || 0 });
             }
         }
         
+        let totalQuizzes = quizzesSnap.exists() ? Object.keys(quizzesSnap.val()).length : 0;
+        
         document.getElementById('totalStudents').innerText = totalStudents;
+        document.getElementById('activeToday').innerText = activeToday;
         document.getElementById('totalPoints').innerText = totalPoints.toLocaleString();
         document.getElementById('bannedCount').innerText = bannedCount;
         document.getElementById('totalLectures').innerText = totalLectures;
         document.getElementById('totalViews').innerText = totalViews.toLocaleString();
-        
-        // عرض إحصائيات كل محاضرة (المطلوب)
-        const statsContainer = document.getElementById('lectureStatsContainer');
-        if (statsContainer) {
-            statsContainer.innerHTML = lecturesList.map(l => `
-                <div class="flex justify-between items-center p-2 border-b border-gray-600">
-                    <span class="text-sm">${l.title?.substring(0, 35) || 'محاضرة'}</span>
-                    <span class="text-cyan-400 font-bold">👁️ ${(l.views || 0).toLocaleString()}</span>
-                </div>
-            `).join('');
-            if(lecturesList.length===0) statsContainer.innerHTML = '<div class="text-center text-gray-400">لا توجد محاضرات</div>';
-        }
+        document.getElementById('totalQuizzes').innerText = totalQuizzes;
         
         // رسم بياني
-        const ctx = document.getElementById('myChart').getContext('2d');
-        if (window.myChart) window.myChart.destroy();
-        window.myChart = new Chart(ctx, {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        if (window.statsChart) window.statsChart.destroy();
+        window.statsChart = new Chart(ctx, {
             type: 'bar',
-            data: { labels: ['الطلاب', 'المحاضرات', 'النقاط'], datasets: [{ label: 'إحصائيات المنصة', data: [totalStudents, totalLectures, totalPoints/100], backgroundColor: '#00c6ff', borderRadius: 10 }] },
-            options: { responsive: true, maintainAspectRatio: false }
+            data: { labels: ['الطلاب', 'المحاضرات', 'النقاط(÷100)', 'الكويزات'], datasets: [{ label: 'إحصائيات المنصة', data: [totalStudents, totalLectures, totalPoints/100, totalQuizzes], backgroundColor: '#00c6ff', borderRadius: 10 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } } }
         });
+        
+        displayLectureStats(lecturesList);
+    }
+    
+    function displayLectureStats(lectures) {
+        const container = document.getElementById('lectureStatsContainer');
+        if (container) {
+            container.innerHTML = lectures.map(l => `<div class="flex justify-between items-center p-2 border-b border-gray-600"><span>${l.title?.substring(0, 35)}</span><span class="text-cyan-400">👁️ ${(l.views || 0).toLocaleString()}</span></div>`).join('');
+            if(lectures.length===0) container.innerHTML = '<div class="text-center text-gray-400">لا توجد محاضرات</div>';
+        }
     }
 
-    // ========== 2. عرض الطلاب (نشط / محظور) ==========
-    async function loadUsersList() {
+    // الطلاب
+    async function loadUsers() {
         const usersSnap = await get(ref(db, 'users'));
         let active = [], banned = [];
         if (usersSnap.exists()) {
             const users = usersSnap.val();
             for (let id in users) {
                 if (ADMIN_UIDS.includes(id)) continue;
-                let userData = { id, ...users[id] };
-                if (userData.banned === true) banned.push(userData);
-                else active.push(userData);
+                let u = { id, ...users[id] };
+                if (u.banned) banned.push(u);
+                else active.push(u);
             }
         }
         active.sort((a,b) => (b.points||0) - (a.points||0));
-        banned.sort((a,b) => (b.bannedAt||0) - (a.bannedAt||0));
-        
         const tbody = document.getElementById('usersTableBody');
         const list = currentTab === 'active' ? active : banned;
-        if (list.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-gray-400">لا يوجد ${currentTab === 'active' ? 'طلاب نشطين' : 'طلاب محظورين'}</td></tr>`;
-            return;
-        }
+        if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="text-center p-6">لا يوجد ${currentTab === 'active' ? 'طلاب نشطين' : 'طلاب محظورين'} numl`; return; }
         
         tbody.innerHTML = list.map(u => `
             <tr class="border-b border-gray-700">
-                <td class="p-3"><div class="font-bold">${u.name || '—'}</div><div class="text-xs text-gray-400">${u.email || ''}</div></td>
-                <td class="p-3">${u.points || 0}</td>
-                <td class="p-3"><span class="px-2 py-1 rounded-full text-xs ${u.banned ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${u.banned ? 'محظور' : 'نشط'}</span></td>
-                <td class="p-3 text-xs">${u.banReason || '—'}</td>
-                <td class="p-3">
-                    ${!u.banned ? `
-                        <button class="bg-green-600/30 px-2 py-1 rounded text-xs ml-1" onclick="addPointsToUser('${u.id}',10)">+10</button>
-                        <button class="bg-yellow-600/30 px-2 py-1 rounded text-xs ml-1" onclick="openBanModal('${u.id}','${u.name || u.email}')">حظر</button>
-                    ` : `
-                        <button class="bg-green-600/30 px-2 py-1 rounded text-xs ml-1" onclick="unbanUser('${u.id}')">إلغاء الحظر</button>
-                    `}
-                    <button class="bg-red-600/30 px-2 py-1 rounded text-xs" onclick="deleteUserPermanently('${u.id}')">حذف</button>
+                <td class="p-2"><div class="font-bold">${u.name || '—'}</div><div class="text-xs text-gray-400">${u.email || ''}</div></td>
+                <td class="p-2">${u.points || 0}</td>
+                <td class="p-2"><span class="px-2 py-1 rounded-full text-xs ${u.banned ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${u.banned ? 'محظور' : 'نشط'}</span></td>
+                <td class="p-2 text-xs">${u.banReason || '—'}</td>
+                <td class="p-2">
+                    ${!u.banned ? `<button class="bg-green-600/30 px-2 py-1 rounded text-xs ml-1" onclick="addPoints('${u.id}',10)">+10</button>
+                    <button class="bg-yellow-600/30 px-2 py-1 rounded text-xs ml-1" onclick="openBanModal('${u.id}','${u.name || u.email}')">حظر</button>` : 
+                    `<button class="bg-green-600/30 px-2 py-1 rounded text-xs ml-1" onclick="unbanUser('${u.id}')">إلغاء الحظر</button>`}
+                    <button class="bg-red-600/30 px-2 py-1 rounded text-xs" onclick="deleteUser('${u.id}')">حذف</button>
                 </td>
               </tr>
         `).join('');
     }
     
-    window.switchTab = (tab) => {
-        currentTab = tab;
-        document.getElementById('tabActive').className = `px-4 py-2 rounded-t-lg cursor-pointer ${tab === 'active' ? 'bg-cyan-500/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-gray-400'}`;
-        document.getElementById('tabBanned').className = `px-4 py-2 rounded-t-lg cursor-pointer ${tab === 'banned' ? 'bg-cyan-500/20 text-cyan-400 border-b-2 border-cyan-400' : 'text-gray-400'}`;
-        loadUsersList();
-    };
-    
-    // حظر
-    window.openBanModal = (uid, name) => {
-        document.getElementById('banUid').value = uid;
-        document.getElementById('banName').innerText = name;
-        document.getElementById('banModal').classList.remove('hidden');
-    };
-    window.confirmBan = async () => {
-        const uid = document.getElementById('banUid').value;
-        const reason = document.getElementById('banReason').value || 'مخالفة القواعد';
-        await update(ref(db, 'users/' + uid), { banned: true, banReason: reason, bannedAt: Date.now() });
-        document.getElementById('banModal').classList.add('hidden');
-        showToast(`✅ تم حظر المستخدم: ${reason}`);
-        loadUsersList();
-        loadMainStats();
-    };
-    window.unbanUser = async (uid) => {
-        await update(ref(db, 'users/' + uid), { banned: false, banReason: null });
-        showToast(`✅ تم إلغاء الحظر`);
-        loadUsersList();
-        loadMainStats();
-    };
-    window.deleteUserPermanently = async (uid) => {
-        if(confirm('⚠️ هل أنت متأكد من حذف هذا المستخدم نهائياً؟')) {
-            await remove(ref(db, 'users/' + uid));
-            showToast(`✅ تم حذف المستخدم`);
-            loadUsersList();
-            loadMainStats();
-        }
-    };
-    window.addPointsToUser = async (uid, pts) => {
-        const userRef = ref(db, 'users/' + uid);
-        const snap = await get(userRef);
-        if(snap.exists()){
-            let old = snap.val().points || 0;
-            await update(userRef, { points: old + pts });
-            showToast(`✅ تم إضافة ${pts} نقطة`);
-            loadUsersList();
-            loadMainStats();
-        }
-    };
+    window.switchTab = (tab) => { currentTab = tab; loadUsers(); };
+    window.openBanModal = (uid, name) => { document.getElementById('banUid').value = uid; document.getElementById('banName').innerText = name; document.getElementById('banModal').classList.remove('hidden'); };
+    window.closeBanModal = () => { document.getElementById('banModal').classList.add('hidden'); };
+    window.confirmBan = async () => { await update(ref(db, 'users/' + document.getElementById('banUid').value), { banned: true, banReason: document.getElementById('banReason').value || 'مخالفة القواعد', bannedAt: Date.now() }); closeBanModal(); showToast('✅ تم الحظر'); loadUsers(); loadStats(); };
+    window.unbanUser = async (uid) => { await update(ref(db, 'users/' + uid), { banned: false, banReason: null }); showToast('✅ تم إلغاء الحظر'); loadUsers(); loadStats(); };
+    window.addPoints = async (uid, pts) => { const snap = await get(ref(db, 'users/' + uid)); if(snap.exists()){ await update(ref(db, 'users/' + uid), { points: (snap.val().points || 0) + pts }); showToast(`✅ +${pts} نقطة`); loadUsers(); loadStats(); } };
+    window.deleteUser = async (uid) => { if(confirm('⚠️ تأكيد الحذف النهائي؟')){ await remove(ref(db, 'users/' + uid)); showToast('✅ تم الحذف'); loadUsers(); loadStats(); } };
 
-    // ========== 3. إدارة المحاضرات (إضافة - حذف) ==========
-    async function loadLecturesTable() {
+    // المحاضرات
+    async function loadLectures() {
         const snap = await get(ref(db, 'lectures'));
         let html = '';
         if(snap.exists()){
             const lectures = snap.val();
             for(let id in lectures){
-                let l = lectures[id];
-                html += `<tr class="border-b border-gray-700">
-                    <td class="p-3"><div class="font-bold">${l.title || '—'}</div><div class="text-xs text-gray-400">${l.videoUrl?.substring(0,30)||''}</div></td>
-                    <td class="p-3">${l.views || 0}</td>
-                    <td class="p-3">${l.pdfUrl && l.pdfUrl !== '#' ? '✅' : '❌'}</td>
-                    <td class="p-3"><button onclick="deleteLecture('${id}')" class="bg-red-600/40 px-3 py-1 rounded text-sm">🗑️ حذف</button></td>
-                </tr>`;
+                html += `<tr class="border-b border-gray-700"><td class="p-2">${lectures[id].title || '—'}</td><td class="p-2">${lectures[id].views || 0}</td><td class="p-2">${lectures[id].pdfUrl && lectures[id].pdfUrl !== '#' ? '✅' : '❌'}</td><td class="p-2"><button onclick="deleteLecture('${id}')" class="bg-red-600/30 px-2 py-1 rounded text-sm">🗑️ حذف</button></td></tr>`;
             }
         } else html = '<tr><td colspan="4" class="text-center p-6">لا توجد محاضرات</td></tr>';
         document.getElementById('lecturesTableBody').innerHTML = html;
     }
     
-    window.addLectureManually = async () => {
+    window.addLecture = async () => {
         const title = document.getElementById('lecTitle').value.trim();
         const video = document.getElementById('lecVideo').value.trim();
         const pdf = document.getElementById('lecPdf').value.trim();
-        if(!title || !video){
-            showToast('❌ العنوان ورابط الفيديو مطلوبين','error');
-            return;
-        }
+        const thumb = document.getElementById('lecThumb').value.trim();
+        if(!title || !video){ showToast('❌ العنوان والفيديو مطلوبين', 'error'); return; }
         const newRef = push(ref(db, 'lectures'));
-        await set(newRef, {
-            title: title,
-            videoUrl: video,
-            pdfUrl: pdf || '#',
-            views: 0,
-            createdAt: Date.now()
-        });
-        document.getElementById('lecTitle').value = '';
-        document.getElementById('lecVideo').value = '';
-        document.getElementById('lecPdf').value = '';
-        showToast('✅ تم إضافة المحاضرة بنجاح');
-        loadMainStats();
-        loadLecturesTable();
+        await set(newRef, { title, videoUrl: video, pdfUrl: pdf || '#', thumb: thumb || 'https://img.youtube.com/vi/default/maxresdefault.jpg', views: 0, createdAt: Date.now() });
+        document.getElementById('lecTitle').value = ''; document.getElementById('lecVideo').value = ''; document.getElementById('lecPdf').value = ''; document.getElementById('lecThumb').value = '';
+        showToast('✅ تم إضافة المحاضرة'); loadStats(); loadLectures();
     };
     
-    window.deleteLecture = async (id) => {
-        if(confirm('⚠️ تأكيد حذف المحاضرة؟')){
-            await remove(ref(db, 'lectures/' + id));
-            showToast('✅ تم حذف المحاضرة');
-            loadMainStats();
-            loadLecturesTable();
-        }
-    };
+    window.deleteLecture = async (id) => { if(confirm('⚠️ تأكيد الحذف؟')){ await remove(ref(db, 'lectures/' + id)); showToast('✅ تم الحذف'); loadStats(); loadLectures(); } };
+
+    // الكويزات المتقدمة
+    window.openQuizModal = () => { document.getElementById('quizModal').classList.remove('hidden'); };
+    window.closeQuizModal = () => { document.getElementById('quizModal').classList.add('hidden'); };
     
-    // ========== 4. الإشعارات (تظهر للطلاب فتح الموقع) ==========
-    window.sendGlobalNotification = async () => {
-        const msg = document.getElementById('notificationMsg').value.trim();
-        if(!msg) { showToast('❌ اكتب رسالة الإشعار أولاً','error'); return; }
-        const notifRef = push(ref(db, 'notifications'));
-        await set(notifRef, { message: msg, date: Date.now(), read: false });
-        document.getElementById('notificationMsg').value = '';
-        showToast('✅ تم إرسال الإشعار لجميع الطلاب');
-    };
-    
-    // ========== 5. الكويزات (إضافة كويز حقيقي) ==========
-    window.toggleQuizPanel = () => {
-        let panel = document.getElementById('quizPanel');
-        panel.classList.toggle('hidden');
-    };
-    window.addNewQuiz = async () => {
-        const title = document.getElementById('qzTitle').value.trim();
-        const duration = parseInt(document.getElementById('qzDuration').value);
-        const points = parseInt(document.getElementById('qzPoints').value);
-        const q1 = document.getElementById('qzQ1').value.trim();
-        const a1 = document.getElementById('qzA1').value.trim();
+    window.addQuiz = async () => {
+        const title = document.getElementById('quizTitle').value.trim();
+        const duration = parseInt(document.getElementById('quizDuration').value);
+        const points = parseInt(document.getElementById('quizPoints').value);
+        const q1 = document.getElementById('q1').value.trim();
+        const opt1_1 = document.getElementById('opt1_1').value.trim();
+        const opt1_2 = document.getElementById('opt1_2').value.trim();
+        const opt1_3 = document.getElementById('opt1_3').value.trim();
+        const opt1_4 = document.getElementById('opt1_4').value.trim();
+        const correct1 = document.querySelector('input[name="correct1"]:checked')?.value;
         
-        if(!title || !duration || !points || !q1 || !a1){
-            showToast('❌ جميع الحقول مطلوبة','error');
-            return;
+        if(!title || !duration || !points || !q1 || !opt1_1 || !opt1_2 || !opt1_3 || !opt1_4 || !correct1){
+            showToast('❌ املأ جميع الحقول', 'error'); return;
         }
-        const quizRef = push(ref(db, 'quizzes'));
-        await set(quizRef, {
-            title: title, duration: duration, points: points,
-            questions: [{ text: q1, answer: a1 }],
-            createdAt: Date.now(), active: true
+        
+        const newRef = push(ref(db, 'quizzes'));
+        await set(newRef, {
+            title, duration, points,
+            questions: [{
+                text: q1,
+                options: [opt1_1, opt1_2, opt1_3, opt1_4],
+                correct: parseInt(correct1)
+            }],
+            createdAt: Date.now(),
+            active: true
         });
-        document.getElementById('qzTitle').value = '';
-        document.getElementById('qzDuration').value = '';
-        document.getElementById('qzPoints').value = '';
-        document.getElementById('qzQ1').value = '';
-        document.getElementById('qzA1').value = '';
-        showToast('✅ تم إضافة الكويز بنجاح');
+        
+        closeQuizModal();
+        document.getElementById('quizTitle').value = ''; document.getElementById('quizDuration').value = ''; document.getElementById('quizPoints').value = '';
+        document.getElementById('q1').value = ''; document.getElementById('opt1_1').value = ''; document.getElementById('opt1_2').value = ''; document.getElementById('opt1_3').value = ''; document.getElementById('opt1_4').value = '';
+        showToast('✅ تم إضافة الكويز بنجاح'); loadStats();
+    };
+    
+    async function loadQuizzes() {
+        const snap = await get(ref(db, 'quizzes'));
+        let html = '';
+        if(snap.exists()){
+            const quizzes = snap.val();
+            for(let id in quizzes){
+                html += `<div class="glass-card p-3 mb-2"><div class="flex justify-between"><span class="font-bold">${quizzes[id].title}</span><span>⏱️ ${quizzes[id].duration} د | 🪙 ${quizzes[id].points}</span><button onclick="deleteQuiz('${id}')" class="bg-red-600/30 px-2 py-1 rounded text-sm">🗑️</button></div><div class="text-sm text-gray-400">${quizzes[id].questions?.length || 0} سؤال</div></div>`;
+            }
+        } else html = '<div class="text-center text-gray-400">لا توجد كويزات</div>';
+        document.getElementById('quizzesList').innerHTML = html;
+    }
+    
+    window.deleteQuiz = async (id) => { if(confirm('⚠️ تأكيد حذف الكويز؟')){ await remove(ref(db, 'quizzes/' + id)); showToast('✅ تم الحذف'); loadQuizzes(); loadStats(); } };
+
+    // الإشعارات
+    window.sendNotification = async () => {
+        const msg = document.getElementById('notifMsg').value.trim();
+        if(!msg){ showToast('❌ اكتب الرسالة', 'error'); return; }
+        const newRef = push(ref(db, 'notifications'));
+        await set(newRef, { message: msg, date: Date.now(), read: false });
+        document.getElementById('notifMsg').value = '';
+        showToast('✅ تم إرسال الإشعار للجميع');
     };
 
-    // ========== 6. تهيئة أولية (تأكد من وجود محاضرات) ==========
-    async function initDefaultData() {
-        const lecturesSnap = await get(ref(db, 'lectures'));
-        if(!lecturesSnap.exists()){
-            const defaults = [
-                { title: "🧪 العناصر الممثلة", videoUrl: "https://youtu.be/xDgzehlarWo", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/533", views: 0 },
-                { title: "☢️ الكيمياء النووية تماماً", videoUrl: "https://youtu.be/bLY1TDI9Mm4", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/534", views: 0 },
-                { title: "📐 الباب الثالث", videoUrl: "https://youtu.be/ywrKtjJmzd4", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/535", views: 0 },
-                { title: "📚 المنهج كامل في 3 ساعات", videoUrl: "https://youtu.be/_LeKR7weATE", pdfUrl: "#", views: 0 },
-                { title: "📖 حل كتاب المعهد", videoUrl: "https://youtu.be/MncFO9RgXTg", pdfUrl: "#", views: 0 },
-                { title: "⭐ حل أهم 150 سؤال للأزهر", videoUrl: "https://youtu.be/LPXRrqsRjRg", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/551", views: 0 }
-            ];
-            for(let lec of defaults){
-                const newRef = push(ref(db, 'lectures'));
-                await set(newRef, lec);
-            }
-        }
-    }
-
-    // ========== بداية التشغيل ==========
+    window.signOutAdmin = () => signOut(auth);
+    
     onAuthStateChanged(auth, async (user) => {
         if(!await checkAdmin(user)) return;
         currentUser = user;
         document.getElementById('adminEmail').innerText = user.email;
-        await initDefaultData();
-        await loadMainStats();
-        await loadUsersList();
-        await loadLecturesTable();
+        await loadStats(); await loadUsers(); await loadLectures(); await loadQuizzes();
     });
-    
-    window.signOutAdmin = () => signOut(auth);
 </script>
 
-<!-- نافذة الحظر -->
-<div id="banModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur z-50 flex items-center justify-center">
-    <div class="glass-card p-6 w-96 text-center">
-        <h3 class="text-2xl font-bold mb-3">⚠️ حظر المستخدم</h3>
-        <p class="mb-2">المستخدم: <span id="banName" class="text-cyan-400"></span></p>
-        <input type="text" id="banReason" class="w-full bg-white/10 rounded-xl p-2 mb-4" placeholder="سبب الحظر">
-        <input type="hidden" id="banUid">
-        <div class="flex gap-3">
-            <button class="flex-1 bg-red-600 py-2 rounded-xl" onclick="confirmBan()">تأكيد</button>
-            <button class="flex-1 bg-gray-600 py-2 rounded-xl" onclick="document.getElementById('banModal').classList.add('hidden')">إلغاء</button>
-        </div>
-    </div>
-</div>
+<!-- Toast -->
+<div id="toastMsg" style="display:none"></div>
 
-<!-- واجهة لوحة التحكم -->
+<!-- حظر مودال -->
+<div id="banModal" class="hidden overlay" onclick="if(event.target===this) closeBanModal()"><div class="modal"><h3 class="text-2xl font-bold mb-4">⛔ حظر مستخدم</h3><p>المستخدم: <span id="banName" class="text-cyan-400"></span></p><input type="text" id="banReason" class="w-full bg-white/10 rounded-xl p-2 my-3" placeholder="سبب الحظر"><input type="hidden" id="banUid"><div class="flex gap-3"><button onclick="confirmBan()" class="flex-1 bg-red-600 py-2 rounded-full">تأكيد</button><button onclick="closeBanModal()" class="flex-1 bg-gray-600 py-2 rounded-full">إلغاء</button></div></div></div>
+
+<!-- كويز مودال -->
+<div id="quizModal" class="hidden overlay" onclick="if(event.target===this) closeQuizModal()"><div class="modal w-[600px] max-w-full"><h3 class="text-2xl font-bold mb-4">📝 إضافة كويز جديد</h3><div class="grid grid-cols-3 gap-3 mb-4"><input id="quizTitle" placeholder="عنوان الكويز" class="bg-white/10 rounded-xl p-2"><input id="quizDuration" type="number" placeholder="الوقت (دقائق)" class="bg-white/10 rounded-xl p-2"><input id="quizPoints" type="number" placeholder="النقاط" class="bg-white/10 rounded-xl p-2"></div><div class="border-t border-gray-600 pt-3 mb-3"><p class="font-bold">السؤال الأول:</p><input id="q1" placeholder="السؤال" class="w-full bg-white/10 rounded-xl p-2 mb-2"><div class="grid grid-cols-2 gap-2"><input id="opt1_1" placeholder="الاختيار 1" class="bg-white/10 rounded-xl p-2"><input id="opt1_2" placeholder="الاختيار 2" class="bg-white/10 rounded-xl p-2"><input id="opt1_3" placeholder="الاختيار 3" class="bg-white/10 rounded-xl p-2"><input id="opt1_4" placeholder="الاختيار 4" class="bg-white/10 rounded-xl p-2"></div><div class="mt-2"><p class="text-sm">الإجابة الصحيحة:</p><div class="flex gap-4"><label><input type="radio" name="correct1" value="1"> الاختيار 1</label><label><input type="radio" name="correct1" value="2"> الاختيار 2</label><label><input type="radio" name="correct1" value="3"> الاختيار 3</label><label><input type="radio" name="correct1" value="4"> الاختيار 4</label></div></div></div><div class="flex gap-3 mt-4"><button onclick="addQuiz()" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 py-2 rounded-full">💾 حفظ الكويز</button><button onclick="closeQuizModal()" class="flex-1 bg-gray-600 py-2 rounded-full">إلغاء</button></div></div></div>
+
+<!-- الواجهة الرئيسية -->
 <div class="p-4 md:p-6 max-w-[1600px] mx-auto">
-    <!-- الهيدر -->
-    <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
-        <div>
-            <h1 class="text-4xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">⚡ لوحة التحكم</h1>
-            <p class="text-gray-400 text-sm"><span id="adminEmail"></span> | أدمن المنصة</p>
-        </div>
-        <button onclick="signOutAdmin()" class="bg-red-500/30 hover:bg-red-500/50 px-5 py-2 rounded-full">🚪 خروج</button>
-    </div>
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-3"><div><h1 class="text-4xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">⚡ لوحة التحكم</h1><p class="text-gray-400"><span id="adminEmail"></span> | أدمن المنصة</p></div><button onclick="signOutAdmin()" class="bg-red-500/30 hover:bg-red-500/50 px-5 py-2 rounded-full">🚪 خروج</button></div>
     
     <!-- بطاقات الإحصائيات -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-        <div class="glass-card p-4 text-center"><div class="text-3xl">👨‍🎓</div><div id="totalStudents" class="text-3xl font-bold text-cyan-400">0</div><div class="text-sm">الطلاب</div></div>
-        <div class="glass-card p-4 text-center"><div class="text-3xl">🪙</div><div id="totalPoints" class="text-3xl font-bold text-yellow-400">0</div><div class="text-sm">النقاط</div></div>
-        <div class="glass-card p-4 text-center"><div class="text-3xl">⛔</div><div id="bannedCount" class="text-3xl font-bold text-red-400">0</div><div class="text-sm">محظورين</div></div>
-        <div class="glass-card p-4 text-center"><div class="text-3xl">📚</div><div id="totalLectures" class="text-3xl font-bold text-purple-400">0</div><div class="text-sm">محاضرات</div></div>
-        <div class="glass-card p-4 text-center"><div class="text-3xl">👁️</div><div id="totalViews" class="text-3xl font-bold text-green-400">0</div><div class="text-sm">مشاهدات</div></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
+        <div class="stat-card glass-card p-3 text-center"><div class="text-2xl">👨‍🎓</div><div id="totalStudents" class="text-2xl font-bold text-cyan-400">0</div><div class="text-xs">الطلاب</div></div>
+        <div class="stat-card glass-card p-3 text-center"><div class="text-2xl">🟢</div><div id="activeToday" class="text-2xl font-bold text-green-400">0</div><div class="text-xs">نشط اليوم</div></div>
+        <div class="stat-card glass-card p-3 text-center"><div class="text-2xl">🪙</div><div id="totalPoints" class="text-2xl font-bold text-yellow-400">0</div><div class="text-xs">النقاط</div></div>
+        <div class="stat-card glass-card p-3 text-center"><div class="text-2xl">⛔</div><div id="bannedCount" class="text-2xl font-bold text-red-400">0</div><div class="text-xs">محظورين</div></div>
+        <div class="stat-card glass-card p-3 text-center"><div class="text-2xl">📚</div><div id="totalLectures" class="text-2xl font-bold text-purple-400">0</div><div class="text-xs">محاضرات</div></div>
+        <div class="stat-card glass-card p-3 text-center"><div class="text-2xl">👁️</div><div id="totalViews" class="text-2xl font-bold text-orange-400">0</div><div class="text-xs">مشاهدات</div></div>
+        <div class="stat-card glass-card p-3 text-center"><div class="text-2xl">📝</div><div id="totalQuizzes" class="text-2xl font-bold text-pink-400">0</div><div class="text-xs">كويزات</div></div>
     </div>
     
-    <!-- رسم بياني وإحصائيات المحاضرات -->
+    <!-- رسم بياني + إحصائيات المحاضرات -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div class="glass-card p-5"><h2 class="text-xl font-bold mb-3">📊 إحصائيات تفاعلية</h2><div class="h-64"><canvas id="myChart"></canvas></div></div>
-        <div class="glass-card p-5"><h2 class="text-xl font-bold mb-3">📈 مشاهدات كل محاضرة</h2><div id="lectureStatsContainer" class="max-h-56 overflow-y-auto space-y-1">جاري التحميل...</div></div>
+        <div class="glass-card p-5"><h2 class="text-xl font-bold mb-3">📊 إحصائيات تفاعلية</h2><div class="h-64"><canvas id="statsChart"></canvas></div></div>
+        <div class="glass-card p-5"><h2 class="text-xl font-bold mb-3">📈 مشاهدات المحاضرات</h2><div id="lectureStatsContainer" class="max-h-64 overflow-y-auto space-y-1">جاري التحميل...</div></div>
     </div>
     
     <!-- إضافة محاضرة -->
-    <div class="glass-card p-5 mb-8">
-        <h2 class="text-xl font-bold mb-3">📚 إضافة محاضرة جديدة</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input type="text" id="lecTitle" class="bg-white/10 rounded-xl p-2" placeholder="عنوان المحاضرة">
-            <input type="text" id="lecVideo" class="bg-white/10 rounded-xl p-2" placeholder="رابط الفيديو (YouTube)">
-            <input type="text" id="lecPdf" class="bg-white/10 rounded-xl p-2" placeholder="رابط PDF (اختياري)">
-        </div>
-        <button onclick="addLectureManually()" class="mt-4 bg-cyan-600 hover:bg-cyan-500 px-6 py-2 rounded-full">✨ إضافة المحاضرة</button>
+    <div class="glass-card p-5 mb-8"><h2 class="text-xl font-bold mb-3">📚 إضافة محاضرة جديدة</h2><div class="grid grid-cols-1 md:grid-cols-4 gap-3"><input id="lecTitle" class="bg-white/10 rounded-xl p-2" placeholder="عنوان المحاضرة"><input id="lecVideo" class="bg-white/10 rounded-xl p-2" placeholder="رابط الفيديو"><input id="lecPdf" class="bg-white/10 rounded-xl p-2" placeholder="رابط PDF"><input id="lecThumb" class="bg-white/10 rounded-xl p-2" placeholder="رابط الصورة (اختياري)"></div><button onclick="addLecture()" class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full">✨ إضافة</button></div>
+    
+    <!-- إشعارات وكويزات -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="glass-card p-5"><h2 class="text-xl font-bold mb-3">🔔 إشعار فوري</h2><div class="flex gap-3"><input id="notifMsg" class="flex-1 bg-white/10 rounded-xl p-2" placeholder="نص الإشعار..."><button onclick="sendNotification()" class="bg-purple-600 px-5 py-2 rounded-full">📢 إرسال</button></div></div>
+        <div class="glass-card p-5"><h2 class="text-xl font-bold mb-3">📝 كويزات وامتحانات</h2><button onclick="openQuizModal()" class="bg-emerald-600 px-5 py-2 rounded-full mb-3">➕ إضافة كويز جديد</button><div id="quizzesList" class="max-h-48 overflow-y-auto">جاري التحميل...</div></div>
     </div>
     
-    <!-- إشعارات فورية -->
-    <div class="glass-card p-5 mb-8">
-        <h2 class="text-xl font-bold mb-3">🔔 إشعار فوري للطلاب</h2>
-        <div class="flex gap-3 flex-wrap">
-            <input type="text" id="notificationMsg" class="flex-1 bg-white/10 rounded-xl p-2" placeholder="نص الإشعار...">
-            <button onclick="sendGlobalNotification()" class="bg-purple-600 hover:bg-purple-500 px-6 py-2 rounded-full">📢 إرسال</button>
-        </div>
-    </div>
+    <!-- الطلاب -->
+    <div class="glass-card p-5 mb-8"><div class="flex border-b border-gray-600 mb-4"><div class="px-4 py-2 cursor-pointer bg-cyan-500/20 text-cyan-400 border-b-2 border-cyan-400" onclick="switchTab('active')">✅ النشطون</div><div class="px-4 py-2 cursor-pointer text-gray-400" onclick="switchTab('banned')">⛔ المحظورون</div></div><div class="overflow-x-auto"><table class="w-full"><thead><tr><th class="text-right p-2">الطالب</th><th class="text-right p-2">النقاط</th><th class="text-right p-2">الحالة</th><th class="text-right p-2">السبب</th><th class="text-right p-2">إجراءات</th></tr></thead><tbody id="usersTableBody">جاري التحميل...</tbody></table></div></div>
     
-    <!-- كويزات -->
-    <div class="glass-card p-5 mb-8">
-        <h2 class="text-xl font-bold mb-3">📝 نظام الكويزات والأسئلة</h2>
-        <button onclick="toggleQuizPanel()" class="bg-emerald-600 px-5 py-2 rounded-full mb-3">➕ إضافة كويز جديد</button>
-        <div id="quizPanel" class="hidden space-y-3">
-            <div class="grid grid-cols-3 gap-3"><input id="qzTitle" placeholder="عنوان الكويز" class="bg-white/10 p-2 rounded-xl"><input id="qzDuration" placeholder="الوقت (دقائق)" class="bg-white/10 p-2 rounded-xl"><input id="qzPoints" placeholder="نقاط الكويز" class="bg-white/10 p-2 rounded-xl"></div>
-            <input id="qzQ1" placeholder="السؤال الأول" class="w-full bg-white/10 p-2 rounded-xl">
-            <input id="qzA1" placeholder="الإجابة الصحيحة" class="w-full bg-white/10 p-2 rounded-xl">
-            <button onclick="addNewQuiz()" class="bg-blue-600 px-6 py-2 rounded-full">💾 حفظ الكويز</button>
-        </div>
-    </div>
-    
-    <!-- تبويب الطلاب (نشط / محظور) -->
-    <div class="glass-card p-5 mb-8">
-        <div class="flex border-b border-gray-600 mb-4">
-            <div id="tabActive" class="px-4 py-2 rounded-t-lg cursor-pointer bg-cyan-500/20 text-cyan-400 border-b-2 border-cyan-400" onclick="switchTab('active')">✅ الطلاب النشطون</div>
-            <div id="tabBanned" class="px-4 py-2 rounded-t-lg cursor-pointer text-gray-400" onclick="switchTab('banned')">⛔ المحظورون</div>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="border-b border-gray-600"><tr><th class="text-right p-2">الطالب</th><th class="text-right p-2">النقاط</th><th class="text-right p-2">الحالة</th><th class="text-right p-2">السبب</th><th class="text-right p-2">إجراءات</th></tr></thead>
-                <tbody id="usersTableBody">جاري التحميل...</tbody>
-            </table>
-        </div>
-    </div>
-    
-    <!-- جدول المحاضرات -->
-    <div class="glass-card p-5">
-        <h2 class="text-xl font-bold mb-3">📚 قائمة المحاضرات</h2>
-        <div class="overflow-x-auto"><table class="w-full"><thead class="border-b border-gray-600"><tr><th class="text-right p-2">المحاضرة</th><th class="text-right p-2">المشاهدات</th><th class="text-right p-2">PDF</th><th class="text-right p-2">حذف</th></tr></thead><tbody id="lecturesTableBody">جاري التحميل...</tbody></table></div>
-    </div>
+    <!-- المحاضرات -->
+    <div class="glass-card p-5"><h2 class="text-xl font-bold mb-3">📚 قائمة المحاضرات</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr><th class="text-right p-2">المحاضرة</th><th class="text-right p-2">المشاهدات</th><th class="text-right p-2">PDF</th><th class="text-right p-2">حذف</th></tr></thead><tbody id="lecturesTableBody">جاري التحميل...</tbody></table></div></div>
 </div>
 </body>
 </html>
