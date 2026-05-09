@@ -4,55 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>يلا كيمياء | مستر زياد مبروك</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
+        /* الخط المحسن */
+        * { font-family: 'Tajawal', 'Segoe UI', sans-serif; }
+        
+        /* الرسوم المتحركة */
         @keyframes floatLogo {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
         }
         @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0,255,255,0.3), 0 0 40px rgba(0,255,255,0.2); }
-            50% { box-shadow: 0 0 50px rgba(0,255,255,0.7), 0 0 70px rgba(0,255,255,0.4); }
+            0%, 100% { box-shadow: 0 0 15px rgba(0,200,255,0.4); }
+            50% { box-shadow: 0 0 35px rgba(0,200,255,0.8); }
         }
-        @keyframes borderMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
         .float-logo { animation: floatLogo 4s ease-in-out infinite; }
         .glow-border { animation: glowPulse 2s ease-in-out infinite; }
-        .animated-border {
-            background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
-            background-size: 200% 200%;
-            animation: borderMove 3s ease infinite;
-        }
         .glass-card {
             background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
             transition: all 0.3s ease;
+            animation: slideUp 0.5s ease-out forwards;
         }
         .glass-card:hover {
             transform: translateY(-5px);
             background: rgba(255,255,255,0.1);
-            border-color: rgba(0,255,255,0.4);
+            border-color: rgba(0,200,255,0.6);
         }
-        body.dark { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: white; }
-        body.light { background: linear-gradient(135deg, #f5f7fa, #c3cfe2, #e0eafc); color: #1a1a2e; }
-        body.light .glass-card { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
-        body.light .glass-card:hover { background: rgba(0,0,0,0.1); }
-        * { transition: background 0.3s, color 0.2s; }
+        
+        /* تنسيق الإشعار المنبثق */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: pop 0.5s ease-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+        }
+        
+        /* الوضع الليلي والنهاري - ألوان متناسقة ومقروءة */
+        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
+        body.light { background: linear-gradient(135deg, #f4f7fb, #e2e8f0, #ffffff); color: #1e293b; }
+        
+        body.light .glass-card { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.1); color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        body.light .glass-card:hover { background: rgba(255,255,255,0.9); border-color: #00c6ff; }
+        body.light .text-gray-400 { color: #475569; }
+        body.light .bg-black\/30 { background: rgba(0,0,0,0.05); }
+        body.light .bg-black\/20 { background: rgba(0,0,0,0.03); }
+        body.light nav { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.1); }
+        body.light footer { border-color: rgba(0,0,0,0.1); }
+        body.light .text-cyan-400 { color: #0e7c99; }
+        
+        * { transition: background 0.3s, color 0.2s, border-color 0.2s; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 10px; }
+        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
     </style>
 </head>
-<body class="dark font-cairo min-h-screen">
+<body class="dark font-sans min-h-screen">
 
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, child, onValue, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, onValue, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
+    // إعدادات Firebase الخاصة بك
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
         authDomain: "yalla-chemistry-github.firebaseapp.com",
@@ -66,27 +106,116 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // Dark/Light Mode
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.body.className = savedTheme;
-    
-    window.toggleTheme = () => {
-        const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
-        document.body.className = newTheme;
-        localStorage.setItem('theme', newTheme);
-    };
-
+    // ✅ بيانات المحاضرات المحدثة (الأسماء والروابط)
     const lecturesData = [
-        { id: 1, title: "🏆 الباب الأول - الكيمياء العامة", desc: "شرح كامل للباب الأول مع التدريبات", video: "https://youtu.be/xDgzehlarWo", pdf: "https://t.me/yala_kamya_ziad_mabrok/533", thumb: "https://img.youtube.com/vi/xDgzehlarWo/maxresdefault.jpg", views: 12500 },
-        { id: 2, title: "🧪 الباب الثاني - الكيمياء التحليلية", desc: "القواعد التحليلية والأسس الكيميائية", video: "https://youtu.be/bLY1TDI9Mm4", pdf: "https://t.me/yala_kamya_ziad_mabrok/534", thumb: "https://img.youtube.com/vi/bLY1TDI9Mm4/maxresdefault.jpg", views: 8900 },
-        { id: 3, title: "🔬 الباب الثالث - الكيمياء العضوية", desc: "المركبات العضوية والتفاعلات", video: "https://youtu.be/ywrKtjJmzd4", pdf: "https://t.me/yala_kamya_ziad_mabrok/535", thumb: "https://img.youtube.com/vi/ywrKtjJmzd4/maxresdefault.jpg", views: 15600 },
-        { id: 4, title: "📚 المنهج الكامل", desc: "مراجعة شاملة للمنهج بالكامل", video: "https://youtu.be/_LeKR7weATE", pdf: "#", thumb: "https://img.youtube.com/vi/_LeKR7weATE/maxresdefault.jpg", views: 23400 },
-        { id: 5, title: "📖 حل الكتاب المدرسي", desc: "حول جميع أسئلة الكتاب بالتفصيل", video: "https://youtu.be/O2LJqeoUJoM", pdf: "#", thumb: "https://img.youtube.com/vi/O2LJqeoUJoM/maxresdefault.jpg", views: 6700 },
-        { id: 6, title: "⚡ 150 سؤال - مراجعة نهائية", desc: "أقوى 150 سؤال للمراجعة النهائية", video: "https://youtu.be/LPXRrqsRjRg", pdf: "https://t.me/yala_kamya_ziad_mabrok/551", thumb: "https://img.youtube.com/vi/LPXRrqsRjRg/maxresdefault.jpg", views: 45600 }
+        { id: 1, title: "🧪الروابط و الاشكال الفراغية للجزيئات", desc: "شرح كامل ووافي الروابط الاشكال الفراغية للجزيئات", video: "https://youtu.be/xDgzehlarWo", pdf: "https://t.me/yala_kamya_ziad_mabrok/533", thumb: "https://img.youtube.com/vi/xDgzehlarWo/maxresdefault.jpg" },
+        { id: 2, title: "☢️ شرح الباب التاني العناصر الممثلة", desc: "شرح الباب التاني العناصر الممثلة", video: "https://youtu.be/bLY1TDI9Mm4", pdf: "https://t.me/yala_kamya_ziad_mabrok/534", thumb: "https://img.youtube.com/vi/bLY1TDI9Mm4/maxresdefault.jpg" },
+        { id: 3, title: "📐 الباب الثالث", desc: "شرح شامل لأهم قوانين الباب الثالث", video: "https://youtu.be/ywrKtjJmzd4", pdf: "https://t.me/yala_kamya_ziad_mabrok/535", thumb: "https://img.youtube.com/vi/ywrKtjJmzd4/maxresdefault.jpg" },
+        { id: 4, title: "📚 المنهج كامل في 3 ساعات", desc: "مراجعة شاملة للمنهج بأكمله في 3 ساعات", video: "https://youtu.be/_LeKR7weATE", pdf: "#", thumb: "https://videotourl.com/images/1778345758891-ca8dc40a-65c2-4d9e-bca6-0c94cfc72a85.jpg" },
+        { id: 5, title: "📖 حل كتاب المعهد", desc: "حول جميع أسئلة كتاب المعهد", video: "https://youtu.be/MncFO9RgXTg", pdf: "#", thumb: "https://img.youtube.com/vi/MncFO9RgXTg/maxresdefault.jpg" },
+        { id: 6, title: "⭐ حل أهم 150 سؤال للأزهر", desc: "أقوى 150 سؤال للمراجعة النهائية", video: "https://youtu.be/LPXRrqsRjRg", pdf: "https://t.me/yala_kamya_ziad_mabrok/551", thumb: "https://img.youtube.com/vi/LPXRrqsRjRg/maxresdefault.jpg" }
     ];
 
     let currentUser = null;
+    let timeInterval = null;
+    let timeSpent = 0;
 
+    // دالة الإشعارات
+    function showNotification(message, emoji = "🎉") {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `${emoji} ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+    }
+
+    // ⏱️ نظام المكافآت: كل 10 دقائق = 1 نقطة
+    function startTimeTracking(userId) {
+        if (timeInterval) clearInterval(timeInterval);
+        
+        const storageKey = `timeSpent_${userId}`;
+        const lastResetKey = `lastReset_${userId}`;
+        let savedTime = localStorage.getItem(storageKey);
+        let lastReset = localStorage.getItem(lastResetKey);
+        let today = new Date().toDateString();
+        
+        if (lastReset !== today) {
+            localStorage.setItem(storageKey, '0');
+            localStorage.setItem(lastResetKey, today);
+            savedTime = '0';
+        }
+        
+        timeSpent = parseInt(savedTime) || 0;
+        
+        timeInterval = setInterval(async () => {
+            if (currentUser) {
+                timeSpent++;
+                localStorage.setItem(storageKey, timeSpent.toString());
+                
+                if (timeSpent >= 10) {
+                    timeSpent = 0;
+                    localStorage.setItem(storageKey, '0');
+                    
+                    const userRef = ref(db, 'users/' + currentUser.uid);
+                    const snapshot = await get(userRef);
+                    const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
+                    await update(userRef, { points: currentPoints + 1 });
+                    
+                    // إشعار المكافأة
+                    showNotification('🎉 مبروك! كسبت نقطة كيمياء! زاكر أكثر، اكسب أكثر', '🧪');
+                    showLeaderboard(); // تحديث لوحة المتصدرين
+                }
+            }
+        }, 60000); // 1 دقيقة * 10 = 10 دقائق
+    }
+
+    function stopTimeTracking() {
+        if (timeInterval) {
+            clearInterval(timeInterval);
+            timeInterval = null;
+        }
+    }
+
+    // عرض المحاضرات بشكل ديناميكي
+    function displayLectures() {
+        const container = document.getElementById('lecturesContainer');
+        if (!container) return;
+        
+        container.innerHTML = lecturesData.map((lecture, idx) => `
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col" style="animation-delay: ${idx * 0.05}s">
+                <div class="relative overflow-hidden aspect-video">
+                    <img src="${lecture.thumb}" class="w-full h-full object-cover transition duration-500 hover:scale-105" alt="${lecture.title}">
+                    <div class="absolute top-3 right-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold z-10">
+                        ${lecture.title.split(' ')[0]}
+                    </div>
+                    ${!currentUser ? `
+                        <div class="absolute inset-0 bg-black/80 flex items-center justify-center backdrop-blur-sm z-20">
+                            <div class="text-center p-4">
+                                <div class="text-6xl mb-3">🔒</div>
+                                <p class="text-base font-bold mb-1">المحاضرة مقفولة</p>
+                                <p class="text-sm text-gray-300 mb-3">سجل دخولك للمشاهدة</p>
+                                <button onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2 rounded-full text-sm font-bold shadow-lg">🚀 تسجيل الدخول</button>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="p-5 flex-grow flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-extrabold mb-2">${lecture.title}</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">${lecture.desc}</p>
+                    </div>
+                    ${currentUser ? `
+                        <div class="flex gap-3 mt-4">
+                            <a href="${lecture.video}" target="_blank" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition shadow-md">▶️ مشاهدة</a>
+                            ${lecture.pdf !== '#' ? `<a href="${lecture.pdf}" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition shadow-md">📄 PDF</a>` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // 🏆 عرض لوحة المتصدرين الحقيقية من Firebase
     async function showLeaderboard() {
         const usersRef = ref(db, 'users');
         onValue(usersRef, (snapshot) => {
@@ -94,141 +223,185 @@
             snapshot.forEach((child) => {
                 users.push({ id: child.key, ...child.val() });
             });
+            // ترتيب تنازلي حسب النقاط
             users.sort((a, b) => (b.points || 0) - (a.points || 0));
-            const top5 = users.slice(0, 10);
             const container = document.getElementById('leaderboardList');
             if (container) {
-                container.innerHTML = top5.map((u, idx) => `
-                    <div class="flex items-center justify-between p-3 glass-card rounded-xl mb-2">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl font-bold ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-gray-300' : idx === 2 ? 'text-orange-500' : 'text-white/30'}">#${idx + 1}</span>
-                            <div><p class="font-bold">${u.name || u.email?.split('@')[0]}</p><p class="text-xs text-gray-400">🔬 ${u.points || 0} نقطة</p></div>
+                if (users.length === 0) {
+                    container.innerHTML = '<div class="text-center text-gray-400 py-8">🏆 كن أول المتصدرين! سجل دخولك وابدأ في جمع النقاط</div>';
+                } else {
+                    container.innerHTML = users.slice(0, 15).map((u, idx) => `
+                        <div class="flex items-center justify-between p-3 glass-card rounded-xl mb-2">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl font-bold ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-gray-400' : idx === 2 ? 'text-amber-600' : 'text-white/30'}">#${idx + 1}</span>
+                                <div>
+                                    <p class="font-bold">${u.name || u.email?.split('@')[0] || 'طالب'}</p>
+                                    <p class="text-xs text-gray-500">🔬 ${u.points || 0} نقطة</p>
+                                </div>
+                            </div>
+                            <div class="text-2xl">🏆 ${u.points || 0}</div>
                         </div>
-                        <div class="text-xl">🏆 ${u.points || 0}</div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
         });
     }
 
+    // مراقبة حالة تسجيل الدخول
     onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const loginBtn = document.getElementById('loginBtn');
         const userMenu = document.getElementById('userMenu');
         const userName = document.getElementById('userName');
+        const userPointsSpan = document.getElementById('userPoints');
         
         if (user) {
             if (loginBtn) loginBtn.classList.add('hidden');
             if (userMenu) userMenu.classList.remove('hidden');
-            if (userName) userName.textContent = user.displayName?.split(' ')[0] || user.email?.split('@')[0];
+            
             const userRef = ref(db, 'users/' + user.uid);
             const snapshot = await get(userRef);
+            
             if (!snapshot.exists()) {
-                await set(userRef, { email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, createdAt: Date.now(), banned: false });
+                await set(userRef, { 
+                    email: user.email, 
+                    name: user.displayName || user.email?.split('@')[0], 
+                    points: 0, 
+                    createdAt: Date.now(), 
+                    banned: false 
+                });
             }
+            
+            const userData = snapshot.exists() ? snapshot.val() : { points: 0, name: user.displayName || user.email?.split('@')[0] };
+            if (userName) userName.textContent = userData.name || user.email?.split('@')[0];
+            if (userPointsSpan) userPointsSpan.textContent = userData.points || 0;
+            
+            // مراقبة التغييرات في النقاط
+            onValue(userRef, (snap) => {
+                if (snap.exists() && userPointsSpan) {
+                    userPointsSpan.textContent = snap.val().points || 0;
+                }
+            });
+            
             showLeaderboard();
+            startTimeTracking(user.uid);
         } else {
             if (loginBtn) loginBtn.classList.remove('hidden');
             if (userMenu) userMenu.classList.add('hidden');
+            stopTimeTracking();
         }
+        
+        displayLectures(); // تحديث واجهة المحاضرات بناءً على حالة الدخول
     });
 
+    // دوال عامة
     window.signOutUser = () => signOut(auth);
-
-    const container = document.getElementById('lecturesContainer');
-    if (container) {
-        container.innerHTML = lecturesData.map((lecture, idx) => `
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="relative overflow-hidden">
-                    <img src="${lecture.thumb}" class="w-full h-48 md:h-56 object-cover hover:scale-110 transition duration-500">
-                    <div class="absolute top-2 right-2 bg-black/70 px-2 py-1 rounded-lg text-xs">👁️ ${(lecture.views + (currentUser ? Math.floor(Math.random() * 100) : 0)).toLocaleString()}</div>
-                    ${!currentUser ? '<div class="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-sm"><div class="text-center"><div class="text-5xl mb-2">🔒</div><p class="text-sm font-bold">سجل دخولك للمشاهدة</p></div></div>' : ''}
-                </div>
-                <div class="p-5">
-                    <h3 class="text-lg md:text-xl font-bold mb-2">${lecture.title}</h3>
-                    <p class="text-gray-400 text-sm mb-4">${lecture.desc}</p>
-                    <div class="flex gap-2">
-                        ${currentUser ? `
-                            <a href="${lecture.video}" target="_blank" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm hover:opacity-80">▶️ مشاهدة</a>
-                            ${lecture.pdf !== '#' ? `<a href="${lecture.pdf}" target="_blank" class="bg-purple-600 px-4 py-2 rounded-xl text-center font-bold text-sm hover:bg-purple-700">📄 PDF</a>` : ''}
-                        ` : `
-                            <button onclick="window.location.href='login.html'" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm">🔒 سجل للمشاهدة</button>
-                        `}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
+    window.toggleTheme = () => {
+        const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+        document.body.className = newTheme;
+        localStorage.setItem('theme', newTheme);
+    };
     
-    setTimeout(showLeaderboard, 1000);
+    // استعادة الوضع الليلي/النهاري المحفوظ
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.className = savedTheme;
+    
+    // تحميل أولي
+    displayLectures();
+    setTimeout(() => { if (currentUser) showLeaderboard(); }, 1000);
 </script>
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-xl border-b border-white/10">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-cyan-400">
-                <div class="hidden sm:block"><h1 class="text-base md:text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1><p class="text-xs text-gray-400">مستر زياد مبروك</p></div>
+    <!-- شريط التنقل (Navbar) -->
+    <nav class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-xl border-b border-white/10 transition-all">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-12 h-12 rounded-full border-2 border-cyan-400" alt="Logo">
+                <div class="hidden sm:block">
+                    <h1 class="text-xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
+                    <p class="text-xs text-gray-400">مستر زياد مبروك</p>
+                </div>
             </div>
-            <div class="hidden md:flex gap-6"><a href="#" class="hover:text-cyan-400">الرئيسية</a><a href="#lectures" class="hover:text-cyan-400">المحاضرات</a><a href="#leaderboard" class="hover:text-cyan-400">المتصدرين</a></div>
+            
+            <div class="hidden md:flex gap-6">
+                <a href="#" class="hover:text-cyan-400 transition font-semibold">الرئيسية</a>
+                <a href="#lectures" class="hover:text-cyan-400 transition font-semibold">المحاضرات</a>
+                <a href="#leaderboard" class="hover:text-cyan-400 transition font-semibold">المتصدرين</a>
+            </div>
+            
             <div class="flex gap-2 items-center">
-                <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full">🌓</button>
-                <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-1.5 md:py-2 rounded-full text-sm font-bold">🚀 دخول</button>
-                <div id="userMenu" class="hidden flex items-center gap-2"><span id="userName"></span><button onclick="signOutUser()" class="bg-red-500/20 px-2 py-1 rounded-full text-sm">خروج</button></div>
+                <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full transition" aria-label="Toggle Theme">🌓</button>
+                <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-1.5 rounded-full text-sm font-bold shadow-md hover:scale-105 transition">🚀 دخول</button>
+                <div id="userMenu" class="hidden items-center gap-3">
+                    <div class="text-right">
+                        <span id="userName" class="text-sm font-bold"></span>
+                        <div class="text-xs text-cyan-400">🔬 <span id="userPoints">0</span> نقطة</div>
+                    </div>
+                    <button onclick="signOutUser()" class="bg-red-500/20 hover:bg-red-500/30 px-3 py-1 rounded-full text-sm transition">خروج</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section with GIANT Animated Logo -->
+    <!-- القسم الرئيسي (Hero Section) مع صورة المستر كبيرة جداً -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        <div class="absolute inset-0 animated-border opacity-10"></div>
         <div class="absolute top-1/4 left-10 w-80 h-80 bg-cyan-400 rounded-full filter blur-3xl opacity-20 float-logo"></div>
         <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 float-logo" style="animation-delay: 2s;"></div>
         
         <div class="container mx-auto px-4 text-center relative z-10">
-            <div class="relative inline-block mb-8 group">
-                <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-70 group-hover:opacity-100 transition duration-500" style="width: 200px; height: 200px; left: -10px; top: -10px;"></div>
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-cyan-400 shadow-2xl float-logo glow-border relative z-10">
-                <div class="absolute -bottom-2 -right-2 bg-green-500 rounded-full w-8 h-8 border-4 border-white shadow-xl z-20"></div>
-                <div class="absolute -top-3 -left-3 bg-yellow-500 rounded-full w-6 h-6 animate-ping"></div>
+            <div class="relative inline-block mb-8">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-60" style="width: 280px; height: 280px; left: -20px; top: -20px;"></div>
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-cyan-400 shadow-2xl float-logo glow-border relative z-10" alt="مستر زياد مبروك">
+                <div class="absolute -bottom-3 -right-3 bg-green-500 rounded-full w-8 h-8 border-4 border-white shadow-xl z-20"></div>
             </div>
             
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">يلا كيمياء</h1>
-            <p class="text-2xl md:text-3xl lg:text-4xl mb-3">مع <span class="text-cyan-400 font-bold border-b-4 border-cyan-400">مستر زياد مبروك</span></p>
-            <p class="text-base md:text-lg text-gray-300 mb-8 max-w-2xl mx-auto">أقوى منصة لتعليم الكيمياء للثانوية العامة - شروحات، ملخصات، كويزات ونظام نقاط</p>
+            <h1 class="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">يلا كيمياء</h1>
+            <p class="text-2xl md:text-3xl mb-4">مع <span class="text-cyan-400 font-bold border-b-4 border-cyan-400">مستر زياد مبروك</span></p>
+            <p class="text-base max-w-2xl mx-auto text-gray-300 dark:text-gray-300 mb-8">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
             
             <div class="flex gap-4 justify-center flex-wrap">
-                <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 md:px-8 py-3 rounded-full font-bold hover:scale-105 transition shadow-xl">🎓 ابدأ رحلتك الآن</a>
-                <a href="#leaderboard" class="bg-white/10 backdrop-blur px-6 md:px-8 py-3 rounded-full font-bold hover:bg-white/20 transition">🏆 التوب تن</a>
-            </div>
-            
-            <div class="flex justify-center gap-8 mt-12">
-                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">6+</div><div class="text-xs">محاضرات</div></div>
-                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">100+</div><div class="text-xs">ساعة شرح</div></div>
-                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">5000+</div><div class="text-xs">طالب</div></div>
+                <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">🎓 استكشف المحاضرات</a>
+                <a href="#leaderboard" class="bg-white/10 backdrop-blur-sm px-8 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition">🏆 المتصدرين</a>
             </div>
         </div>
     </section>
 
-    <!-- Lectures -->
-    <section id="lectures" class="py-20 bg-black/30">
-        <div class="container mx-auto px-4"><h2 class="text-3xl md:text-4xl font-bold text-center mb-12">📚 المكتبة التعليمية</h2><div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>
+    <!-- قسم المحاضرات -->
+    <section id="lectures" class="py-20 bg-black/20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-black text-center mb-4">📚 المحاضرات</h2>
+            <p class="text-center text-gray-500 dark:text-gray-400 mb-12">اختر محاضرتك وابدأ التعلم</p>
+            <div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- سيتم ملئها بواسطة JavaScript -->
+            </div>
+        </div>
     </section>
 
-    <!-- Leaderboard -->
+    <!-- قسم المتصدرين (Leaderboard) -->
     <section id="leaderboard" class="py-20">
-        <div class="container mx-auto px-4"><h2 class="text-3xl md:text-4xl font-bold text-center mb-12">🏆 متصدرين الكيمياء</h2><div class="max-w-2xl mx-auto glass-card rounded-2xl p-6"><div id="leaderboardList"><div class="text-center text-gray-400">جاري التحميل...</div></div></div></div>
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-black text-center mb-4">🏆 المتصدرين</h2>
+            <p class="text-center text-gray-500 dark:text-gray-400 mb-12">الترتيب بناءً على النقاط - كل 10 دقائق تصفح = 1 نقطة كيمياء</p>
+            <div class="max-w-2xl mx-auto glass-card rounded-2xl p-6">
+                <div id="leaderboardList">جاري تحميل المتصدرين...</div>
+            </div>
+        </div>
     </section>
 
-    <!-- Footer with Social Links -->
-    <footer class="py-8 border-t border-white/10">
+    <!-- قسم الروابط الاجتماعية -->
+    <section class="py-16 bg-black/20">
         <div class="container mx-auto px-4 text-center">
-            <div class="flex justify-center gap-6 mb-6">
-                <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/40 px-5 py-2 rounded-full transition"><span class="text-xl">📱</span> واتساب</a>
-                <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 px-5 py-2 rounded-full transition"><span class="text-xl">📢</span> تليجرام</a>
+            <h3 class="text-2xl font-bold mb-6">📱 تابع منصة يلا كيمياء</h3>
+            <div class="flex justify-center gap-4 flex-wrap">
+                <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/40 transition-all px-6 py-3 rounded-full font-semibold border border-green-500/30">📱 واتساب</a>
+                <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/40 transition-all px-6 py-3 rounded-full font-semibold border border-blue-500/30">📢 تليجرام</a>
             </div>
-            <p class="text-gray-400 text-sm">© 2024 يلا كيمياء - مستر زياد مبروك | جميع الحقوق محفوظة</p>
         </div>
+    </section>
+
+    <!-- تذييل الصفحة (Footer) -->
+    <footer class="py-8 border-t border-white/10 text-center text-gray-400 text-sm">
+        <p>© 2024 يلا كيمياء - مستر زياد مبروك. جميع الحقوق محفوظة</p>
+        <p class="text-xs mt-1 opacity-75">⏱️ كل 10 دقائق تصفح = 1 نقطة كيمياء | زاكر أكثر، اكسب أكثر</p>
     </footer>
 </body>
 </html>
