@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول | يلا كيمياء</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>تسجيل الدخول | يلا كيمياء - مستر زياد مبروك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes floatBG { 0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-        .bg-float{animation:floatBG 20s ease infinite}
+        @keyframes popIn { 0%{transform:scale(0);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+        .bg-float { animation: floatBG 20s ease infinite }
+        .modal-terms { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #0f0c29, #302b63); border-radius: 2rem; padding: 2rem; z-index: 1000; border: 2px solid #00c6ff; max-width: 500px; width: 90%; animation: popIn 0.3s ease-out; }
+        .overlay-terms { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 999; }
+        .terms-text { height: 200px; overflow-y: auto; background: rgba(255,255,255,0.05); border-radius: 1rem; padding: 1rem; margin: 1rem 0; font-size: 14px; line-height: 1.6; }
     </style>
 </head>
 <body class="font-cairo bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen flex items-center justify-center p-4">
 
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+    import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -30,52 +34,99 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
-    const googleProvider = new GoogleAuthProvider();
+
+    let pendingSignup = null;
+
+    window.showTermsModal = () => {
+        document.getElementById('termsModal').classList.remove('hidden');
+    };
+
+    window.closeTermsModal = () => {
+        document.getElementById('termsModal').classList.add('hidden');
+    };
+
+    window.acceptTerms = () => {
+        document.getElementById('termsModal').classList.add('hidden');
+        if (pendingSignup) {
+            executeSignup(pendingSignup);
+            pendingSignup = null;
+        }
+    };
+
+    async function executeSignup(data) {
+        const { name, email, password } = data;
+        try {
+            const result = await createUserWithEmailAndPassword(auth, email, password);
+            await set(ref(db, 'users/' + result.user.uid), { 
+                email, 
+                name, 
+                points: 0, 
+                createdAt: Date.now(), 
+                banned: false,
+                termsAccepted: true,
+                termsAcceptedAt: Date.now()
+            });
+            showMessage('✅ تم إنشاء الحساب بنجاح! مرحباً بك في منصة يلا كيمياء', 'success');
+            setTimeout(() => window.location.href = 'index.html', 1500);
+        } catch (e) { 
+            showMessage('❌ ' + e.message, 'error'); 
+        }
+    }
 
     window.loginWithEmail = async () => {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        if (!email || !password) {
+            showMessage('❌ الرجاء إدخال البريد الإلكتروني وكلمة المرور', 'error');
+            return;
+        }
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            showMessage('✅ مرحباً بك!', 'success');
-            setTimeout(() => window.location.href = 'index.html', 1000);
-        } catch (e) { showMessage('❌ ' + e.message, 'error'); }
-    };
-
-    window.signupWithEmail = async () => {
-        const name = document.getElementById('signupName').value;
-        const email = document.getElementById('signupEmail').value;
-        const password = document.getElementById('signupPassword').value;
-        if (!name) { showMessage('❌ الرجاء إدخال اسمك', 'error'); return; }
-        if (password.length < 6) { showMessage('❌ كلمة المرور 6 أحرف على الأقل', 'error'); return; }
-        try {
-            const result = await createUserWithEmailAndPassword(auth, email, password);
-            await set(ref(db, 'users/' + result.user.uid), { email, name, points: 0, createdAt: Date.now(), banned: false });
-            showMessage('✅ تم إنشاء الحساب بنجاح!', 'success');
-            setTimeout(() => window.location.href = 'index.html', 1000);
-        } catch (e) { showMessage('❌ ' + e.message, 'error'); }
-    };
-
-    window.loginWithGoogle = async () => {
-        try {
-            const result = await signInWithPopup(auth, googleProvider);
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            // التحقق من الحظر
             const userRef = ref(db, 'users/' + result.user.uid);
             const snapshot = await get(userRef);
-            if (!snapshot.exists()) {
-                await set(userRef, { email: result.user.email, name: result.user.displayName, points: 0, createdAt: Date.now(), banned: false });
+            if (snapshot.exists() && snapshot.val().banned === true) {
+                showMessage('⛔ تم حظر حسابك بسبب مخالفة قواعد المنصة. للاستفسار، يرجى التواصل مع الدعم.', 'error');
+                await auth.signOut();
+                return;
             }
-            showMessage('✅ تم تسجيل الدخول بنجاح!', 'success');
+            showMessage('✅ مرحباً بك! جاري التحويل...', 'success');
             setTimeout(() => window.location.href = 'index.html', 1000);
-        } catch (e) { showMessage('❌ ' + e.message, 'error'); }
+        } catch (e) { 
+            if (e.code === 'auth/invalid-credential') {
+                showMessage('❌ البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error');
+            } else {
+                showMessage('❌ ' + e.message, 'error');
+            }
+        }
+    };
+
+    window.initiateSignup = () => {
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        
+        if (!name) { showMessage('❌ الرجاء إدخال اسمك الكامل', 'error'); return; }
+        if (!email) { showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error'); return; }
+        if (password.length < 6) { showMessage('❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error'); return; }
+        
+        pendingSignup = { name, email, password };
+        showTermsModal();
+    };
+
+    window.signupWithEmail = () => {
+        initiateSignup();
     };
 
     window.resetPassword = async () => {
         const email = document.getElementById('email').value;
-        if (!email) { showMessage('❌ الرجاء إدخال البريد', 'error'); return; }
+        if (!email) { showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error'); return; }
         try {
             await sendPasswordResetEmail(auth, email);
-            showMessage('✅ تم إرسال رابط إعادة التعيين', 'success');
-        } catch (e) { showMessage('❌ ' + e.message, 'error'); }
+            showMessage('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 'success');
+        } catch (e) { 
+            showMessage('❌ ' + e.message, 'error'); 
+        }
     };
 
     window.toggleMode = () => {
@@ -96,44 +147,90 @@
     function showMessage(msg, type) {
         const div = document.getElementById('message');
         div.textContent = msg;
-        div.className = `p-3 rounded-lg mb-4 text-center ${type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500' : 'bg-red-500/20 text-red-400 border border-red-500'}`;
+        div.className = `p-3 rounded-lg mb-4 text-center text-sm ${type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500' : 'bg-red-500/20 text-red-400 border border-red-500'}`;
         div.classList.remove('hidden');
-        setTimeout(() => div.classList.add('hidden'), 3000);
+        setTimeout(() => div.classList.add('hidden'), 4000);
     }
 </script>
 
+<!-- نافذة الشروط -->
+<div id="termsModal" class="hidden overlay-terms" onclick="if(event.target===this) closeTermsModal()">
+    <div class="modal-terms">
+        <div class="text-center mb-3">
+            <div class="text-5xl mb-2">📜</div>
+            <h2 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">شروط التسجيل</h2>
+        </div>
+        <div class="terms-text">
+            <p class="font-bold text-center mb-3">مرحباً بك في منصة <span class="text-cyan-400">يلا كيمياء</span></p>
+            <p class="mb-2">بالتسجيل في المنصة، أنت توافق على:</p>
+            <ul class="list-disc list-inside space-y-2 pr-3">
+                <li>تقديم بيانات صحيحة ودقيقة عند التسجيل</li>
+                <li>الالتزام بآداب التعلم وعدم إساءة استخدام المنصة</li>
+                <li>عدم مشاركة حسابك مع أي شخص آخر</li>
+                <li>احترام آراء الزملاء والمعلم</li>
+            </ul>
+            <div class="border-t border-cyan-500/30 my-3"></div>
+            <p class="text-red-400 font-bold text-center">⚠️ تنبيه هام ⚠️</p>
+            <p class="text-center text-sm">أي مخالفة للقواعد أو تقديم بيانات غير صحيحة</p>
+            <p class="text-center text-red-400 font-bold text-lg">سوف يتم حظرك نهائياً من المنصة</p>
+            <div class="border-t border-cyan-500/30 my-3"></div>
+            <p class="text-center text-sm">بالمتابعة، أنت توافق على جميع الشروط والأحكام</p>
+        </div>
+        <div class="flex gap-3 mt-4">
+            <button onclick="acceptTerms()" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 py-2 rounded-full font-bold">✅ أوافق على الشروط</button>
+            <button onclick="closeTermsModal()" class="flex-1 bg-gray-600 py-2 rounded-full font-bold">❌ إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- نموذج تسجيل الدخول -->
 <div class="relative w-full max-w-md">
     <div class="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500 rounded-full filter blur-3xl opacity-20 bg-float"></div>
     <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-20 bg-float"></div>
+    
     <div class="relative bg-white/10 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/20">
+        <!-- اللوجو -->
         <div class="text-center mb-6">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-3 border-2 border-cyan-400">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-3 border-2 border-cyan-400 shadow-lg">
             <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
             <p class="text-gray-400 text-sm">مستر زياد مبروك</p>
         </div>
         
         <div id="message" class="hidden"></div>
         
+        <!-- واجهة تسجيل الدخول -->
         <div id="loginMode">
-            <input type="email" id="email" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white focus:border-cyan-400 outline-none">
-            <input type="password" id="password" placeholder="🔒 كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white focus:border-cyan-400 outline-none">
-            <button onclick="loginWithEmail()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition">🚀 تسجيل الدخول</button>
-            <button onclick="resetPassword()" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block text-center w-full">نسيت كلمة المرور؟</button>
+            <input type="email" id="email" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
+            <input type="password" id="password" placeholder="🔒 كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
+            <button onclick="loginWithEmail()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition duration-200">🚀 تسجيل الدخول</button>
+            <button onclick="resetPassword()" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block text-center w-full transition">نسيت كلمة المرور؟</button>
         </div>
         
+        <!-- واجهة إنشاء حساب -->
         <div id="signupMode" class="hidden">
-            <input type="text" id="signupName" placeholder="👤 الاسم الكامل" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white focus:border-cyan-400 outline-none">
-            <input type="email" id="signupEmail" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white focus:border-cyan-400 outline-none">
-            <input type="password" id="signupPassword" placeholder="🔒 كلمة المرور (6 أحرف)" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white focus:border-cyan-400 outline-none">
-            <button onclick="signupWithEmail()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold hover:scale-105 transition">✨ إنشاء حساب جديد</button>
+            <input type="text" id="signupName" placeholder="👤 الاسم الكامل (ثلاثي)" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
+            <input type="email" id="signupEmail" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
+            <input type="password" id="signupPassword" placeholder="🔒 كلمة المرور (6 أحرف على الأقل)" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
+            <button onclick="signupWithEmail()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold hover:scale-105 transition duration-200">✨ إنشاء حساب جديد</button>
         </div>
         
-        <div class="relative my-6"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/20"></div></div><div class="relative flex justify-center text-sm"><span class="px-2 bg-transparent text-gray-400">أو</span></div></div>
+        <!-- الفاصل -->
+        <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/20"></div></div>
+            <div class="relative flex justify-center text-sm"><span class="px-2 bg-transparent text-gray-400">أو</span></div>
+        </div>
         
-        <button onclick="loginWithGoogle()" class="w-full bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition">📧 Google</button>
+        <!-- زر تبديل الوضع -->
+        <p id="modeToggle" onclick="toggleMode()" class="text-center text-sm text-gray-400 cursor-pointer hover:text-cyan-400 transition mt-2">
+            ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span>
+        </p>
+        <a href="index.html" class="block text-center mt-4 text-sm text-gray-500 hover:text-gray-300 transition">← العودة للصفحة الرئيسية</a>
         
-        <p id="modeToggle" onclick="toggleMode()" class="text-center text-sm text-gray-400 cursor-pointer hover:text-cyan-400 transition mt-4">ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span></p>
-        <a href="index.html" class="block text-center mt-4 text-sm text-gray-500 hover:text-gray-300 transition">← العودة للرئيسية</a>
+        <!-- تنبيه الشروط -->
+        <div class="mt-6 pt-4 border-t border-white/10 text-center">
+            <p class="text-gray-500 text-xs">بالتسجيل، أنت توافق على <span class="text-cyan-400">شروط وسياسة استخدام المنصة</span></p>
+            <p class="text-red-400/70 text-[10px] mt-1">⚠️ أي مخالفة للقواعد أو بيانات غير صحيحة تستوجب الحظر النهائي</p>
+        </div>
     </div>
 </div>
 </body>
