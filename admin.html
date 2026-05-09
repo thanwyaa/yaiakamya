@@ -3,143 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول | يلا كيمياء - مستر زياد مبروك</title>
+    <title>لوحة التحكم | Admin - يلا كيمياء</title>
+    <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes floatBG { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, -30px); } }
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(0,255,255,0.3); } 50% { box-shadow: 0 0 30px rgba(0,255,255,0.6); } }
-        .bg-float { animation: floatBG 20s ease-in-out infinite; }
-        .input-focus:focus { animation: pulseGlow 1s ease; border-color: #00ffff; outline: none; }
-    </style>
 </head>
-<body class="font-cairo bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen flex items-center justify-center p-4">
+<body class="font-cairo bg-gradient-to-br from-gray-900 to-purple-950 text-white">
 
-    <div class="relative w-full max-w-md">
-        <div class="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500 rounded-full filter blur-3xl opacity-20 bg-float"></div>
-        <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-20 bg-float" style="animation-delay: 5s;"></div>
-        
-        <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/10 shadow-2xl">
-            <div class="text-center mb-6">
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-3 border-2 border-cyan-400 shadow-lg">
-                <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
-                <p class="text-gray-400 text-sm">مستر زياد مبروك</p>
-            </div>
-            
-            <div id="message" class="hidden p-3 rounded-lg mb-4 text-center text-sm"></div>
-            
-            <div id="loginMode">
-                <input type="email" id="email" placeholder="📧 البريد الإلكتروني" class="input-focus w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400">
-                <input type="password" id="password" placeholder="🔒 كلمة المرور" class="input-focus w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400">
-                <button onclick="loginWithEmail()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold text-base hover:scale-105 transition">🚀 تسجيل الدخول</button>
-                <button onclick="resetPassword()" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block text-center w-full">نسيت كلمة المرور؟</button>
-            </div>
-            
-            <div id="signupMode" class="hidden">
-                <input type="text" id="signupName" placeholder="👤 الاسم الكامل" class="input-focus w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400">
-                <input type="email" id="signupEmail" placeholder="📧 البريد الإلكتروني" class="input-focus w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400">
-                <input type="password" id="signupPassword" placeholder="🔒 كلمة المرور (8 أحرف على الأقل)" class="input-focus w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400">
-                <button onclick="signupWithEmail()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold text-base hover:scale-105 transition">✨ إنشاء حساب جديد</button>
-            </div>
-            
-            <div class="relative my-6"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/20"></div></div><div class="relative flex justify-center text-sm"><span class="px-2 bg-transparent text-gray-400">أو</span></div></div>
-            
-            <button onclick="loginWithGoogle()" class="w-full bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition border border-white/20">
-                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Google
-            </button>
-            
-            <p id="modeToggle" onclick="toggleMode()" class="text-center text-sm text-gray-400 cursor-pointer hover:text-cyan-400 transition mt-4">ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span></p>
-            <a href="index.html" class="block text-center mt-4 text-sm text-gray-500 hover:text-gray-300 transition">← العودة للرئيسية</a>
-        </div>
-    </div>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, setDoc, getDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-        import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+    const firebaseConfig = {
+        apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
+        authDomain: "yalla-kimya.firebaseapp.com",
+        databaseURL: "https://yalla-kimya-default-rtdb.firebaseio.com",
+        projectId: "yalla-kimya",
+        storageBucket: "yalla-kimya.firebasestorage.app",
+        messagingSenderId: "1052374689829",
+        appId: "1:1052374689829:web:fbb815ab42d753e63377cc"
+    };
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
-            authDomain: "yalla-kimya.firebaseapp.com",
-            databaseURL: "https://yalla-kimya-default-rtdb.firebaseio.com",
-            projectId: "yalla-kimya",
-            storageBucket: "yalla-kimya.firebasestorage.app",
-            messagingSenderId: "1052374689829",
-            appId: "1:1052374689829:web:fbb815ab42d753e63377cc"
-        };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const googleProvider = new GoogleAuthProvider();
+    // 👇 ضع UID الأدمن الحقيقي هنا 👇
+    const ADMIN_UIDS = ["ضع_UID_الأدمن_هنا"];
 
-        window.loginWithEmail = async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                showMessage('✅ مرحباً بك! جاري التحويل...', 'success');
-                setTimeout(() => window.location.href = 'index.html', 1000);
-            } catch (e) { showMessage('❌ ' + e.message, 'error'); }
-        };
+    let currentUser = null;
 
-        window.signupWithEmail = async () => {
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            if (!name) { showMessage('❌ الرجاء إدخال اسمك', 'error'); return; }
-            if (password.length < 6) { showMessage('❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error'); return; }
-            try {
-                const result = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "users", result.user.uid), { email, name, points: 0, createdAt: new Date(), banned: false });
-                showMessage('✅ تم إنشاء الحساب بنجاح!', 'success');
-                setTimeout(() => window.location.href = 'index.html', 1000);
-            } catch (e) { showMessage('❌ ' + e.message, 'error'); }
-        };
-
-        window.loginWithGoogle = async () => {
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                const userRef = doc(db, "users", result.user.uid);
-                const userDoc = await getDoc(userRef);
-                if (!userDoc.exists()) {
-                    await setDoc(userRef, { email: result.user.email, name: result.user.displayName, points: 0, createdAt: new Date(), banned: false });
-                }
-                showMessage('✅ تم تسجيل الدخول بنجاح!', 'success');
-                setTimeout(() => window.location.href = 'index.html', 1000);
-            } catch (e) { showMessage('❌ ' + e.message, 'error'); }
-        };
-
-        window.resetPassword = async () => {
-            const email = document.getElementById('email').value;
-            if (!email) { showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error'); return; }
-            try {
-                await sendPasswordResetEmail(auth, email);
-                showMessage('✅ تم إرسال رابط إعادة التعيين إلى بريدك', 'success');
-            } catch (e) { showMessage('❌ ' + e.message, 'error'); }
-        };
-
-        window.toggleMode = () => {
-            const isLogin = document.getElementById('loginMode').classList.contains('hidden');
-            if (isLogin) {
-                document.getElementById('loginMode').classList.remove('hidden');
-                document.getElementById('signupMode').classList.add('hidden');
-                document.getElementById('modeToggle').innerHTML = 'ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span>';
-            } else {
-                document.getElementById('loginMode').classList.add('hidden');
-                document.getElementById('signupMode').classList.remove('hidden');
-                document.getElementById('modeToggle').innerHTML = 'لديك حساب بالفعل؟ <span class="text-cyan-400">تسجيل الدخول</span>';
-            }
-        };
-
-        function showMessage(msg, type) {
-            const div = document.getElementById('message');
-            div.textContent = msg;
-            div.className = `p-3 rounded-lg mb-4 text-center text-sm ${type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500' : 'bg-red-500/20 text-red-400 border border-red-500'}`;
-            div.classList.remove('hidden');
-            setTimeout(() => div.classList.add('hidden'), 3000);
+    async function checkAdmin(user) {
+        if (!user) { window.location.href = 'login.html'; return false; }
+        if (!ADMIN_UIDS.includes(user.uid)) {
+            document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center"><div class="text-center p-8"><div class="text-8xl mb-4">⛔</div><h1 class="text-3xl font-bold mb-2">غير مصرح بالدخول</h1><a href="index.html" class="bg-cyan-500 px-6 py-2 rounded-lg mt-4 inline-block">العودة للرئيسية</a></div></div>`;
+            return false;
         }
-    </script>
+        return true;
+    }
+
+    async function loadStats() {
+        const usersSnap = await getDocs(collection(db, "users"));
+        const lecturesSnap = await getDocs(collection(db, "lectures"));
+        let totalViews = 0;
+        lecturesSnap.forEach(d => totalViews += d.data().views || 0);
+        document.getElementById('totalStudents').innerText = usersSnap.size;
+        document.getElementById('totalLectures').innerText = lecturesSnap.size;
+        document.getElementById('totalViews').innerText = totalViews.toLocaleString();
+        let totalPoints = 0;
+        usersSnap.forEach(d => totalPoints += d.data().points || 0);
+        document.getElementById('totalPoints').innerText = totalPoints.toLocaleString();
+    }
+
+    async function loadUsers() {
+        const q = query(collection(db, "users"), orderBy("points", "desc"));
+        const snap = await getDocs(q);
+        const tbody = document.getElementById('usersTable');
+        tbody.innerHTML = '';
+        snap.forEach(docSnap => {
+            const u = docSnap.data();
+            tbody.innerHTML += `
+                <tr class="border-b border-gray-700 hover:bg-white/5">
+                    <td class="p-3">${u.name || '—'}</td><td class="p-3">${u.email}</td><td class="p-3">${u.points || 0}</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-full text-xs ${u.banned ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${u.banned ? 'محظور' : 'نشط'}</span></td>
+                    <td class="p-3"><button onclick="banUser('${docSnap.id}', ${!u.banned})" class="bg-yellow-600/20 px-3 py-1 rounded text-sm ml-2">${u.banned ? 'الغاء الحظر' : 'حظر'}</button><button onclick="deleteUser('${docSnap.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">حذف</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    async function loadLectures() {
+        const snap = await getDocs(collection(db, "lectures"));
+        const tbody = document.getElementById('lecturesTable');
+        tbody.innerHTML = '';
+        snap.forEach(docSnap => {
+            const l = docSnap.data();
+            tbody.innerHTML += `
+                <tr class="border-b border-gray-700 hover:bg-white/5">
+                    <td class="p-3">${l.title || '—'}</td><td class="p-3">${l.views || 0}</td>
+                    <td class="p-3">${l.pdfUrl && l.pdfUrl !== '#' ? '✅' : '❌'}</td>
+                    <td class="p-3"><button onclick="deleteLecture('${docSnap.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">🗑️ حذف</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    window.addLecture = async () => {
+        const title = document.getElementById('lectureTitle').value;
+        const videoUrl = document.getElementById('lectureVideo').value;
+        const pdfUrl = document.getElementById('lecturePdf').value;
+        if (!title || !videoUrl) { alert('❌ الرجاء إدخال عنوان ورابط الفيديو'); return; }
+        await addDoc(collection(db, "lectures"), { title, videoUrl, pdfUrl: pdfUrl || '#', views: 0, createdAt: new Date() });
+        document.getElementById('lectureTitle').value = '';
+        document.getElementById('lectureVideo').value = '';
+        document.getElementById('lecturePdf').value = '';
+        await loadLectures(); await loadStats();
+        alert('✅ تم إضافة المحاضرة');
+    };
+
+    window.banUser = async (uid, ban) => { await updateDoc(doc(db, "users", uid), { banned: ban }); await loadUsers(); };
+    window.deleteUser = async (uid) => { if(confirm('⚠️ تأكيد الحذف؟')) { await deleteDoc(doc(db, "users", uid)); await loadUsers(); await loadStats(); } };
+    window.deleteLecture = async (id) => { if(confirm('⚠️ تأكيد حذف المحاضرة؟')) { await deleteDoc(doc(db, "lectures", id)); await loadLectures(); await loadStats(); } };
+    window.signOutAdmin = async () => { await signOut(auth); window.location.href = 'index.html'; };
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = 'login.html'; return; }
+        const ok = await checkAdmin(user);
+        if (!ok) return;
+        document.getElementById('adminName').innerText = user.email;
+        await loadStats(); await loadUsers(); await loadLectures();
+    });
+</script>
+
+<div class="flex">
+    <div class="w-64 min-h-screen bg-black/40 backdrop-blur-lg border-l border-white/10 p-6 fixed">
+        <div class="text-center mb-8"><img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-cyan-400"><h2 class="text-xl font-bold">لوحة التحكم</h2><p class="text-xs text-gray-400" id="adminName"></p></div>
+        <div class="space-y-2"><div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400 font-bold">📊 Dashboard</div><div class="p-3 text-gray-400 hover:bg-white/10 rounded-lg cursor-pointer" onclick="location.reload()">🔄 تحديث</div><div class="p-3 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer" onclick="signOutAdmin()">🚪 خروج</div></div>
+    </div>
+    
+    <div class="flex-1 mr-64 p-8">
+        <h1 class="text-3xl font-bold mb-8">✨ لوحة تحكم الأدمن</h1>
+        
+        <div class="grid grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">👨‍🎓</div><div class="text-2xl font-bold" id="totalStudents">0</div><div class="text-sm">الطلاب</div></div>
+            <div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">📚</div><div class="text-2xl font-bold" id="totalLectures">0</div><div class="text-sm">المحاضرات</div></div>
+            <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">👁️</div><div class="text-2xl font-bold" id="totalViews">0</div><div class="text-sm">المشاهدات</div></div>
+            <div class="bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">🪙</div><div class="text-2xl font-bold" id="totalPoints">0</div><div class="text-sm">النقاط</div></div>
+        </div>
+        
+        <div class="bg-white/5 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">➕ إضافة محاضرة</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="lectureTitle" placeholder="عنوان المحاضرة" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+                <input type="text" id="lectureVideo" placeholder="رابط الفيديو" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+                <input type="text" id="lecturePdf" placeholder="رابط PDF (اختياري)" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+            </div>
+            <button onclick="addLecture()" class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-lg font-bold">✨ إضافة</button>
+        </div>
+        
+        <div class="bg-white/5 rounded-xl p-6 mb-8"><h2 class="text-2xl font-bold mb-4">👨‍🎓 الطلاب</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-gray-700"><th class="text-right p-3">الاسم</th><th class="text-right p-3">البريد</th><th class="text-right p-3">النقاط</th><th class="text-right p-3">الحالة</th><th class="text-right p-3">إجراءات</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
+        
+        <div class="bg-white/5 rounded-xl p-6"><h2 class="text-2xl font-bold mb-4">📚 المحاضرات</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-gray-700"><th class="text-right p-3">العنوان</th><th class="text-right p-3">المشاهدات</th><th class="text-right p-3">PDF</th><th class="text-right p-3">إجراءات</th></tr></thead><tbody id="lecturesTable"></tbody></table></div></div>
+    </div>
+</div>
 </body>
 </html>
