@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - يلا كيمياء</title>
+    
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEFAULT_REPLACE_WITH_YOURS",
+            authDomain: "yalla-chemistry.firebaseapp.com",
+            projectId: "yalla-chemistry",
+            storageBucket: "yalla-chemistry.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        window.loginWithEmail = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const result = await signInWithEmailAndPassword(auth, email, password);
+                showMessage('✅ تم تسجيل الدخول بنجاح!', 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            } catch (error) {
+                showMessage('❌ ' + error.message, 'error');
+            }
+        };
+
+        window.signupWithEmail = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            
+            if (!name) {
+                showMessage('❌ الرجاء إدخال اسمك', 'error');
+                return;
+            }
+            
+            try {
+                const result = await createUserWithEmailAndPassword(auth, email, password);
+                await setDoc(doc(db, "users", result.user.uid), {
+                    email: email,
+                    name: name,
+                    points: 0,
+                    createdAt: new Date(),
+                    banned: false
+                });
+                showMessage('✅ تم إنشاء الحساب بنجاح!', 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            } catch (error) {
+                showMessage('❌ ' + error.message, 'error');
+            }
+        };
+
+        window.loginWithGoogle = async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const userRef = doc(db, "users", result.user.uid);
+                const userDoc = await getDoc(userRef);
+                if (!userDoc.exists()) {
+                    await setDoc(userRef, {
+                        email: result.user.email,
+                        name: result.user.displayName,
+                        points: 0,
+                        createdAt: new Date(),
+                        banned: false
+                    });
+                }
+                showMessage('✅ تم تسجيل الدخول بحساب Google!', 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            } catch (error) {
+                showMessage('❌ ' + error.message, 'error');
+            }
+        };
+
+        window.resetPassword = async () => {
+            const email = document.getElementById('email').value;
+            if (!email) {
+                showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error');
+                return;
+            }
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showMessage('✅ تم إرسال رابط إعادة التعيين إلى بريدك', 'success');
+            } catch (error) {
+                showMessage('❌ ' + error.message, 'error');
+            }
+        };
+
+        window.toggleMode = () => {
+            const isLogin = document.getElementById('loginMode').classList.contains('hidden');
+            if (isLogin) {
+                document.getElementById('loginMode').classList.remove('hidden');
+                document.getElementById('signupMode').classList.add('hidden');
+                document.getElementById('modeToggle').innerHTML = 'ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span>';
+            } else {
+                document.getElementById('loginMode').classList.add('hidden');
+                document.getElementById('signupMode').classList.remove('hidden');
+                document.getElementById('modeToggle').innerHTML = 'لديك حساب بالفعل؟ <span class="text-cyan-400">تسجيل الدخول</span>';
+            }
+        };
+
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = msg;
+            msgDiv.className = `p-3 rounded-lg mb-4 text-center ${type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500' : 'bg-red-500/20 text-red-400 border border-red-500'}`;
+            msgDiv.classList.remove('hidden');
+            setTimeout(() => { msgDiv.classList.add('hidden'); }, 3000);
+        }
+    </script>
+
+    <style>
+        @keyframes neonPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(0,255,255,0.3), 0 0 10px rgba(0,255,255,0.2); }
+            50% { box-shadow: 0 0 20px rgba(0,255,255,0.6), 0 0 30px rgba(0,255,255,0.4); }
+        }
+        
+        .neon-input:focus {
+            animation: neonPulse 1s ease-in-out;
+            border-color: #00ffff;
+            outline: none;
+        }
+    </style>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-cairo bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 min-h-screen flex items-center justify-center p-4">
+
+    <div class="relative">
+        <!-- Animated Background -->
+        <div class="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+        <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-20 animate-pulse delay-1000"></div>
+        
+        <!-- Login Card -->
+        <div class="relative glass-card bg-white/10 backdrop-blur-xl rounded-2xl p-8 w-full max-w-md border border-white/20">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="Logo" class="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-cyan-400">
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
+                <p class="text-gray-400 text-sm">مستر زياد مبروك</p>
+            </div>
+            
+            <div id="message" class="hidden"></div>
+            
+            <!-- Login Mode -->
+            <div id="loginMode">
+                <input type="email" id="email" placeholder="البريد الإلكتروني" class="neon-input w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 transition">
+                <input type="password" id="password" placeholder="كلمة المرور" class="neon-input w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 transition">
+                <button onclick="loginWithEmail()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold mb-3 hover:scale-105 transition">
+                    🚀 تسجيل الدخول
+                </button>
+                <button onclick="resetPassword()" class="text-sm text-cyan-400 hover:text-cyan-300 transition mb-3 block text-center w-full">
+                    نسيت كلمة المرور؟
+                </button>
+            </div>
+            
+            <!-- Signup Mode -->
+            <div id="signupMode" class="hidden">
+                <input type="text" id="name" placeholder="الاسم الكامل" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 transition">
+                <input type="email" id="email" placeholder="البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 transition">
+                <input type="password" id="password" placeholder="كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 transition">
+                <button onclick="signupWithEmail()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold mb-3 hover:scale-105 transition">
+                    ✨ إنشاء حساب جديد
+                </button>
+            </div>
+            
+            <!-- Divider -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-white/20"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-transparent text-gray-400">أو</span>
+                </div>
+            </div>
+            
+            <!-- Google Login -->
+            <button onclick="loginWithGoogle()" class="w-full bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold mb-4 flex items-center justify-center gap-2 transition border border-white/20">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                تسجيل الدخول بحساب Google
+            </button>
+            
+            <!-- Toggle Mode -->
+            <p id="modeToggle" onclick="toggleMode()" class="text-center text-sm text-gray-400 cursor-pointer hover:text-cyan-400 transition">
+                ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span>
+            </p>
+            
+            <!-- Back to Home -->
+            <a href="index.html" class="block text-center mt-4 text-sm text-gray-500 hover:text-gray-300 transition">
+                ← العودة إلى الصفحة الرئيسية
+            </a>
+        </div>
+    </div>
+    
+    <style>
+        .glass-card {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+    
+</body>
+</html>
