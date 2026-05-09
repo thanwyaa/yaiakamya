@@ -69,71 +69,16 @@
             z-index: 999;
         }
         
-        /* ========== الوضع الليلي ========== */
-        body.dark { 
-            background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); 
-            color: #ffffff; 
-        }
-        body.dark .glass-card { 
-            background: rgba(255,255,255,0.05); 
-            border-color: rgba(255,255,255,0.08); 
-        }
-        body.dark .glass-card:hover { 
-            background: rgba(255,255,255,0.1); 
-            border-color: #00c6ff; 
-        }
-        body.dark .text-gray-300 { color: #cbd5e1; }
-        body.dark .text-gray-400 { color: #94a3b8; }
-        body.dark .text-gray-500 { color: #64748b; }
-        body.dark .bg-black\/20 { background: rgba(0,0,0,0.3); }
-        body.dark .bg-black\/30 { background: rgba(0,0,0,0.4); }
-        body.dark nav { background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        
-        /* ========== الوضع النهاري (ألوان فاتحة ونصوص واضحة) ========== */
-        body.light { 
-            background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #d9e2ec); 
-            color: #1a202c; 
-        }
-        body.light .glass-card { 
-            background: rgba(255,255,255,0.9); 
-            border-color: rgba(0,0,0,0.1); 
-            color: #1a202c;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        body.light .glass-card:hover { 
-            background: #ffffff; 
-            border-color: #00c6ff; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
+        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
+        body.light { background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #d9e2ec); color: #1a202c; }
+        body.light .glass-card { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.1); color: #1a202c; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        body.light .glass-card:hover { background: #ffffff; border-color: #00c6ff; }
         body.light .text-gray-300 { color: #4a5568; }
         body.light .text-gray-400 { color: #718096; }
-        body.light .text-gray-500 { color: #a0aec0; }
         body.light .bg-black\/20 { background: rgba(0,0,0,0.05); }
-        body.light .bg-black\/30 { background: rgba(0,0,0,0.03); }
-        body.light nav { 
-            background: rgba(255,255,255,0.95); 
-            backdrop-filter: blur(12px); 
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
+        body.light nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.1); }
         body.light nav a { color: #2d3748; }
         body.light nav a:hover { color: #00c6ff; }
-        body.light .bg-gradient-to-r.from-cyan-500.to-blue-500 { 
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-        }
-        body.light .border-white\/10 { border-color: rgba(0,0,0,0.1); }
-        body.light .border-white\/20 { border-color: rgba(0,0,0,0.15); }
-        body.light .bg-white\/10 { background: rgba(0,0,0,0.05); }
-        body.light .bg-white\/10:hover { background: rgba(0,0,0,0.1); }
-        body.light .modal-notification { 
-            background: linear-gradient(135deg, #ffffff, #f0f4f8);
-            color: #1a202c;
-            border: 2px solid #00c6ff;
-        }
-        body.light .modal-notification .text-gray-300 { color: #4a5568; }
-        body.light footer { border-color: rgba(0,0,0,0.1); color: #718096; }
-        body.light .quiz-option { background: rgba(0,0,0,0.05); color: #1a202c; }
-        body.light .quiz-option:hover { background: rgba(0,200,255,0.2); }
-        body.light .quiz-option.selected { background: rgba(0,200,255,0.4); }
         
         * { transition: background 0.3s, color 0.2s, border-color 0.2s; }
         
@@ -171,9 +116,21 @@
         }
         .quiz-option:hover { background: rgba(0,200,255,0.3); transform: scale(1.02); }
         .quiz-option.selected { background: rgba(0,200,255,0.5); border: 1px solid #00c6ff; }
-        
         body.light .quiz-option { background: rgba(0,0,0,0.06); }
         body.light .quiz-option:hover { background: rgba(0,200,255,0.2); }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+        }
     </style>
 </head>
 <body class="dark">
@@ -181,7 +138,7 @@
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, update, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, onValue, push, increment } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -201,6 +158,9 @@
     let timeInterval = null;
     let timeSpent = 0;
     let currentQuiz = null;
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let quizStartTime = null;
 
     function showBigModal(title, message, type = 'info') {
         const oldModal = document.getElementById('bigModal');
@@ -299,11 +259,23 @@
             const snapshot = await get(lectureRef);
             if (snapshot.exists()) {
                 await update(lectureRef, { views: (snapshot.val().views || 0) + 1 });
+                // تسجيل أن الطالب شاهد هذه المحاضرة
+                const watchedRef = ref(db, 'users/' + currentUser.uid + '/watchedLectures');
+                const watchedSnap = await get(watchedRef);
+                const watched = watchedSnap.exists() ? watchedSnap.val() : {};
+                if (!watched[lectureId]) {
+                    watched[lectureId] = true;
+                    await set(watchedRef, watched);
+                    // تحديث عدد المحاضرات التي شاهدها الطالب
+                    const count = Object.keys(watched).length;
+                    await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: count });
+                    updateUserStats();
+                }
             }
         }
     }
 
-    // نظام المكافآت
+    // نظام المكافآت والتوقيت
     function startTimeTracking(userId) {
         if (timeInterval) clearInterval(timeInterval);
         
@@ -337,7 +309,10 @@
                     
                     showToastPoints('🎉 مبروك! كسبت 1 نقطة كيمياء! زاكر أكثر، اكسب أكثر');
                     showLeaderboard();
-                    updateUserPoints();
+                    updateUserStats();
+                } else {
+                    // تحديث آخر نشاط كل دقيقة
+                    await update(ref(db, 'users/' + currentUser.uid), { lastActive: Date.now() });
                 }
             }
         }, 60000);
@@ -384,14 +359,55 @@
         });
     }
     
-    async function updateUserPoints() {
+    async function updateUserStats() {
         if (currentUser) {
             const userRef = ref(db, 'users/' + currentUser.uid);
             const snapshot = await get(userRef);
             if (snapshot.exists()) {
-                document.getElementById('userPoints').textContent = snapshot.val().points || 0;
+                const userData = snapshot.val();
+                document.getElementById('userPoints').textContent = userData.points || 0;
+                document.getElementById('userName').textContent = userData.name || userData.email?.split('@')[0];
+                
+                // تحديث الإحصائيات الشخصية
+                const watchedCount = userData.lecturesWatched || 0;
+                const quizzesCompleted = userData.quizzesCompleted || 0;
+                document.getElementById('watchedCount').textContent = watchedCount;
+                document.getElementById('quizzesCompletedCount').textContent = quizzesCompleted;
+                
+                // تحديث شريط التقدم
+                const totalLectures = 6; // العدد الكلي للمحاضرات
+                const progress = Math.min(100, Math.round((watchedCount / totalLectures) * 100));
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressPercent').textContent = progress + '%';
+                
+                // تحديث الشارات
+                updateBadges(watchedCount, quizzesCompleted, userData.points || 0);
             }
         }
+    }
+    
+    function updateBadges(watchedCount, quizzesCompleted, points) {
+        const badgesContainer = document.getElementById('badgesContainer');
+        if (!badgesContainer) return;
+        
+        let badges = [];
+        if (watchedCount >= 3) badges.push({ name: '🥉 بادرة برونزية', condition: 'شاهد 3 محاضرات' });
+        if (watchedCount >= 6) badges.push({ name: '🥈 بادرة فضية', condition: 'شاهد 6 محاضرات' });
+        if (watchedCount >= 10) badges.push({ name: '🥇 بادرة ذهبية', condition: 'شاهد 10 محاضرات' });
+        if (quizzesCompleted >= 2) badges.push({ name: '📝 بادرة الكويزات', condition: 'حل 2 كويزات' });
+        if (points >= 50) badges.push({ name: '⭐ بادرة النقاط', condition: 'اجمع 50 نقطة' });
+        
+        if (badges.length === 0) {
+            badgesContainer.innerHTML = '<div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>';
+            return;
+        }
+        
+        badgesContainer.innerHTML = badges.map(b => `
+            <div class="glass-card p-2 text-center">
+                <div class="text-2xl">${b.name}</div>
+                <div class="text-xs text-gray-400">${b.condition}</div>
+            </div>
+        `).join('');
     }
 
     function watchNotifications() {
@@ -413,7 +429,7 @@
         });
     }
     
-    // نظام الكويزات للطلاب
+    // نظام الكويزات المتعددة (أكثر من سؤال)
     async function loadAvailableQuizzes() {
         const quizzesRef = ref(db, 'quizzes');
         const snapshot = await get(quizzesRef);
@@ -425,18 +441,17 @@
             return;
         }
         
+        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
         const quizzes = [];
         snapshot.forEach((child) => {
             quizzes.push({ id: child.key, ...child.val() });
         });
         
-        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
-        
         container.innerHTML = quizzes.map(q => `
             <div class="glass-card rounded-2xl p-4 text-center">
                 <div class="text-3xl mb-2">📝</div>
                 <h3 class="font-bold text-lg">${q.title}</h3>
-                <p class="text-sm text-gray-500">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة</p>
+                <p class="text-sm text-gray-500">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة | 📋 ${q.questions?.length || 0} سؤال</p>
                 ${completed.includes(q.id) ? 
                     '<p class="text-green-500 text-sm mt-2">✅ تم الحل سابقاً</p>' : 
                     `<button onclick="startQuiz('${q.id}')" class="mt-3 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-full text-sm font-bold text-white">🚀 ابدأ الكويز</button>`}
@@ -445,36 +460,53 @@
     }
     
     window.startQuiz = async (quizId) => {
+        // التحقق من عدم الحل سابقاً
+        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
+        if (completed.includes(quizId)) {
+            showToastPoints('😄 متبقاش طماع! انت خلاص حلّيت الكويز ده قبل كده. جرب كويز تاني!');
+            return;
+        }
+        
         const quizRef = ref(db, 'quizzes/' + quizId);
         const snapshot = await get(quizRef);
         if (!snapshot.exists()) return;
         
         currentQuiz = { id: quizId, ...snapshot.val() };
-        showQuizInterface();
+        currentQuestionIndex = 0;
+        userAnswers = [];
+        quizStartTime = Date.now();
+        showQuizQuestion();
     };
     
-    function showQuizInterface() {
-        if (!currentQuiz) return;
+    function showQuizQuestion() {
+        if (!currentQuiz || currentQuestionIndex >= currentQuiz.questions.length) {
+            submitQuizResults();
+            return;
+        }
         
-        const question = currentQuiz.questions[0];
-        const modal = document.createElement('div');
-        modal.id = 'quizInterface';
-        modal.className = 'modal-overlay';
-        modal.innerHTML = `
+        const question = currentQuiz.questions[currentQuestionIndex];
+        const modal = document.getElementById('quizInterface');
+        if (modal) modal.remove();
+        
+        const newModal = document.createElement('div');
+        newModal.id = 'quizInterface';
+        newModal.className = 'modal-overlay';
+        newModal.innerHTML = `
             <div class="modal-notification quiz-modal" style="width: 500px;">
                 <div class="text-center">
-                    <div class="text-3xl mb-3">📝 ${currentQuiz.title}</div>
-                    <div class="text-sm text-gray-500 mb-4">⏱️ ${currentQuiz.duration} دقيقة | 🪙 ${currentQuiz.points} نقطة</div>
+                    <div class="text-3xl mb-2">📝 ${currentQuiz.title}</div>
+                    <div class="text-sm text-gray-400 mb-1">⏱️ ${currentQuiz.duration} دقيقة | 🪙 ${currentQuiz.points} نقطة</div>
+                    <div class="text-sm text-cyan-400 mb-3">السؤال ${currentQuestionIndex + 1} من ${currentQuiz.questions.length}</div>
                     <div class="text-right mb-4">
                         <p class="font-bold mb-3">${question.text}</p>
                         <div id="quizOptions"></div>
                     </div>
-                    <button onclick="submitQuizAnswer()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full font-bold text-white">تأكيد الإجابة</button>
-                    <button onclick="closeQuiz()" class="mt-3 text-gray-500 text-sm block w-full">إلغاء</button>
+                    <button onclick="answerCurrentQuestion()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full font-bold text-white">التالي ➡️</button>
+                    <button onclick="closeQuiz()" class="mt-3 text-gray-500 text-sm block w-full">إلغاء الكويز</button>
                 </div>
             </div>
         `;
-        document.body.appendChild(modal);
+        document.body.appendChild(newModal);
         
         const optionsDiv = document.getElementById('quizOptions');
         let selected = null;
@@ -491,37 +523,66 @@
             optionsDiv.appendChild(optDiv);
         });
         
-        window.submitQuizAnswer = async () => {
-            if (!selected) { showToastPoints('❌ اختر إجابة أولاً'); return; }
-            
-            const isCorrect = (selected === question.correct);
-            if (isCorrect) {
-                const userRef = ref(db, 'users/' + currentUser.uid);
-                const snapshot = await get(userRef);
-                const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
-                await update(userRef, { points: currentPoints + currentQuiz.points });
-                
-                const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
-                if (!completed.includes(currentQuiz.id)) {
-                    completed.push(currentQuiz.id);
-                    localStorage.setItem(`completedQuizzes_${currentUser.uid}`, JSON.stringify(completed));
-                }
-                
-                showToastPoints(`🎉 مبروك! إجابتك صحيحة! كسبت ${currentQuiz.points} نقطة`);
-                updateUserPoints();
-                showLeaderboard();
-            } else {
-                showToastPoints(`❌ للأسف إجابتك خاطئة. الإجابة الصحيحة هي: ${question.options[question.correct - 1]}`);
+        window.answerCurrentQuestion = () => {
+            if (!selected) {
+                showToastPoints('❌ اختر إجابة أولاً');
+                return;
             }
-            closeQuiz();
-            loadAvailableQuizzes();
+            userAnswers.push(selected);
+            currentQuestionIndex++;
+            showQuizQuestion();
         };
-    };
+    }
+    
+    async function submitQuizResults() {
+        if (!currentQuiz) return;
+        
+        const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
+        let score = 0;
+        for (let i = 0; i < currentQuiz.questions.length; i++) {
+            if (userAnswers[i] === currentQuiz.questions[i].correct) {
+                score++;
+            }
+        }
+        
+        // تسجيل النتيجة
+        const resultRef = ref(db, 'quiz_results/' + currentQuiz.id + '/' + currentUser.uid);
+        await set(resultRef, {
+            score: score,
+            total: currentQuiz.questions.length,
+            answers: userAnswers,
+            timeSpent: timeSpent,
+            completedAt: Date.now()
+        });
+        
+        // إضافة النقاط
+        const userRef = ref(db, 'users/' + currentUser.uid);
+        const snapshot = await get(userRef);
+        const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
+        await update(userRef, { 
+            points: currentPoints + currentQuiz.points,
+            quizzesCompleted: (snapshot.val().quizzesCompleted || 0) + 1
+        });
+        
+        // تسجيل الكويز كمكتمل
+        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
+        completed.push(currentQuiz.id);
+        localStorage.setItem(`completedQuizzes_${currentUser.uid}`, JSON.stringify(completed));
+        
+        const percent = Math.round((score / currentQuiz.questions.length) * 100);
+        showToastPoints(`🎉 مبروك! جاوبت ${score} من ${currentQuiz.questions.length} إجابة صحيحة (${percent}%)! كسبت ${currentQuiz.points} نقطة`);
+        
+        updateUserStats();
+        showLeaderboard();
+        closeQuiz();
+        loadAvailableQuizzes();
+    }
     
     window.closeQuiz = () => {
         const modal = document.getElementById('quizInterface');
         if (modal) modal.remove();
         currentQuiz = null;
+        currentQuestionIndex = 0;
     };
 
     // مراقبة حالة تسجيل الدخول
@@ -530,10 +591,12 @@
         const loginBtn = document.getElementById('loginBtn');
         const userMenu = document.getElementById('userMenu');
         const userName = document.getElementById('userName');
+        const userStatsPanel = document.getElementById('userStatsPanel');
         
         if (user) {
             if (loginBtn) loginBtn.classList.add('hidden');
             if (userMenu) userMenu.classList.remove('hidden');
+            if (userStatsPanel) userStatsPanel.classList.remove('hidden');
             
             const userRef = ref(db, 'users/' + user.uid);
             const snapshot = await get(userRef);
@@ -549,19 +612,20 @@
                     email: user.email, 
                     name: user.displayName || user.email?.split('@')[0], 
                     points: 0, 
+                    lecturesWatched: 0,
+                    quizzesCompleted: 0,
                     createdAt: Date.now(), 
                     banned: false 
                 });
             }
             
-            const userData = snapshot.exists() ? snapshot.val() : { points: 0, name: user.displayName || user.email?.split('@')[0] };
-            if (userName) userName.textContent = userData.name;
-            
             onValue(userRef, (snap) => {
                 if (snap.exists()) {
-                    document.getElementById('userPoints').textContent = snap.val().points || 0;
-                    if (snap.val().banned === true) {
-                        showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${snap.val().banReason || 'مخالفة القواعد'}`, 'ban');
+                    const userData = snap.val();
+                    document.getElementById('userPoints').textContent = userData.points || 0;
+                    if (userName) userName.textContent = userData.name || userData.email?.split('@')[0];
+                    if (userData.banned === true) {
+                        showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${userData.banReason || 'مخالفة القواعد'}`, 'ban');
                         setTimeout(() => signOut(auth), 4000);
                     }
                 }
@@ -570,10 +634,12 @@
             showLeaderboard();
             watchNotifications();
             loadAvailableQuizzes();
+            updateUserStats();
             startTimeTracking(user.uid);
         } else {
             if (loginBtn) loginBtn.classList.remove('hidden');
             if (userMenu) userMenu.classList.add('hidden');
+            if (userStatsPanel) userStatsPanel.classList.add('hidden');
             stopTimeTracking();
         }
         
@@ -607,6 +673,7 @@
             <a href="#lectures" class="hover:text-cyan-500 transition font-medium">المحاضرات</a>
             <a href="#quizzes" class="hover:text-cyan-500 transition font-medium">الكويزات</a>
             <a href="#leaderboard" class="hover:text-cyan-500 transition font-medium">المتصدرين</a>
+            <a href="#myStats" class="hover:text-cyan-500 transition font-medium">حسابي</a>
         </div>
         <div class="flex gap-2 items-center">
             <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full transition">🌓</button>
@@ -683,6 +750,59 @@
         <p class="text-center text-gray-500 mb-12">أكثر 3 طلاب حصداً للنقاط</p>
         <div class="max-w-2xl mx-auto glass-card rounded-2xl p-6">
             <div id="leaderboardList">جاري تحميل المتصدرين...</div>
+        </div>
+    </div>
+</section>
+
+<!-- قسم حسابي وإحصائياتي الشخصية -->
+<section id="myStats" class="py-20">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-black text-center mb-4">👤 حسابي الشخصي</h2>
+        <p class="text-center text-gray-500 mb-12">تقدمك وإنجازاتك في المنصة</p>
+        
+        <div id="userStatsPanel" class="hidden max-w-4xl mx-auto">
+            <!-- شريط التقدم -->
+            <div class="glass-card rounded-2xl p-6 mb-6">
+                <h3 class="text-2xl font-bold mb-4">📊 مستوى التقدم</h3>
+                <div class="progress-bar mb-2">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>📚 المحاضرات: <span id="watchedCount">0</span>/6</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+            </div>
+            
+            <!-- الإحصائيات -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">📚</div>
+                    <div class="text-3xl font-bold text-cyan-400" id="watchedCount">0</div>
+                    <div class="text-sm">محاضرات تمت مشاهدتها</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">📝</div>
+                    <div class="text-3xl font-bold text-green-400" id="quizzesCompletedCount">0</div>
+                    <div class="text-sm">كويزات تم حلها</div>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">🏆</div>
+                    <div class="text-3xl font-bold text-yellow-400" id="userPointsStat">0</div>
+                    <div class="text-sm">نقاط الكيمياء</div>
+                </div>
+            </div>
+            
+            <!-- الشارات -->
+            <div class="glass-card rounded-2xl p-6">
+                <h3 class="text-2xl font-bold mb-4">🎖️ شارات الإنجاز</h3>
+                <div id="badgesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="userStatsGuest" class="text-center text-gray-500 py-8">
+            🔐 سجل دخولك لعرض إحصائياتك الشخصية
         </div>
     </div>
 </section>
