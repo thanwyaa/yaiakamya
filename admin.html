@@ -2,18 +2,74 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>لوحة التحكم - يلا كيمياء | مستر زياد مبروك</title>
     <meta name="robots" content="noindex, nofollow">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        * { font-family: 'Tajawal', sans-serif; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
+        .glass-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(0,255,255,0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+        .sidebar {
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(30,0,60,0.95) 100%);
+            backdrop-filter: blur(10px);
+        }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 10px; }
+        
+        .btn-glow {
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 20px rgba(0,200,255,0.5);
+        }
+    </style>
 </head>
-<body class="font-cairo bg-gradient-to-br from-gray-900 to-purple-950 text-white">
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white font-sans min-h-screen">
 
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, update, remove, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, remove, onValue, push, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -28,164 +84,429 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // 🔐 ضع الـ UID بتاعك هنا (خده من Firebase Console بعد ما تسجل)
-   const ADMIN_UIDS = ["1778343709835"];
+    // 🔐 الـ UID الخاص بالأدمن الوحيد
+    const ADMIN_UIDS = ["1778343709835"];
 
     let currentUser = null;
+    let activityChart = null;
 
-    async function checkAdmin(user) {
-        if (!user) { window.location.href = 'login.html'; return false; }
+    // التحقق من صلاحيات الأدمن
+    async function checkAdminAccess(user) {
+        if (!user) {
+            window.location.href = 'login.html';
+            return false;
+        }
         if (!ADMIN_UIDS.includes(user.uid)) {
-            document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center"><div class="text-center p-8"><div class="text-8xl mb-4">⛔</div><h1 class="text-3xl font-bold mb-2">غير مصرح بالدخول</h1><a href="index.html" class="bg-cyan-500 px-6 py-2 rounded-lg mt-4 inline-block">العودة للرئيسية</a></div></div>`;
+            document.body.innerHTML = `
+                <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 to-gray-900">
+                    <div class="text-center p-8 glass-card rounded-2xl">
+                        <div class="text-8xl mb-4 animate-pulse">⛔</div>
+                        <h1 class="text-3xl font-bold mb-2">غير مصرح بالدخول</h1>
+                        <p class="text-gray-400 mb-6">هذه اللوحة مخصصة للأدمن فقط</p>
+                        <a href="index.html" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full inline-block hover:scale-105 transition">العودة للرئيسية</a>
+                    </div>
+                </div>
+            `;
             return false;
         }
         return true;
     }
 
+    // جلب الإحصائيات
     async function loadStats() {
-        const usersRef = ref(db, 'users');
-        const lecturesRef = ref(db, 'lectures');
+        const usersSnap = await get(ref(db, 'users'));
+        const lecturesSnap = await get(ref(db, 'lectures'));
         
-        onValue(usersRef, (snapshot) => {
-            const users = [];
-            snapshot.forEach(child => users.push(child.val()));
-            document.getElementById('totalStudents').innerText = users.length;
-            let totalPoints = 0;
-            users.forEach(u => totalPoints += u.points || 0);
-            document.getElementById('totalPoints').innerText = totalPoints.toLocaleString();
-        });
+        let totalUsers = 0;
+        let totalPoints = 0;
+        let activeToday = 0;
+        const today = new Date().toDateString();
         
-        onValue(lecturesRef, (snapshot) => {
-            const lectures = [];
-            snapshot.forEach(child => lectures.push(child.val()));
-            document.getElementById('totalLectures').innerText = lectures.length;
-            let totalViews = 0;
-            lectures.forEach(l => totalViews += l.views || 0);
-            document.getElementById('totalViews').innerText = totalViews.toLocaleString();
+        if (usersSnap.exists()) {
+            const users = usersSnap.val();
+            totalUsers = Object.keys(users).length;
+            for (let uid in users) {
+                totalPoints += users[uid].points || 0;
+                if (users[uid].lastActive && new Date(users[uid].lastActive).toDateString() === today) {
+                    activeToday++;
+                }
+            }
+        }
+        
+        let totalLectures = 0;
+        let totalViews = 0;
+        if (lecturesSnap.exists()) {
+            const lectures = lecturesSnap.val();
+            totalLectures = Object.keys(lectures).length;
+            for (let lid in lectures) {
+                totalViews += lectures[lid].views || 0;
+            }
+        }
+        
+        document.getElementById('totalStudents').innerText = totalUsers;
+        document.getElementById('activeToday').innerText = activeToday;
+        document.getElementById('totalLectures').innerText = totalLectures;
+        document.getElementById('totalViews').innerText = totalViews.toLocaleString();
+        document.getElementById('totalPoints').innerText = totalPoints.toLocaleString();
+        
+        updateChart(totalUsers, totalLectures, totalPoints);
+    }
+    
+    function updateChart(users, lectures, points) {
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        if (activityChart) activityChart.destroy();
+        activityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['الطلاب', 'المحاضرات', 'النقاط'],
+                datasets: [{
+                    label: 'إحصائيات المنصة',
+                    data: [users, lectures, points / 100],
+                    backgroundColor: 'rgba(0, 200, 255, 0.2)',
+                    borderColor: '#00c6ff',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ff00ff',
+                    pointBorderColor: '#fff',
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#fff', font: { size: 14 } } }
+                },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#ccc' } },
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#ccc' } }
+                }
+            }
         });
     }
 
-    function loadUsers() {
+    // عرض الطلاب
+    async function loadUsers() {
         const usersRef = ref(db, 'users');
         onValue(usersRef, (snapshot) => {
+            if (!snapshot.exists()) {
+                document.getElementById('usersTable').innerHTML = '<tr><td colspan="6" class="text-center p-8 text-gray-400">لا يوجد طلاب مسجلين</td></tr>';
+                return;
+            }
             const users = [];
             snapshot.forEach((child) => {
                 users.push({ id: child.key, ...child.val() });
             });
             users.sort((a, b) => (b.points || 0) - (a.points || 0));
-            const tbody = document.getElementById('usersTable');
-            tbody.innerHTML = users.map(u => `
-                <tr class="border-b border-gray-700">
-                    <td class="p-3">${u.name || '—'}</td><td class="p-3">${u.email}</td><td class="p-3">${u.points || 0}</td>
+            
+            document.getElementById('usersTable').innerHTML = users.map(u => `
+                <tr class="border-b border-gray-700 hover:bg-white/5 transition">
+                    <td class="p-3"><div class="font-bold">${u.name || '—'}</div><div class="text-xs text-gray-500">${u.email || ''}</div></td>
+                    <td class="p-3">${u.points || 0}</td>
                     <td class="p-3"><span class="px-2 py-1 rounded-full text-xs ${u.banned ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${u.banned ? 'محظور' : 'نشط'}</span></td>
-                    <td class="p-3"><button onclick="banUser('${u.id}', ${!u.banned})" class="bg-yellow-600/20 px-3 py-1 rounded text-sm ml-2">${u.banned ? 'الغاء' : 'حظر'}</button><button onclick="deleteUser('${u.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">حذف</button></td>
+                    <td class="p-3">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-EG') : '—'}</td>
+                    <td class="p-3">
+                        <button onclick="addPoints('${u.id}', 10)" class="bg-green-600/20 px-2 py-1 rounded text-xs ml-1 hover:bg-green-600/40">+10</button>
+                        <button onclick="banUser('${u.id}', ${!u.banned})" class="bg-yellow-600/20 px-2 py-1 rounded text-xs ml-1 hover:bg-yellow-600/40">${u.banned ? 'الغاء' : 'حظر'}</button>
+                        <button onclick="deleteUser('${u.id}')" class="bg-red-600/20 px-2 py-1 rounded text-xs hover:bg-red-600/40">حذف</button>
+                    </td>
                 </tr>
             `).join('');
         });
     }
 
-    function loadLectures() {
+    // عرض المحاضرات
+    async function loadLectures() {
         const lecturesRef = ref(db, 'lectures');
         onValue(lecturesRef, (snapshot) => {
+            if (!snapshot.exists()) {
+                document.getElementById('lecturesTable').innerHTML = '<tr><td colspan="4" class="text-center p-8 text-gray-400">لا توجد محاضرات</td></tr>';
+                return;
+            }
             const lectures = [];
             snapshot.forEach((child) => {
                 lectures.push({ id: child.key, ...child.val() });
             });
-            const tbody = document.getElementById('lecturesTable');
-            tbody.innerHTML = lectures.map(l => `
-                <tr class="border-b border-gray-700">
-                    <td class="p-3">${l.title || '—'}</td><td class="p-3">${l.views || 0}</td>
-                    <td class="p-3">${l.pdfUrl && l.pdfUrl !== '#' ? '✅' : '❌'}</td>
-                    <td class="p-3"><button onclick="deleteLecture('${l.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">🗑️ حذف</button></td>
+            document.getElementById('lecturesTable').innerHTML = lectures.map(l => `
+                <tr class="border-b border-gray-700 hover:bg-white/5 transition">
+                    <td class="p-3"><div class="font-bold">${l.title || '—'}</div><div class="text-xs text-gray-500">${l.videoUrl?.substring(0, 30) || ''}</div></td>
+                    <td class="p-3">${l.views || 0}</td>
+                    <td class="p-3">${l.pdfUrl && l.pdfUrl !== '#' ? '<span class="text-green-400">✅ متوفر</span>' : '<span class="text-red-400">❌ غير متوفر</span>'}</td>
+                    <td class="p-3"><button onclick="deleteLecture('${l.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm hover:bg-red-600/40">🗑️ حذف</button></td>
                 </tr>
             `).join('');
         });
     }
 
+    // إضافة محاضرة
     window.addLecture = async () => {
         const title = document.getElementById('lectureTitle').value;
         const videoUrl = document.getElementById('lectureVideo').value;
         const pdfUrl = document.getElementById('lecturePdf').value;
-        if (!title || !videoUrl) { alert('❌ الرجاء إدخال عنوان ورابط الفيديو'); return; }
+        const thumb = document.getElementById('lectureThumb').value;
+        
+        if (!title || !videoUrl) {
+            alert('❌ الرجاء إدخال عنوان ورابط الفيديو');
+            return;
+        }
+        
         const lecturesRef = ref(db, 'lectures');
-        const newLectureRef = push(lecturesRef);
-        await set(newLectureRef, { title, videoUrl, pdfUrl: pdfUrl || '#', views: 0, createdAt: Date.now() });
+        const newRef = push(lecturesRef);
+        await set(newRef, {
+            title: title,
+            videoUrl: videoUrl,
+            pdfUrl: pdfUrl || '#',
+            thumb: thumb || 'https://img.youtube.com/vi/default/maxresdefault.jpg',
+            views: 0,
+            createdAt: Date.now()
+        });
+        
         document.getElementById('lectureTitle').value = '';
         document.getElementById('lectureVideo').value = '';
         document.getElementById('lecturePdf').value = '';
-        alert('✅ تم إضافة المحاضرة');
+        document.getElementById('lectureThumb').value = '';
+        
+        alert('✅ تم إضافة المحاضرة بنجاح');
+        await loadStats();
+    };
+
+    // إضافة نقاط للطالب
+    window.addPoints = async (uid, points) => {
+        const userRef = ref(db, 'users/' + uid);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            const currentPoints = snapshot.val().points || 0;
+            await update(userRef, { points: currentPoints + points });
+            showAlert('success', `✅ تم إضافة ${points} نقطة للطالب`);
+        }
     };
 
     window.banUser = async (uid, ban) => {
         await update(ref(db, 'users/' + uid), { banned: ban });
+        showAlert('info', `✅ تم ${ban ? 'حظر' : 'إلغاء حظر'} المستخدم`);
     };
-    
+
     window.deleteUser = async (uid) => {
-        if (confirm('⚠️ تأكيد حذف المستخدم؟')) {
+        if (confirm('⚠️ هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع!')) {
             await remove(ref(db, 'users/' + uid));
+            showAlert('warning', '✅ تم حذف المستخدم');
         }
     };
-    
+
     window.deleteLecture = async (id) => {
-        if (confirm('⚠️ تأكيد حذف المحاضرة؟')) {
+        if (confirm('⚠️ هل أنت متأكد من حذف هذه المحاضرة؟')) {
             await remove(ref(db, 'lectures/' + id));
+            showAlert('warning', '✅ تم حذف المحاضرة');
+            await loadStats();
         }
     };
-    
+
+    window.sendNotification = async () => {
+        const msg = document.getElementById('notificationMsg').value;
+        if (!msg) { alert('❌ اكتب رسالة الإشعار أولاً'); return; }
+        
+        // حفظ الإشعار في قاعدة البيانات
+        const notifRef = ref(db, 'notifications');
+        const newNotif = push(notifRef);
+        await set(newNotif, {
+            message: msg,
+            date: Date.now(),
+            read: false
+        });
+        
+        document.getElementById('notificationMsg').value = '';
+        showAlert('success', '✅ تم إرسال الإشعار لجميع الطلاب');
+    };
+
     window.signOutAdmin = async () => {
         await signOut(auth);
         window.location.href = 'index.html';
     };
 
+    function showAlert(type, msg) {
+        const alertDiv = document.getElementById('customAlert');
+        alertDiv.innerHTML = msg;
+        alertDiv.className = `fixed top-24 right-4 z-50 px-6 py-3 rounded-full shadow-lg animate-fadeIn ${
+            type === 'success' ? 'bg-green-500' : type === 'warning' ? 'bg-orange-500' : 'bg-blue-500'
+        } text-white font-bold`;
+        alertDiv.classList.remove('hidden');
+        setTimeout(() => alertDiv.classList.add('hidden'), 3000);
+    }
+
+    // تهيئة المحاضرات الافتراضية
+    async function initDefaultLectures() {
+        const snapshot = await get(ref(db, 'lectures'));
+        if (!snapshot.exists()) {
+            const defaultLectures = [
+                { title: "🧪 العناصر الممثلة", videoUrl: "https://youtu.be/xDgzehlarWo", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/533", views: 0 },
+                { title: "☢️ الكيمياء النووية تماماً", videoUrl: "https://youtu.be/bLY1TDI9Mm4", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/534", views: 0 },
+                { title: "📐 الباب الثالث", videoUrl: "https://youtu.be/ywrKtjJmzd4", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/535", views: 0 },
+                { title: "📚 المنهج كامل في 3 ساعات", videoUrl: "https://youtu.be/_LeKR7weATE", pdfUrl: "#", views: 0 },
+                { title: "📖 حل كتاب المعهد", videoUrl: "https://youtu.be/MncFO9RgXTg", pdfUrl: "#", views: 0 },
+                { title: "⭐ حل أهم 150 سؤال للأزهر", videoUrl: "https://youtu.be/LPXRrqsRjRg", pdfUrl: "https://t.me/yala_kamya_ziad_mabrok/551", views: 0 }
+            ];
+            for (const lecture of defaultLectures) {
+                const newRef = push(ref(db, 'lectures'));
+                await set(newRef, { ...lecture, createdAt: Date.now() });
+            }
+            console.log("✅ تم إضافة المحاضرات الافتراضية");
+        }
+    }
+
+    // مراقبة حالة المصادقة
     onAuthStateChanged(auth, async (user) => {
-        if (!user) { window.location.href = 'login.html'; return; }
-        const ok = await checkAdmin(user);
-        if (!ok) return;
-        document.getElementById('adminName').innerText = user.email;
-        loadStats();
-        loadUsers();
-        loadLectures();
+        const access = await checkAdminAccess(user);
+        if (!access) return;
+        
+        currentUser = user;
+        document.getElementById('adminName').innerText = user.email || user.displayName;
+        document.getElementById('adminAvatar').src = user.photoURL || "https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg";
+        
+        await loadStats();
+        await loadUsers();
+        await loadLectures();
+        await initDefaultLectures();
     });
 </script>
 
-<div class="flex">
-    <div class="w-64 min-h-screen bg-black/40 backdrop-blur-lg border-l border-white/10 p-6 fixed">
-        <div class="text-center mb-8">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-cyan-400">
-            <h2 class="text-xl font-bold">لوحة التحكم</h2>
-            <p class="text-xs text-gray-400" id="adminName"></p>
-        </div>
-        <div class="space-y-2">
-            <div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400 font-bold">📊 Dashboard</div>
-            <div class="p-3 text-gray-400 hover:bg-white/10 rounded-lg cursor-pointer" onclick="location.reload()">🔄 تحديث</div>
-            <div class="p-3 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer" onclick="signOutAdmin()">🚪 خروج</div>
-        </div>
-    </div>
-    
-    <div class="flex-1 mr-64 p-8">
-        <h1 class="text-3xl font-bold mb-8">✨ لوحة تحكم الأدمن</h1>
-        
-        <div class="grid grid-cols-4 gap-6 mb-8">
-            <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">👨‍🎓</div><div class="text-2xl font-bold" id="totalStudents">0</div><div class="text-sm">الطلاب</div></div>
-            <div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">📚</div><div class="text-2xl font-bold" id="totalLectures">0</div><div class="text-sm">المحاضرات</div></div>
-            <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">👁️</div><div class="text-2xl font-bold" id="totalViews">0</div><div class="text-sm">المشاهدات</div></div>
-            <div class="bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl p-6 text-center"><div class="text-3xl mb-2">🪙</div><div class="text-2xl font-bold" id="totalPoints">0</div><div class="text-sm">النقاط</div></div>
+    <!-- Custom Alert -->
+    <div id="customAlert" class="hidden fixed top-24 right-4 z-50"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar fixed right-0 top-0 w-72 h-full shadow-2xl z-30">
+        <div class="p-6 text-center border-b border-white/10">
+            <img id="adminAvatar" src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-cyan-400 animate-pulse-slow">
+            <h2 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">مستر زياد مبروك</h2>
+            <p id="adminName" class="text-xs text-gray-400 mt-1">جاري التحميل...</p>
+            <div class="mt-2 px-3 py-1 bg-cyan-500/20 rounded-full inline-block text-xs">👑 أدمن المنصة</div>
         </div>
         
-        <div class="bg-white/5 rounded-xl p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4">➕ إضافة محاضرة</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="lectureTitle" placeholder="عنوان المحاضرة" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
-                <input type="text" id="lectureVideo" placeholder="رابط الفيديو" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
-                <input type="text" id="lecturePdf" placeholder="رابط PDF (اختياري)" class="bg-white/10 rounded-lg p-3 border border-white/20 focus:border-cyan-400 outline-none">
+        <div class="p-4 space-y-2">
+            <div class="bg-gradient-to-r from-cyan-500/20 to-purple-500/20 p-3 rounded-xl text-cyan-400 font-bold flex items-center gap-3">
+                <span>📊</span> Dashboard
             </div>
-            <button onclick="addLecture()" class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-lg font-bold">✨ إضافة</button>
+            <div class="p-3 text-gray-300 hover:bg-white/10 rounded-xl transition cursor-pointer flex items-center gap-3" onclick="location.reload()">
+                <span>🔄</span> تحديث البيانات
+            </div>
+            <div class="p-3 text-gray-300 hover:bg-white/10 rounded-xl transition cursor-pointer flex items-center gap-3" onclick="window.location.href='index.html'">
+                <span>🏠</span> الرئيسية
+            </div>
+            <div class="p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition cursor-pointer flex items-center gap-3" onclick="signOutAdmin()">
+                <span>🚪</span> تسجيل الخروج
+            </div>
         </div>
         
-        <div class="bg-white/5 rounded-xl p-6 mb-8"><h2 class="text-2xl font-bold mb-4">👨‍🎓 الطلاب</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-gray-700"><th class="text-right p-3">الاسم</th><th class="text-right p-3">البريد</th><th class="text-right p-3">النقاط</th><th class="text-right p-3">الحالة</th><th class="text-right p-3">إجراءات</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
-        
-        <div class="bg-white/5 rounded-xl p-6"><h2 class="text-2xl font-bold mb-4">📚 المحاضرات</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-gray-700"><th class="text-right p-3">العنوان</th><th class="text-right p-3">المشاهدات</th><th class="text-right p-3">PDF</th><th class="text-right p-3">إجراءات</th></tr></thead><tbody id="lecturesTable"></tbody></table></div></div>
+        <div class="absolute bottom-6 right-0 left-0 text-center text-xs text-gray-500">
+            <p>يلا كيمياء - مستر زياد مبروك</p>
+            <p>© 2024 جميع الحقوق محفوظة</p>
+        </div>
     </div>
-</div>
+
+    <!-- Main Content -->
+    <div class="mr-72 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-black bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">✨ لوحة التحكم</h1>
+            <div class="text-sm text-gray-400">آخر تحديث: <span id="lastUpdate">الآن</span></div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+            <div class="stat-card rounded-2xl p-5 text-center">
+                <div class="text-4xl mb-2">👨‍🎓</div>
+                <div class="text-3xl font-bold text-cyan-400" id="totalStudents">0</div>
+                <div class="text-sm text-gray-400">إجمالي الطلاب</div>
+            </div>
+            <div class="stat-card rounded-2xl p-5 text-center">
+                <div class="text-4xl mb-2">🟢</div>
+                <div class="text-3xl font-bold text-green-400" id="activeToday">0</div>
+                <div class="text-sm text-gray-400">نشط اليوم</div>
+            </div>
+            <div class="stat-card rounded-2xl p-5 text-center">
+                <div class="text-4xl mb-2">📚</div>
+                <div class="text-3xl font-bold text-purple-400" id="totalLectures">0</div>
+                <div class="text-sm text-gray-400">المحاضرات</div>
+            </div>
+            <div class="stat-card rounded-2xl p-5 text-center">
+                <div class="text-4xl mb-2">👁️</div>
+                <div class="text-3xl font-bold text-yellow-400" id="totalViews">0</div>
+                <div class="text-sm text-gray-400">إجمالي المشاهدات</div>
+            </div>
+            <div class="stat-card rounded-2xl p-5 text-center">
+                <div class="text-4xl mb-2">🪙</div>
+                <div class="text-3xl font-bold text-orange-400" id="totalPoints">0</div>
+                <div class="text-sm text-gray-400">إجمالي النقاط</div>
+            </div>
+        </div>
+        
+        <!-- Chart -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4">📈 الإحصائيات التفاعلية</h2>
+            <div class="h-64"><canvas id="activityChart"></canvas></div>
+        </div>
+        
+        <!-- Add Lecture Form -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">➕ <span>إضافة محاضرة جديدة</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="lectureTitle" placeholder="عنوان المحاضرة" class="bg-white/10 rounded-xl p-3 border border-white/20 focus:border-cyan-400 outline-none transition">
+                <input type="text" id="lectureVideo" placeholder="رابط الفيديو (YouTube)" class="bg-white/10 rounded-xl p-3 border border-white/20 focus:border-cyan-400 outline-none transition">
+                <input type="text" id="lecturePdf" placeholder="رابط PDF (اختياري)" class="bg-white/10 rounded-xl p-3 border border-white/20 focus:border-cyan-400 outline-none transition">
+                <input type="text" id="lectureThumb" placeholder="رابط الصورة المصغرة (اختياري)" class="bg-white/10 rounded-xl p-3 border border-white/20 focus:border-cyan-400 outline-none transition">
+            </div>
+            <button onclick="addLecture()" class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-xl font-bold btn-glow hover:scale-105 transition">✨ إضافة المحاضرة</button>
+        </div>
+        
+        <!-- Send Notification -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">🔔 <span>إرسال إشعار للطلاب</span></h2>
+            <div class="flex gap-4">
+                <input type="text" id="notificationMsg" placeholder="اكتب رسالة الإشعار هنا..." class="flex-1 bg-white/10 rounded-xl p-3 border border-white/20 focus:border-cyan-400 outline-none transition">
+                <button onclick="sendNotification()" class="bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-2 rounded-xl font-bold btn-glow hover:scale-105 transition">📢 إرسال</button>
+            </div>
+        </div>
+        
+        <!-- Users Table -->
+        <div class="glass-card rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">👨‍🎓 <span>إدارة الطلاب</span></h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-right p-3">الطالب</th>
+                            <th class="text-right p-3">النقاط</th>
+                            <th class="text-right p-3">الحالة</th>
+                            <th class="text-right p-3">تاريخ التسجيل</th>
+                            <th class="text-right p-3">إجراءات</th>
+                         </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <tr><td colspan="5" class="text-center p-8">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Lectures Table -->
+        <div class="glass-card rounded-2xl p-6">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">📚 <span>إدارة المحاضرات</span></h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-right p-3">المحاضرة</th>
+                            <th class="text-right p-3">المشاهدات</th>
+                            <th class="text-right p-3">PDF</th>
+                            <th class="text-right p-3">إجراءات</th>
+                         </tr>
+                    </thead>
+                    <tbody id="lecturesTable">
+                        <tr><td colspan="4" class="text-center p-8">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
