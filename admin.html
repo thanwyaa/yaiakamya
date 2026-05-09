@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | Admin - يلا كيمياء</title>
+    <title>لوحة التحكم | Admin</title>
     <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,23 +13,22 @@
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, addDoc, setDoc, getDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+    import { getDatabase, ref, get, set, update, remove, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
-        apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
-        authDomain: "yalla-kimya.firebaseapp.com",
-        databaseURL: "https://yalla-kimya-default-rtdb.firebaseio.com",
-        projectId: "yalla-kimya",
-        storageBucket: "yalla-kimya.firebasestorage.app",
-        messagingSenderId: "1052374689829",
-        appId: "1:1052374689829:web:fbb815ab42d753e63377cc"
+        apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
+        authDomain: "yalla-chemistry-github.firebaseapp.com",
+        projectId: "yalla-chemistry-github",
+        storageBucket: "yalla-chemistry-github.firebasestorage.app",
+        messagingSenderId: "112757887385",
+        appId: "1:112757887385:web:eb77f8fd77bf5503fc4308"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
+    const db = getDatabase(app);
 
-    // 👇 ضع UID الأدمن الحقيقي هنا 👇
+    // 🔐 ضع الـ UID بتاعك هنا (خده من Firebase Console بعد ما تسجل)
     const ADMIN_UIDS = ["ضع_UID_الأدمن_هنا"];
 
     let currentUser = null;
@@ -44,48 +43,62 @@
     }
 
     async function loadStats() {
-        const usersSnap = await getDocs(collection(db, "users"));
-        const lecturesSnap = await getDocs(collection(db, "lectures"));
-        let totalViews = 0;
-        lecturesSnap.forEach(d => totalViews += d.data().views || 0);
-        document.getElementById('totalStudents').innerText = usersSnap.size;
-        document.getElementById('totalLectures').innerText = lecturesSnap.size;
-        document.getElementById('totalViews').innerText = totalViews.toLocaleString();
-        let totalPoints = 0;
-        usersSnap.forEach(d => totalPoints += d.data().points || 0);
-        document.getElementById('totalPoints').innerText = totalPoints.toLocaleString();
-    }
-
-    async function loadUsers() {
-        const q = query(collection(db, "users"), orderBy("points", "desc"));
-        const snap = await getDocs(q);
-        const tbody = document.getElementById('usersTable');
-        tbody.innerHTML = '';
-        snap.forEach(docSnap => {
-            const u = docSnap.data();
-            tbody.innerHTML += `
-                <tr class="border-b border-gray-700 hover:bg-white/5">
-                    <td class="p-3">${u.name || '—'}</td><td class="p-3">${u.email}</td><td class="p-3">${u.points || 0}</td>
-                    <td class="p-3"><span class="px-2 py-1 rounded-full text-xs ${u.banned ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${u.banned ? 'محظور' : 'نشط'}</span></td>
-                    <td class="p-3"><button onclick="banUser('${docSnap.id}', ${!u.banned})" class="bg-yellow-600/20 px-3 py-1 rounded text-sm ml-2">${u.banned ? 'الغاء الحظر' : 'حظر'}</button><button onclick="deleteUser('${docSnap.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">حذف</button></td>
-                </tr>
-            `;
+        const usersRef = ref(db, 'users');
+        const lecturesRef = ref(db, 'lectures');
+        
+        onValue(usersRef, (snapshot) => {
+            const users = [];
+            snapshot.forEach(child => users.push(child.val()));
+            document.getElementById('totalStudents').innerText = users.length;
+            let totalPoints = 0;
+            users.forEach(u => totalPoints += u.points || 0);
+            document.getElementById('totalPoints').innerText = totalPoints.toLocaleString();
+        });
+        
+        onValue(lecturesRef, (snapshot) => {
+            const lectures = [];
+            snapshot.forEach(child => lectures.push(child.val()));
+            document.getElementById('totalLectures').innerText = lectures.length;
+            let totalViews = 0;
+            lectures.forEach(l => totalViews += l.views || 0);
+            document.getElementById('totalViews').innerText = totalViews.toLocaleString();
         });
     }
 
-    async function loadLectures() {
-        const snap = await getDocs(collection(db, "lectures"));
-        const tbody = document.getElementById('lecturesTable');
-        tbody.innerHTML = '';
-        snap.forEach(docSnap => {
-            const l = docSnap.data();
-            tbody.innerHTML += `
-                <tr class="border-b border-gray-700 hover:bg-white/5">
+    function loadUsers() {
+        const usersRef = ref(db, 'users');
+        onValue(usersRef, (snapshot) => {
+            const users = [];
+            snapshot.forEach((child) => {
+                users.push({ id: child.key, ...child.val() });
+            });
+            users.sort((a, b) => (b.points || 0) - (a.points || 0));
+            const tbody = document.getElementById('usersTable');
+            tbody.innerHTML = users.map(u => `
+                <tr class="border-b border-gray-700">
+                    <td class="p-3">${u.name || '—'}</td><td class="p-3">${u.email}</td><td class="p-3">${u.points || 0}</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-full text-xs ${u.banned ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}">${u.banned ? 'محظور' : 'نشط'}</span></td>
+                    <td class="p-3"><button onclick="banUser('${u.id}', ${!u.banned})" class="bg-yellow-600/20 px-3 py-1 rounded text-sm ml-2">${u.banned ? 'الغاء' : 'حظر'}</button><button onclick="deleteUser('${u.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">حذف</button></td>
+                </tr>
+            `).join('');
+        });
+    }
+
+    function loadLectures() {
+        const lecturesRef = ref(db, 'lectures');
+        onValue(lecturesRef, (snapshot) => {
+            const lectures = [];
+            snapshot.forEach((child) => {
+                lectures.push({ id: child.key, ...child.val() });
+            });
+            const tbody = document.getElementById('lecturesTable');
+            tbody.innerHTML = lectures.map(l => `
+                <tr class="border-b border-gray-700">
                     <td class="p-3">${l.title || '—'}</td><td class="p-3">${l.views || 0}</td>
                     <td class="p-3">${l.pdfUrl && l.pdfUrl !== '#' ? '✅' : '❌'}</td>
-                    <td class="p-3"><button onclick="deleteLecture('${docSnap.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">🗑️ حذف</button></td>
+                    <td class="p-3"><button onclick="deleteLecture('${l.id}')" class="bg-red-600/20 px-3 py-1 rounded text-sm">🗑️ حذف</button></td>
                 </tr>
-            `;
+            `).join('');
         });
     }
 
@@ -94,32 +107,59 @@
         const videoUrl = document.getElementById('lectureVideo').value;
         const pdfUrl = document.getElementById('lecturePdf').value;
         if (!title || !videoUrl) { alert('❌ الرجاء إدخال عنوان ورابط الفيديو'); return; }
-        await addDoc(collection(db, "lectures"), { title, videoUrl, pdfUrl: pdfUrl || '#', views: 0, createdAt: new Date() });
+        const lecturesRef = ref(db, 'lectures');
+        const newLectureRef = push(lecturesRef);
+        await set(newLectureRef, { title, videoUrl, pdfUrl: pdfUrl || '#', views: 0, createdAt: Date.now() });
         document.getElementById('lectureTitle').value = '';
         document.getElementById('lectureVideo').value = '';
         document.getElementById('lecturePdf').value = '';
-        await loadLectures(); await loadStats();
         alert('✅ تم إضافة المحاضرة');
     };
 
-    window.banUser = async (uid, ban) => { await updateDoc(doc(db, "users", uid), { banned: ban }); await loadUsers(); };
-    window.deleteUser = async (uid) => { if(confirm('⚠️ تأكيد الحذف؟')) { await deleteDoc(doc(db, "users", uid)); await loadUsers(); await loadStats(); } };
-    window.deleteLecture = async (id) => { if(confirm('⚠️ تأكيد حذف المحاضرة؟')) { await deleteDoc(doc(db, "lectures", id)); await loadLectures(); await loadStats(); } };
-    window.signOutAdmin = async () => { await signOut(auth); window.location.href = 'index.html'; };
+    window.banUser = async (uid, ban) => {
+        await update(ref(db, 'users/' + uid), { banned: ban });
+    };
+    
+    window.deleteUser = async (uid) => {
+        if (confirm('⚠️ تأكيد حذف المستخدم؟')) {
+            await remove(ref(db, 'users/' + uid));
+        }
+    };
+    
+    window.deleteLecture = async (id) => {
+        if (confirm('⚠️ تأكيد حذف المحاضرة؟')) {
+            await remove(ref(db, 'lectures/' + id));
+        }
+    };
+    
+    window.signOutAdmin = async () => {
+        await signOut(auth);
+        window.location.href = 'index.html';
+    };
 
     onAuthStateChanged(auth, async (user) => {
         if (!user) { window.location.href = 'login.html'; return; }
         const ok = await checkAdmin(user);
         if (!ok) return;
         document.getElementById('adminName').innerText = user.email;
-        await loadStats(); await loadUsers(); await loadLectures();
+        loadStats();
+        loadUsers();
+        loadLectures();
     });
 </script>
 
 <div class="flex">
     <div class="w-64 min-h-screen bg-black/40 backdrop-blur-lg border-l border-white/10 p-6 fixed">
-        <div class="text-center mb-8"><img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-cyan-400"><h2 class="text-xl font-bold">لوحة التحكم</h2><p class="text-xs text-gray-400" id="adminName"></p></div>
-        <div class="space-y-2"><div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400 font-bold">📊 Dashboard</div><div class="p-3 text-gray-400 hover:bg-white/10 rounded-lg cursor-pointer" onclick="location.reload()">🔄 تحديث</div><div class="p-3 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer" onclick="signOutAdmin()">🚪 خروج</div></div>
+        <div class="text-center mb-8">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-cyan-400">
+            <h2 class="text-xl font-bold">لوحة التحكم</h2>
+            <p class="text-xs text-gray-400" id="adminName"></p>
+        </div>
+        <div class="space-y-2">
+            <div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400 font-bold">📊 Dashboard</div>
+            <div class="p-3 text-gray-400 hover:bg-white/10 rounded-lg cursor-pointer" onclick="location.reload()">🔄 تحديث</div>
+            <div class="p-3 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer" onclick="signOutAdmin()">🚪 خروج</div>
+        </div>
     </div>
     
     <div class="flex-1 mr-64 p-8">
