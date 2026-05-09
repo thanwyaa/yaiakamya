@@ -3,276 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>يلا كيمياء | مستر زياد مبروك - أكبر منصة كيمياء في مصر</title>
-    <meta name="description" content="منصة يلا كيمياء - أتقن الكيمياء مع مستر زياد مبروك. فيديوهات شرح، ملفات PDF، كويزات تفاعلية ونظام نقاط.">
-    <meta name="theme-color" content="#0f0c29">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>يلا كيمياء | مستر زياد مبروك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { cairo: ['Cairo', 'sans-serif'] },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'glow': 'glow 3s ease-in-out infinite',
-                        'spin-slow': 'spin 8s linear infinite',
-                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
-            }
-        }
-    </script>
-    
     <style>
-        @keyframes float {
+        @keyframes floatLogo {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
         }
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 20px rgba(0,255,255,0.3), 0 0 40px rgba(0,255,255,0.2); }
-            50% { text-shadow: 0 0 40px rgba(0,255,255,0.8), 0 0 60px rgba(0,255,255,0.5); }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0,255,255,0.3), 0 0 40px rgba(0,255,255,0.2); }
+            50% { box-shadow: 0 0 50px rgba(0,255,255,0.7), 0 0 70px rgba(0,255,255,0.4); }
         }
-        @keyframes borderPulse {
-            0%, 100% { border-color: rgba(0,255,255,0.3); box-shadow: 0 0 10px rgba(0,255,255,0.2); }
-            50% { border-color: rgba(0,255,255,0.8); box-shadow: 0 0 30px rgba(0,255,255,0.5); }
+        @keyframes borderMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+        .float-logo { animation: floatLogo 4s ease-in-out infinite; }
+        .glow-border { animation: glowPulse 2s ease-in-out infinite; }
+        .animated-border {
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+            background-size: 200% 200%;
+            animation: borderMove 3s ease infinite;
         }
-        .animate-slideUp { animation: slideUp 0.6s ease-out forwards; }
         .glass-card {
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
             transition: all 0.3s ease;
         }
         .glass-card:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(0,255,255,0.3);
             transform: translateY(-5px);
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(0,255,255,0.4);
         }
-        .neon-border {
-            animation: borderPulse 2s ease-in-out infinite;
-        }
-        * {
-            -webkit-tap-highlight-color: transparent;
-        }
+        body.dark { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); color: white; }
+        body.light { background: linear-gradient(135deg, #f5f7fa, #c3cfe2, #e0eafc); color: #1a1a2e; }
+        body.light .glass-card { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
+        body.light .glass-card:hover { background: rgba(0,0,0,0.1); }
+        * { transition: background 0.3s, color 0.2s; }
     </style>
 </head>
-<body class="font-cairo bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen text-white overflow-x-hidden">
+<body class="dark font-cairo min-h-screen">
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+    import { getDatabase, ref, get, set, child, onValue, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
+        authDomain: "yalla-chemistry-github.firebaseapp.com",
+        projectId: "yalla-chemistry-github",
+        storageBucket: "yalla-chemistry-github.firebasestorage.app",
+        messagingSenderId: "112757887385",
+        appId: "1:112757887385:web:eb77f8fd77bf5503fc4308"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    // Dark/Light Mode
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.className = savedTheme;
+    
+    window.toggleTheme = () => {
+        const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+        document.body.className = newTheme;
+        localStorage.setItem('theme', newTheme);
+    };
+
+    const lecturesData = [
+        { id: 1, title: "🏆 الباب الأول - الكيمياء العامة", desc: "شرح كامل للباب الأول مع التدريبات", video: "https://youtu.be/xDgzehlarWo", pdf: "https://t.me/yala_kamya_ziad_mabrok/533", thumb: "https://img.youtube.com/vi/xDgzehlarWo/maxresdefault.jpg", views: 12500 },
+        { id: 2, title: "🧪 الباب الثاني - الكيمياء التحليلية", desc: "القواعد التحليلية والأسس الكيميائية", video: "https://youtu.be/bLY1TDI9Mm4", pdf: "https://t.me/yala_kamya_ziad_mabrok/534", thumb: "https://img.youtube.com/vi/bLY1TDI9Mm4/maxresdefault.jpg", views: 8900 },
+        { id: 3, title: "🔬 الباب الثالث - الكيمياء العضوية", desc: "المركبات العضوية والتفاعلات", video: "https://youtu.be/ywrKtjJmzd4", pdf: "https://t.me/yala_kamya_ziad_mabrok/535", thumb: "https://img.youtube.com/vi/ywrKtjJmzd4/maxresdefault.jpg", views: 15600 },
+        { id: 4, title: "📚 المنهج الكامل", desc: "مراجعة شاملة للمنهج بالكامل", video: "https://youtu.be/_LeKR7weATE", pdf: "#", thumb: "https://img.youtube.com/vi/_LeKR7weATE/maxresdefault.jpg", views: 23400 },
+        { id: 5, title: "📖 حل الكتاب المدرسي", desc: "حول جميع أسئلة الكتاب بالتفصيل", video: "https://youtu.be/O2LJqeoUJoM", pdf: "#", thumb: "https://img.youtube.com/vi/O2LJqeoUJoM/maxresdefault.jpg", views: 6700 },
+        { id: 6, title: "⚡ 150 سؤال - مراجعة نهائية", desc: "أقوى 150 سؤال للمراجعة النهائية", video: "https://youtu.be/LPXRrqsRjRg", pdf: "https://t.me/yala_kamya_ziad_mabrok/551", thumb: "https://img.youtube.com/vi/LPXRrqsRjRg/maxresdefault.jpg", views: 45600 }
+    ];
+
+    let currentUser = null;
+
+    async function showLeaderboard() {
+        const usersRef = ref(db, 'users');
+        onValue(usersRef, (snapshot) => {
+            const users = [];
+            snapshot.forEach((child) => {
+                users.push({ id: child.key, ...child.val() });
+            });
+            users.sort((a, b) => (b.points || 0) - (a.points || 0));
+            const top5 = users.slice(0, 10);
+            const container = document.getElementById('leaderboardList');
+            if (container) {
+                container.innerHTML = top5.map((u, idx) => `
+                    <div class="flex items-center justify-between p-3 glass-card rounded-xl mb-2">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl font-bold ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-gray-300' : idx === 2 ? 'text-orange-500' : 'text-white/30'}">#${idx + 1}</span>
+                            <div><p class="font-bold">${u.name || u.email?.split('@')[0]}</p><p class="text-xs text-gray-400">🔬 ${u.points || 0} نقطة</p></div>
+                        </div>
+                        <div class="text-xl">🏆 ${u.points || 0}</div>
+                    </div>
+                `).join('');
+            }
+        });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        const loginBtn = document.getElementById('loginBtn');
+        const userMenu = document.getElementById('userMenu');
+        const userName = document.getElementById('userName');
+        
+        if (user) {
+            if (loginBtn) loginBtn.classList.add('hidden');
+            if (userMenu) userMenu.classList.remove('hidden');
+            if (userName) userName.textContent = user.displayName?.split(' ')[0] || user.email?.split('@')[0];
+            const userRef = ref(db, 'users/' + user.uid);
+            const snapshot = await get(userRef);
+            if (!snapshot.exists()) {
+                await set(userRef, { email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, createdAt: Date.now(), banned: false });
+            }
+            showLeaderboard();
+        } else {
+            if (loginBtn) loginBtn.classList.remove('hidden');
+            if (userMenu) userMenu.classList.add('hidden');
+        }
+    });
+
+    window.signOutUser = () => signOut(auth);
+
+    const container = document.getElementById('lecturesContainer');
+    if (container) {
+        container.innerHTML = lecturesData.map((lecture, idx) => `
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img src="${lecture.thumb}" class="w-full h-48 md:h-56 object-cover hover:scale-110 transition duration-500">
+                    <div class="absolute top-2 right-2 bg-black/70 px-2 py-1 rounded-lg text-xs">👁️ ${(lecture.views + (currentUser ? Math.floor(Math.random() * 100) : 0)).toLocaleString()}</div>
+                    ${!currentUser ? '<div class="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-sm"><div class="text-center"><div class="text-5xl mb-2">🔒</div><p class="text-sm font-bold">سجل دخولك للمشاهدة</p></div></div>' : ''}
+                </div>
+                <div class="p-5">
+                    <h3 class="text-lg md:text-xl font-bold mb-2">${lecture.title}</h3>
+                    <p class="text-gray-400 text-sm mb-4">${lecture.desc}</p>
+                    <div class="flex gap-2">
+                        ${currentUser ? `
+                            <a href="${lecture.video}" target="_blank" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm hover:opacity-80">▶️ مشاهدة</a>
+                            ${lecture.pdf !== '#' ? `<a href="${lecture.pdf}" target="_blank" class="bg-purple-600 px-4 py-2 rounded-xl text-center font-bold text-sm hover:bg-purple-700">📄 PDF</a>` : ''}
+                        ` : `
+                            <button onclick="window.location.href='login.html'" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm">🔒 سجل للمشاهدة</button>
+                        `}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    setTimeout(showLeaderboard, 1000);
+</script>
 
     <!-- Navbar -->
     <nav class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-xl border-b border-white/10">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="Logo" class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-cyan-400">
-                <div class="hidden sm:block">
-                    <h1 class="text-base md:text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
-                    <p class="text-[10px] md:text-xs text-gray-400">مستر زياد مبروك</p>
-                </div>
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-cyan-400">
+                <div class="hidden sm:block"><h1 class="text-base md:text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1><p class="text-xs text-gray-400">مستر زياد مبروك</p></div>
             </div>
-            <div class="hidden md:flex gap-6">
-                <a href="#" class="hover:text-cyan-400 transition">الرئيسية</a>
-                <a href="#lectures" class="hover:text-cyan-400 transition">المحاضرات</a>
-                <a href="#leaderboard" class="hover:text-cyan-400 transition">المتصدرين</a>
-            </div>
-            <div>
-                <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-4 md:px-6 py-1.5 md:py-2 rounded-full text-sm md:text-base font-bold hover:scale-105 transition shadow-lg">
-                    🚀 دخول
-                </button>
-                <div id="userMenu" class="hidden flex items-center gap-2 md:gap-3">
-                    <span id="userName" class="text-xs md:text-sm"></span>
-                    <button onclick="signOutUser()" class="bg-red-500/20 px-2 md:px-3 py-1 rounded-full text-xs md:text-sm hover:bg-red-500/30 transition">خروج</button>
-                </div>
+            <div class="hidden md:flex gap-6"><a href="#" class="hover:text-cyan-400">الرئيسية</a><a href="#lectures" class="hover:text-cyan-400">المحاضرات</a><a href="#leaderboard" class="hover:text-cyan-400">المتصدرين</a></div>
+            <div class="flex gap-2 items-center">
+                <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full">🌓</button>
+                <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-1.5 md:py-2 rounded-full text-sm font-bold">🚀 دخول</button>
+                <div id="userMenu" class="hidden flex items-center gap-2"><span id="userName"></span><button onclick="signOutUser()" class="bg-red-500/20 px-2 py-1 rounded-full text-sm">خروج</button></div>
             </div>
         </div>
     </nav>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-        import { getFirestore, collection, getDocs, doc, updateDoc, increment, setDoc, getDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
-            authDomain: "yalla-kimya.firebaseapp.com",
-            databaseURL: "https://yalla-kimya-default-rtdb.firebaseio.com",
-            projectId: "yalla-kimya",
-            storageBucket: "yalla-kimya.firebasestorage.app",
-            messagingSenderId: "1052374689829",
-            appId: "1:1052374689829:web:fbb815ab42d753e63377cc"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const lecturesData = [
-            { id: 1, title: "🏆 الباب الأول - الكيمياء العامة", desc: "شرح كامل للباب الأول مع التدريبات", video: "https://youtu.be/xDgzehlarWo", pdf: "https://t.me/yala_kamya_ziad_mabrok/533", thumb: "https://img.youtube.com/vi/xDgzehlarWo/maxresdefault.jpg", views: 12500 },
-            { id: 2, title: "🧪 الباب الثاني - الكيمياء التحليلية", desc: "القواعد التحليلية والأسس الكيميائية", video: "https://youtu.be/bLY1TDI9Mm4", pdf: "https://t.me/yala_kamya_ziad_mabrok/534", thumb: "https://img.youtube.com/vi/bLY1TDI9Mm4/maxresdefault.jpg", views: 8900 },
-            { id: 3, title: "🔬 الباب الثالث - الكيمياء العضوية", desc: "المركبات العضوية والتفاعلات", video: "https://youtu.be/ywrKtjJmzd4", pdf: "https://t.me/yala_kamya_ziad_mabrok/535", thumb: "https://img.youtube.com/vi/ywrKtjJmzd4/maxresdefault.jpg", views: 15600 },
-            { id: 4, title: "📚 المنهج الكامل", desc: "مراجعة شاملة للمنهج بالكامل", video: "https://youtu.be/_LeKR7weATE", pdf: "#", thumb: "https://img.youtube.com/vi/_LeKR7weATE/maxresdefault.jpg", views: 23400 },
-            { id: 5, title: "📖 حل الكتاب المدرسي", desc: "حول جميع أسئلة الكتاب بالتفصيل", video: "https://youtu.be/O2LJqeoUJoM", pdf: "#", thumb: "https://img.youtube.com/vi/O2LJqeoUJoM/maxresdefault.jpg", views: 6700 },
-            { id: 6, title: "⚡ 150 سؤال - مراجعة نهائية", desc: "أقوى 150 سؤال للمراجعة النهائية", video: "https://youtu.be/LPXRrqsRjRg", pdf: "https://t.me/yala_kamya_ziad_mabrok/551", thumb: "https://img.youtube.com/vi/LPXRrqsRjRg/maxresdefault.jpg", views: 45600 }
-        ];
-
-        let currentUser = null;
-
-        async function recordView(lectureId) {
-            if (currentUser) {
-                const userRef = doc(db, "users", currentUser.uid);
-                await updateDoc(userRef, { points: increment(5), lastActive: new Date() });
-            }
-        }
-
-        async function showLeaderboard() {
-            const q = query(collection(db, "users"), orderBy("points", "desc"), limit(10));
-            const snapshot = await getDocs(q);
-            const container = document.getElementById('leaderboardList');
-            if (container) {
-                container.innerHTML = '';
-                let rank = 1;
-                for (const docSnap of snapshot.docs) {
-                    const data = docSnap.data();
-                    container.innerHTML += `
-                        <div class="flex items-center justify-between p-3 glass-card rounded-xl mb-2 animate-slideUp" style="animation-delay: ${rank * 0.05}s">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl font-bold ${rank === 1 ? 'text-yellow-400' : rank === 2 ? 'text-gray-300' : rank === 3 ? 'text-orange-500' : 'text-white/30'}">#${rank}</span>
-                                <div>
-                                    <p class="font-bold text-sm md:text-base">${data.name || data.email?.split('@')[0] || 'طالب'}</p>
-                                    <p class="text-xs text-gray-400">🔬 ${data.points || 0} نقطة</p>
-                                </div>
-                            </div>
-                            <div class="text-xl md:text-2xl">🏆 ${data.points || 0}</div>
-                        </div>
-                    `;
-                    rank++;
-                }
-            }
-        }
-
-        window.recordView = recordView;
-        window.signOutUser = () => signOut(auth);
-
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            if (user) {
-                document.getElementById('loginBtn').classList.add('hidden');
-                document.getElementById('userMenu').classList.remove('hidden');
-                document.getElementById('userName').textContent = user.displayName?.split(' ')[0] || user.email?.split('@')[0];
-                const userRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userRef);
-                if (!userDoc.exists()) {
-                    await setDoc(userRef, { email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, createdAt: new Date(), banned: false });
-                }
-                showLeaderboard();
-            } else {
-                document.getElementById('loginBtn').classList.remove('hidden');
-                document.getElementById('userMenu').classList.add('hidden');
-            }
-        });
-
-        const container = document.getElementById('lecturesContainer');
-        if (container) {
-            container.innerHTML = lecturesData.map((lecture, idx) => `
-                <div class="glass-card rounded-2xl overflow-hidden animate-slideUp" style="animation-delay: ${idx * 0.1}s">
-                    <div class="relative overflow-hidden">
-                        <img src="${lecture.thumb}" alt="${lecture.title}" class="w-full h-48 md:h-56 object-cover transition duration-500 hover:scale-110">
-                        <div class="absolute top-2 right-2 bg-black/70 px-2 py-1 rounded-lg text-xs">👁️ ${(lecture.views + (currentUser ? Math.floor(Math.random() * 100) : 0)).toLocaleString()}</div>
-                        ${!currentUser ? '<div class="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-sm"><div class="text-center"><div class="text-5xl mb-2">🔒</div><p class="text-sm font-bold">سجل دخولك للمشاهدة</p></div></div>' : ''}
-                    </div>
-                    <div class="p-5">
-                        <h3 class="text-lg md:text-xl font-bold mb-2">${lecture.title}</h3>
-                        <p class="text-gray-400 text-sm mb-4">${lecture.desc}</p>
-                        <div class="flex gap-2">
-                            ${currentUser ? `
-                                <a href="${lecture.video}" target="_blank" onclick="recordView(${lecture.id})" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm hover:opacity-80 transition">▶️ مشاهدة</a>
-                                ${lecture.pdf !== '#' ? `<a href="${lecture.pdf}" target="_blank" class="bg-purple-600 px-4 py-2 rounded-xl text-center font-bold text-sm hover:bg-purple-700 transition">📄 PDF</a>` : ''}
-                            ` : `
-                                <button onclick="window.location.href='login.html'" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-xl text-center font-bold text-sm">🔒 سجل للمشاهدة</button>
-                            `}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        setTimeout(showLeaderboard, 1500);
-    </script>
-
-    <!-- Hero Section with Animated Logo -->
-    <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-500/15 via-purple-500/10 to-transparent"></div>
-        <div class="absolute top-1/4 left-5 w-72 h-72 bg-cyan-400 rounded-full filter blur-3xl opacity-20 animate-float"></div>
-        <div class="absolute bottom-1/4 right-5 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 animate-float" style="animation-delay: 3s;"></div>
+    <!-- Hero Section with GIANT Animated Logo -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div class="absolute inset-0 animated-border opacity-10"></div>
+        <div class="absolute top-1/4 left-10 w-80 h-80 bg-cyan-400 rounded-full filter blur-3xl opacity-20 float-logo"></div>
+        <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 float-logo" style="animation-delay: 2s;"></div>
         
         <div class="container mx-auto px-4 text-center relative z-10">
-            <div class="mb-8 relative inline-block">
-                <div class="absolute inset-0 bg-cyan-400 rounded-full filter blur-2xl opacity-50 animate-pulse-fast"></div>
-                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" alt="مستر زياد مبروك" class="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-cyan-400 shadow-2xl relative z-10 animate-float neon-border">
-                <div class="absolute -bottom-3 -right-3 bg-green-500 rounded-full w-6 h-6 border-4 border-white shadow-lg z-20"></div>
-                <div class="absolute -top-3 -left-3 bg-yellow-500 rounded-full w-5 h-5 animate-pulse"></div>
+            <div class="relative inline-block mb-8 group">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-70 group-hover:opacity-100 transition duration-500" style="width: 200px; height: 200px; left: -10px; top: -10px;"></div>
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-cyan-400 shadow-2xl float-logo glow-border relative z-10">
+                <div class="absolute -bottom-2 -right-2 bg-green-500 rounded-full w-8 h-8 border-4 border-white shadow-xl z-20"></div>
+                <div class="absolute -top-3 -left-3 bg-yellow-500 rounded-full w-6 h-6 animate-ping"></div>
             </div>
             
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-glow">
-                يلا كيمياء
-            </h1>
-            <p class="text-2xl md:text-3xl lg:text-4xl mb-3">مع <span class="text-cyan-400 font-bold border-b-2 border-cyan-400">مستر زياد مبروك</span></p>
-            <p class="text-lg md:text-xl text-gray-300 mb-6 max-w-2xl mx-auto">أقوى منصة لتعليم الكيمياء للثانوية العامة - شروحات، ملخصات، كويزات ونظام نقاط</p>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">يلا كيمياء</h1>
+            <p class="text-2xl md:text-3xl lg:text-4xl mb-3">مع <span class="text-cyan-400 font-bold border-b-4 border-cyan-400">مستر زياد مبروك</span></p>
+            <p class="text-base md:text-lg text-gray-300 mb-8 max-w-2xl mx-auto">أقوى منصة لتعليم الكيمياء للثانوية العامة - شروحات، ملخصات، كويزات ونظام نقاط</p>
             
             <div class="flex gap-4 justify-center flex-wrap">
-                <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 md:px-8 py-3 rounded-full font-bold text-base md:text-lg hover:scale-105 transition shadow-xl">🎓 ابدأ رحلتك الآن</a>
-                <a href="#leaderboard" class="bg-white/10 backdrop-blur px-6 md:px-8 py-3 rounded-full font-bold text-base md:text-lg hover:bg-white/20 transition border border-white/20">🏆 التوب تن</a>
+                <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 md:px-8 py-3 rounded-full font-bold hover:scale-105 transition shadow-xl">🎓 ابدأ رحلتك الآن</a>
+                <a href="#leaderboard" class="bg-white/10 backdrop-blur px-6 md:px-8 py-3 rounded-full font-bold hover:bg-white/20 transition">🏆 التوب تن</a>
             </div>
             
-            <div class="flex justify-center gap-6 mt-10 text-center">
-                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">6+</div><div class="text-xs text-gray-400">محاضرات</div></div>
-                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">100+</div><div class="text-xs text-gray-400">ساعة شرح</div></div>
-                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">5000+</div><div class="text-xs text-gray-400">طالب</div></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features -->
-    <section class="py-16 md:py-20">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">✨ مميزات المنصة</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
-                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">🎥</div><h3 class="font-bold text-sm md:text-base">فيديوهات</h3><p class="text-xs text-gray-400 hidden sm:block">شرح وافي</p></div>
-                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">📄</div><h3 class="font-bold text-sm md:text-base">ملفات PDF</h3><p class="text-xs text-gray-400 hidden sm:block">ملخصات</p></div>
-                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">🏆</div><h3 class="font-bold text-sm md:text-base">نقاط</h3><p class="text-xs text-gray-400 hidden sm:block">Chemical Coins</p></div>
-                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">⚡</div><h3 class="font-bold text-sm md:text-base">كويزات</h3><p class="text-xs text-gray-400 hidden sm:block">تفاعلية</p></div>
-                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">📊</div><h3 class="font-bold text-sm md:text-base">ترتيب</h3><p class="text-xs text-gray-400 hidden sm:block">Leaderboard</p></div>
-                <div class="glass-card rounded-2xl p-4 md:p-5 text-center"><div class="text-4xl md:text-5xl mb-2">🔒</div><h3 class="font-bold text-sm md:text-base">آمان</h3><p class="text-xs text-gray-400 hidden sm:block">تام</p></div>
+            <div class="flex justify-center gap-8 mt-12">
+                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">6+</div><div class="text-xs">محاضرات</div></div>
+                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">100+</div><div class="text-xs">ساعة شرح</div></div>
+                <div><div class="text-2xl md:text-3xl font-bold text-cyan-400">5000+</div><div class="text-xs">طالب</div></div>
             </div>
         </div>
     </section>
 
     <!-- Lectures -->
-    <section id="lectures" class="py-16 md:py-20 bg-black/30">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">📚 المكتبة التعليمية</h2>
-            <div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"></div>
-        </div>
+    <section id="lectures" class="py-20 bg-black/30">
+        <div class="container mx-auto px-4"><h2 class="text-3xl md:text-4xl font-bold text-center mb-12">📚 المكتبة التعليمية</h2><div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>
     </section>
 
     <!-- Leaderboard -->
-    <section id="leaderboard" class="py-16 md:py-20">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">🏆 متصدرين الكيمياء</h2>
-            <div class="max-w-2xl mx-auto glass-card rounded-2xl p-4 md:p-6">
-                <div id="leaderboardList"><div class="text-center text-gray-400 py-8">جاري التحميل...</div></div>
-            </div>
-        </div>
+    <section id="leaderboard" class="py-20">
+        <div class="container mx-auto px-4"><h2 class="text-3xl md:text-4xl font-bold text-center mb-12">🏆 متصدرين الكيمياء</h2><div class="max-w-2xl mx-auto glass-card rounded-2xl p-6"><div id="leaderboardList"><div class="text-center text-gray-400">جاري التحميل...</div></div></div></div>
     </section>
 
-    <footer class="py-6 md:py-8 border-t border-white/10 text-center text-gray-400 text-sm">
-        <p>© 2024 يلا كيمياء - مستر زياد مبروك | جميع الحقوق محفوظة</p>
+    <!-- Footer with Social Links -->
+    <footer class="py-8 border-t border-white/10">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center gap-6 mb-6">
+                <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/40 px-5 py-2 rounded-full transition"><span class="text-xl">📱</span> واتساب</a>
+                <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 px-5 py-2 rounded-full transition"><span class="text-xl">📢</span> تليجرام</a>
+            </div>
+            <p class="text-gray-400 text-sm">© 2024 يلا كيمياء - مستر زياد مبروك | جميع الحقوق محفوظة</p>
+        </div>
     </footer>
 </body>
 </html>
