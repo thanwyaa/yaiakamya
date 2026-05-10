@@ -138,7 +138,7 @@
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, update, onValue, push, increment } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -153,7 +153,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    const ADMIN_UIDS = ["PuWOEV9HUtcPyd1HwJZVhsQQWBn2", "PgIttA5EeuQ0N67EL5QDeaRUYei2"];
+    // 🔐 الأمان: التحقق من الأدمن من قاعدة البيانات
     let currentUser = null;
     let timeInterval = null;
     let timeSpent = 0;
@@ -161,6 +161,11 @@
     let currentQuestionIndex = 0;
     let userAnswers = [];
     let quizStartTime = null;
+
+    async function isAdminUser(uid) {
+        const snap = await get(ref(db, 'users/' + uid + '/isAdmin'));
+        return snap.exists() && snap.val() === true;
+    }
 
     function showBigModal(title, message, type = 'info') {
         const oldModal = document.getElementById('bigModal');
@@ -202,7 +207,6 @@
         setTimeout(() => toast.remove(), 3000);
     }
 
-    // عرض المحاضرات
     function displayLectures() {
         const lecturesRef = ref(db, 'lectures');
         onValue(lecturesRef, (snapshot) => {
@@ -259,14 +263,12 @@
             const snapshot = await get(lectureRef);
             if (snapshot.exists()) {
                 await update(lectureRef, { views: (snapshot.val().views || 0) + 1 });
-                // تسجيل أن الطالب شاهد هذه المحاضرة
                 const watchedRef = ref(db, 'users/' + currentUser.uid + '/watchedLectures');
                 const watchedSnap = await get(watchedRef);
                 const watched = watchedSnap.exists() ? watchedSnap.val() : {};
                 if (!watched[lectureId]) {
                     watched[lectureId] = true;
                     await set(watchedRef, watched);
-                    // تحديث عدد المحاضرات التي شاهدها الطالب
                     const count = Object.keys(watched).length;
                     await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: count });
                     updateUserStats();
@@ -275,7 +277,6 @@
         }
     }
 
-    // نظام المكافآت والتوقيت
     function startTimeTracking(userId) {
         if (timeInterval) clearInterval(timeInterval);
         
@@ -311,7 +312,6 @@
                     showLeaderboard();
                     updateUserStats();
                 } else {
-                    // تحديث آخر نشاط كل دقيقة
                     await update(ref(db, 'users/' + currentUser.uid), { lastActive: Date.now() });
                 }
             }
@@ -324,18 +324,19 @@
 
     async function showLeaderboard() {
         const usersRef = ref(db, 'users');
-        onValue(usersRef, (snapshot) => {
+        onValue(usersRef, async (snapshot) => {
             if (!snapshot.exists()) {
                 document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 كن أول المتصدرين!</div>';
                 return;
             }
             
             const users = [];
-            snapshot.forEach((child) => {
-                if (!ADMIN_UIDS.includes(child.key)) {
+            for (const child of snapshot) {
+                const isAdmin = await isAdminUser(child.key);
+                if (!isAdmin) {
                     users.push({ id: child.key, ...child.val() });
                 }
-            });
+            }
             users.sort((a, b) => (b.points || 0) - (a.points || 0));
             const top3 = users.slice(0, 3);
             
@@ -368,19 +369,16 @@
                 document.getElementById('userPoints').textContent = userData.points || 0;
                 document.getElementById('userName').textContent = userData.name || userData.email?.split('@')[0];
                 
-                // تحديث الإحصائيات الشخصية
                 const watchedCount = userData.lecturesWatched || 0;
                 const quizzesCompleted = userData.quizzesCompleted || 0;
                 document.getElementById('watchedCount').textContent = watchedCount;
                 document.getElementById('quizzesCompletedCount').textContent = quizzesCompleted;
                 
-                // تحديث شريط التقدم
-                const totalLectures = 6; // العدد الكلي للمحاضرات
+                const totalLectures = 6;
                 const progress = Math.min(100, Math.round((watchedCount / totalLectures) * 100));
                 document.getElementById('progressFill').style.width = progress + '%';
                 document.getElementById('progressPercent').textContent = progress + '%';
                 
-                // تحديث الشارات
                 updateBadges(watchedCount, quizzesCompleted, userData.points || 0);
             }
         }
@@ -429,7 +427,11 @@
         });
     }
     
-    // نظام الكويزات المتعددة (أكثر من سؤال)
+    async function hasCompletedQuiz(quizId) {
+        const snap = await get(ref(db, 'quiz_results/' + quizId + '/' + currentUser.uid));
+        return snap.exists();
+    }
+    
     async function loadAvailableQuizzes() {
         const quizzesRef = ref(db, 'quizzes');
         const snapshot = await get(quizzesRef);
@@ -441,18 +443,22 @@
             return;
         }
         
-        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
         const quizzes = [];
         snapshot.forEach((child) => {
             quizzes.push({ id: child.key, ...child.val() });
         });
+        
+        const completedStatus = {};
+        for (const q of quizzes) {
+            completedStatus[q.id] = await hasCompletedQuiz(q.id);
+        }
         
         container.innerHTML = quizzes.map(q => `
             <div class="glass-card rounded-2xl p-4 text-center">
                 <div class="text-3xl mb-2">📝</div>
                 <h3 class="font-bold text-lg">${q.title}</h3>
                 <p class="text-sm text-gray-500">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة | 📋 ${q.questions?.length || 0} سؤال</p>
-                ${completed.includes(q.id) ? 
+                ${completedStatus[q.id] ? 
                     '<p class="text-green-500 text-sm mt-2">✅ تم الحل سابقاً</p>' : 
                     `<button onclick="startQuiz('${q.id}')" class="mt-3 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-full text-sm font-bold text-white">🚀 ابدأ الكويز</button>`}
             </div>
@@ -460,9 +466,8 @@
     }
     
     window.startQuiz = async (quizId) => {
-        // التحقق من عدم الحل سابقاً
-        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
-        if (completed.includes(quizId)) {
+        const done = await hasCompletedQuiz(quizId);
+        if (done) {
             showToastPoints('😄 متبقاش طماع! انت خلاص حلّيت الكويز ده قبل كده. جرب كويز تاني!');
             return;
         }
@@ -545,7 +550,6 @@
             }
         }
         
-        // تسجيل النتيجة
         const resultRef = ref(db, 'quiz_results/' + currentQuiz.id + '/' + currentUser.uid);
         await set(resultRef, {
             score: score,
@@ -555,7 +559,6 @@
             completedAt: Date.now()
         });
         
-        // إضافة النقاط
         const userRef = ref(db, 'users/' + currentUser.uid);
         const snapshot = await get(userRef);
         const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
@@ -563,11 +566,6 @@
             points: currentPoints + currentQuiz.points,
             quizzesCompleted: (snapshot.val().quizzesCompleted || 0) + 1
         });
-        
-        // تسجيل الكويز كمكتمل
-        const completed = JSON.parse(localStorage.getItem(`completedQuizzes_${currentUser.uid}`) || '[]');
-        completed.push(currentQuiz.id);
-        localStorage.setItem(`completedQuizzes_${currentUser.uid}`, JSON.stringify(completed));
         
         const percent = Math.round((score / currentQuiz.questions.length) * 100);
         showToastPoints(`🎉 مبروك! جاوبت ${score} من ${currentQuiz.questions.length} إجابة صحيحة (${percent}%)! كسبت ${currentQuiz.points} نقطة`);
@@ -585,7 +583,6 @@
         currentQuestionIndex = 0;
     };
 
-    // مراقبة حالة تسجيل الدخول
     onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const loginBtn = document.getElementById('loginBtn');
@@ -754,14 +751,12 @@
     </div>
 </section>
 
-<!-- قسم حسابي وإحصائياتي الشخصية -->
 <section id="myStats" class="py-20">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-black text-center mb-4">👤 حسابي الشخصي</h2>
         <p class="text-center text-gray-500 mb-12">تقدمك وإنجازاتك في المنصة</p>
         
         <div id="userStatsPanel" class="hidden max-w-4xl mx-auto">
-            <!-- شريط التقدم -->
             <div class="glass-card rounded-2xl p-6 mb-6">
                 <h3 class="text-2xl font-bold mb-4">📊 مستوى التقدم</h3>
                 <div class="progress-bar mb-2">
@@ -773,7 +768,6 @@
                 </div>
             </div>
             
-            <!-- الإحصائيات -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-6 text-center">
                     <div class="text-4xl mb-3">📚</div>
@@ -792,7 +786,6 @@
                 </div>
             </div>
             
-            <!-- الشارات -->
             <div class="glass-card rounded-2xl p-6">
                 <h3 class="text-2xl font-bold mb-4">🎖️ شارات الإنجاز</h3>
                 <div id="badgesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3">
