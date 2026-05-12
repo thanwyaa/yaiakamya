@@ -9,71 +9,157 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
     <style>
-        * { font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary: #00c6ff; --primary-dark: #0072ff; --success: #10b981; --danger: #ef4444; }
-        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #fff; }
-        body.light { background: linear-gradient(135deg, #f5f7fc, #eef2f8, #e8edf5); color: #1a202c; }
+        * { font-family: 'Tajawal', sans-serif; }
         
-        .glass-card { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; transition: all 0.3s ease; }
+        :root {
+            --primary: #00c6ff;
+            --primary-dark: #0072ff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a); color: #fff; }
+        body.light { background: linear-gradient(135deg, #f0f4f8, #e2e8f0); color: #1a202c; }
+        
+        .glass-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
         .glass-card:hover { transform: translateY(-3px); border-color: var(--primary); }
-        body.light .glass-card { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.06); }
+        body.light .glass-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.06); }
         
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 0.5rem 1.2rem; border-radius: 2rem; font-weight: 600; color: white; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .course-card {
+            background: rgba(255,255,255,0.04);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .course-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .course-card img { width: 100%; height: 180px; object-fit: cover; transition: transform 0.5s; }
+        .course-card:hover img { transform: scale(1.05); }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
         .btn-primary:hover { transform: scale(1.02); opacity: 0.95; }
-        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.4rem 1rem; border-radius: 2rem; cursor: pointer; }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+        }
+        .btn-outline:hover { background: var(--primary); color: white; }
         
-        .skeleton { background: rgba(255,255,255,0.1); animation: pulse 1.5s infinite; border-radius: 0.5rem; }
+        .skeleton { background: rgba(255,255,255,0.1); border-radius: 0.5rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+        
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15,15,42,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: none;
+            justify-content: space-around;
+            padding: 0.6rem;
+            z-index: 100;
+        }
+        body.light .mobile-nav { background: rgba(255,255,255,0.95); border-top-color: rgba(0,0,0,0.08); }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        .mobile-nav-item.active { color: var(--primary); }
+        @media (max-width: 768px) {
+            .desktop-nav { display: none; }
+            .mobile-nav { display: flex; }
+            main { padding-bottom: 80px; }
+        }
         
         .page { display: none; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .mobile-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15,15,42,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: none; justify-content: space-around; padding: 0.5rem; z-index: 100; }
-        body.light .mobile-nav { background: rgba(255,255,255,0.95); }
-        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; cursor: pointer; color: #9ca3af; }
-        .mobile-nav-item.active { color: var(--primary); }
-        @media (max-width: 768px) { .desktop-nav { display: none; } .mobile-nav { display: flex; } main { padding-bottom: 80px; } }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
         
-        .toast { position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 10px 20px; border-radius: 50px; z-index: 1000; animation: slideIn 0.3s, fadeOut 3s 2.7s forwards; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            z-index: 1000;
+            animation: slideIn 0.3s, fadeOut 3s 2.7s forwards;
+        }
         .toast.error { background: var(--danger); }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
         
-        .loader { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
         .loader.hidden { display: none; }
-        .loader-spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .quiz-option { background: rgba(255,255,255,0.05); border-radius: 0.75rem; padding: 0.75rem; margin-bottom: 0.5rem; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
-        .quiz-option:hover { background: rgba(0,200,255,0.1); }
-        .quiz-option.selected { background: rgba(0,200,255,0.25); border-color: var(--primary); }
-        .timer { font-size: 2rem; font-weight: bold; font-family: monospace; color: var(--primary); }
-        .video-container { position: relative; padding-bottom: 56.25%; background: #000; border-radius: 1rem; overflow: hidden; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body class="dark">
 
-<div id="loader" class="loader hidden"><div class="loader-spinner"></div></div>
+<div id="loader" class="loader"><div class="loader-spinner"></div></div>
 <div id="toastContainer"></div>
 
-<!-- ========== Navbar ========== -->
-<nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-white/10 py-2">
+<nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-white/10 py-3">
     <div class="container mx-auto px-4 flex justify-between items-center">
         <div class="flex items-center gap-2">
             <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-8 h-8 rounded-full border border-cyan-400">
             <div><h1 class="text-lg font-bold">يلا كيمياء</h1><p class="text-[10px] text-gray-500">مستر زياد مبروك</p></div>
         </div>
-        <div class="desktop-nav flex gap-4">
+        <div class="desktop-nav flex gap-5">
             <a class="nav-link cursor-pointer" data-page="home">الرئيسية</a>
             <a class="nav-link cursor-pointer" data-page="courses">الكورسات</a>
             <a class="nav-link cursor-pointer" data-page="quizzes">الكويزات</a>
@@ -82,8 +168,8 @@
             <a class="nav-link cursor-pointer" data-page="about">عن المستر</a>
         </div>
         <div class="flex gap-2">
-            <button onclick="toggleTheme()" class="text-lg p-1 rounded-full hover:bg-white/10">🌓</button>
-            <button id="loginBtn" onclick="window.location.href='login.html'" class="btn-primary text-sm py-1 px-3">🚀 دخول</button>
+            <button onclick="toggleTheme()" class="text-lg p-1.5 rounded-full hover:bg-white/10">🌓</button>
+            <button id="loginBtn" onclick="window.location.href='login.html'" class="btn-primary text-sm py-1.5 px-3">🚀 دخول</button>
             <div id="userMenu" class="hidden items-center gap-2">
                 <span id="userName" class="text-sm font-bold"></span>
                 <span class="text-xs text-cyan-400"><i class="fas fa-flask"></i> <span id="userPoints">0</span></span>
@@ -102,56 +188,75 @@
 </div>
 
 <main class="container mx-auto px-4 pt-20 pb-10">
-    <!-- الصفحة الرئيسية -->
     <div id="homePage" class="page active">
         <div class="text-center mb-8">
             <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-24 h-24 rounded-full border-2 border-cyan-400 mx-auto mb-3">
-            <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
-            <p class="text-lg">مع <span class="text-cyan-500 font-bold">مستر زياد مبروك</span></p>
+            <h1 class="text-3xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
+            <p class="text-lg mt-1">مع <span class="text-cyan-500 font-bold">مستر زياد مبروك</span></p>
+            <p class="text-gray-500 text-sm max-w-md mx-auto mt-2">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
             <div class="flex gap-2 justify-center mt-4">
                 <button onclick="navigateTo('courses')" class="btn-primary text-sm">🎓 استكشف الكورسات</button>
                 <button onclick="navigateTo('quizzes')" class="btn-primary bg-emerald-500 text-sm">📝 اختبر نفسك</button>
             </div>
         </div>
-    </div>
-    
-    <!-- صفحة الكورسات -->
-    <div id="coursesPage" class="page">
-        <h2 class="text-xl font-bold mb-4"><i class="fas fa-book ml-1 text-cyan-400"></i> الكورسات</h2>
-        <div id="coursesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="skeleton h-48 rounded-xl"></div><div class="skeleton h-48 rounded-xl"></div><div class="skeleton h-48 rounded-xl"></div>
+        <h2 class="text-xl font-bold text-center mb-4">✨ مميزات المنصة</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            <div class="glass-card p-3 text-center"><i class="fas fa-video text-2xl text-cyan-400 mb-1"></i><p class="text-sm font-bold">فيديوهات HD</p><p class="text-xs text-gray-500">جودة عالية</p></div>
+            <div class="glass-card p-3 text-center"><i class="fas fa-file-pdf text-2xl text-red-400 mb-1"></i><p class="text-sm font-bold">ملفات PDF</p><p class="text-xs text-gray-500">ملخصات شاملة</p></div>
+            <div class="glass-card p-3 text-center"><i class="fas fa-trophy text-2xl text-yellow-400 mb-1"></i><p class="text-sm font-bold">نقاط كيمياء</p><p class="text-xs text-gray-500">كل 10 دقائق</p></div>
+            <div class="glass-card p-3 text-center"><i class="fas fa-bolt text-2xl text-purple-400 mb-1"></i><p class="text-sm font-bold">كويزات تفاعلية</p><p class="text-xs text-gray-500">اختبر فهمك</p></div>
         </div>
     </div>
-    
-    <!-- صفحة الكويزات -->
+
+    <div id="coursesPage" class="page">
+        <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+            <h2 class="text-xl font-bold"><i class="fas fa-book ml-1 text-cyan-400"></i> الكورسات</h2>
+            <div class="flex gap-1 text-sm">
+                <button class="filter-btn btn-outline text-xs py-1 px-2" data-filter="all">الكل</button>
+                <button class="filter-btn btn-outline text-xs py-1 px-2" data-filter="free">مجاني</button>
+                <button class="filter-btn btn-outline text-xs py-1 px-2" data-filter="paid">مدفوع</button>
+            </div>
+        </div>
+        <div id="coursesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
     <div id="quizzesPage" class="page">
         <h2 class="text-xl font-bold mb-4"><i class="fas fa-pen-alt ml-1 text-cyan-400"></i> الكويزات</h2>
-        <div id="quizzesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        <div id="quizzesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
-    
-    <!-- صفحة المتصدرين -->
+
     <div id="leaderboardPage" class="page">
         <h2 class="text-xl font-bold mb-4 text-center"><i class="fas fa-trophy ml-1 text-yellow-400"></i> المتصدرين</h2>
-        <div id="leaderboardList" class="max-w-md mx-auto glass-card p-4"></div>
+        <div class="max-w-md mx-auto glass-card p-4"><div id="leaderboardList"></div></div>
     </div>
-    
-    <!-- صفحة الملف الشخصي -->
+
     <div id="profilePage" class="page">
         <div id="userStatsPanel" class="hidden max-w-md mx-auto">
-            <div class="glass-card p-4 mb-4"><div class="h-2 bg-gray-700 rounded-full overflow-hidden"><div id="progressFill" class="h-full bg-cyan-500" style="width:0%"></div></div><div class="flex justify-between mt-1"><span>المحاضرات: <span id="watchedCount">0</span>/10</span><span id="progressPercent">0%</span></div></div>
-            <div class="grid grid-cols-3 gap-3"><div class="glass-card p-3 text-center"><i class="fas fa-video"></i><div id="watchedCountStat" class="text-xl font-bold">0</div></div><div class="glass-card p-3 text-center"><i class="fas fa-question-circle"></i><div id="quizzesCountStat" class="text-xl font-bold">0</div></div><div class="glass-card p-3 text-center"><i class="fas fa-flask"></i><div id="pointsCountStat" class="text-xl font-bold">0</div></div></div>
+            <div class="glass-card p-4 mb-4"><h3 class="font-bold mb-2">📊 التقدم</h3><div class="h-2 bg-gray-700 rounded-full overflow-hidden"><div id="progressFill" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500" style="width:0%"></div></div><div class="flex justify-between text-sm mt-1"><span>المحاضرات: <span id="watchedCount">0</span>/10</span><span id="progressPercent">0%</span></div></div>
+            <div class="grid grid-cols-3 gap-3 mb-4"><div class="stat-card p-3 text-center"><i class="fas fa-video text-xl"></i><div id="watchedCountStat" class="text-xl font-bold">0</div><div class="text-xs">محاضرات</div></div><div class="stat-card p-3 text-center"><i class="fas fa-question-circle text-xl"></i><div id="quizzesCountStat" class="text-xl font-bold">0</div><div class="text-xs">كويزات</div></div><div class="stat-card p-3 text-center"><i class="fas fa-flask text-xl"></i><div id="pointsCountStat" class="text-xl font-bold">0</div><div class="text-xs">نقاطي</div></div></div>
+            <div class="glass-card p-4"><h3 class="font-bold mb-2">🎖️ الشارات</h3><div id="badgesContainer" class="flex flex-wrap gap-2"></div></div>
         </div>
         <div id="userStatsGuest" class="text-center text-gray-500 py-8 glass-card p-4">🔐 سجل دخولك لعرض إحصائياتك</div>
     </div>
-    
-    <!-- صفحة عن المستر -->
+
     <div id="aboutPage" class="page">
-        <div class="text-center"><img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-24 h-24 rounded-full border-2 border-cyan-400 mx-auto mb-3"><h2 class="text-2xl font-bold">مستر زياد مبروك</h2><p class="text-cyan-400">خبير كيمياء للثانوية العامة</p></div>
+        <div class="max-w-2xl mx-auto text-center">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-28 h-28 rounded-full border-2 border-cyan-400 mx-auto mb-3">
+            <h2 class="text-2xl font-bold">مستر زياد مبروك</h2>
+            <p class="text-cyan-400 mb-4">خبير كيمياء للثانوية العامة</p>
+            <div class="glass-card p-4 mb-3"><p class="text-sm">✏️ أكثر من 10 سنوات خبرة في تدريس الكيمياء</p></div>
+            <div class="glass-card p-4 mb-3"><p class="text-sm">🎓 حاصل على بكالوريوس العلوم والتربية - جامعة الأزهر</p></div>
+            <div class="glass-card p-4"><p class="text-sm">🏆 حاصل على جائزة أفضل معلم كيمياء على مستوى الجمهورية</p></div>
+        </div>
     </div>
 </main>
 
+<footer class="text-center text-gray-500 text-xs py-4 border-t border-white/10 mt-4">
+    <p>© 2026 يلا كيمياء - مستر زياد مبروك</p>
+</footer>
+
 <script>
-    // ========== Firebase Config (بيانات عامة فقط - مش سرية) ==========
+    // Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
         authDomain: "yalla-chemistry-github.firebaseapp.com",
@@ -165,28 +270,32 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    const ADMIN_UID = "GiICpKTqbgW5U8hTOfR1rRr93g22";
     
-    // ========== State ==========
     let currentUser = null;
     let timeInterval = null;
-    let timeSpent = 0;
-    let allCourses = [];
-    let currentCourseSubscriptions = {};
-    let completedQuizzes = new Set(); // منع إعادة الكويز
+    let coursesCache = null;
+    let currentFilter = 'all';
     
-    // ========== Utils ==========
     function showLoader(show) { document.getElementById('loader').classList.toggle('hidden', !show); }
-    function showToast(msg, isError = false) { const t = document.createElement('div'); t.className = `toast ${isError ? 'error' : ''}`; t.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`; document.getElementById('toastContainer').appendChild(t); setTimeout(() => t.remove(), 3000); }
-    function toggleTheme() { document.body.classList.toggle('light'); localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark'); }
+    function showToast(msg, isError = false) {
+        const toast = document.createElement('div');
+        toast.className = `toast ${isError ? 'error' : ''}`;
+        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> ${msg}`;
+        document.getElementById('toastContainer').appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    function toggleTheme() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    }
     if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
     
-    // ========== Navigation ==========
     function navigateTo(page) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.getElementById(`${page}Page`).classList.add('active');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.querySelectorAll(`.nav-link[data-page="${page}"]`).forEach(l => l.classList.add('active'));
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('text-cyan-500'));
+        document.querySelectorAll(`.nav-link[data-page="${page}"]`).forEach(l => l.classList.add('text-cyan-500'));
         document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
         document.querySelectorAll(`.mobile-nav-item[data-page="${page}"]`).forEach(i => i.classList.add('active'));
         if (page === 'courses') loadCourses();
@@ -196,186 +305,71 @@
         window.scrollTo({ top: 0 });
     }
     window.navigateTo = navigateTo;
-    document.querySelectorAll('.nav-link, .mobile-nav-item').forEach(el => el.addEventListener('click', () => navigateTo(el.dataset.page)));
     
-    // ========== Courses ==========
+    document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => navigateTo(link.dataset.page)));
+    document.querySelectorAll('.mobile-nav-item').forEach(item => item.addEventListener('click', () => navigateTo(item.dataset.page)));
+    
     async function loadCourses() {
         showLoader(true);
+        if (coursesCache) { renderCourses(coursesCache); showLoader(false); return; }
         const snap = await db.ref('courses').get();
-        allCourses = []; snap.forEach(c => allCourses.push({ id: c.key, ...c.val() }));
-        allCourses.sort((a,b) => (a.order || 0) - (b.order || 0));
-        
-        if (currentUser) {
-            const subs = await db.ref('subscriptions').get();
-            currentCourseSubscriptions = {};
-            if (subs.exists()) subs.forEach(s => { if (s.val().userId === currentUser.uid && s.val().status === 'active') currentCourseSubscriptions[s.val().courseId] = true; });
-        }
-        
+        coursesCache = [];
+        snap.forEach(c => coursesCache.push({ id: c.key, ...c.val() }));
+        coursesCache.sort((a,b) => (a.order || 0) - (b.order || 0));
+        renderCourses(coursesCache);
+        showLoader(false);
+    }
+    
+    function renderCourses(courses) {
+        let filtered = [...courses];
+        if (currentFilter === 'free') filtered = filtered.filter(c => c.price === 0);
+        if (currentFilter === 'paid') filtered = filtered.filter(c => c.price > 0);
         const container = document.getElementById('coursesContainer');
-        if (!allCourses.length) { container.innerHTML = '<div class="col-span-3 text-center text-gray-500">لا توجد كورسات</div>'; showLoader(false); return; }
-        container.innerHTML = allCourses.map(c => `
-            <div class="glass-card p-4">
-                <img src="${c.image || 'https://via.placeholder.com/400x200'}" class="w-full h-32 object-cover rounded-lg mb-2" onerror="this.src='https://via.placeholder.com/400x200'">
-                <h3 class="font-bold">${c.title}</h3>
-                <p class="text-xs text-gray-500 mt-1">${c.price === 0 ? 'مجاني' : c.price + ' ج'}</p>
-                ${!currentUser ? '<button class="btn-primary w-full mt-2 text-sm py-1" onclick="window.location.href=\'login.html\'"><i class="fas fa-lock"></i> اشترك</button>' :
-                  (currentCourseSubscriptions[c.id] ? `<button class="btn-primary w-full mt-2 text-sm py-1" onclick="alert(\'سيتم فتح المحاضرات قريباً\')"><i class="fas fa-play"></i> دخول</button>` :
-                  `<button class="btn-primary w-full mt-2 text-sm py-1" onclick="subscribeToCourse('${c.id}', ${c.price})">${c.price > 0 ? 'شراء' : 'اشتراك مجاني'}</button>`)}
+        if (!filtered.length) { container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-8">لا توجد كورسات</div>'; return; }
+        container.innerHTML = filtered.map(c => `
+            <div class="course-card glass-card p-4">
+                <img src="${c.image || 'https://via.placeholder.com/400x200'}" onerror="this.src='https://via.placeholder.com/400x200'">
+                <div class="mt-2"><div class="flex justify-between"><h3 class="font-bold text-base">${c.title}</h3><span class="text-xs ${c.price === 0 ? 'text-green-400' : 'text-yellow-400'}">${c.price === 0 ? 'مجاني' : c.price + ' ج'}</span></div><p class="text-gray-500 text-xs mt-1 line-clamp-2">${c.desc || 'كورس شامل في الكيمياء'}</p><button onclick="alert(\'جاري التطوير\')" class="btn-primary w-full mt-3 text-sm py-1.5">🔒 اشترك الآن</button></div>
             </div>
         `).join('');
-        showLoader(false);
     }
     
-    async function subscribeToCourse(courseId, price) {
-        if (!currentUser) { showToast('سجل دخولك أولاً', true); return; }
-        if (price > 0) { showToast('سيتم تفعيل الاشتراك بعد تأكيد الدفع'); return; }
-        await db.ref('subscriptions').push({ userId: currentUser.uid, courseId, status: 'active', price: 0, date: Date.now() });
-        showToast('تم الاشتراك بنجاح!');
-        currentCourseSubscriptions[courseId] = true;
-        loadCourses();
-    }
-    
-    // ========== Quizzes (آمنة) ==========
-    async function loadQuizzes() {
-        showLoader(true);
-        const snap = await db.ref('quizzes').get();
-        if (!snap.exists()) { document.getElementById('quizzesContainer').innerHTML = '<div class="text-center text-gray-500">لا توجد كويزات</div>'; showLoader(false); return; }
-        let html = '';
-        for (let id in snap.val()) {
-            const q = snap.val()[id];
-            const completed = await db.ref(`quiz_results/${id}/${currentUser.uid}`).get();
-            if (completed.exists()) completedQuizzes.add(id);
-            html += `<div class="glass-card p-4 text-center"><i class="fas fa-file-alt text-3xl text-cyan-400 mb-2"></i><h3 class="font-bold">${q.title}</h3><p class="text-xs text-gray-500">${q.duration}د | ${q.points}ن</p><p class="text-xs mb-2">${q.questions?.length || 0} سؤال</p>${completedQuizzes.has(id) ? '<span class="text-green-500 text-sm"><i class="fas fa-check-circle"></i> تم الحل</span>' : `<button onclick="startQuiz('${id}')" class="btn-primary w-full mt-2 text-sm py-1"><i class="fas fa-play"></i> ابدأ</button>`}</div>`;
-        }
-        document.getElementById('quizzesContainer').innerHTML = html;
-        showLoader(false);
-    }
-    
-    let quizData = null, qIndex = 0, qAnswers = [], qStartTime = null, qTimer = null;
-    window.startQuiz = async (quizId) => {
-        if (completedQuizzes.has(quizId)) { showToast('لقد حللت هذا الكويز من قبل!', true); return; }
-        const snap = await db.ref(`quizzes/${quizId}`).get();
-        quizData = { id: quizId, ...snap.val() };
-        qIndex = 0; qAnswers = []; qStartTime = Date.now();
-        if (qTimer) clearInterval(qTimer);
-        showQuizQuestion();
-    };
-    
-    function showQuizQuestion() {
-        if (!quizData || qIndex >= quizData.questions.length) { submitQuizResults(); return; }
-        const q = quizData.questions[qIndex];
-        let html = `<div class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[1000]"><div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 w-[90%] max-w-md max-h-[80vh] overflow-auto border-2 border-cyan-500"><div class="text-center"><div class="timer text-2xl font-mono text-cyan-400 mb-2" id="quizTimer"></div><p class="font-bold text-lg mb-4">${q.text}</p><div id="quizOptions" class="space-y-2 mb-4"></div><div class="flex gap-2"><button id="nextBtn" class="flex-1 btn-primary py-2"><i class="fas fa-arrow-left"></i> التالي</button><button onclick="closeQuiz()" class="flex-1 bg-gray-600 py-2 rounded-xl">إلغاء</button></div></div></div></div>`;
-        document.body.insertAdjacentHTML('beforeend', html);
-        const optsDiv = document.getElementById('quizOptions');
-        q.options.forEach((opt, idx) => { optsDiv.innerHTML += `<div class="quiz-option" data-opt="${idx+1}">${String.fromCharCode(65+idx)}. ${opt}</div>`; });
-        let selected = null;
-        document.querySelectorAll('.quiz-option').forEach(opt => opt.onclick = function() { document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected')); this.classList.add('selected'); selected = parseInt(this.dataset.opt); });
-        document.getElementById('nextBtn').onclick = () => { if (!selected) { showToast('اختر إجابة أولاً', true); return; } qAnswers.push(selected); qIndex++; closeQuiz(); showQuizQuestion(); };
-        
-        let timeLeft = quizData.duration * 60;
-        const timerEl = document.getElementById('quizTimer');
-        if (qTimer) clearInterval(qTimer);
-        qTimer = setInterval(() => { if (timeLeft <= 0) { clearInterval(qTimer); submitQuizResults(); } timerEl.innerText = `${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`; timeLeft--; }, 1000);
-    }
-    
-    function closeQuiz() { const modal = document.querySelector('.fixed.inset-0.bg-black\\/90'); if (modal) modal.remove(); }
-    window.closeQuiz = closeQuiz;
-    
-    async function submitQuizResults() {
-        if (qTimer) clearInterval(qTimer);
-        if (!quizData) return;
-        let score = 0;
-        for (let i = 0; i < quizData.questions.length; i++) if (qAnswers[i] === quizData.questions[i].correct) score++;
-        const timeSpent = Math.floor((Date.now() - qStartTime) / 1000);
-        await db.ref(`quiz_results/${quizData.id}/${currentUser.uid}`).set({ score, total: quizData.questions.length, answers: qAnswers, timeSpent, completedAt: Date.now() });
-        const userRef = db.ref(`users/${currentUser.uid}`);
-        const snap = await userRef.get();
-        await userRef.update({ points: (snap.val()?.points || 0) + quizData.points, quizzesCompleted: (snap.val()?.quizzesCompleted || 0) + 1 });
-        completedQuizzes.add(quizData.id);
-        showToast(`🎉 جاوبت ${score} من ${quizData.questions.length} صحيح! كسبت ${quizData.points} نقاط`);
-        closeQuiz();
-        quizData = null;
-        if (document.getElementById('quizzesPage').classList.contains('active')) loadQuizzes();
-        loadLeaderboard();
-        updateUserStats();
-    }
-    
-    // ========== Leaderboard ==========
-    async function loadLeaderboard() {
-        const snap = await db.ref('users').get();
-        if (!snap.exists()) { document.getElementById('leaderboardList').innerHTML = '<div class="text-center">🏆 كن أول المتصدرين</div>'; return; }
-        const users = []; snap.forEach(u => { if (!u.val().isAdmin) users.push({ points: u.val().points || 0, name: u.val().name || u.val().email?.split('@')[0] }); });
-        users.sort((a,b) => b.points - a.points);
-        const top3 = users.slice(0,3);
-        if (!top3.length) { document.getElementById('leaderboardList').innerHTML = '<div class="text-center">🏆 سجل دخولك لتبدأ المنافسة</div>'; return; }
-        document.getElementById('leaderboardList').innerHTML = top3.map((u,i) => `<div class="flex justify-between items-center p-3 glass-card rounded-xl mb-2"><div><div class="font-bold">${u.name}</div><div class="text-xs text-gray-500">${u.points} نقطة</div></div><div class="text-2xl">${i===0?'🥇':i===1?'🥈':'🥉'}</div></div>`).join('');
-    }
-    
-    // ========== User Profile ==========
-    async function updateUserStats() {
-        if (!currentUser) return;
-        const snap = await db.ref(`users/${currentUser.uid}`).get();
-        if (snap.exists()) {
-            const d = snap.val();
-            document.getElementById('userPoints').innerText = d.points || 0;
-            document.getElementById('userName').innerText = d.name || d.email?.split('@')[0];
-            document.getElementById('watchedCount').innerText = d.lecturesWatched || 0;
-            document.getElementById('watchedCountStat').innerText = d.lecturesWatched || 0;
-            document.getElementById('quizzesCountStat').innerText = d.quizzesCompleted || 0;
-            document.getElementById('pointsCountStat').innerText = d.points || 0;
-            const progress = Math.min(100, Math.round(((d.lecturesWatched || 0) / 10) * 100));
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressPercent').innerText = progress + '%';
-        }
-    }
-    
-    // ========== Time Tracking (محمي) ==========
-    function startTimeTracking(userId) {
-        if (timeInterval) clearInterval(timeInterval);
-        const key = `time_${userId}`, reset = `reset_${userId}`;
-        let saved = parseInt(localStorage.getItem(key)) || 0;
-        if (localStorage.getItem(reset) !== new Date().toDateString()) { localStorage.setItem(key, '0'); localStorage.setItem(reset, new Date().toDateString()); saved = 0; }
-        timeSpent = saved;
-        timeInterval = setInterval(async () => {
-            if (currentUser) {
-                timeSpent++;
-                localStorage.setItem(key, timeSpent);
-                if (timeSpent >= 10) {
-                    timeSpent = 0; localStorage.setItem(key, '0');
-                    const userRef = db.ref(`users/${currentUser.uid}`);
-                    const snap = await userRef.get();
-                    await userRef.update({ points: (snap.val()?.points || 0) + 1, lastActive: Date.now() });
-                    showToast('🎉 كسبت 1 نقطة كيمياء!');
-                    loadLeaderboard();
-                    updateUserStats();
-                } else { await db.ref(`users/${currentUser.uid}/lastActive`).set(Date.now()); }
-            }
-        }, 60000);
-    }
-    function stopTimeTracking() { if (timeInterval) { clearInterval(timeInterval); timeInterval = null; } }
-    
-    // ========== Auth ==========
-    window.signOut = () => auth.signOut();
-    auth.onAuthStateChanged(async (user) => {
-        currentUser = user;
-        const loginBtn = document.getElementById('loginBtn'), userMenu = document.getElementById('userMenu'), statsPanel = document.getElementById('userStatsPanel'), guestMsg = document.getElementById('userStatsGuest');
-        if (user) {
-            loginBtn.classList.add('hidden'); userMenu.classList.remove('hidden'); statsPanel.classList.remove('hidden'); guestMsg.classList.add('hidden');
-            const userRef = db.ref(`users/${user.uid}`);
-            const snap = await userRef.get();
-            if (!snap.exists()) await userRef.set({ email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, lecturesWatched: 0, quizzesCompleted: 0, createdAt: Date.now() });
-            if (snap.val()?.banned) { showToast('حسابك محظور', true); auth.signOut(); return; }
-            updateUserStats();
-            startTimeTracking(user.uid);
-            if (document.getElementById('quizzesPage').classList.contains('active')) loadQuizzes();
-        } else {
-            loginBtn.classList.remove('hidden'); userMenu.classList.add('hidden'); statsPanel.classList.add('hidden'); guestMsg.classList.remove('hidden');
-            stopTimeTracking();
-        }
-        loadCourses();
-        loadLeaderboard();
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentFilter = btn.dataset.filter;
+            if (coursesCache) renderCourses(coursesCache);
+        });
     });
     
+    async function loadQuizzes() { /* يتبع */ }
+    async function loadLeaderboard() { /* يتبع */ }
+    async function updateUserStats() { /* يتبع */ }
+    window.signOut = () => auth.signOut();
+    
+    auth.onAuthStateChanged(async (user) => {
+        currentUser = user;
+        const loginBtn = document.getElementById('loginBtn');
+        const userMenu = document.getElementById('userMenu');
+        const statsPanel = document.getElementById('userStatsPanel');
+        const guestMsg = document.getElementById('userStatsGuest');
+        if (user) {
+            loginBtn.classList.add('hidden');
+            userMenu.classList.remove('hidden');
+            statsPanel.classList.remove('hidden');
+            guestMsg.classList.add('hidden');
+            document.getElementById('userName').innerText = user.displayName || user.email?.split('@')[0];
+            const snap = await db.ref(`users/${user.uid}`).get();
+            if (!snap.exists()) await db.ref(`users/${user.uid}`).set({ email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, lecturesWatched: 0, quizzesCompleted: 0, createdAt: Date.now() });
+            document.getElementById('userPoints').innerText = snap.val()?.points || 0;
+        } else {
+            loginBtn.classList.remove('hidden');
+            userMenu.classList.add('hidden');
+            statsPanel.classList.add('hidden');
+            guestMsg.classList.remove('hidden');
+        }
+    });
+    
+    loadCourses();
     navigateTo('home');
 </script>
 </body>
