@@ -3,210 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>يلا كيمياء | مستر زياد مبروك - منصة الكيمياء التعليمية</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>يلا كيمياء | مستر زياد مبروك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { font-family: 'Inter', 'Tajawal', sans-serif; }
+        * { font-family: 'Tajawal', 'Cairo', sans-serif; }
         
-        /* ========== أنيميشنات متطورة ========== */
         @keyframes floatLogo {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(5deg); }
         }
         @keyframes glowPulse {
             0%, 100% { box-shadow: 0 0 20px rgba(0,255,255,0.3); }
-            50% { box-shadow: 0 0 60px rgba(0,255,255,0.8); }
+            50% { box-shadow: 0 0 50px rgba(0,255,255,0.7); }
         }
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes scalePop {
-            0% { transform: scale(0.8); opacity: 0; }
-            80% { transform: scale(1.02); }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.05); }
             100% { transform: scale(1); opacity: 1; }
         }
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        @keyframes ripple {
-            0% { transform: scale(0); opacity: 0.5; }
-            100% { transform: scale(4); opacity: 0; }
-        }
         
-        .float-logo { animation: floatLogo 5s ease-in-out infinite; }
-        .glow-border { animation: glowPulse 3s ease-in-out infinite; }
-        
+        .float-logo { animation: floatLogo 4s ease-in-out infinite; }
+        .glow-border { animation: glowPulse 2s ease-in-out infinite; }
         .glass-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            animation: slideUp 0.6s ease-out forwards;
-        }
-        .glass-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(0,200,255,0.5);
-            box-shadow: 0 25px 40px -15px rgba(0,0,0,0.4);
-        }
-        
-        .course-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            background: rgba(255,255,255,0.08);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-        }
-        .course-card:hover {
-            transform: translateY(-10px);
-            border-color: #00c6ff;
-            box-shadow: 0 30px 50px -20px rgba(0,200,255,0.3);
-        }
-        
-        .lecture-card {
             transition: all 0.3s ease;
+            animation: slideUp 0.5s ease-out forwards;
         }
-        .lecture-card:hover {
-            transform: translateX(-8px);
-            background: rgba(0,200,255,0.1);
-            border-right: 3px solid #00c6ff;
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(0,200,255,0.6);
         }
         
-        /* ========== مودال الاحترافية ========== */
+        .modal-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+            border-radius: 2rem;
+            padding: 2rem;
+            z-index: 1000;
+            animation: popIn 0.4s ease-out;
+            box-shadow: 0 0 50px rgba(0,255,255,0.5);
+            border: 2px solid #00c6ff;
+            min-width: 300px;
+            max-width: 500px;
+            text-align: center;
+        }
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
             z-index: 999;
-            animation: fadeIn 0.3s ease;
-        }
-        .modal-content {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #1a1a3a, #0f0f2a);
-            border-radius: 2rem;
-            padding: 2rem;
-            z-index: 1000;
-            animation: scalePop 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            border: 2px solid #00c6ff;
-            max-width: 90%;
-            width: 550px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 0 50px rgba(0,200,255,0.3);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         
-        /* ========== كويزات متطورة ========== */
-        .quiz-option {
-            background: rgba(255,255,255,0.06);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .quiz-option:hover {
-            background: rgba(0,200,255,0.15);
-            transform: scale(1.01);
-            border-color: rgba(0,200,255,0.3);
-        }
-        .quiz-option.selected {
-            background: rgba(0,200,255,0.3);
-            border-color: #00c6ff;
-            box-shadow: 0 0 15px rgba(0,200,255,0.3);
-        }
+        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
+        body.light { background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #d9e2ec); color: #1a202c; }
+        body.light .glass-card { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.1); color: #1a202c; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        body.light .glass-card:hover { background: #ffffff; border-color: #00c6ff; }
+        body.light .text-gray-300 { color: #4a5568; }
+        body.light .text-gray-400 { color: #718096; }
+        body.light .bg-black\/20 { background: rgba(0,0,0,0.05); }
+        body.light nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.1); }
+        body.light nav a { color: #2d3748; }
+        body.light nav a:hover { color: #00c6ff; }
         
-        /* ========== بروجرس بار ========== */
-        .progress-bar {
-            background: rgba(255,255,255,0.1);
-            border-radius: 30px;
-            height: 10px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, #00c6ff, #0072ff, #00c6ff);
-            background-size: 200% auto;
-            height: 100%;
-            width: 0%;
-            transition: width 0.6s ease;
-            border-radius: 30px;
-            animation: shimmer 2s linear infinite;
-        }
+        * { transition: background 0.3s, color 0.2s, border-color 0.2s; }
         
-        /* ========== توست ========== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 10px; }
+        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        
         .toast-points {
             position: fixed;
             bottom: 30px;
             right: 30px;
             background: linear-gradient(135deg, #00c6ff, #0072ff);
-            padding: 14px 28px;
-            border-radius: 60px;
+            padding: 15px 25px;
+            border-radius: 50px;
             z-index: 1000;
-            animation: slideUp 0.4s ease-out;
+            animation: slideUp 0.3s ease-out;
             color: white;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
+            font-weight: bold;
         }
         
-        /* ========== سكرول بار جميل ========== */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #00c6ff, #0072ff); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #00c6ff; }
-        
-        /* ========== الثيمات ========== */
-        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
-        body.light { background: linear-gradient(135deg, #f5f7fc, #eef2f8, #e8edf5); color: #1a202c; }
-        body.light .glass-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.08); color: #1a202c; }
-        body.light .glass-card:hover { background: #ffffff; border-color: #00c6ff; }
-        body.light .course-card { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.08); }
-        body.light .course-card:hover { border-color: #00c6ff; background: #ffffff; }
-        body.light nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.08); }
-        body.light nav a { color: #2d3748; }
-        body.light nav a:hover { color: #00c6ff; }
-        body.light .quiz-option { background: rgba(0,0,0,0.05); }
-        body.light .quiz-option:hover { background: rgba(0,200,255,0.1); }
-        
-        /* ========== تأثيرات إضافية ========== */
-        .badge-earned {
-            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05));
-            border: 1px solid rgba(255,215,0,0.3);
+        .quiz-modal {
+            max-width: 90%;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-        .btn-ripple {
-            position: relative;
+        .quiz-option {
+            background: rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quiz-option:hover { background: rgba(0,200,255,0.3); transform: scale(1.02); }
+        .quiz-option.selected { background: rgba(0,200,255,0.5); border: 1px solid #00c6ff; }
+        body.light .quiz-option { background: rgba(0,0,0,0.06); }
+        body.light .quiz-option:hover { background: rgba(0,200,255,0.2); }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
             overflow: hidden;
         }
-        .btn-ripple::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-        .btn-ripple:active::after {
-            width: 300px;
-            height: 300px;
+        .progress-fill {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
         }
     </style>
 </head>
@@ -217,7 +140,6 @@
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
     import { getDatabase, ref, get, set, update, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
-    // Firebase Config (بيانات عامة - مش سرية)
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
         authDomain: "yalla-chemistry-github.firebaseapp.com",
@@ -231,7 +153,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // ========== المتغيرات العامة ==========
+    // 🔐 الأمان: التحقق من الأدمن من قاعدة البيانات
     let currentUser = null;
     let timeInterval = null;
     let timeSpent = 0;
@@ -239,271 +161,138 @@
     let currentQuestionIndex = 0;
     let userAnswers = [];
     let quizStartTime = null;
-    let currentCourseSubscriptions = {};
-    let currentCourseLectures = [];
 
-    // ========== وظائف مساعدة ==========
-    function showToast(msg) {
+    async function isAdminUser(uid) {
+        const snap = await get(ref(db, 'users/' + uid + '/isAdmin'));
+        return snap.exists() && snap.val() === true;
+    }
+
+    function showBigModal(title, message, type = 'info') {
+        const oldModal = document.getElementById('bigModal');
+        if (oldModal) oldModal.remove();
+        const oldOverlay = document.getElementById('modalOverlay');
+        if (oldOverlay) oldOverlay.remove();
+        
+        const overlay = document.createElement('div');
+        overlay.id = 'modalOverlay';
+        overlay.className = 'modal-overlay';
+        document.body.appendChild(overlay);
+        
+        const modal = document.createElement('div');
+        modal.id = 'bigModal';
+        modal.className = 'modal-notification';
+        modal.innerHTML = `
+            <div class="text-6xl mb-4">${type === 'ban' ? '⛔' : type === 'notification' ? '📢' : '🎉'}</div>
+            <h3 class="text-2xl font-bold mb-3">${title}</h3>
+            <p class="mb-6">${message}</p>
+            <button onclick="closeModalAndProceed()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition text-white">😊 فهمت</button>
+        `;
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+    }
+    
+    window.closeModalAndProceed = () => {
+        const modal = document.getElementById('bigModal');
+        const overlay = document.getElementById('modalOverlay');
+        if (modal) modal.remove();
+        if (overlay) overlay.remove();
+        document.body.style.overflow = '';
+    };
+    
+    function showToastPoints(msg) {
         const toast = document.createElement('div');
         toast.className = 'toast-points';
         toast.innerHTML = msg;
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3500);
+        setTimeout(() => toast.remove(), 3000);
     }
 
-    function showModal(title, message, onClose = null) {
-        const existing = document.querySelector('.modal-overlay');
-        if (existing) existing.remove();
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'modal-overlay';
-        document.body.appendChild(overlay);
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-content text-center';
-        modal.innerHTML = `
-            <div class="text-7xl mb-4">🎉</div>
-            <h3 class="text-2xl font-bold mb-3">${title}</h3>
-            <p class="mb-6 text-gray-300">${message}</p>
-            <button onclick="this.closest('.modal-overlay').remove(); this.remove(); ${onClose ? 'location.reload()' : ''}" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-3 rounded-full font-bold hover:scale-105 transition shadow-lg btn-ripple">😊 فهمت</button>
-        `;
-        document.body.appendChild(modal);
-    }
-
-    // ========== عرض الكورسات ==========
-    async function loadCourses() {
-        const coursesRef = ref(db, 'courses');
-        onValue(coursesRef, async (snapshot) => {
-            const container = document.getElementById('coursesContainer');
+    function displayLectures() {
+        const lecturesRef = ref(db, 'lectures');
+        onValue(lecturesRef, (snapshot) => {
+            const container = document.getElementById('lecturesContainer');
             if (!container) return;
             
             if (!snapshot.exists()) {
-                container.innerHTML = '<div class="text-center text-gray-400 col-span-3 py-12">📚 سيتم إضافة الكورسات قريباً</div>';
+                container.innerHTML = '<div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div>';
                 return;
             }
             
-            // جلب اشتراكات المستخدم
-            if (currentUser) {
-                const subsRef = ref(db, 'subscriptions');
-                const subsSnap = await get(subsRef);
-                currentCourseSubscriptions = {};
-                if (subsSnap.exists()) {
-                    subsSnap.forEach((child) => {
-                        if (child.val().userId === currentUser.uid && child.val().status === 'active') {
-                            currentCourseSubscriptions[child.val().courseId] = true;
-                        }
-                    });
-                }
-            }
-            
-            const courses = [];
+            const lectures = [];
             snapshot.forEach((child) => {
-                courses.push({ id: child.key, ...child.val() });
+                lectures.push({ id: child.key, ...child.val() });
             });
             
-            courses.sort((a, b) => (a.order || 0) - (b.order || 0));
+            lectures.sort((a, b) => (a.order || a.createdAt || 0) - (b.order || b.createdAt || 0));
             
-            container.innerHTML = courses.map(course => `
-                <div class="course-card rounded-2xl overflow-hidden group">
-                    <div class="relative h-52 overflow-hidden">
-                        <img src="${course.image || 'https://via.placeholder.com/400x220?text=Course'}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" onerror="this.src='https://via.placeholder.com/400x220?text=كورس+كيمياء'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                        ${course.price > 0 ? 
-                            '<div class="absolute top-4 right-4 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">💰 ' + course.price + ' ج</div>' : 
-                            '<div class="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">🎁 مجاني</div>'}
-                        <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs">
-                            📚 ${course.lecturesCount || 0} محاضرة
-                        </div>
+            container.innerHTML = lectures.map((lecture) => `
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="relative overflow-hidden">
+                        <img src="${lecture.thumb || 'https://img.youtube.com/vi/default/maxresdefault.jpg'}" class="w-full h-56 object-cover transition duration-500 hover:scale-105" onerror="this.src='https://img.youtube.com/vi/default/maxresdefault.jpg'">
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-white">📺 ${lecture.title?.split(' ')[0] || 'محاضرة'}</div>
+                        <div class="absolute bottom-3 left-3 bg-gradient-to-r from-cyan-500 to-purple-600 px-3 py-1 rounded-full text-xs font-bold shadow-lg text-white">👁️ ${lecture.views || 0} مشاهدة</div>
+                        ${!currentUser ? `
+                            <div class="absolute inset-0 bg-black/85 flex items-center justify-center backdrop-blur-sm">
+                                <div class="text-center p-5">
+                                    <div class="text-7xl mb-4">🔒</div>
+                                    <p class="text-xl font-bold mb-2 text-white">المحاضرة مقفولة</p>
+                                    <p class="text-gray-300 mb-4">سجل دخولك للمشاهدة</p>
+                                    <button onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2.5 rounded-full font-bold text-white">🚀 تسجيل الدخول</button>
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
                     <div class="p-5">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-yellow-400 text-sm">⭐ ${course.rating || 'جديد'}</span>
-                            <span class="text-xs text-gray-500">${course.level || 'متوسط'}</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">${course.title}</h3>
-                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">${course.desc || 'كورس شامل في الكيمياء مع شرح مبسط'}</p>
-                        ${!currentUser ? `
-                            <button onclick="window.location.href='login.html'" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition shadow-lg btn-ripple">🔒 اشترك الآن</button>
-                        ` : currentCourseSubscriptions[course.id] ? `
-                            <button onclick="showCourseLectures('${course.id}', '${course.title.replace(/'/g, "\\'")}')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3 rounded-xl font-bold hover:scale-105 transition shadow-lg btn-ripple">📖 دخول الكورس</button>
-                        ` : `
-                            <button onclick="subscribeToCourse('${course.id}', ${course.price})" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition shadow-lg btn-ripple">${course.price > 0 ? '💳 شراء الكورس - ' + course.price + ' ج' : '🎁 اشتراك مجاني'}</button>
-                        `}
+                        <h3 class="text-xl font-extrabold mb-2">${lecture.title}</h3>
+                        <p class="text-gray-500 text-sm mb-4">${lecture.desc || 'شرح كامل ومبسط للمنهج'}</p>
+                        ${currentUser ? `
+                            <div class="flex gap-3">
+                                <a href="${lecture.videoUrl}" target="_blank" onclick="recordView('${lecture.id}')" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">▶️ مشاهدة</a>
+                                ${lecture.pdfUrl && lecture.pdfUrl !== '#' ? `<a href="${lecture.pdfUrl}" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">📄 PDF</a>` : ''}
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             `).join('');
         });
     }
     
-    // ========== الاشتراك في كورس ==========
-    window.subscribeToCourse = async (courseId, price) => {
-        if (!currentUser) {
-            showModal('🔐 مطلوب تسجيل دخول', 'يجب عليك تسجيل الدخول أولاً للاشتراك في الكورسات');
-            return;
-        }
-        
-        if (price > 0) {
-            showModal('💳 الدفع', `سعر الكورس: ${price} ج\n\nللدفع عبر فودافون كاش:\nارسل المبلغ على رقم 0123456789\nواكتب رقم العملية في التعليقات\n\nسيتم تفعيل اشتراكك بعد التأكيد`);
-            // هنضيف بعدين نظام تأكيد الدفع من الأدمن
-        } else {
-            const subscriptionRef = push(ref(db, 'subscriptions'));
-            await set(subscriptionRef, {
-                userId: currentUser.uid,
-                courseId: courseId,
-                status: 'active',
-                price: 0,
-                date: Date.now()
-            });
-            showToast('🎉 تم الاشتراك في الكورس بنجاح!');
-            currentCourseSubscriptions[courseId] = true;
-            loadCourses();
-        }
-    };
-    
-    // ========== عرض محاضرات الكورس داخل المنصة ==========
-    window.showCourseLectures = async (courseId, courseTitle) => {
-        const lecturesRef = ref(db, 'lectures');
-        const snapshot = await get(lecturesRef);
-        
-        const lectures = [];
-        snapshot.forEach((child) => {
-            if (child.val().courseId === courseId) {
-                lectures.push({ id: child.key, ...child.val() });
-            }
-        });
-        
-        lectures.sort((a, b) => (a.order || 0) - (b.order || 0));
-        currentCourseLectures = lectures;
-        
-        // عرض المحاضرات في مودال جميل
-        const existing = document.querySelector('.modal-overlay');
-        if (existing) existing.remove();
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'modal-overlay';
-        document.body.appendChild(overlay);
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-content';
-        modal.style.maxWidth = '700px';
-        modal.style.width = '90%';
-        
-        let lecturesHtml = '';
-        if (lectures.length === 0) {
-            lecturesHtml = '<div class="text-center text-gray-400 py-8">📖 لا توجد محاضرات في هذا الكورس بعد</div>';
-        } else {
-            lecturesHtml = lectures.map((lec, idx) => `
-                <div class="lecture-card glass-card rounded-xl p-4 mb-3 cursor-pointer" onclick="openLecture('${lec.id}', '${lec.videoUrl}', '${lec.pdfUrl || '#'}', '${lec.title.replace(/'/g, "\\'")}')">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center font-bold">${idx + 1}</div>
-                            <div>
-                                <h4 class="font-bold">${lec.title}</h4>
-                                <p class="text-xs text-gray-500">${lec.desc || 'محاضرة في الكيمياء'}</p>
-                            </div>
-                        </div>
-                        <div class="text-cyan-400">▶️</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        modal.innerHTML = `
-            <div class="text-center mb-4">
-                <div class="text-4xl mb-2">📚</div>
-                <h2 class="text-2xl font-bold">${courseTitle}</h2>
-                <p class="text-gray-400 text-sm">${lectures.length} محاضرة في هذا الكورس</p>
-            </div>
-            <div id="lecturesListModal">
-                ${lecturesHtml}
-            </div>
-            <button onclick="this.closest('.modal-overlay').remove();" class="w-full mt-4 bg-gray-600/50 hover:bg-gray-600/70 py-2 rounded-xl transition">إغلاق</button>
-        `;
-        document.body.appendChild(modal);
-    };
-    
-    // ========== فتح المحاضرة داخل المنصة ==========
-    window.openLecture = (lectureId, videoUrl, pdfUrl, title) => {
-        // إغلاق المودال الحالي
-        const overlay = document.querySelector('.modal-overlay');
-        if (overlay) overlay.remove();
-        
-        // فتح مودال عرض المحاضرة
-        const newOverlay = document.createElement('div');
-        newOverlay.className = 'modal-overlay';
-        document.body.appendChild(newOverlay);
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-content';
-        modal.style.maxWidth = '900px';
-        modal.style.width = '95%';
-        
-        // تحويل رابط يوتيوب إلى رابط تضمين
-        let embedUrl = videoUrl;
-        if (videoUrl.includes('youtu.be/')) {
-            const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
-            embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        } else if (videoUrl.includes('youtube.com/watch')) {
-            const videoId = new URL(videoUrl).searchParams.get('v');
-            embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        }
-        
-        modal.innerHTML = `
-            <div class="text-center mb-4">
-                <h2 class="text-xl font-bold">${title}</h2>
-            </div>
-            <div class="relative pb-[56.25%] h-0 mb-4">
-                <iframe src="${embedUrl}" class="absolute top-0 left-0 w-full h-full rounded-xl" frameborder="0" allowfullscreen></iframe>
-            </div>
-            ${pdfUrl && pdfUrl !== '#' ? `
-                <a href="${pdfUrl}" target="_blank" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 py-3 rounded-xl font-bold text-center hover:scale-105 transition mb-3 btn-ripple">📄 تحميل PDF المحاضرة</a>
-            ` : ''}
-            <button onclick="recordViewAndClose('${lectureId}', this)" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition btn-ripple">✅ تمت المشاهدة</button>
-            <button onclick="this.closest('.modal-overlay').remove();" class="w-full mt-3 bg-gray-600/50 hover:bg-gray-600/70 py-2 rounded-xl transition">إغلاق</button>
-        `;
-        document.body.appendChild(modal);
-    };
-    
-    window.recordViewAndClose = async (lectureId, btn) => {
+    async function recordView(lectureId) {
         if (currentUser) {
             const lectureRef = ref(db, 'lectures/' + lectureId);
             const snapshot = await get(lectureRef);
             if (snapshot.exists()) {
                 await update(lectureRef, { views: (snapshot.val().views || 0) + 1 });
-                
                 const watchedRef = ref(db, 'users/' + currentUser.uid + '/watchedLectures');
                 const watchedSnap = await get(watchedRef);
                 const watched = watchedSnap.exists() ? watchedSnap.val() : {};
                 if (!watched[lectureId]) {
                     watched[lectureId] = true;
                     await set(watchedRef, watched);
-                    await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: Object.keys(watched).length });
+                    const count = Object.keys(watched).length;
+                    await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: count });
                     updateUserStats();
                 }
             }
         }
-        showToast('✅ تم تسجيل مشاهدتك!');
-        const overlay = btn.closest('.modal-overlay');
-        if (overlay) overlay.remove();
-    };
-    
-    // ========== نظام النقاط ==========
+    }
+
     function startTimeTracking(userId) {
         if (timeInterval) clearInterval(timeInterval);
         
         const storageKey = `timeSpent_${userId}`;
         const lastResetKey = `lastReset_${userId}`;
-        let savedTime = parseInt(localStorage.getItem(storageKey)) || 0;
+        let savedTime = localStorage.getItem(storageKey);
         let lastReset = localStorage.getItem(lastResetKey);
         let today = new Date().toDateString();
         
         if (lastReset !== today) {
             localStorage.setItem(storageKey, '0');
             localStorage.setItem(lastResetKey, today);
-            savedTime = 0;
+            savedTime = '0';
         }
         
-        timeSpent = savedTime;
+        timeSpent = parseInt(savedTime) || 0;
         
         timeInterval = setInterval(async () => {
             if (currentUser) {
@@ -518,8 +307,9 @@
                     const snapshot = await get(userRef);
                     const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
                     await update(userRef, { points: currentPoints + 1, lastActive: Date.now() });
-                    showToast('🎉 مبروك! كسبت 1 نقطة كيمياء!');
-                    loadLeaderboard();
+                    
+                    showToastPoints('🎉 مبروك! كسبت 1 نقطة كيمياء! زاكر أكثر، اكسب أكثر');
+                    showLeaderboard();
                     updateUserStats();
                 } else {
                     await update(ref(db, 'users/' + currentUser.uid), { lastActive: Date.now() });
@@ -527,53 +317,49 @@
             }
         }, 60000);
     }
-    
+
     function stopTimeTracking() {
         if (timeInterval) { clearInterval(timeInterval); timeInterval = null; }
     }
-    
-    // ========== لوحة المتصدرين ==========
-    async function loadLeaderboard() {
+
+    async function showLeaderboard() {
         const usersRef = ref(db, 'users');
-        onValue(usersRef, (snapshot) => {
+        onValue(usersRef, async (snapshot) => {
             if (!snapshot.exists()) {
-                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500 py-8">🏆 كن أول المتصدرين!</div>';
+                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 كن أول المتصدرين!</div>';
                 return;
             }
             
             const users = [];
-            snapshot.forEach((child) => {
-                if (child.val().isAdmin !== true) {
+            for (const child of snapshot) {
+                const isAdmin = await isAdminUser(child.key);
+                if (!isAdmin) {
                     users.push({ id: child.key, ...child.val() });
                 }
-            });
+            }
             users.sort((a, b) => (b.points || 0) - (a.points || 0));
             const top3 = users.slice(0, 3);
             
             if (top3.length === 0) {
-                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500 py-8">🏆 سجل دخولك لتبدأ المنافسة!</div>';
+                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 سجل دخولك لتبدأ المنافسة!</div>';
                 return;
             }
             
-            const medals = ['🥇', '🥈', '🥉'];
-            const colors = ['text-yellow-400', 'text-gray-400', 'text-orange-500'];
-            
             document.getElementById('leaderboardList').innerHTML = top3.map((u, idx) => `
-                <div class="flex items-center justify-between p-5 glass-card rounded-2xl mb-3 hover:scale-102 transition">
-                    <div class="flex items-center gap-5">
-                        <div class="text-5xl">${medals[idx]}</div>
+                <div class="flex items-center justify-between p-4 glass-card rounded-xl mb-3">
+                    <div class="flex items-center gap-4">
+                        <span class="text-4xl font-bold ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-gray-400' : 'text-orange-500'}">#${idx + 1}</span>
                         <div>
-                            <p class="font-bold text-xl">${u.name || u.email?.split('@')[0] || 'طالب'}</p>
-                            <p class="text-sm text-gray-400">🔬 ${u.points || 0} نقطة كيمياء</p>
+                            <p class="font-bold text-lg">${u.name || u.email?.split('@')[0] || 'طالب'}</p>
+                            <p class="text-sm text-gray-500">🔬 ${u.points || 0} نقطة</p>
                         </div>
                     </div>
-                    <div class="text-4xl ${colors[idx]}">${u.points || 0}</div>
+                    <div class="text-3xl">🏆 ${u.points || 0}</div>
                 </div>
             `).join('');
         });
     }
     
-    // ========== تحديث إحصائيات المستخدم ==========
     async function updateUserStats() {
         if (currentUser) {
             const userRef = ref(db, 'users/' + currentUser.uid);
@@ -582,45 +368,70 @@
                 const userData = snapshot.val();
                 document.getElementById('userPoints').textContent = userData.points || 0;
                 document.getElementById('userName').textContent = userData.name || userData.email?.split('@')[0];
-                document.getElementById('watchedCount').textContent = userData.lecturesWatched || 0;
-                document.getElementById('quizzesCompletedCount').textContent = userData.quizzesCompleted || 0;
-                document.getElementById('userPointsStat').textContent = userData.points || 0;
                 
-                const totalLectures = 10;
-                const progress = Math.min(100, Math.round(((userData.lecturesWatched || 0) / totalLectures) * 100));
+                const watchedCount = userData.lecturesWatched || 0;
+                const quizzesCompleted = userData.quizzesCompleted || 0;
+                document.getElementById('watchedCount').textContent = watchedCount;
+                document.getElementById('quizzesCompletedCount').textContent = quizzesCompleted;
+                
+                const totalLectures = 6;
+                const progress = Math.min(100, Math.round((watchedCount / totalLectures) * 100));
                 document.getElementById('progressFill').style.width = progress + '%';
                 document.getElementById('progressPercent').textContent = progress + '%';
                 
-                loadBadges(userData.lecturesWatched || 0, userData.quizzesCompleted || 0, userData.points || 0);
+                updateBadges(watchedCount, quizzesCompleted, userData.points || 0);
             }
         }
     }
     
-    async function loadBadges(watchedCount, quizzesCompleted, points) {
+    function updateBadges(watchedCount, quizzesCompleted, points) {
         const badgesContainer = document.getElementById('badgesContainer');
         if (!badgesContainer) return;
         
         let badges = [];
-        if (watchedCount >= 3) badges.push({ name: '🥉 بادرة برونزية', desc: 'شاهد 3 محاضرات' });
-        if (watchedCount >= 6) badges.push({ name: '🥈 بادرة فضية', desc: 'شاهد 6 محاضرات' });
-        if (watchedCount >= 10) badges.push({ name: '🥇 بادرة ذهبية', desc: 'شاهد 10 محاضرات' });
-        if (quizzesCompleted >= 2) badges.push({ name: '📝 بادرة الكويزات', desc: 'حل 2 كويزات' });
-        if (points >= 50) badges.push({ name: '⭐ بادرة النقاط', desc: 'اجمع 50 نقطة' });
+        if (watchedCount >= 3) badges.push({ name: '🥉 بادرة برونزية', condition: 'شاهد 3 محاضرات' });
+        if (watchedCount >= 6) badges.push({ name: '🥈 بادرة فضية', condition: 'شاهد 6 محاضرات' });
+        if (watchedCount >= 10) badges.push({ name: '🥇 بادرة ذهبية', condition: 'شاهد 10 محاضرات' });
+        if (quizzesCompleted >= 2) badges.push({ name: '📝 بادرة الكويزات', condition: 'حل 2 كويزات' });
+        if (points >= 50) badges.push({ name: '⭐ بادرة النقاط', condition: 'اجمع 50 نقطة' });
         
         if (badges.length === 0) {
-            badgesContainer.innerHTML = '<div class="text-center text-gray-400 col-span-2 py-4">📌 أكمل التحديات لكسب الشارات</div>';
+            badgesContainer.innerHTML = '<div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>';
             return;
         }
         
         badgesContainer.innerHTML = badges.map(b => `
-            <div class="badge-earned rounded-xl p-3 text-center">
-                <div class="text-2xl mb-1">${b.name}</div>
-                <div class="text-xs text-gray-500">${b.desc}</div>
+            <div class="glass-card p-2 text-center">
+                <div class="text-2xl">${b.name}</div>
+                <div class="text-xs text-gray-400">${b.condition}</div>
             </div>
         `).join('');
     }
+
+    function watchNotifications() {
+        const notifRef = ref(db, 'notifications');
+        onValue(notifRef, (snapshot) => {
+            if (!snapshot.exists()) return;
+            
+            const seen = localStorage.getItem('seenNotifications') || '[]';
+            const seenArray = JSON.parse(seen);
+            
+            snapshot.forEach((child) => {
+                const notif = child.val();
+                if (!seenArray.includes(child.key) && currentUser) {
+                    showBigModal('📢 إشعار من المنصة', notif.message, 'notification');
+                    seenArray.push(child.key);
+                    localStorage.setItem('seenNotifications', JSON.stringify(seenArray));
+                }
+            });
+        });
+    }
     
-    // ========== الكويزات المستقلة ==========
+    async function hasCompletedQuiz(quizId) {
+        const snap = await get(ref(db, 'quiz_results/' + quizId + '/' + currentUser.uid));
+        return snap.exists();
+    }
+    
     async function loadAvailableQuizzes() {
         const quizzesRef = ref(db, 'quizzes');
         const snapshot = await get(quizzesRef);
@@ -628,7 +439,7 @@
         if (!container) return;
         
         if (!snapshot.exists() || !currentUser) {
-            container.innerHTML = '<div class="text-center text-gray-400 col-span-3 py-12">📝 لا توجد كويزات متاحة حالياً</div>';
+            container.innerHTML = '<div class="text-center text-gray-500">لا توجد كويزات متاحة حالياً</div>';
             return;
         }
         
@@ -639,27 +450,25 @@
         
         const completedStatus = {};
         for (const q of quizzes) {
-            const snap = await get(ref(db, 'quiz_results/' + q.id + '/' + currentUser.uid));
-            completedStatus[q.id] = snap.exists();
+            completedStatus[q.id] = await hasCompletedQuiz(q.id);
         }
         
         container.innerHTML = quizzes.map(q => `
-            <div class="glass-card rounded-2xl p-5 text-center hover:scale-105 transition">
-                <div class="text-5xl mb-3">📝</div>
-                <h3 class="font-bold text-xl mb-2">${q.title}</h3>
-                <p class="text-sm text-gray-400 mb-3">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة</p>
-                <p class="text-xs text-gray-500 mb-4">📋 ${q.questions?.length || 0} سؤال</p>
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-3xl mb-2">📝</div>
+                <h3 class="font-bold text-lg">${q.title}</h3>
+                <p class="text-sm text-gray-500">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة | 📋 ${q.questions?.length || 0} سؤال</p>
                 ${completedStatus[q.id] ? 
-                    '<span class="inline-block mt-2 text-green-500 text-sm font-semibold">✅ تم الحل سابقاً</span>' : 
-                    `<button onclick="startQuiz('${q.id}')" class="mt-2 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition shadow-lg btn-ripple">🚀 ابدأ الكويز</button>`}
+                    '<p class="text-green-500 text-sm mt-2">✅ تم الحل سابقاً</p>' : 
+                    `<button onclick="startQuiz('${q.id}')" class="mt-3 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-full text-sm font-bold text-white">🚀 ابدأ الكويز</button>`}
             </div>
         `).join('');
     }
     
     window.startQuiz = async (quizId) => {
-        const done = await get(ref(db, 'quiz_results/' + quizId + '/' + currentUser.uid));
-        if (done.exists()) {
-            showToast('😄 انت خلصت الكويز ده قبل كده! جرب كويز تاني');
+        const done = await hasCompletedQuiz(quizId);
+        if (done) {
+            showToastPoints('😄 متبقاش طماع! انت خلاص حلّيت الكويز ده قبل كده. جرب كويز تاني!');
             return;
         }
         
@@ -681,54 +490,47 @@
         }
         
         const question = currentQuiz.questions[currentQuestionIndex];
-        const existing = document.querySelector('.modal-overlay');
-        if (existing) existing.remove();
+        const modal = document.getElementById('quizInterface');
+        if (modal) modal.remove();
         
-        const overlay = document.createElement('div');
-        overlay.className = 'modal-overlay';
-        document.body.appendChild(overlay);
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-content';
-        modal.style.maxWidth = '600px';
-        
-        let optionsHtml = '';
-        question.options.forEach((opt, idx) => {
-            optionsHtml += `<div class="quiz-option" data-opt="${idx + 1}">${String.fromCharCode(65 + idx)}. ${opt}</div>`;
-        });
-        
-        modal.innerHTML = `
-            <div class="text-center">
-                <div class="text-3xl mb-2">📝 ${currentQuiz.title}</div>
-                <div class="flex justify-center gap-4 text-sm text-gray-400 mb-4">
-                    <span>⏱️ ${currentQuiz.duration} دقيقة</span>
-                    <span>🪙 ${currentQuiz.points} نقطة</span>
-                </div>
-                <div class="text-sm text-cyan-400 mb-4 font-semibold">السؤال ${currentQuestionIndex + 1} من ${currentQuiz.questions.length}</div>
-                <div class="text-right mb-6">
-                    <p class="font-bold text-lg mb-5">${question.text}</p>
-                    <div id="quizOptions">${optionsHtml}</div>
-                </div>
-                <div class="flex gap-3">
-                    <button id="nextBtn" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition btn-ripple">التالي ➡️</button>
-                    <button onclick="closeQuiz()" class="flex-1 bg-gray-600/50 hover:bg-gray-600/70 py-3 rounded-xl transition">إلغاء</button>
+        const newModal = document.createElement('div');
+        newModal.id = 'quizInterface';
+        newModal.className = 'modal-overlay';
+        newModal.innerHTML = `
+            <div class="modal-notification quiz-modal" style="width: 500px;">
+                <div class="text-center">
+                    <div class="text-3xl mb-2">📝 ${currentQuiz.title}</div>
+                    <div class="text-sm text-gray-400 mb-1">⏱️ ${currentQuiz.duration} دقيقة | 🪙 ${currentQuiz.points} نقطة</div>
+                    <div class="text-sm text-cyan-400 mb-3">السؤال ${currentQuestionIndex + 1} من ${currentQuiz.questions.length}</div>
+                    <div class="text-right mb-4">
+                        <p class="font-bold mb-3">${question.text}</p>
+                        <div id="quizOptions"></div>
+                    </div>
+                    <button onclick="answerCurrentQuestion()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full font-bold text-white">التالي ➡️</button>
+                    <button onclick="closeQuiz()" class="mt-3 text-gray-500 text-sm block w-full">إلغاء الكويز</button>
                 </div>
             </div>
         `;
-        document.body.appendChild(modal);
+        document.body.appendChild(newModal);
         
+        const optionsDiv = document.getElementById('quizOptions');
         let selected = null;
-        document.querySelectorAll('.quiz-option').forEach(opt => {
-            opt.onclick = () => {
+        
+        question.options.forEach((opt, idx) => {
+            const optDiv = document.createElement('div');
+            optDiv.className = 'quiz-option';
+            optDiv.innerHTML = `${idx + 1}. ${opt}`;
+            optDiv.onclick = () => {
                 document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
-                opt.classList.add('selected');
-                selected = parseInt(opt.dataset.opt);
+                optDiv.classList.add('selected');
+                selected = idx + 1;
             };
+            optionsDiv.appendChild(optDiv);
         });
         
-        document.getElementById('nextBtn').onclick = () => {
+        window.answerCurrentQuestion = () => {
             if (!selected) {
-                showToast('❌ اختر إجابة أولاً');
+                showToastPoints('❌ اختر إجابة أولاً');
                 return;
             }
             userAnswers.push(selected);
@@ -740,6 +542,7 @@
     async function submitQuizResults() {
         if (!currentQuiz) return;
         
+        const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
         let score = 0;
         for (let i = 0; i < currentQuiz.questions.length; i++) {
             if (userAnswers[i] === currentQuiz.questions[i].correct) {
@@ -752,6 +555,7 @@
             score: score,
             total: currentQuiz.questions.length,
             answers: userAnswers,
+            timeSpent: timeSpent,
             completedAt: Date.now()
         });
         
@@ -764,41 +568,38 @@
         });
         
         const percent = Math.round((score / currentQuiz.questions.length) * 100);
-        showToast(`🎉 مبروك! جاوبت ${score} من ${currentQuiz.questions.length} إجابة صحيحة (${percent}%)! كسبت ${currentQuiz.points} نقطة`);
+        showToastPoints(`🎉 مبروك! جاوبت ${score} من ${currentQuiz.questions.length} إجابة صحيحة (${percent}%)! كسبت ${currentQuiz.points} نقطة`);
         
         updateUserStats();
-        loadLeaderboard();
+        showLeaderboard();
         closeQuiz();
         loadAvailableQuizzes();
     }
     
     window.closeQuiz = () => {
-        const overlay = document.querySelector('.modal-overlay');
-        if (overlay) overlay.remove();
+        const modal = document.getElementById('quizInterface');
+        if (modal) modal.remove();
         currentQuiz = null;
         currentQuestionIndex = 0;
     };
-    
-    // ========== مراقبة حالة المستخدم ==========
+
     onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const loginBtn = document.getElementById('loginBtn');
         const userMenu = document.getElementById('userMenu');
         const userName = document.getElementById('userName');
         const userStatsPanel = document.getElementById('userStatsPanel');
-        const userStatsGuest = document.getElementById('userStatsGuest');
         
         if (user) {
             if (loginBtn) loginBtn.classList.add('hidden');
             if (userMenu) userMenu.classList.remove('hidden');
             if (userStatsPanel) userStatsPanel.classList.remove('hidden');
-            if (userStatsGuest) userStatsGuest.classList.add('hidden');
             
             const userRef = ref(db, 'users/' + user.uid);
             const snapshot = await get(userRef);
             
             if (snapshot.exists() && snapshot.val().banned === true) {
-                showModal('⛔ تم حظر حسابك', `سبب الحظر: ${snapshot.val().banReason || 'مخالفة قواعد المنصة'}`);
+                showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${snapshot.val().banReason || 'مخالفة قواعد المنصة'}`, 'ban');
                 setTimeout(() => signOut(auth), 5000);
                 return;
             }
@@ -818,16 +619,17 @@
             onValue(userRef, (snap) => {
                 if (snap.exists()) {
                     const userData = snap.val();
+                    document.getElementById('userPoints').textContent = userData.points || 0;
                     if (userName) userName.textContent = userData.name || userData.email?.split('@')[0];
                     if (userData.banned === true) {
-                        showModal('⛔ تم حظر حسابك', `سبب الحظر: ${userData.banReason || 'مخالفة القواعد'}`);
+                        showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${userData.banReason || 'مخالفة القواعد'}`, 'ban');
                         setTimeout(() => signOut(auth), 4000);
                     }
                 }
             });
             
-            await loadCourses();
-            loadLeaderboard();
+            showLeaderboard();
+            watchNotifications();
             loadAvailableQuizzes();
             updateUserStats();
             startTimeTracking(user.uid);
@@ -835,13 +637,12 @@
             if (loginBtn) loginBtn.classList.remove('hidden');
             if (userMenu) userMenu.classList.add('hidden');
             if (userStatsPanel) userStatsPanel.classList.add('hidden');
-            if (userStatsGuest) userStatsGuest.classList.remove('hidden');
             stopTimeTracking();
-            await loadCourses();
-            loadLeaderboard();
         }
+        
+        displayLectures();
     });
-    
+
     window.signOutUser = () => signOut(auth);
     window.toggleTheme = () => {
         const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
@@ -852,45 +653,42 @@
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.className = savedTheme;
     
-    loadCourses();
-    loadLeaderboard();
+    displayLectures();
 </script>
 
-<!-- ========== هيكل الصفحة ========== -->
-<nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-white/10 py-3">
-    <div class="container mx-auto px-4 flex justify-between items-center flex-wrap gap-3">
+<nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b py-3">
+    <div class="container mx-auto px-4 flex justify-between items-center flex-wrap gap-2">
         <div class="flex items-center gap-3">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-11 h-11 rounded-full border-2 border-cyan-400 shadow-lg">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-12 h-12 rounded-full border-2 border-cyan-400">
             <div>
-                <h1 class="text-xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
+                <h1 class="text-xl md:text-2xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
                 <p class="text-xs text-gray-500">مستر زياد مبروك</p>
             </div>
         </div>
-        <div class="hidden md:flex gap-8">
+        <div class="hidden md:flex gap-6">
             <a href="#" class="hover:text-cyan-500 transition font-medium">الرئيسية</a>
-            <a href="#courses" class="hover:text-cyan-500 transition font-medium">الكورسات</a>
+            <a href="#lectures" class="hover:text-cyan-500 transition font-medium">المحاضرات</a>
             <a href="#quizzes" class="hover:text-cyan-500 transition font-medium">الكويزات</a>
             <a href="#leaderboard" class="hover:text-cyan-500 transition font-medium">المتصدرين</a>
             <a href="#myStats" class="hover:text-cyan-500 transition font-medium">حسابي</a>
         </div>
-        <div class="flex gap-3 items-center">
+        <div class="flex gap-2 items-center">
             <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full transition">🌓</button>
-            <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2 rounded-full text-sm font-bold shadow-md hover:scale-105 transition btn-ripple">🚀 دخول</button>
+            <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-1.5 rounded-full text-sm font-bold shadow-md hover:scale-105 transition text-white">🚀 دخول</button>
             <div id="userMenu" class="hidden items-center gap-3">
                 <div class="text-right">
                     <span id="userName" class="text-sm font-bold"></span>
                     <div class="text-xs text-cyan-500">🔬 <span id="userPoints">0</span> نقطة</div>
                 </div>
-                <button onclick="signOutUser()" class="bg-red-500/20 hover:bg-red-500/30 px-4 py-2 rounded-full text-sm transition">خروج</button>
+                <button onclick="signOutUser()" class="bg-red-500/20 hover:bg-red-500/30 px-3 py-1 rounded-full text-sm transition">خروج</button>
             </div>
         </div>
     </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-    <div class="absolute top-1/4 left-10 w-96 h-96 bg-cyan-400 rounded-full filter blur-3xl opacity-15 float-logo"></div>
-    <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-15 float-logo" style="animation-delay: 2s;"></div>
+    <div class="absolute top-1/4 left-10 w-80 h-80 bg-cyan-400 rounded-full filter blur-3xl opacity-20 float-logo"></div>
+    <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 float-logo" style="animation-delay: 2s;"></div>
     
     <div class="container mx-auto px-4 text-center relative z-10">
         <div class="relative inline-block mb-8">
@@ -901,52 +699,49 @@
         
         <h1 class="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">يلا كيمياء</h1>
         <p class="text-2xl md:text-3xl mb-4">مع <span class="text-cyan-500 font-bold border-b-4 border-cyan-500">مستر زياد مبروك</span></p>
-        <p class="text-base max-w-2xl mx-auto text-gray-500 mb-8">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
+        <p class="text-base max-w-2xl mx-auto text-gray-600 mb-8">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
         
         <div class="flex gap-4 justify-center flex-wrap">
-            <a href="#courses" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl btn-ripple">🎓 استكشف الكورسات</a>
-            <a href="#quizzes" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl btn-ripple">📝 اختبر نفسك</a>
+            <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">🎓 استكشف المحاضرات</a>
+            <a href="#quizzes" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">📝 اختبر نفسك</a>
+            <a href="#leaderboard" class="bg-white/10 backdrop-blur-sm px-8 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition">🏆 المتصدرين</a>
         </div>
     </div>
 </section>
 
-<!-- مميزات المنصة -->
-<section class="py-16">
+<section class="py-20">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-black text-center mb-10">✨ مميزات منصة يلا كيمياء</h2>
+        <h2 class="text-4xl font-black text-center mb-12">✨ مميزات منصة يلا كيمياء</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">🎥</div><h3 class="font-bold text-lg">فيديوهات HD</h3><p class="text-xs text-gray-500 mt-1">جودة عالية وشرح وافي</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">📄</div><h3 class="font-bold text-lg">ملفات PDF</h3><p class="text-xs text-gray-500 mt-1">ملخصات وأسئلة شاملة</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">🏆</div><h3 class="font-bold text-lg">نقاط كيمياء</h3><p class="text-xs text-gray-500 mt-1">كل 10 دقائق = نقطة</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">⚡</div><h3 class="font-bold text-lg">كويزات تفاعلية</h3><p class="text-xs text-gray-500 mt-1">اختبر فهمك فوراً</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🎥</div><h3 class="font-bold text-lg">فيديوهات HD</h3><p class="text-sm text-gray-500">جودة عالية وشرح وافي</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">📄</div><h3 class="font-bold text-lg">ملفات PDF</h3><p class="text-sm text-gray-500">ملخصات وأسئلة شاملة</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🏆</div><h3 class="font-bold text-lg">نقاط كيمياء</h3><p class="text-sm text-gray-500">كل 10 دقائق = نقطة</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">⚡</div><h3 class="font-bold text-lg">كويزات تفاعلية</h3><p class="text-sm text-gray-500">اختبر فهمك فوراً</p></div>
         </div>
     </div>
 </section>
 
-<!-- الكورسات -->
-<section id="courses" class="py-20 bg-black/20">
+<section id="lectures" class="py-20 bg-black/10">
     <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-black text-center mb-4">📚 الكورسات المتاحة</h2>
-        <p class="text-center text-gray-500 mb-12">اختر كورسك وابدأ رحلة التعلم</p>
-        <div id="coursesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="text-center text-gray-400 col-span-3 py-12">جاري تحميل الكورسات...</div>
+        <h2 class="text-4xl font-black text-center mb-4">📚 المحاضرات</h2>
+        <p class="text-center text-gray-500 mb-12">اختر محاضرتك وابدأ التعلم</p>
+        <div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div>
         </div>
     </div>
 </section>
 
-<!-- الكويزات -->
 <section id="quizzes" class="py-20">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-black text-center mb-4">📝 الكويزات والامتحانات</h2>
         <p class="text-center text-gray-500 mb-12">اختبر معلوماتك واكسب نقاط إضافية</p>
         <div id="quizzesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="text-center text-gray-400 col-span-3 py-12">جاري تحميل الكويزات...</div>
+            <div class="text-center text-gray-400 col-span-3">جاري تحميل الكويزات...</div>
         </div>
     </div>
 </section>
 
-<!-- المتصدرين -->
-<section id="leaderboard" class="py-20 bg-black/20">
+<section id="leaderboard" class="py-20 bg-black/10">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-black text-center mb-4">🏆 المتصدرين</h2>
         <p class="text-center text-gray-500 mb-12">أكثر 3 طلاب حصداً للنقاط</p>
@@ -956,7 +751,6 @@
     </div>
 </section>
 
-<!-- حسابي الشخصي -->
 <section id="myStats" class="py-20">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-black text-center mb-4">👤 حسابي الشخصي</h2>
@@ -969,33 +763,33 @@
                     <div id="progressFill" class="progress-fill"></div>
                 </div>
                 <div class="flex justify-between text-sm">
-                    <span>📚 تقدمك في المحاضرات: <span id="watchedCount">0</span>/10</span>
+                    <span>📚 المحاضرات: <span id="watchedCount">0</span>/6</span>
                     <span id="progressPercent">0%</span>
                 </div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-3">📚</div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">📚</div>
                     <div class="text-3xl font-bold text-cyan-400" id="watchedCount">0</div>
-                    <div class="text-sm mt-1">محاضرات تمت مشاهدتها</div>
+                    <div class="text-sm">محاضرات تمت مشاهدتها</div>
                 </div>
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-3">📝</div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">📝</div>
                     <div class="text-3xl font-bold text-green-400" id="quizzesCompletedCount">0</div>
-                    <div class="text-sm mt-1">كويزات تم حلها</div>
+                    <div class="text-sm">كويزات تم حلها</div>
                 </div>
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-3">🏆</div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">🏆</div>
                     <div class="text-3xl font-bold text-yellow-400" id="userPointsStat">0</div>
-                    <div class="text-sm mt-1">نقاط الكيمياء</div>
+                    <div class="text-sm">نقاط الكيمياء</div>
                 </div>
             </div>
             
             <div class="glass-card rounded-2xl p-6">
                 <h3 class="text-2xl font-bold mb-4">🎖️ شارات الإنجاز</h3>
                 <div id="badgesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <div class="text-center text-gray-400 col-span-2 py-4">📌 أكمل التحديات لكسب الشارات</div>
+                    <div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>
                 </div>
             </div>
         </div>
@@ -1006,20 +800,19 @@
     </div>
 </section>
 
-<!-- Footer -->
-<section class="py-12">
+<section class="py-16">
     <div class="container mx-auto px-4 text-center">
-        <h3 class="text-xl font-bold mb-5">📱 تابع منصة يلا كيمياء</h3>
+        <h3 class="text-2xl font-bold mb-6">📱 تابع منصة يلا كيمياء</h3>
         <div class="flex justify-center gap-4 flex-wrap">
-            <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-green-500/30">📱 واتساب</a>
-            <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-blue-500/30">📢 تليجرام</a>
+            <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-green-500/30 flex items-center gap-2">📱 واتساب</a>
+            <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-blue-500/30 flex items-center gap-2">📢 تليجرام</a>
         </div>
     </div>
 </section>
 
-<footer class="py-6 border-t border-white/10 text-center text-gray-500 text-sm">
+<footer class="py-8 border-t border-white/10 text-center text-gray-500 text-sm">
     <p>© 2026 يلا كيمياء - مستر زياد مبروك. جميع الحقوق محفوظة</p>
-    <p class="text-xs mt-2">⏱️ كل 10 دقائق تصفح = 1 نقطة كيمياء | زاكر أكثر، اكسب أكثر</p>
+    <p class="text-xs mt-1">⏱️ كل 10 دقائق تصفح = 1 نقطة كيمياء | زاكر أكثر، اكسب أكثر</p>
 </footer>
 </body>
 </html>
