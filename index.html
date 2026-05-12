@@ -4,168 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>يلا كيمياء | مستر زياد مبروك</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { font-family: 'Tajawal', sans-serif; }
+        * { font-family: 'Tajawal', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary: #00c6ff; --primary-dark: #0072ff; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
         
-        :root {
-            --primary: #00c6ff;
-            --primary-dark: #0072ff;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
+        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #fff; }
+        body.light { background: linear-gradient(135deg, #f5f7fc, #eef2f8, #e8edf5); color: #1a202c; }
         
-        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a); color: #fff; }
-        body.light { background: linear-gradient(135deg, #f0f4f8, #e2e8f0); color: #1a202c; }
-        
-        .glass-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 1rem;
-            transition: all 0.3s ease;
-        }
+        /* Glassmorphism */
+        .glass-card { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; transition: all 0.3s ease; }
         .glass-card:hover { transform: translateY(-3px); border-color: var(--primary); }
         body.light .glass-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.06); }
         
-        .course-card {
-            background: rgba(255,255,255,0.04);
-            border-radius: 1rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
+        /* Hero Image */
+        .hero-img { width: 180px; height: 180px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); box-shadow: 0 0 30px rgba(0,200,255,0.5); transition: all 0.3s; }
+        .hero-img:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0,200,255,0.8); }
+        @media (min-width: 768px) { .hero-img { width: 220px; height: 220px; } }
+        
+        /* Course Cards */
+        .course-card { background: rgba(255,255,255,0.04); border-radius: 1rem; overflow: hidden; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; }
         .course-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .course-card img { width: 100%; height: 180px; object-fit: cover; transition: transform 0.5s; }
+        .course-card img { width: 100%; height: 160px; object-fit: cover; transition: transform 0.5s; }
         .course-card:hover img { transform: scale(1.05); }
         
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 0.6rem 1.2rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        /* Buttons */
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 0.6rem 1.2rem; border-radius: 2rem; font-weight: 600; color: white; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 0.5rem; }
         .btn-primary:hover { transform: scale(1.02); opacity: 0.95; }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            cursor: pointer;
-        }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.4rem 1rem; border-radius: 2rem; cursor: pointer; transition: 0.2s; }
         .btn-outline:hover { background: var(--primary); color: white; }
         
+        /* Skeleton */
         .skeleton { background: rgba(255,255,255,0.1); border-radius: 0.5rem; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
         
-        .mobile-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(15,15,42,0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            display: none;
-            justify-content: space-around;
-            padding: 0.6rem;
-            z-index: 100;
-        }
+        /* Mobile Nav */
+        .mobile-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15,15,42,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: none; justify-content: space-around; padding: 0.6rem; z-index: 100; }
         body.light .mobile-nav { background: rgba(255,255,255,0.95); border-top-color: rgba(0,0,0,0.08); }
-        .mobile-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            color: #9ca3af;
-        }
+        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.7rem; cursor: pointer; color: #9ca3af; }
         .mobile-nav-item.active { color: var(--primary); }
-        @media (max-width: 768px) {
-            .desktop-nav { display: none; }
-            .mobile-nav { display: flex; }
-            main { padding-bottom: 80px; }
-        }
+        @media (max-width: 768px) { .desktop-nav { display: none; } .mobile-nav { display: flex; } main { padding-bottom: 80px; } }
         
+        /* Pages */
         .page { display: none; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
         
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            z-index: 1000;
-            animation: slideIn 0.3s, fadeOut 3s 2.7s forwards;
-        }
+        /* Toast */
+        .toast { position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 12px 20px; border-radius: 50px; z-index: 1000; animation: slideIn 0.3s, fadeOut 3s 2.7s forwards; display: flex; align-items: center; gap: 8px; }
         .toast.error { background: var(--danger); }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
         
-        .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
+        /* Loader */
+        .loader { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000; flex-direction: column; gap: 1rem; }
         .loader.hidden { display: none; }
-        .loader-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.2);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        .loader-spinner { width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Quiz */
+        .quiz-option { background: rgba(255,255,255,0.05); border-radius: 0.75rem; padding: 0.75rem; margin-bottom: 0.5rem; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .quiz-option:hover { background: rgba(0,200,255,0.1); transform: scale(1.01); }
+        .quiz-option.selected { background: rgba(0,200,255,0.25); border-color: var(--primary); }
+        .timer { font-size: 2rem; font-weight: bold; font-family: monospace; color: var(--primary); }
+        
+        /* Video Container */
+        .video-container { position: relative; padding-bottom: 56.25%; background: #000; border-radius: 1rem; overflow: hidden; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        /* Stats Card */
+        .stat-card { background: linear-gradient(135deg, rgba(0,200,255,0.1), rgba(0,114,255,0.05)); border-radius: 0.75rem; padding: 0.75rem; text-align: center; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .nav-link { cursor: pointer; transition: 0.2s; }
+        .nav-link:hover { color: var(--primary); }
+        .nav-link.active { color: var(--primary); font-weight: bold; }
     </style>
 </head>
 <body class="dark">
 
-<div id="loader" class="loader"><div class="loader-spinner"></div></div>
+<div id="loader" class="loader"><div class="loader-spinner"></div><div class="loader-text" style="color:white">جاري التحميل...</div></div>
 <div id="toastContainer"></div>
 
+<!-- ========== Navbar ========== -->
 <nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-white/10 py-3">
     <div class="container mx-auto px-4 flex justify-between items-center">
         <div class="flex items-center gap-2">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-8 h-8 rounded-full border border-cyan-400">
-            <div><h1 class="text-lg font-bold">يلا كيمياء</h1><p class="text-[10px] text-gray-500">مستر زياد مبروك</p></div>
+            <div><h1 class="text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">يلا كيمياء</h1><p class="text-[10px] text-gray-500">مستر زياد مبروك</p></div>
         </div>
         <div class="desktop-nav flex gap-5">
-            <a class="nav-link cursor-pointer" data-page="home">الرئيسية</a>
-            <a class="nav-link cursor-pointer" data-page="courses">الكورسات</a>
-            <a class="nav-link cursor-pointer" data-page="quizzes">الكويزات</a>
-            <a class="nav-link cursor-pointer" data-page="leaderboard">المتصدرين</a>
-            <a class="nav-link cursor-pointer" data-page="profile">حسابي</a>
-            <a class="nav-link cursor-pointer" data-page="about">عن المستر</a>
+            <a class="nav-link" data-page="home">الرئيسية</a>
+            <a class="nav-link" data-page="courses">الكورسات</a>
+            <a class="nav-link" data-page="quizzes">الكويزات</a>
+            <a class="nav-link" data-page="leaderboard">المتصدرين</a>
+            <a class="nav-link" data-page="profile">حسابي</a>
+            <a class="nav-link" data-page="about">عن المستر</a>
         </div>
         <div class="flex gap-2">
             <button onclick="toggleTheme()" class="text-lg p-1.5 rounded-full hover:bg-white/10">🌓</button>
@@ -188,11 +128,17 @@
 </div>
 
 <main class="container mx-auto px-4 pt-20 pb-10">
+    <!-- Home Page -->
     <div id="homePage" class="page active">
         <div class="text-center mb-8">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-24 h-24 rounded-full border-2 border-cyan-400 mx-auto mb-3">
-            <h1 class="text-3xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
-            <p class="text-lg mt-1">مع <span class="text-cyan-500 font-bold">مستر زياد مبروك</span></p>
+            <div class="relative inline-block">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-60" style="width: 200px; height: 200px; left: -10px; top: -10px;"></div>
+                <div class="absolute inset-0 rounded-full" style="width: 180px; height: 180px; left: 0; top: 0; background: radial-gradient(circle, rgba(0,200,255,0.2), transparent);"></div>
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="hero-img relative z-10" 
+                     onerror="this.src='https://placehold.co/220x220/0a0a1a/00c6ff?text=MR'">
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold mt-4 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
+            <p class="text-lg mt-1">مع <span class="text-cyan-500 font-bold border-b-2 border-cyan-500">مستر زياد مبروك</span></p>
             <p class="text-gray-500 text-sm max-w-md mx-auto mt-2">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
             <div class="flex gap-2 justify-center mt-4">
                 <button onclick="navigateTo('courses')" class="btn-primary text-sm">🎓 استكشف الكورسات</button>
@@ -208,6 +154,7 @@
         </div>
     </div>
 
+    <!-- Courses Page -->
     <div id="coursesPage" class="page">
         <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
             <h2 class="text-xl font-bold"><i class="fas fa-book ml-1 text-cyan-400"></i> الكورسات</h2>
@@ -220,28 +167,35 @@
         <div id="coursesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
 
+    <!-- Quizzes Page -->
     <div id="quizzesPage" class="page">
         <h2 class="text-xl font-bold mb-4"><i class="fas fa-pen-alt ml-1 text-cyan-400"></i> الكويزات</h2>
         <div id="quizzesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
 
+    <!-- Leaderboard Page -->
     <div id="leaderboardPage" class="page">
         <h2 class="text-xl font-bold mb-4 text-center"><i class="fas fa-trophy ml-1 text-yellow-400"></i> المتصدرين</h2>
-        <div class="max-w-md mx-auto glass-card p-4"><div id="leaderboardList"></div></div>
+        <div class="max-w-md mx-auto glass-card p-4"><div id="leaderboardList" class="space-y-2"></div></div>
     </div>
 
+    <!-- Profile Page -->
     <div id="profilePage" class="page">
         <div id="userStatsPanel" class="hidden max-w-md mx-auto">
             <div class="glass-card p-4 mb-4"><h3 class="font-bold mb-2">📊 التقدم</h3><div class="h-2 bg-gray-700 rounded-full overflow-hidden"><div id="progressFill" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500" style="width:0%"></div></div><div class="flex justify-between text-sm mt-1"><span>المحاضرات: <span id="watchedCount">0</span>/10</span><span id="progressPercent">0%</span></div></div>
-            <div class="grid grid-cols-3 gap-3 mb-4"><div class="stat-card p-3 text-center"><i class="fas fa-video text-xl"></i><div id="watchedCountStat" class="text-xl font-bold">0</div><div class="text-xs">محاضرات</div></div><div class="stat-card p-3 text-center"><i class="fas fa-question-circle text-xl"></i><div id="quizzesCountStat" class="text-xl font-bold">0</div><div class="text-xs">كويزات</div></div><div class="stat-card p-3 text-center"><i class="fas fa-flask text-xl"></i><div id="pointsCountStat" class="text-xl font-bold">0</div><div class="text-xs">نقاطي</div></div></div>
+            <div class="grid grid-cols-3 gap-3 mb-4"><div class="stat-card"><i class="fas fa-video text-xl"></i><div id="watchedCountStat" class="text-xl font-bold">0</div><div class="text-xs">محاضرات</div></div><div class="stat-card"><i class="fas fa-question-circle text-xl"></i><div id="quizzesCountStat" class="text-xl font-bold">0</div><div class="text-xs">كويزات</div></div><div class="stat-card"><i class="fas fa-flask text-xl"></i><div id="pointsCountStat" class="text-xl font-bold">0</div><div class="text-xs">نقاطي</div></div></div>
             <div class="glass-card p-4"><h3 class="font-bold mb-2">🎖️ الشارات</h3><div id="badgesContainer" class="flex flex-wrap gap-2"></div></div>
         </div>
         <div id="userStatsGuest" class="text-center text-gray-500 py-8 glass-card p-4">🔐 سجل دخولك لعرض إحصائياتك</div>
     </div>
 
+    <!-- About Page -->
     <div id="aboutPage" class="page">
         <div class="max-w-2xl mx-auto text-center">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-28 h-28 rounded-full border-2 border-cyan-400 mx-auto mb-3">
+            <div class="relative inline-block mb-4">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-60" style="width: 160px; height: 160px; left: -10px; top: -10px;"></div>
+                <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-32 h-32 rounded-full border-2 border-cyan-400 mx-auto relative z-10" onerror="this.src='https://placehold.co/130x130/0a0a1a/00c6ff?text=MR'">
+            </div>
             <h2 class="text-2xl font-bold">مستر زياد مبروك</h2>
             <p class="text-cyan-400 mb-4">خبير كيمياء للثانوية العامة</p>
             <div class="glass-card p-4 mb-3"><p class="text-sm">✏️ أكثر من 10 سنوات خبرة في تدريس الكيمياء</p></div>
@@ -256,7 +210,7 @@
 </footer>
 
 <script>
-    // Firebase Config
+    // ========== Firebase Config (بيانات عامة فقط) ==========
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
         authDomain: "yalla-chemistry-github.firebaseapp.com",
@@ -270,13 +224,28 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
+    const ADMIN_UID = "GiICpKTqbgW5U8hTOfR1rRr93g22";
     
+    // ========== State ==========
     let currentUser = null;
     let timeInterval = null;
     let coursesCache = null;
     let currentFilter = 'all';
+    let completedQuizzes = new Set();
+    let currentQuiz = null;
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let quizStartTime = null;
+    let quizTimer = null;
     
-    function showLoader(show) { document.getElementById('loader').classList.toggle('hidden', !show); }
+    // ========== UI Helpers ==========
+    function showLoader(show, text = 'جاري التحميل...') {
+        const loader = document.getElementById('loader');
+        const textEl = loader.querySelector('.loader-text');
+        if (textEl) textEl.innerText = text;
+        loader.classList.toggle('hidden', !show);
+    }
+    
     function showToast(msg, isError = false) {
         const toast = document.createElement('div');
         toast.className = `toast ${isError ? 'error' : ''}`;
@@ -291,13 +260,17 @@
     }
     if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
     
+    // ========== Navigation ==========
     function navigateTo(page) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(`${page}Page`).classList.add('active');
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('text-cyan-500'));
-        document.querySelectorAll(`.nav-link[data-page="${page}"]`).forEach(l => l.classList.add('text-cyan-500'));
+        const target = document.getElementById(`${page}Page`);
+        if (target) target.classList.add('active');
+        
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll(`.nav-link[data-page="${page}"]`).forEach(l => l.classList.add('active'));
         document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
         document.querySelectorAll(`.mobile-nav-item[data-page="${page}"]`).forEach(i => i.classList.add('active'));
+        
         if (page === 'courses') loadCourses();
         if (page === 'quizzes' && currentUser) loadQuizzes();
         if (page === 'leaderboard') loadLeaderboard();
@@ -306,18 +279,27 @@
     }
     window.navigateTo = navigateTo;
     
-    document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', () => navigateTo(link.dataset.page)));
-    document.querySelectorAll('.mobile-nav-item').forEach(item => item.addEventListener('click', () => navigateTo(item.dataset.page)));
+    document.querySelectorAll('.nav-link, .mobile-nav-item').forEach(el => {
+        el.addEventListener('click', () => navigateTo(el.dataset.page));
+    });
     
+    // ========== Courses ==========
     async function loadCourses() {
-        showLoader(true);
-        if (coursesCache) { renderCourses(coursesCache); showLoader(false); return; }
-        const snap = await db.ref('courses').get();
-        coursesCache = [];
-        snap.forEach(c => coursesCache.push({ id: c.key, ...c.val() }));
-        coursesCache.sort((a,b) => (a.order || 0) - (b.order || 0));
-        renderCourses(coursesCache);
-        showLoader(false);
+        showLoader(true, 'جاري تحميل الكورسات...');
+        try {
+            if (coursesCache) { renderCourses(coursesCache); showLoader(false); return; }
+            const snap = await db.ref('courses').get();
+            coursesCache = [];
+            snap.forEach(c => coursesCache.push({ id: c.key, ...c.val() }));
+            coursesCache.sort((a,b) => (a.order || 0) - (b.order || 0));
+            renderCourses(coursesCache);
+        } catch (error) {
+            console.error(error);
+            showToast('فشل تحميل الكورسات', true);
+            document.getElementById('coursesContainer').innerHTML = '<div class="col-span-3 text-center text-red-500 py-8">❌ فشل التحميل</div>';
+        } finally {
+            showLoader(false);
+        }
     }
     
     function renderCourses(courses) {
@@ -325,11 +307,11 @@
         if (currentFilter === 'free') filtered = filtered.filter(c => c.price === 0);
         if (currentFilter === 'paid') filtered = filtered.filter(c => c.price > 0);
         const container = document.getElementById('coursesContainer');
-        if (!filtered.length) { container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-8">لا توجد كورسات</div>'; return; }
+        if (!filtered.length) { container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-8">📚 لا توجد كورسات</div>'; return; }
         container.innerHTML = filtered.map(c => `
-            <div class="course-card glass-card p-4">
-                <img src="${c.image || 'https://via.placeholder.com/400x200'}" onerror="this.src='https://via.placeholder.com/400x200'">
-                <div class="mt-2"><div class="flex justify-between"><h3 class="font-bold text-base">${c.title}</h3><span class="text-xs ${c.price === 0 ? 'text-green-400' : 'text-yellow-400'}">${c.price === 0 ? 'مجاني' : c.price + ' ج'}</span></div><p class="text-gray-500 text-xs mt-1 line-clamp-2">${c.desc || 'كورس شامل في الكيمياء'}</p><button onclick="alert(\'جاري التطوير\')" class="btn-primary w-full mt-3 text-sm py-1.5">🔒 اشترك الآن</button></div>
+            <div class="course-card glass-card p-3">
+                <img src="${c.image || 'https://placehold.co/400x160/1a1a3a/00c6ff?text=Course'}" onerror="this.src='https://placehold.co/400x160/1a1a3a/00c6ff?text=Course'">
+                <div class="mt-2"><div class="flex justify-between"><h3 class="font-bold text-base">${escapeHtml(c.title)}</h3><span class="text-xs ${c.price === 0 ? 'text-green-400' : 'text-yellow-400'}">${c.price === 0 ? 'مجاني' : c.price + ' ج'}</span></div><p class="text-gray-500 text-xs mt-1 line-clamp-2">${escapeHtml(c.desc || 'كورس شامل')}</p><button onclick="subscribePrompt('${c.id}', ${c.price})" class="btn-primary w-full mt-2 text-sm py-1.5">🔒 اشترك</button></div>
             </div>
         `).join('');
     }
@@ -341,36 +323,212 @@
         });
     });
     
-    async function loadQuizzes() { /* يتبع */ }
-    async function loadLeaderboard() { /* يتبع */ }
-    async function updateUserStats() { /* يتبع */ }
-    window.signOut = () => auth.signOut();
+    function subscribePrompt(courseId, price) {
+        if (!currentUser) { showToast('سجل دخولك أولاً', true); return; }
+        if (price > 0) { showToast('💳 سيتم تفعيل الاشتراك بعد تأكيد الدفع'); return; }
+        subscribeToCourse(courseId, price);
+    }
+    
+    async function subscribeToCourse(courseId, price) {
+        showLoader(true, 'جاري الاشتراك...');
+        try {
+            await db.ref('subscriptions').push({ userId: currentUser.uid, courseId, status: 'active', price, date: Date.now() });
+            showToast('🎉 تم الاشتراك بنجاح!');
+        } catch (error) { showToast('فشل الاشتراك', true); }
+        finally { showLoader(false); }
+    }
+    
+    // ========== Quizzes ==========
+    async function loadQuizzes() {
+        if (!currentUser) return;
+        showLoader(true, 'جاري تحميل الكويزات...');
+        try {
+            const snap = await db.ref('quizzes').get();
+            if (!snap.exists()) { document.getElementById('quizzesContainer').innerHTML = '<div class="col-span-3 text-center text-gray-500 py-8">📝 لا توجد كويزات</div>'; return; }
+            let html = '';
+            for (let id in snap.val()) {
+                const q = snap.val()[id];
+                const completed = await db.ref(`quiz_results/${id}/${currentUser.uid}`).get();
+                if (completed.exists()) completedQuizzes.add(id);
+                html += `<div class="glass-card p-4 text-center"><i class="fas fa-file-alt text-3xl text-cyan-400 mb-2"></i><h3 class="font-bold">${escapeHtml(q.title)}</h3><p class="text-xs text-gray-500">${q.duration}د | ${q.points}ن</p><p class="text-xs mb-2">${q.questions?.length || 0} سؤال</p>${completedQuizzes.has(id) ? '<span class="text-green-500 text-sm"><i class="fas fa-check-circle"></i> تم الحل</span>' : `<button onclick="startQuiz('${id}')" class="btn-primary w-full mt-2 text-sm py-1"><i class="fas fa-play"></i> ابدأ</button>`}</div>`;
+            }
+            document.getElementById('quizzesContainer').innerHTML = html;
+        } catch (error) { showToast('فشل تحميل الكويزات', true); }
+        finally { showLoader(false); }
+    }
+    
+    window.startQuiz = async (quizId) => {
+        if (completedQuizzes.has(quizId)) { showToast('لقد حللت هذا الكويز من قبل!', true); return; }
+        showLoader(true, 'جاري تحميل الكويز...');
+        try {
+            const snap = await db.ref(`quizzes/${quizId}`).get();
+            if (!snap.exists()) throw new Error('الكويز غير موجود');
+            currentQuiz = { id: quizId, ...snap.val() };
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            quizStartTime = Date.now();
+            if (quizTimer) clearInterval(quizTimer);
+            showLoader(false);
+            showQuizQuestion();
+        } catch (error) { showToast('فشل تحميل الكويز', true); showLoader(false); }
+    };
+    
+    function showQuizQuestion() {
+        if (!currentQuiz || currentQuestionIndex >= currentQuiz.questions.length) { submitQuizResults(); return; }
+        const q = currentQuiz.questions[currentQuestionIndex];
+        const modalHtml = `
+            <div id="quizModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[1000]">
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 w-[90%] max-w-md max-h-[80vh] overflow-auto border-2 border-cyan-500">
+                    <div class="text-center"><div class="timer text-2xl font-mono text-cyan-400 mb-2" id="quizTimer"></div><p class="font-bold text-lg mb-4">${escapeHtml(q.text)}</p><div id="quizOptions" class="space-y-2 mb-4"></div><div class="flex gap-2"><button id="nextBtn" class="flex-1 btn-primary py-2"><i class="fas fa-arrow-left"></i> التالي</button><button onclick="closeQuiz()" class="flex-1 bg-gray-600 py-2 rounded-xl">إلغاء</button></div></div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        const optsDiv = document.getElementById('quizOptions');
+        q.options.forEach((opt, idx) => { optsDiv.innerHTML += `<div class="quiz-option" data-opt="${idx+1}">${String.fromCharCode(65+idx)}. ${escapeHtml(opt)}</div>`; });
+        let selected = null;
+        document.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.onclick = function() { document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected')); this.classList.add('selected'); selected = parseInt(this.dataset.opt); };
+        });
+        document.getElementById('nextBtn').onclick = () => { if (!selected) { showToast('اختر إجابة أولاً', true); return; } userAnswers.push(selected); currentQuestionIndex++; closeQuiz(); showQuizQuestion(); };
+        
+        let timeLeft = currentQuiz.duration * 60;
+        const timerEl = document.getElementById('quizTimer');
+        if (quizTimer) clearInterval(quizTimer);
+        quizTimer = setInterval(() => {
+            if (timeLeft <= 0) { clearInterval(quizTimer); closeQuiz(); submitQuizResults(); }
+            timerEl.innerText = `${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;
+            timeLeft--;
+        }, 1000);
+    }
+    
+    function closeQuiz() { const modal = document.getElementById('quizModal'); if (modal) modal.remove(); }
+    window.closeQuiz = closeQuiz;
+    
+    async function submitQuizResults() {
+        if (quizTimer) clearInterval(quizTimer);
+        if (!currentQuiz) return;
+        showLoader(true, 'جاري حفظ النتائج...');
+        try {
+            let score = 0;
+            for (let i = 0; i < currentQuiz.questions.length; i++) if (userAnswers[i] === currentQuiz.questions[i].correct) score++;
+            await db.ref(`quiz_results/${currentQuiz.id}/${currentUser.uid}`).set({ score, total: currentQuiz.questions.length, answers: userAnswers, completedAt: Date.now() });
+            const userRef = db.ref(`users/${currentUser.uid}`);
+            const snap = await userRef.get();
+            await userRef.update({ points: (snap.val()?.points || 0) + currentQuiz.points, quizzesCompleted: (snap.val()?.quizzesCompleted || 0) + 1 });
+            completedQuizzes.add(currentQuiz.id);
+            showToast(`🎉 جاوبت ${score} من ${currentQuiz.questions.length} صحيح! كسبت ${currentQuiz.points} نقاط`);
+            await loadQuizzes(); await loadLeaderboard(); await updateUserStats();
+        } catch (error) { showToast('فشل حفظ النتائج', true); }
+        finally { closeQuiz(); currentQuiz = null; showLoader(false); }
+    }
+    
+    // ========== Leaderboard ==========
+    async function loadLeaderboard() {
+        try {
+            const snap = await db.ref('users').get();
+            if (!snap.exists()) { document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500 py-4">🏆 كن أول المتصدرين</div>'; return; }
+            const users = [];
+            snap.forEach(u => { if (!u.val().isAdmin) users.push({ points: u.val().points || 0, name: u.val().name || u.val().email?.split('@')[0] }); });
+            users.sort((a,b) => b.points - a.points);
+            const top3 = users.slice(0,3);
+            if (!top3.length) { document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500 py-4">🏆 سجل دخولك لتبدأ المنافسة</div>'; return; }
+            document.getElementById('leaderboardList').innerHTML = top3.map((u,i) => `<div class="flex justify-between items-center p-3 glass-card rounded-xl"><div><div class="font-bold">${escapeHtml(u.name)}</div><div class="text-xs text-gray-500">${u.points} نقطة</div></div><div class="text-2xl">${i===0?'🥇':i===1?'🥈':'🥉'}</div></div>`).join('');
+        } catch (error) { console.error(error); }
+    }
+    
+    // ========== Profile ==========
+    async function updateUserStats() {
+        if (!currentUser) return;
+        try {
+            const snap = await db.ref(`users/${currentUser.uid}`).get();
+            if (snap.exists()) {
+                const d = snap.val();
+                document.getElementById('userPoints').innerText = d.points || 0;
+                document.getElementById('userName').innerText = d.name || d.email?.split('@')[0];
+                document.getElementById('watchedCount').innerText = d.lecturesWatched || 0;
+                document.getElementById('watchedCountStat').innerText = d.lecturesWatched || 0;
+                document.getElementById('quizzesCountStat').innerText = d.quizzesCompleted || 0;
+                document.getElementById('pointsCountStat').innerText = d.points || 0;
+                const progress = Math.min(100, Math.round(((d.lecturesWatched || 0) / 10) * 100));
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressPercent').innerText = progress + '%';
+                loadBadges(d.lecturesWatched || 0, d.quizzesCompleted || 0, d.points || 0);
+            }
+        } catch (error) { console.error(error); }
+    }
+    
+    async function loadBadges(watched, quizzes, points) {
+        const container = document.getElementById('badgesContainer');
+        if (!container) return;
+        let badges = [];
+        if (watched >= 3) badges.push({ name: '🥉 برونزية', desc: 'شاهد 3 محاضرات' });
+        if (watched >= 6) badges.push({ name: '🥈 فضية', desc: 'شاهد 6 محاضرات' });
+        if (watched >= 10) badges.push({ name: '🥇 ذهبية', desc: 'شاهد 10 محاضرات' });
+        if (quizzes >= 2) badges.push({ name: '📝 الكويزات', desc: 'حل 2 كويزات' });
+        if (points >= 50) badges.push({ name: '⭐ النقاط', desc: 'اجمع 50 نقطة' });
+        if (!badges.length) { container.innerHTML = '<div class="text-center text-gray-500">📌 أكمل التحديات</div>'; return; }
+        container.innerHTML = badges.map(b => `<div class="glass-card p-2 text-center"><div class="text-lg">${b.name}</div><div class="text-xs text-gray-500">${b.desc}</div></div>`).join('');
+    }
+    
+    // ========== Time Tracking (محمي) ==========
+    let timeSpentLocal = 0;
+    function startTimeTracking(userId) {
+        if (timeInterval) clearInterval(timeInterval);
+        const key = `timeSpent_${userId}`;
+        const resetKey = `lastReset_${userId}`;
+        let saved = parseInt(localStorage.getItem(key)) || 0;
+        const today = new Date().toDateString();
+        if (localStorage.getItem(resetKey) !== today) { localStorage.setItem(key, '0'); localStorage.setItem(resetKey, today); saved = 0; }
+        timeSpentLocal = saved;
+        timeInterval = setInterval(async () => {
+            if (currentUser) {
+                timeSpentLocal++;
+                localStorage.setItem(key, timeSpentLocal);
+                if (timeSpentLocal >= 10) {
+                    timeSpentLocal = 0; localStorage.setItem(key, '0');
+                    try {
+                        const userRef = db.ref(`users/${currentUser.uid}`);
+                        const snap = await userRef.get();
+                        await userRef.update({ points: (snap.val()?.points || 0) + 1, lastActive: Date.now() });
+                        showToast('🎉 +1 نقطة كيمياء!');
+                        await loadLeaderboard(); await updateUserStats();
+                    } catch(e) { console.error(e); }
+                } else {
+                    try { await db.ref(`users/${currentUser.uid}/lastActive`).set(Date.now()); } catch(e) {}
+                }
+            }
+        }, 60000);
+    }
+    function stopTimeTracking() { if (timeInterval) { clearInterval(timeInterval); timeInterval = null; } }
+    
+    // ========== Helper ==========
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+    
+    // ========== Auth ==========
+    window.signOut = () => { auth.signOut(); location.reload(); };
     
     auth.onAuthStateChanged(async (user) => {
         currentUser = user;
-        const loginBtn = document.getElementById('loginBtn');
-        const userMenu = document.getElementById('userMenu');
-        const statsPanel = document.getElementById('userStatsPanel');
-        const guestMsg = document.getElementById('userStatsGuest');
+        const loginBtn = document.getElementById('loginBtn'), userMenu = document.getElementById('userMenu'), statsPanel = document.getElementById('userStatsPanel'), guestMsg = document.getElementById('userStatsGuest');
         if (user) {
-            loginBtn.classList.add('hidden');
-            userMenu.classList.remove('hidden');
-            statsPanel.classList.remove('hidden');
-            guestMsg.classList.add('hidden');
+            loginBtn.classList.add('hidden'); userMenu.classList.remove('hidden'); statsPanel.classList.remove('hidden'); guestMsg.classList.add('hidden');
             document.getElementById('userName').innerText = user.displayName || user.email?.split('@')[0];
-            const snap = await db.ref(`users/${user.uid}`).get();
-            if (!snap.exists()) await db.ref(`users/${user.uid}`).set({ email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, lecturesWatched: 0, quizzesCompleted: 0, createdAt: Date.now() });
-            document.getElementById('userPoints').innerText = snap.val()?.points || 0;
+            try {
+                const snap = await db.ref(`users/${user.uid}`).get();
+                if (!snap.exists()) await db.ref(`users/${user.uid}`).set({ email: user.email, name: user.displayName || user.email?.split('@')[0], points: 0, lecturesWatched: 0, quizzesCompleted: 0, createdAt: Date.now() });
+                document.getElementById('userPoints').innerText = snap.val()?.points || 0;
+                await updateUserStats();
+                startTimeTracking(user.uid);
+                if (document.getElementById('quizzesPage').classList.contains('active')) await loadQuizzes();
+            } catch (error) { showToast('خطأ في تحميل بياناتك', true); }
         } else {
-            loginBtn.classList.remove('hidden');
-            userMenu.classList.add('hidden');
-            statsPanel.classList.add('hidden');
-            guestMsg.classList.remove('hidden');
+            loginBtn.classList.remove('hidden'); userMenu.classList.add('hidden'); statsPanel.classList.add('hidden'); guestMsg.classList.remove('hidden');
+            stopTimeTracking();
         }
+        await loadCourses(); await loadLeaderboard();
+        navigateTo('home');
     });
-    
-    loadCourses();
-    navigateTo('home');
 </script>
 </body>
 </html>
