@@ -3,16 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="يلا كيمياء - منصة تعليم الكيمياء للثانوية العامة والأزهر الشريف مع مستر زياد مبروك">
-    <meta name="keywords" content="كيمياء, ثانوية عامة, أزهر, تعليم, يلا كيمياء, مستر زياد مبروك">
-    <meta name="author" content="مستر زياد مبروك">
-    <title>يلا كيمياء | مستر زياد مبروك - منصة الكيمياء التعليمية</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>يلا كيمياء | مستر زياد مبروك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { font-family: 'Inter', 'Tajawal', sans-serif; }
+        * { font-family: 'Tajawal', 'Cairo', sans-serif; }
         
         @keyframes floatLogo {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -20,166 +15,121 @@
         }
         @keyframes glowPulse {
             0%, 100% { box-shadow: 0 0 20px rgba(0,255,255,0.3); }
-            50% { box-shadow: 0 0 60px rgba(0,255,255,0.8); }
+            50% { box-shadow: 0 0 50px rgba(0,255,255,0.7); }
         }
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-        @keyframes skeleton-pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
         }
         
-        .float-logo { animation: floatLogo 5s ease-in-out infinite; }
-        .glow-border { animation: glowPulse 3s ease-in-out infinite; }
-        
+        .float-logo { animation: floatLogo 4s ease-in-out infinite; }
+        .glow-border { animation: glowPulse 2s ease-in-out infinite; }
         .glass-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            animation: slideUp 0.6s ease-out forwards;
-        }
-        .glass-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(0,200,255,0.5);
-            box-shadow: 0 25px 40px -15px rgba(0,0,0,0.4);
-        }
-        
-        .skeleton-card {
-            background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 1rem;
-            min-height: 200px;
-        }
-        
-        .course-card, .lecture-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            background: rgba(255,255,255,0.08);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.3s ease;
+            animation: slideUp 0.5s ease-out forwards;
         }
-        .course-card:hover, .lecture-card:hover {
-            transform: translateY(-10px);
-            border-color: #00c6ff;
-            box-shadow: 0 30px 50px -20px rgba(0,200,255,0.3);
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(0,200,255,0.6);
         }
         
+        .modal-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+            border-radius: 2rem;
+            padding: 2rem;
+            z-index: 1000;
+            animation: popIn 0.4s ease-out;
+            box-shadow: 0 0 50px rgba(0,255,255,0.5);
+            border: 2px solid #00c6ff;
+            min-width: 300px;
+            max-width: 500px;
+            text-align: center;
+        }
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: linear-gradient(135deg, #1a1a3a, #0f0f2a);
-            border-radius: 2rem;
-            padding: 2rem;
-            animation: scalePop 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            border: 2px solid #00c6ff;
-            max-width: 90%;
-            width: 550px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 0 50px rgba(0,200,255,0.3);
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scalePop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .quiz-option {
-            background: rgba(255,255,255,0.06);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .quiz-option:hover {
-            background: rgba(0,200,255,0.15);
-            transform: scale(1.01);
-            border-color: rgba(0,200,255,0.3);
-        }
-        .quiz-option.selected {
-            background: rgba(0,200,255,0.3);
-            border-color: #00c6ff;
-            box-shadow: 0 0 15px rgba(0,200,255,0.3);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 999;
         }
         
-        .progress-bar {
-            background: rgba(255,255,255,0.1);
-            border-radius: 30px;
-            height: 10px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, #00c6ff, #0072ff, #00c6ff);
-            background-size: 200% auto;
-            height: 100%;
-            width: 0%;
-            transition: width 0.6s ease;
-            border-radius: 30px;
-            animation: shimmer 2s linear infinite;
-        }
+        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
+        body.light { background: linear-gradient(135deg, #f0f4f8, #e2e8f0, #d9e2ec); color: #1a202c; }
+        body.light .glass-card { background: rgba(255,255,255,0.9); border-color: rgba(0,0,0,0.1); color: #1a202c; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        body.light .glass-card:hover { background: #ffffff; border-color: #00c6ff; }
+        body.light .text-gray-300 { color: #4a5568; }
+        body.light .text-gray-400 { color: #718096; }
+        body.light .bg-black\/20 { background: rgba(0,0,0,0.05); }
+        body.light nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.1); }
+        body.light nav a { color: #2d3748; }
+        body.light nav a:hover { color: #00c6ff; }
         
-        .toast {
+        * { transition: background 0.3s, color 0.2s, border-color 0.2s; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 10px; }
+        body.light ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        
+        .toast-points {
             position: fixed;
             bottom: 30px;
             right: 30px;
             background: linear-gradient(135deg, #00c6ff, #0072ff);
-            padding: 14px 28px;
-            border-radius: 60px;
-            z-index: 1001;
-            animation: slideUp 0.4s ease-out;
+            padding: 15px 25px;
+            border-radius: 50px;
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
             color: white;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-        }
-        .toast-error { background: linear-gradient(135deg, #ff4757, #c0392b); }
-        
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #00c6ff, #0072ff); border-radius: 10px; }
-        
-        body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
-        body.light { background: linear-gradient(135deg, #f5f7fc, #eef2f8, #e8edf5); color: #1a202c; }
-        body.light .glass-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.08); color: #1a202c; }
-        body.light .glass-card:hover { background: #ffffff; border-color: #00c6ff; }
-        body.light nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.08); }
-        body.light nav a { color: #2d3748; }
-        body.light nav a:hover { color: #00c6ff; }
-        
-        .badge-earned {
-            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05));
-            border: 1px solid rgba(255,215,0,0.3);
+            font-weight: bold;
         }
         
-        .leaderboard-rank-1 { background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.1)); border: 1px solid rgba(255,215,0,0.4); }
-        .leaderboard-rank-2 { background: linear-gradient(135deg, rgba(192,192,192,0.15), rgba(128,128,128,0.08)); border: 1px solid rgba(192,192,192,0.3); }
-        .leaderboard-rank-3 { background: linear-gradient(135deg, rgba(205,127,50,0.15), rgba(139,69,19,0.08)); border: 1px solid rgba(205,127,50,0.3); }
-        
-        .timer-danger {
-            animation: pulseRed 1s infinite;
+        .quiz-modal {
+            max-width: 90%;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-        @keyframes pulseRed {
-            0%, 100% { color: #ff4757; }
-            50% { color: #ff6b81; }
+        .quiz-option {
+            background: rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quiz-option:hover { background: rgba(0,200,255,0.3); transform: scale(1.02); }
+        .quiz-option.selected { background: rgba(0,200,255,0.5); border: 1px solid #00c6ff; }
+        body.light .quiz-option { background: rgba(0,0,0,0.06); }
+        body.light .quiz-option:hover { background: rgba(0,200,255,0.2); }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
         }
     </style>
 </head>
@@ -188,7 +138,7 @@
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, update, onValue, push, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -203,7 +153,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // ========== المتغيرات العامة ==========
+    // 🔐 الأمان: التحقق من الأدمن من قاعدة البيانات
     let currentUser = null;
     let timeInterval = null;
     let timeSpent = 0;
@@ -211,495 +161,277 @@
     let currentQuestionIndex = 0;
     let userAnswers = [];
     let quizStartTime = null;
-    let quizTimerInterval = null;
-    let currentCourseSubscriptions = {};
-    let leaderboardCache = null;
-    let leaderboardCacheTime = 0;
-    let coursesCache = null;
-    
-    // Rate Limiting للنقاط
-    let lastPointClaimAttempt = 0;
-    const POINT_COOLDOWN = 600000; // 10 دقائق
-    
-    // ========== دوال مساعدة آمنة ==========
-    function sanitizeHTML(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-    
-    function showToast(msg, isError = false) {
-        const existingToasts = document.querySelectorAll('.toast');
-        existingToasts.forEach(t => t.remove());
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${isError ? 'toast-error' : ''}`;
-        toast.innerHTML = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3500);
+
+    async function isAdminUser(uid) {
+        const snap = await get(ref(db, 'users/' + uid + '/isAdmin'));
+        return snap.exists() && snap.val() === true;
     }
 
-    function showModal(title, message, onClose = null) {
-        const existing = document.querySelector('.modal-overlay');
-        if (existing) existing.remove();
+    function showBigModal(title, message, type = 'info') {
+        const oldModal = document.getElementById('bigModal');
+        if (oldModal) oldModal.remove();
+        const oldOverlay = document.getElementById('modalOverlay');
+        if (oldOverlay) oldOverlay.remove();
         
         const overlay = document.createElement('div');
+        overlay.id = 'modalOverlay';
         overlay.className = 'modal-overlay';
         document.body.appendChild(overlay);
         
         const modal = document.createElement('div');
-        modal.className = 'modal-content text-center';
+        modal.id = 'bigModal';
+        modal.className = 'modal-notification';
         modal.innerHTML = `
-            <div class="text-7xl mb-4">🎉</div>
-            <h3 class="text-2xl font-bold mb-3">${sanitizeHTML(title)}</h3>
-            <p class="mb-6 text-gray-300">${sanitizeHTML(message)}</p>
-            <button class="bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-3 rounded-full font-bold hover:scale-105 transition shadow-lg">😊 فهمت</button>
+            <div class="text-6xl mb-4">${type === 'ban' ? '⛔' : type === 'notification' ? '📢' : '🎉'}</div>
+            <h3 class="text-2xl font-bold mb-3">${title}</h3>
+            <p class="mb-6">${message}</p>
+            <button onclick="closeModalAndProceed()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition text-white">😊 فهمت</button>
         `;
-        modal.querySelector('button').onclick = () => {
-            overlay.remove();
-            modal.remove();
-            if (onClose) onClose();
-        };
         document.body.appendChild(modal);
-    }
-
-    // ========== عرض Skeleton Loading ==========
-    function showSkeleton(containerId, count = 3) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        container.innerHTML = Array(count).fill(0).map(() => `
-            <div class="skeleton-card p-4">
-                <div class="h-48 bg-white/5 rounded-xl mb-3"></div>
-                <div class="h-6 bg-white/5 rounded w-3/4 mb-2"></div>
-                <div class="h-4 bg-white/5 rounded w-1/2"></div>
-            </div>
-        `).join('');
-    }
-
-    // ========== عرض الكورسات مع Caching ==========
-    async function loadCourses(forceRefresh = false) {
-        if (!forceRefresh && coursesCache) {
-            renderCourses(coursesCache);
-            return;
-        }
-        
-        showSkeleton('coursesContainer', 3);
-        
-        const coursesRef = ref(db, 'courses');
-        const snapshot = await get(coursesRef);
-        
-        if (!snapshot.exists()) {
-            document.getElementById('coursesContainer').innerHTML = '<div class="text-center text-gray-400 col-span-3 py-12">📚 سيتم إضافة الكورسات قريباً</div>';
-            return;
-        }
-        
-        // جلب اشتراكات المستخدم
-        if (currentUser) {
-            const subsRef = ref(db, 'subscriptions');
-            const subsSnap = await get(subsRef);
-            currentCourseSubscriptions = {};
-            if (subsSnap.exists()) {
-                subsSnap.forEach((child) => {
-                    if (child.val().userId === currentUser.uid && child.val().status === 'active') {
-                        currentCourseSubscriptions[child.val().courseId] = true;
-                    }
-                });
-            }
-        }
-        
-        const courses = [];
-        snapshot.forEach((child) => {
-            courses.push({ id: child.key, ...child.val() });
-        });
-        courses.sort((a, b) => (a.order || 0) - (b.order || 0));
-        
-        coursesCache = courses;
-        renderCourses(courses);
+        document.body.style.overflow = 'hidden';
     }
     
-    function renderCourses(courses) {
-        const container = document.getElementById('coursesContainer');
-        if (!container) return;
-        
-        container.innerHTML = courses.map(course => `
-            <div class="course-card rounded-2xl overflow-hidden group">
-                <div class="relative h-52 overflow-hidden">
-                    <img src="${sanitizeHTML(course.image) || 'https://via.placeholder.com/400x220?text=كورس+كيمياء'}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" onerror="this.src='https://via.placeholder.com/400x220?text=يلا+كيمياء'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                    ${course.price > 0 ? 
-                        '<div class="absolute top-4 right-4 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">💰 ' + course.price + ' ج</div>' : 
-                        '<div class="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">🎁 مجاني</div>'}
-                    <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur px-3 py-1 rounded-full text-xs">
-                        📚 ${course.lecturesCount || 0} محاضرة
-                    </div>
-                </div>
-                <div class="p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-yellow-400 text-sm">⭐ ${course.rating || 'جديد'}</span>
-                        <span class="text-xs text-gray-500">${sanitizeHTML(course.level) || 'متوسط'}</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2">${sanitizeHTML(course.title)}</h3>
-                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">${sanitizeHTML(course.desc) || 'كورس شامل في الكيمياء مع شرح مبسط'}</p>
-                    ${!currentUser ? `
-                        <button onclick="window.location.href='login.html'" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition shadow-lg">🔒 اشترك الآن</button>
-                    ` : currentCourseSubscriptions[course.id] ? `
-                        <button onclick="showCourseLectures('${course.id}', '${sanitizeHTML(course.title).replace(/'/g, "\\'")}')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 py-3 rounded-xl font-bold hover:scale-105 transition shadow-lg">📖 دخول الكورس</button>
-                    ` : `
-                        <button onclick="subscribeToCourse('${course.id}', ${course.price})" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition shadow-lg">${course.price > 0 ? '💳 شراء الكورس - ' + course.price + ' ج' : '🎁 اشتراك مجاني'}</button>
-                    `}
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    // ========== الاشتراك في كورس ==========
-    window.subscribeToCourse = async (courseId, price) => {
-        if (!currentUser) {
-            showModal('🔐 مطلوب تسجيل دخول', 'يجب عليك تسجيل الدخول أولاً للاشتراك في الكورسات');
-            return;
-        }
-        
-        if (price > 0) {
-            showModal('💳 الدفع', `سعر الكورس: ${price} ج\n\nللدفع عبر فودافون كاش:\nارسل المبلغ على رقم 0123456789\nواكتب رقم العملية في التعليقات\n\nسيتم تفعيل اشتراكك بعد التأكيد`);
-        } else {
-            const subscriptionRef = push(ref(db, 'subscriptions'));
-            await set(subscriptionRef, {
-                userId: currentUser.uid,
-                courseId: courseId,
-                status: 'active',
-                price: 0,
-                date: Date.now()
-            });
-            showToast('🎉 تم الاشتراك في الكورس بنجاح!');
-            currentCourseSubscriptions[courseId] = true;
-            loadCourses(true);
-        }
+    window.closeModalAndProceed = () => {
+        const modal = document.getElementById('bigModal');
+        const overlay = document.getElementById('modalOverlay');
+        if (modal) modal.remove();
+        if (overlay) overlay.remove();
+        document.body.style.overflow = '';
     };
     
-    // ========== عرض محاضرات الكورس ==========
-    window.showCourseLectures = async (courseId, courseTitle) => {
-        showSkeleton('lecturesListModal', 3);
-        
+    function showToastPoints(msg) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-points';
+        toast.innerHTML = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function displayLectures() {
         const lecturesRef = ref(db, 'lectures');
-        const snapshot = await get(lecturesRef);
-        
-        const lectures = [];
-        snapshot.forEach((child) => {
-            if (child.val().courseId === courseId) {
-                lectures.push({ id: child.key, ...child.val() });
+        onValue(lecturesRef, (snapshot) => {
+            const container = document.getElementById('lecturesContainer');
+            if (!container) return;
+            
+            if (!snapshot.exists()) {
+                container.innerHTML = '<div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div>';
+                return;
             }
-        });
-        lectures.sort((a, b) => (a.order || 0) - (b.order || 0));
-        
-        const existing = document.querySelector('.modal-overlay');
-        if (existing) existing.remove();
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'modal-overlay';
-        document.body.appendChild(overlay);
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-content';
-        modal.style.maxWidth = '700px';
-        modal.style.width = '90%';
-        
-        let lecturesHtml = '';
-        if (lectures.length === 0) {
-            lecturesHtml = '<div class="text-center text-gray-400 py-8">📖 لا توجد محاضرات في هذا الكورس بعد</div>';
-        } else {
-            lecturesHtml = lectures.map((lec, idx) => `
-                <div class="lecture-card rounded-xl p-4 mb-3 cursor-pointer" onclick="openLecture('${lec.id}', '${sanitizeHTML(lec.videoUrl)}', '${sanitizeHTML(lec.pdfUrl) || '#'}', '${sanitizeHTML(lec.title).replace(/'/g, "\\'")}')">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center font-bold">${idx + 1}</div>
-                            <div>
-                                <h4 class="font-bold">${sanitizeHTML(lec.title)}</h4>
-                                <p class="text-xs text-gray-500">${sanitizeHTML(lec.desc) || 'محاضرة في الكيمياء'}</p>
+            
+            const lectures = [];
+            snapshot.forEach((child) => {
+                lectures.push({ id: child.key, ...child.val() });
+            });
+            
+            lectures.sort((a, b) => (a.order || a.createdAt || 0) - (b.order || b.createdAt || 0));
+            
+            container.innerHTML = lectures.map((lecture) => `
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="relative overflow-hidden">
+                        <img src="${lecture.thumb || 'https://img.youtube.com/vi/default/maxresdefault.jpg'}" class="w-full h-56 object-cover transition duration-500 hover:scale-105" onerror="this.src='https://img.youtube.com/vi/default/maxresdefault.jpg'">
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-white">📺 ${lecture.title?.split(' ')[0] || 'محاضرة'}</div>
+                        <div class="absolute bottom-3 left-3 bg-gradient-to-r from-cyan-500 to-purple-600 px-3 py-1 rounded-full text-xs font-bold shadow-lg text-white">👁️ ${lecture.views || 0} مشاهدة</div>
+                        ${!currentUser ? `
+                            <div class="absolute inset-0 bg-black/85 flex items-center justify-center backdrop-blur-sm">
+                                <div class="text-center p-5">
+                                    <div class="text-7xl mb-4">🔒</div>
+                                    <p class="text-xl font-bold mb-2 text-white">المحاضرة مقفولة</p>
+                                    <p class="text-gray-300 mb-4">سجل دخولك للمشاهدة</p>
+                                    <button onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2.5 rounded-full font-bold text-white">🚀 تسجيل الدخول</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-cyan-400">▶️</div>
+                        ` : ''}
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-extrabold mb-2">${lecture.title}</h3>
+                        <p class="text-gray-500 text-sm mb-4">${lecture.desc || 'شرح كامل ومبسط للمنهج'}</p>
+                        ${currentUser ? `
+                            <div class="flex gap-3">
+                                <a href="${lecture.videoUrl}" target="_blank" onclick="recordView('${lecture.id}')" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">▶️ مشاهدة</a>
+                                ${lecture.pdfUrl && lecture.pdfUrl !== '#' ? `<a href="${lecture.pdfUrl}" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 text-center px-4 py-2.5 rounded-xl font-bold hover:opacity-90 transition text-white">📄 PDF</a>` : ''}
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             `).join('');
-        }
-        
-        modal.innerHTML = `
-            <div class="text-center mb-4">
-                <div class="text-4xl mb-2">📚</div>
-                <h2 class="text-2xl font-bold">${sanitizeHTML(courseTitle)}</h2>
-                <p class="text-gray-400 text-sm">${lectures.length} محاضرة في هذا الكورس</p>
-            </div>
-            <div id="lecturesListModal">
-                ${lecturesHtml}
-            </div>
-            <button class="w-full mt-4 bg-gray-600/50 hover:bg-gray-600/70 py-2 rounded-xl transition">إغلاق</button>
-        `;
-        modal.querySelector('button:last-child').onclick = () => {
-            overlay.remove();
-            modal.remove();
-        };
-        document.body.appendChild(modal);
-    };
+        });
+    }
     
-    // ========== فتح المحاضرة ==========
-    window.openLecture = async (lectureId, videoUrl, pdfUrl, title) => {
-        const overlay = document.querySelector('.modal-overlay');
-        if (overlay) overlay.remove();
-        
-        const newOverlay = document.createElement('div');
-        newOverlay.className = 'modal-overlay';
-        document.body.appendChild(newOverlay);
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-content';
-        modal.style.maxWidth = '900px';
-        modal.style.width = '95%';
-        
-        let embedUrl = videoUrl;
-        if (videoUrl) {
-            if (videoUrl.includes('youtu.be/')) {
-                const videoId = videoUrl.split('youtu.be/')[1]?.split('?')[0];
-                embedUrl = `https://www.youtube.com/embed/${videoId}`;
-            } else if (videoUrl.includes('youtube.com/watch')) {
-                try {
-                    const urlParams = new URLSearchParams(videoUrl.split('?')[1]);
-                    const videoId = urlParams.get('v');
-                    embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                } catch(e) {}
-            }
-        }
-        
-        modal.innerHTML = `
-            <div class="text-center mb-4">
-                <h2 class="text-xl font-bold">${sanitizeHTML(title)}</h2>
-            </div>
-            <div class="relative pb-[56.25%] h-0 mb-4">
-                <iframe class="absolute top-0 left-0 w-full h-full rounded-xl" frameborder="0" allowfullscreen srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=${embedUrl}?autoplay=1><img src='https://img.youtube.com/vi/${embedUrl.split('/').pop()}/maxresdefault.jpg' alt='اضغط للتشغيل'><span>▶️</span></a>"></iframe>
-            </div>
-            ${pdfUrl && pdfUrl !== '#' ? `
-                <a href="${pdfUrl}" target="_blank" class="block w-full bg-gradient-to-r from-purple-600 to-pink-600 py-3 rounded-xl font-bold text-center hover:scale-105 transition mb-3">📄 تحميل PDF المحاضرة</a>
-            ` : ''}
-            <button class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition">✅ تمت المشاهدة</button>
-            <button class="w-full mt-3 bg-gray-600/50 hover:bg-gray-600/70 py-2 rounded-xl transition">إغلاق</button>
-        `;
-        
-        const watchBtn = modal.querySelectorAll('button')[0];
-        watchBtn.onclick = async () => {
-            if (currentUser) {
-                const lectureRef = ref(db, 'lectures/' + lectureId);
-                await update(lectureRef, { views: increment(1) });
-                
+    async function recordView(lectureId) {
+        if (currentUser) {
+            const lectureRef = ref(db, 'lectures/' + lectureId);
+            const snapshot = await get(lectureRef);
+            if (snapshot.exists()) {
+                await update(lectureRef, { views: (snapshot.val().views || 0) + 1 });
                 const watchedRef = ref(db, 'users/' + currentUser.uid + '/watchedLectures');
                 const watchedSnap = await get(watchedRef);
                 const watched = watchedSnap.exists() ? watchedSnap.val() : {};
                 if (!watched[lectureId]) {
                     watched[lectureId] = true;
                     await set(watchedRef, watched);
-                    await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: increment(1) });
+                    const count = Object.keys(watched).length;
+                    await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: count });
                     updateUserStats();
                 }
             }
-            showToast('✅ تم تسجيل مشاهدتك!');
-            newOverlay.remove();
-            modal.remove();
-        };
-        
-        const closeBtn = modal.querySelectorAll('button')[1];
-        closeBtn.onclick = () => {
-            newOverlay.remove();
-            modal.remove();
-        };
-        
-        document.body.appendChild(modal);
-    };
-    
-    // ========== نظام النقاط الآمن ==========
-    async function claimPoint() {
-        if (!currentUser) return false;
-        
-        const now = Date.now();
-        if (now - lastPointClaimAttempt < POINT_COOLDOWN) {
-            const remaining = Math.ceil((POINT_COOLDOWN - (now - lastPointClaimAttempt)) / 60000);
-            showToast(`⏳ انتظر ${remaining} دقائق للنقطة التالية`);
-            return false;
-        }
-        
-        const userRef = ref(db, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
-        const lastClaim = snapshot.val()?.lastPointClaim || 0;
-        
-        if (now - lastClaim < POINT_COOLDOWN) {
-            const remaining = Math.ceil((POINT_COOLDOWN - (now - lastClaim)) / 60000);
-            showToast(`⏳ انتظر ${remaining} دقائق للنقطة التالية`);
-            return false;
-        }
-        
-        lastPointClaimAttempt = now;
-        
-        try {
-            await update(userRef, {
-                points: increment(1),
-                lastPointClaim: serverTimestamp()
-            });
-            showToast('🎉 مبروك! كسبت 1 نقطة كيمياء!');
-            updateUserStats();
-            loadLeaderboard(true);
-            return true;
-        } catch(e) {
-            console.error('Error claiming point:', e);
-            return false;
         }
     }
-    
-    function startTimeTracking() {
+
+    function startTimeTracking(userId) {
         if (timeInterval) clearInterval(timeInterval);
-        timeInterval = setInterval(() => {
-            if (currentUser) claimPoint();
-        }, POINT_COOLDOWN);
+        
+        const storageKey = `timeSpent_${userId}`;
+        const lastResetKey = `lastReset_${userId}`;
+        let savedTime = localStorage.getItem(storageKey);
+        let lastReset = localStorage.getItem(lastResetKey);
+        let today = new Date().toDateString();
+        
+        if (lastReset !== today) {
+            localStorage.setItem(storageKey, '0');
+            localStorage.setItem(lastResetKey, today);
+            savedTime = '0';
+        }
+        
+        timeSpent = parseInt(savedTime) || 0;
+        
+        timeInterval = setInterval(async () => {
+            if (currentUser) {
+                timeSpent++;
+                localStorage.setItem(storageKey, timeSpent.toString());
+                
+                if (timeSpent >= 10) {
+                    timeSpent = 0;
+                    localStorage.setItem(storageKey, '0');
+                    
+                    const userRef = ref(db, 'users/' + currentUser.uid);
+                    const snapshot = await get(userRef);
+                    const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
+                    await update(userRef, { points: currentPoints + 1, lastActive: Date.now() });
+                    
+                    showToastPoints('🎉 مبروك! كسبت 1 نقطة كيمياء! زاكر أكثر، اكسب أكثر');
+                    showLeaderboard();
+                    updateUserStats();
+                } else {
+                    await update(ref(db, 'users/' + currentUser.uid), { lastActive: Date.now() });
+                }
+            }
+        }, 60000);
     }
-    
+
     function stopTimeTracking() {
         if (timeInterval) { clearInterval(timeInterval); timeInterval = null; }
     }
-    
-    // ========== لوحة المتصدرين المحسنة ==========
-    async function loadLeaderboard(forceRefresh = false) {
-        if (!forceRefresh && leaderboardCache && (Date.now() - leaderboardCacheTime < 30000)) {
-            renderLeaderboard(leaderboardCache);
-            return;
-        }
-        
+
+    async function showLeaderboard() {
         const usersRef = ref(db, 'users');
-        const snapshot = await get(usersRef);
-        
-        if (!snapshot.exists()) {
-            document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500 py-8">🏆 كن أول المتصدرين!</div>';
-            return;
-        }
-        
-        const users = [];
-        for (const child of snapshot) {
-            const userData = child.val();
-            if (!userData.isAdmin && child.key !== 'GiICpKTqbgW5U8hTOfR1rRr93g22') {
-                users.push({
-                    id: child.key,
-                    name: userData.name || userData.email?.split('@')[0] || 'طالب',
-                    points: userData.points || 0
-                });
+        onValue(usersRef, async (snapshot) => {
+            if (!snapshot.exists()) {
+                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 كن أول المتصدرين!</div>';
+                return;
+            }
+            
+            const users = [];
+            for (const child of snapshot) {
+                const isAdmin = await isAdminUser(child.key);
+                if (!isAdmin) {
+                    users.push({ id: child.key, ...child.val() });
+                }
+            }
+            users.sort((a, b) => (b.points || 0) - (a.points || 0));
+            const top3 = users.slice(0, 3);
+            
+            if (top3.length === 0) {
+                document.getElementById('leaderboardList').innerHTML = '<div class="text-center text-gray-500">🏆 سجل دخولك لتبدأ المنافسة!</div>';
+                return;
+            }
+            
+            document.getElementById('leaderboardList').innerHTML = top3.map((u, idx) => `
+                <div class="flex items-center justify-between p-4 glass-card rounded-xl mb-3">
+                    <div class="flex items-center gap-4">
+                        <span class="text-4xl font-bold ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-gray-400' : 'text-orange-500'}">#${idx + 1}</span>
+                        <div>
+                            <p class="font-bold text-lg">${u.name || u.email?.split('@')[0] || 'طالب'}</p>
+                            <p class="text-sm text-gray-500">🔬 ${u.points || 0} نقطة</p>
+                        </div>
+                    </div>
+                    <div class="text-3xl">🏆 ${u.points || 0}</div>
+                </div>
+            `).join('');
+        });
+    }
+    
+    async function updateUserStats() {
+        if (currentUser) {
+            const userRef = ref(db, 'users/' + currentUser.uid);
+            const snapshot = await get(userRef);
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                document.getElementById('userPoints').textContent = userData.points || 0;
+                document.getElementById('userName').textContent = userData.name || userData.email?.split('@')[0];
+                
+                const watchedCount = userData.lecturesWatched || 0;
+                const quizzesCompleted = userData.quizzesCompleted || 0;
+                document.getElementById('watchedCount').textContent = watchedCount;
+                document.getElementById('quizzesCompletedCount').textContent = quizzesCompleted;
+                
+                const totalLectures = 6;
+                const progress = Math.min(100, Math.round((watchedCount / totalLectures) * 100));
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('progressPercent').textContent = progress + '%';
+                
+                updateBadges(watchedCount, quizzesCompleted, userData.points || 0);
             }
         }
-        users.sort((a, b) => b.points - a.points);
-        
-        let userRank = null;
-        if (currentUser) {
-            const userIndex = users.findIndex(u => u.id === currentUser.uid);
-            if (userIndex !== -1) userRank = userIndex + 1;
-        }
-        
-        const top10 = users.slice(0, 10);
-        leaderboardCache = { top10, userRank, totalUsers: users.length };
-        leaderboardCacheTime = Date.now();
-        renderLeaderboard(leaderboardCache);
     }
     
-    function renderLeaderboard(data) {
-        const container = document.getElementById('leaderboardList');
-        if (!container) return;
-        
-        const medals = ['🥇', '🥈', '🥉'];
-        const rankClasses = ['leaderboard-rank-1', 'leaderboard-rank-2', 'leaderboard-rank-3'];
-        
-        let html = '';
-        data.top10.forEach((user, idx) => {
-            const rank = idx + 1;
-            const medal = rank <= 3 ? medals[rank - 1] : `#${rank}`;
-            const rankClass = rank <= 3 ? rankClasses[rank - 1] : '';
-            
-            html += `
-                <div class="flex items-center justify-between p-5 glass-card rounded-2xl mb-3 hover:scale-102 transition ${rankClass}">
-                    <div class="flex items-center gap-5">
-                        <div class="text-4xl">${medal}</div>
-                        <div>
-                            <p class="font-bold text-xl">${sanitizeHTML(user.name)}</p>
-                            <p class="text-sm text-gray-400">🔬 ${user.points} نقطة كيمياء</p>
-                        </div>
-                    </div>
-                    <div class="text-4xl font-bold ${rank === 1 ? 'text-yellow-400' : rank === 2 ? 'text-gray-400' : rank === 3 ? 'text-orange-500' : 'text-cyan-400'}">${user.points}</div>
-                </div>
-            `;
-        });
-        
-        if (data.userRank && data.userRank > 10) {
-            html += `
-                <div class="text-center text-gray-400 text-sm mt-4">...</div>
-                <div class="flex items-center justify-between p-4 glass-card rounded-2xl mt-2 border border-cyan-500/30">
-                    <div class="flex items-center gap-4">
-                        <div class="text-2xl">#${data.userRank}</div>
-                        <div>
-                            <p class="font-bold">أنت</p>
-                            <p class="text-xs text-gray-400">🔬 ${data.top10.find(u => u.id === currentUser?.uid)?.points || 0} نقطة</p>
-                        </div>
-                    </div>
-                    <div class="text-cyan-400 text-xl">🏆</div>
-                </div>
-            `;
-        }
-        
-        container.innerHTML = html;
-    }
-    
-    // ========== تحديث إحصائيات المستخدم ==========
-    async function updateUserStats() {
-        if (!currentUser) return;
-        
-        const userRef = ref(db, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
-        if (!snapshot.exists()) return;
-        
-        const userData = snapshot.val();
-        document.getElementById('userPoints').textContent = userData.points || 0;
-        document.getElementById('userName').textContent = userData.name || userData.email?.split('@')[0];
-        document.getElementById('watchedCount').textContent = userData.lecturesWatched || 0;
-        document.getElementById('quizzesCompletedCount').textContent = userData.quizzesCompleted || 0;
-        document.getElementById('userPointsStat').textContent = userData.points || 0;
-        
-        const totalLectures = 10;
-        const progress = Math.min(100, Math.round(((userData.lecturesWatched || 0) / totalLectures) * 100));
-        document.getElementById('progressFill').style.width = progress + '%';
-        document.getElementById('progressPercent').textContent = progress + '%';
-        
-        loadBadges(userData.lecturesWatched || 0, userData.quizzesCompleted || 0, userData.points || 0);
-    }
-    
-    async function loadBadges(watchedCount, quizzesCompleted, points) {
+    function updateBadges(watchedCount, quizzesCompleted, points) {
         const badgesContainer = document.getElementById('badgesContainer');
         if (!badgesContainer) return;
         
-        const badges = [];
-        if (watchedCount >= 3) badges.push({ name: '🥉 بادرة برونزية', desc: 'شاهد 3 محاضرات' });
-        if (watchedCount >= 6) badges.push({ name: '🥈 بادرة فضية', desc: 'شاهد 6 محاضرات' });
-        if (watchedCount >= 10) badges.push({ name: '🥇 بادرة ذهبية', desc: 'شاهد 10 محاضرات' });
-        if (quizzesCompleted >= 2) badges.push({ name: '📝 بادرة الكويزات', desc: 'حل 2 كويزات' });
-        if (points >= 50) badges.push({ name: '⭐ بادرة النقاط', desc: 'اجمع 50 نقطة' });
+        let badges = [];
+        if (watchedCount >= 3) badges.push({ name: '🥉 بادرة برونزية', condition: 'شاهد 3 محاضرات' });
+        if (watchedCount >= 6) badges.push({ name: '🥈 بادرة فضية', condition: 'شاهد 6 محاضرات' });
+        if (watchedCount >= 10) badges.push({ name: '🥇 بادرة ذهبية', condition: 'شاهد 10 محاضرات' });
+        if (quizzesCompleted >= 2) badges.push({ name: '📝 بادرة الكويزات', condition: 'حل 2 كويزات' });
+        if (points >= 50) badges.push({ name: '⭐ بادرة النقاط', condition: 'اجمع 50 نقطة' });
         
         if (badges.length === 0) {
-            badgesContainer.innerHTML = '<div class="text-center text-gray-400 col-span-2 py-4">📌 أكمل التحديات لكسب الشارات</div>';
+            badgesContainer.innerHTML = '<div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>';
             return;
         }
         
         badgesContainer.innerHTML = badges.map(b => `
-            <div class="badge-earned rounded-xl p-3 text-center">
-                <div class="text-2xl mb-1">${b.name}</div>
-                <div class="text-xs text-gray-500">${b.desc}</div>
+            <div class="glass-card p-2 text-center">
+                <div class="text-2xl">${b.name}</div>
+                <div class="text-xs text-gray-400">${b.condition}</div>
             </div>
         `).join('');
     }
+
+    function watchNotifications() {
+        const notifRef = ref(db, 'notifications');
+        onValue(notifRef, (snapshot) => {
+            if (!snapshot.exists()) return;
+            
+            const seen = localStorage.getItem('seenNotifications') || '[]';
+            const seenArray = JSON.parse(seen);
+            
+            snapshot.forEach((child) => {
+                const notif = child.val();
+                if (!seenArray.includes(child.key) && currentUser) {
+                    showBigModal('📢 إشعار من المنصة', notif.message, 'notification');
+                    seenArray.push(child.key);
+                    localStorage.setItem('seenNotifications', JSON.stringify(seenArray));
+                }
+            });
+        });
+    }
     
-    // ========== الكويزات مع Timer ==========
+    async function hasCompletedQuiz(quizId) {
+        const snap = await get(ref(db, 'quiz_results/' + quizId + '/' + currentUser.uid));
+        return snap.exists();
+    }
+    
     async function loadAvailableQuizzes() {
         const quizzesRef = ref(db, 'quizzes');
         const snapshot = await get(quizzesRef);
@@ -707,7 +439,7 @@
         if (!container) return;
         
         if (!snapshot.exists() || !currentUser) {
-            container.innerHTML = '<div class="text-center text-gray-400 col-span-3 py-12">📝 لا توجد كويزات متاحة حالياً</div>';
+            container.innerHTML = '<div class="text-center text-gray-500">لا توجد كويزات متاحة حالياً</div>';
             return;
         }
         
@@ -718,27 +450,25 @@
         
         const completedStatus = {};
         for (const q of quizzes) {
-            const snap = await get(ref(db, 'quiz_results/' + q.id + '/' + currentUser.uid));
-            completedStatus[q.id] = snap.exists();
+            completedStatus[q.id] = await hasCompletedQuiz(q.id);
         }
         
         container.innerHTML = quizzes.map(q => `
-            <div class="glass-card rounded-2xl p-5 text-center hover:scale-105 transition">
-                <div class="text-5xl mb-3">📝</div>
-                <h3 class="font-bold text-xl mb-2">${sanitizeHTML(q.title)}</h3>
-                <p class="text-sm text-gray-400 mb-3">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة</p>
-                <p class="text-xs text-gray-500 mb-4">📋 ${q.questions?.length || 0} سؤال</p>
+            <div class="glass-card rounded-2xl p-4 text-center">
+                <div class="text-3xl mb-2">📝</div>
+                <h3 class="font-bold text-lg">${q.title}</h3>
+                <p class="text-sm text-gray-500">⏱️ ${q.duration} دقيقة | 🪙 ${q.points} نقطة | 📋 ${q.questions?.length || 0} سؤال</p>
                 ${completedStatus[q.id] ? 
-                    '<span class="inline-block mt-2 text-green-500 text-sm font-semibold">✅ تم الحل سابقاً</span>' : 
-                    `<button onclick="startQuiz('${q.id}')" class="mt-2 bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition shadow-lg">🚀 ابدأ الكويز</button>`}
+                    '<p class="text-green-500 text-sm mt-2">✅ تم الحل سابقاً</p>' : 
+                    `<button onclick="startQuiz('${q.id}')" class="mt-3 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 rounded-full text-sm font-bold text-white">🚀 ابدأ الكويز</button>`}
             </div>
         `).join('');
     }
     
     window.startQuiz = async (quizId) => {
-        const resultSnap = await get(ref(db, 'quiz_results/' + quizId + '/' + currentUser.uid));
-        if (resultSnap.exists()) {
-            showToast('😄 لقد حللت هذا الكويز مسبقاً!');
+        const done = await hasCompletedQuiz(quizId);
+        if (done) {
+            showToastPoints('😄 متبقاش طماع! انت خلاص حلّيت الكويز ده قبل كده. جرب كويز تاني!');
             return;
         }
         
@@ -754,73 +484,42 @@
     };
     
     function showQuizQuestion() {
-        if (quizTimerInterval) clearInterval(quizTimerInterval);
-        
         if (!currentQuiz || currentQuestionIndex >= currentQuiz.questions.length) {
             submitQuizResults();
             return;
         }
         
         const question = currentQuiz.questions[currentQuestionIndex];
-        const existing = document.querySelector('.modal-overlay');
-        if (existing) existing.remove();
+        const modal = document.getElementById('quizInterface');
+        if (modal) modal.remove();
         
-        const overlay = document.createElement('div');
-        overlay.className = 'modal-overlay';
-        document.body.appendChild(overlay);
-        
-        const modal = document.createElement('div');
-        modal.className = 'modal-content';
-        modal.style.maxWidth = '600px';
-        
-        let timeLeft = currentQuiz.duration * 60;
-        const timerDisplay = document.createElement('div');
-        timerDisplay.className = 'text-red-400 font-bold mb-2 text-lg';
-        timerDisplay.innerText = `⏰ الوقت المتبقي: ${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;
-        
-        modal.innerHTML = `
-            <div class="text-center">
-                <div class="text-3xl mb-2">📝 ${sanitizeHTML(currentQuiz.title)}</div>
-                <div class="flex justify-center gap-4 text-sm text-gray-400 mb-4">
-                    <span>⏱️ ${currentQuiz.duration} دقيقة</span>
-                    <span>🪙 ${currentQuiz.points} نقطة</span>
-                </div>
-                <div id="quizTimer"></div>
-                <div class="text-sm text-cyan-400 mb-4 font-semibold">السؤال ${currentQuestionIndex + 1} من ${currentQuiz.questions.length}</div>
-                <div class="text-right mb-6">
-                    <p class="font-bold text-lg mb-5">${sanitizeHTML(question.text)}</p>
-                    <div id="quizOptions"></div>
-                </div>
-                <div class="flex gap-3">
-                    <button id="nextBtn" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition">التالي ➡️</button>
-                    <button id="cancelBtn" class="flex-1 bg-gray-600/50 hover:bg-gray-600/70 py-3 rounded-xl transition">إلغاء</button>
+        const newModal = document.createElement('div');
+        newModal.id = 'quizInterface';
+        newModal.className = 'modal-overlay';
+        newModal.innerHTML = `
+            <div class="modal-notification quiz-modal" style="width: 500px;">
+                <div class="text-center">
+                    <div class="text-3xl mb-2">📝 ${currentQuiz.title}</div>
+                    <div class="text-sm text-gray-400 mb-1">⏱️ ${currentQuiz.duration} دقيقة | 🪙 ${currentQuiz.points} نقطة</div>
+                    <div class="text-sm text-cyan-400 mb-3">السؤال ${currentQuestionIndex + 1} من ${currentQuiz.questions.length}</div>
+                    <div class="text-right mb-4">
+                        <p class="font-bold mb-3">${question.text}</p>
+                        <div id="quizOptions"></div>
+                    </div>
+                    <button onclick="answerCurrentQuestion()" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2 rounded-full font-bold text-white">التالي ➡️</button>
+                    <button onclick="closeQuiz()" class="mt-3 text-gray-500 text-sm block w-full">إلغاء الكويز</button>
                 </div>
             </div>
         `;
+        document.body.appendChild(newModal);
         
-        const timerContainer = modal.querySelector('#quizTimer');
-        timerContainer.appendChild(timerDisplay);
-        
-        quizTimerInterval = setInterval(() => {
-            if (!currentQuiz) return;
-            timeLeft--;
-            timerDisplay.innerText = `⏰ الوقت المتبقي: ${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;
-            if (timeLeft <= 30) timerDisplay.classList.add('timer-danger');
-            if (timeLeft <= 0) {
-                clearInterval(quizTimerInterval);
-                overlay.remove();
-                modal.remove();
-                submitQuizResults(true);
-            }
-        }, 1000);
-        
-        const optionsDiv = modal.querySelector('#quizOptions');
+        const optionsDiv = document.getElementById('quizOptions');
         let selected = null;
         
         question.options.forEach((opt, idx) => {
             const optDiv = document.createElement('div');
             optDiv.className = 'quiz-option';
-            optDiv.innerHTML = `${String.fromCharCode(65 + idx)}. ${sanitizeHTML(opt)}`;
+            optDiv.innerHTML = `${idx + 1}. ${opt}`;
             optDiv.onclick = () => {
                 document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
                 optDiv.classList.add('selected');
@@ -829,42 +528,26 @@
             optionsDiv.appendChild(optDiv);
         });
         
-        modal.querySelector('#nextBtn').onclick = () => {
+        window.answerCurrentQuestion = () => {
             if (!selected) {
-                showToast('❌ اختر إجابة أولاً');
+                showToastPoints('❌ اختر إجابة أولاً');
                 return;
             }
             userAnswers.push(selected);
             currentQuestionIndex++;
-            overlay.remove();
-            modal.remove();
             showQuizQuestion();
         };
-        
-        modal.querySelector('#cancelBtn').onclick = () => {
-            clearInterval(quizTimerInterval);
-            overlay.remove();
-            modal.remove();
-            currentQuiz = null;
-        };
-        
-        document.body.appendChild(modal);
     }
     
-    async function submitQuizResults(timeout = false) {
-        if (quizTimerInterval) clearInterval(quizTimerInterval);
+    async function submitQuizResults() {
         if (!currentQuiz) return;
         
+        const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
         let score = 0;
         for (let i = 0; i < currentQuiz.questions.length; i++) {
-            if (userAnswers[i] === currentQuiz.questions[i].correct) score++;
-        }
-        
-        const percent = Math.round((score / currentQuiz.questions.length) * 100);
-        let pointsEarned = 0;
-        
-        if (!timeout && percent >= 70) {
-            pointsEarned = currentQuiz.points;
+            if (userAnswers[i] === currentQuiz.questions[i].correct) {
+                score++;
+            }
         }
         
         const resultRef = ref(db, 'quiz_results/' + currentQuiz.id + '/' + currentUser.uid);
@@ -872,95 +555,94 @@
             score: score,
             total: currentQuiz.questions.length,
             answers: userAnswers,
-            completedAt: Date.now(),
-            timeout: timeout,
-            percent: percent
+            timeSpent: timeSpent,
+            completedAt: Date.now()
         });
         
-        if (pointsEarned > 0) {
-            await update(ref(db, 'users/' + currentUser.uid), {
-                points: increment(pointsEarned),
-                quizzesCompleted: increment(1)
-            });
-            showToast(`🎉 مبروك! جاوبت ${score} من ${currentQuiz.questions.length} (${percent}%)! كسبت ${pointsEarned} نقطة`);
-        } else {
-            if (timeout) {
-                showToast(`⏰ انتهى الوقت! جاوبت ${score} من ${currentQuiz.questions.length} (${percent}%)`, true);
-            } else {
-                showToast(`😓 جاوبت ${score} من ${currentQuiz.questions.length} (${percent}%). لم تحصل على نقاط`, true);
-            }
-        }
+        const userRef = ref(db, 'users/' + currentUser.uid);
+        const snapshot = await get(userRef);
+        const currentPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
+        await update(userRef, { 
+            points: currentPoints + currentQuiz.points,
+            quizzesCompleted: (snapshot.val().quizzesCompleted || 0) + 1
+        });
+        
+        const percent = Math.round((score / currentQuiz.questions.length) * 100);
+        showToastPoints(`🎉 مبروك! جاوبت ${score} من ${currentQuiz.questions.length} إجابة صحيحة (${percent}%)! كسبت ${currentQuiz.points} نقطة`);
         
         updateUserStats();
-        loadLeaderboard(true);
+        showLeaderboard();
+        closeQuiz();
         loadAvailableQuizzes();
-        currentQuiz = null;
     }
     
-    // ========== Auth State ==========
+    window.closeQuiz = () => {
+        const modal = document.getElementById('quizInterface');
+        if (modal) modal.remove();
+        currentQuiz = null;
+        currentQuestionIndex = 0;
+    };
+
     onAuthStateChanged(auth, async (user) => {
         currentUser = user;
         const loginBtn = document.getElementById('loginBtn');
         const userMenu = document.getElementById('userMenu');
         const userName = document.getElementById('userName');
         const userStatsPanel = document.getElementById('userStatsPanel');
-        const userStatsGuest = document.getElementById('userStatsGuest');
         
         if (user) {
             if (loginBtn) loginBtn.classList.add('hidden');
             if (userMenu) userMenu.classList.remove('hidden');
             if (userStatsPanel) userStatsPanel.classList.remove('hidden');
-            if (userStatsGuest) userStatsGuest.classList.add('hidden');
             
             const userRef = ref(db, 'users/' + user.uid);
             const snapshot = await get(userRef);
             
             if (snapshot.exists() && snapshot.val().banned === true) {
-                showModal('⛔ تم حظر حسابك', `سبب الحظر: ${snapshot.val().banReason || 'مخالفة قواعد المنصة'}`);
+                showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${snapshot.val().banReason || 'مخالفة قواعد المنصة'}`, 'ban');
                 setTimeout(() => signOut(auth), 5000);
                 return;
             }
             
             if (!snapshot.exists()) {
-                await set(userRef, {
-                    email: user.email,
-                    name: user.displayName || user.email?.split('@')[0],
-                    points: 0,
+                await set(userRef, { 
+                    email: user.email, 
+                    name: user.displayName || user.email?.split('@')[0], 
+                    points: 0, 
                     lecturesWatched: 0,
                     quizzesCompleted: 0,
-                    createdAt: Date.now(),
-                    lastPointClaim: Date.now(),
-                    banned: false
+                    createdAt: Date.now(), 
+                    banned: false 
                 });
             }
             
             onValue(userRef, (snap) => {
                 if (snap.exists()) {
                     const userData = snap.val();
+                    document.getElementById('userPoints').textContent = userData.points || 0;
                     if (userName) userName.textContent = userData.name || userData.email?.split('@')[0];
                     if (userData.banned === true) {
-                        showModal('⛔ تم حظر حسابك', `سبب الحظر: ${userData.banReason || 'مخالفة القواعد'}`);
+                        showBigModal('⛔ تم حظر حسابك', `سبب الحظر: ${userData.banReason || 'مخالفة القواعد'}`, 'ban');
                         setTimeout(() => signOut(auth), 4000);
                     }
                 }
             });
             
-            await loadCourses(true);
-            loadLeaderboard(true);
+            showLeaderboard();
+            watchNotifications();
             loadAvailableQuizzes();
             updateUserStats();
-            startTimeTracking();
+            startTimeTracking(user.uid);
         } else {
             if (loginBtn) loginBtn.classList.remove('hidden');
             if (userMenu) userMenu.classList.add('hidden');
             if (userStatsPanel) userStatsPanel.classList.add('hidden');
-            if (userStatsGuest) userStatsGuest.classList.remove('hidden');
             stopTimeTracking();
-            await loadCourses(true);
-            loadLeaderboard(true);
         }
+        
+        displayLectures();
     });
-    
+
     window.signOutUser = () => signOut(auth);
     window.toggleTheme = () => {
         const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
@@ -971,112 +653,104 @@
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.className = savedTheme;
     
-    // تحميل أولي
-    loadCourses();
-    loadLeaderboard();
+    displayLectures();
 </script>
 
-<!-- ========== HTML Structure ========== -->
-<nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b border-white/10 py-3">
-    <div class="container mx-auto px-4 flex justify-between items-center flex-wrap gap-3">
+<nav class="fixed top-0 w-full z-50 backdrop-blur-xl border-b py-3">
+    <div class="container mx-auto px-4 flex justify-between items-center flex-wrap gap-2">
         <div class="flex items-center gap-3">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-11 h-11 rounded-full border-2 border-cyan-400 shadow-lg" alt="شعار يلا كيمياء" loading="lazy">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-12 h-12 rounded-full border-2 border-cyan-400">
             <div>
-                <h1 class="text-xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
+                <h1 class="text-xl md:text-2xl font-black bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
                 <p class="text-xs text-gray-500">مستر زياد مبروك</p>
             </div>
         </div>
-        <div class="hidden md:flex gap-8">
+        <div class="hidden md:flex gap-6">
             <a href="#" class="hover:text-cyan-500 transition font-medium">الرئيسية</a>
-            <a href="#courses" class="hover:text-cyan-500 transition font-medium">الكورسات</a>
+            <a href="#lectures" class="hover:text-cyan-500 transition font-medium">المحاضرات</a>
             <a href="#quizzes" class="hover:text-cyan-500 transition font-medium">الكويزات</a>
             <a href="#leaderboard" class="hover:text-cyan-500 transition font-medium">المتصدرين</a>
             <a href="#myStats" class="hover:text-cyan-500 transition font-medium">حسابي</a>
         </div>
-        <div class="flex gap-3 items-center">
-            <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full transition" aria-label="تبديل الوضع">🌓</button>
-            <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2 rounded-full text-sm font-bold shadow-md hover:scale-105 transition">🚀 دخول</button>
+        <div class="flex gap-2 items-center">
+            <button onclick="toggleTheme()" class="text-xl p-2 hover:bg-white/10 rounded-full transition">🌓</button>
+            <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-1.5 rounded-full text-sm font-bold shadow-md hover:scale-105 transition text-white">🚀 دخول</button>
             <div id="userMenu" class="hidden items-center gap-3">
                 <div class="text-right">
                     <span id="userName" class="text-sm font-bold"></span>
                     <div class="text-xs text-cyan-500">🔬 <span id="userPoints">0</span> نقطة</div>
                 </div>
-                <button onclick="signOutUser()" class="bg-red-500/20 hover:bg-red-500/30 px-4 py-2 rounded-full text-sm transition">خروج</button>
+                <button onclick="signOutUser()" class="bg-red-500/20 hover:bg-red-500/30 px-3 py-1 rounded-full text-sm transition">خروج</button>
             </div>
         </div>
     </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-    <div class="absolute top-1/4 left-10 w-96 h-96 bg-cyan-400 rounded-full filter blur-3xl opacity-15 float-logo"></div>
-    <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-15 float-logo" style="animation-delay: 2s;"></div>
+    <div class="absolute top-1/4 left-10 w-80 h-80 bg-cyan-400 rounded-full filter blur-3xl opacity-20 float-logo"></div>
+    <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl opacity-20 float-logo" style="animation-delay: 2s;"></div>
     
     <div class="container mx-auto px-4 text-center relative z-10">
         <div class="relative inline-block mb-8">
             <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full blur-2xl opacity-60" style="width: 280px; height: 280px; left: -20px; top: -20px;"></div>
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-cyan-400 shadow-2xl float-logo glow-border relative z-10" alt="مستر زياد مبروك" loading="lazy">
+            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-cyan-400 shadow-2xl float-logo glow-border relative z-10">
             <div class="absolute -bottom-3 -right-3 bg-green-500 rounded-full w-8 h-8 border-4 border-white shadow-xl z-20"></div>
         </div>
         
         <h1 class="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">يلا كيمياء</h1>
         <p class="text-2xl md:text-3xl mb-4">مع <span class="text-cyan-500 font-bold border-b-4 border-cyan-500">مستر زياد مبروك</span></p>
-        <p class="text-base max-w-2xl mx-auto text-gray-500 mb-8">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
+        <p class="text-base max-w-2xl mx-auto text-gray-600 mb-8">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
         
         <div class="flex gap-4 justify-center flex-wrap">
-            <a href="#courses" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">🎓 استكشف الكورسات</a>
-            <a href="#quizzes" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">📝 اختبر نفسك</a>
+            <a href="#lectures" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">🎓 استكشف المحاضرات</a>
+            <a href="#quizzes" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl text-white">📝 اختبر نفسك</a>
+            <a href="#leaderboard" class="bg-white/10 backdrop-blur-sm px-8 py-3 rounded-full font-bold text-lg hover:bg-white/20 transition">🏆 المتصدرين</a>
         </div>
     </div>
 </section>
 
-<!-- مميزات المنصة -->
-<section class="py-16">
+<section class="py-20">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-black text-center mb-10">✨ مميزات منصة يلا كيمياء</h2>
+        <h2 class="text-4xl font-black text-center mb-12">✨ مميزات منصة يلا كيمياء</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">🎥</div><h3 class="font-bold text-lg">فيديوهات HD</h3><p class="text-xs text-gray-500 mt-1">جودة عالية وشرح وافي</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">📄</div><h3 class="font-bold text-lg">ملفات PDF</h3><p class="text-xs text-gray-500 mt-1">ملخصات وأسئلة شاملة</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">🏆</div><h3 class="font-bold text-lg">نقاط كيمياء</h3><p class="text-xs text-gray-500 mt-1">كل 10 دقائق = نقطة</p></div>
-            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-4xl mb-3">⚡</div><h3 class="font-bold text-lg">كويزات تفاعلية</h3><p class="text-xs text-gray-500 mt-1">اختبر فهمك فوراً</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🎥</div><h3 class="font-bold text-lg">فيديوهات HD</h3><p class="text-sm text-gray-500">جودة عالية وشرح وافي</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">📄</div><h3 class="font-bold text-lg">ملفات PDF</h3><p class="text-sm text-gray-500">ملخصات وأسئلة شاملة</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🏆</div><h3 class="font-bold text-lg">نقاط كيمياء</h3><p class="text-sm text-gray-500">كل 10 دقائق = نقطة</p></div>
+            <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">⚡</div><h3 class="font-bold text-lg">كويزات تفاعلية</h3><p class="text-sm text-gray-500">اختبر فهمك فوراً</p></div>
         </div>
     </div>
 </section>
 
-<!-- الكورسات -->
-<section id="courses" class="py-20 bg-black/20">
+<section id="lectures" class="py-20 bg-black/10">
     <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-black text-center mb-4">📚 الكورسات المتاحة</h2>
-        <p class="text-center text-gray-500 mb-12">اختر كورسك وابدأ رحلة التعلم</p>
-        <div id="coursesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="text-center text-gray-400 col-span-3 py-12">جاري تحميل الكورسات...</div>
+        <h2 class="text-4xl font-black text-center mb-4">📚 المحاضرات</h2>
+        <p class="text-center text-gray-500 mb-12">اختر محاضرتك وابدأ التعلم</p>
+        <div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div>
         </div>
     </div>
 </section>
 
-<!-- الكويزات -->
 <section id="quizzes" class="py-20">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-black text-center mb-4">📝 الكويزات والامتحانات</h2>
         <p class="text-center text-gray-500 mb-12">اختبر معلوماتك واكسب نقاط إضافية</p>
         <div id="quizzesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="text-center text-gray-400 col-span-3 py-12">جاري تحميل الكويزات...</div>
+            <div class="text-center text-gray-400 col-span-3">جاري تحميل الكويزات...</div>
         </div>
     </div>
 </section>
 
-<!-- المتصدرين -->
-<section id="leaderboard" class="py-20 bg-black/20">
+<section id="leaderboard" class="py-20 bg-black/10">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-black text-center mb-4">🏆 المتصدرين</h2>
-        <p class="text-center text-gray-500 mb-12">أكثر الطلاب حصداً للنقاط</p>
+        <p class="text-center text-gray-500 mb-12">أكثر 3 طلاب حصداً للنقاط</p>
         <div class="max-w-2xl mx-auto glass-card rounded-2xl p-6">
             <div id="leaderboardList">جاري تحميل المتصدرين...</div>
         </div>
     </div>
 </section>
 
-<!-- حسابي الشخصي -->
 <section id="myStats" class="py-20">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-black text-center mb-4">👤 حسابي الشخصي</h2>
@@ -1089,33 +763,33 @@
                     <div id="progressFill" class="progress-fill"></div>
                 </div>
                 <div class="flex justify-between text-sm">
-                    <span>📚 تقدمك في المحاضرات: <span id="watchedCount">0</span>/10</span>
+                    <span>📚 المحاضرات: <span id="watchedCount">0</span>/6</span>
                     <span id="progressPercent">0%</span>
                 </div>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-3">📚</div>
-                    <div class="text-3xl font-bold text-cyan-400"><span id="watchedCountDup">0</span></div>
-                    <div class="text-sm mt-1">محاضرات تمت مشاهدتها</div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">📚</div>
+                    <div class="text-3xl font-bold text-cyan-400" id="watchedCount">0</div>
+                    <div class="text-sm">محاضرات تمت مشاهدتها</div>
                 </div>
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-3">📝</div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">📝</div>
                     <div class="text-3xl font-bold text-green-400" id="quizzesCompletedCount">0</div>
-                    <div class="text-sm mt-1">كويزات تم حلها</div>
+                    <div class="text-sm">كويزات تم حلها</div>
                 </div>
-                <div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition">
-                    <div class="text-5xl mb-3">🏆</div>
+                <div class="glass-card rounded-2xl p-6 text-center">
+                    <div class="text-4xl mb-3">🏆</div>
                     <div class="text-3xl font-bold text-yellow-400" id="userPointsStat">0</div>
-                    <div class="text-sm mt-1">نقاط الكيمياء</div>
+                    <div class="text-sm">نقاط الكيمياء</div>
                 </div>
             </div>
             
             <div class="glass-card rounded-2xl p-6">
                 <h3 class="text-2xl font-bold mb-4">🎖️ شارات الإنجاز</h3>
                 <div id="badgesContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <div class="text-center text-gray-400 col-span-2 py-4">📌 أكمل التحديات لكسب الشارات</div>
+                    <div class="text-center text-gray-500">📌 أكمل التحديات لكسب الشارات</div>
                 </div>
             </div>
         </div>
@@ -1126,32 +800,19 @@
     </div>
 </section>
 
-<!-- Footer -->
-<section class="py-12">
+<section class="py-16">
     <div class="container mx-auto px-4 text-center">
-        <h3 class="text-xl font-bold mb-5">📱 تابع منصة يلا كيمياء</h3>
+        <h3 class="text-2xl font-bold mb-6">📱 تابع منصة يلا كيمياء</h3>
         <div class="flex justify-center gap-4 flex-wrap">
-            <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" rel="noopener noreferrer" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-green-500/30">📱 واتساب</a>
-            <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener noreferrer" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-blue-500/30">📢 تليجرام</a>
+            <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-green-500/30 flex items-center gap-2">📱 واتساب</a>
+            <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full font-semibold border border-blue-500/30 flex items-center gap-2">📢 تليجرام</a>
         </div>
     </div>
 </section>
 
-<footer class="py-6 border-t border-white/10 text-center text-gray-500 text-sm">
+<footer class="py-8 border-t border-white/10 text-center text-gray-500 text-sm">
     <p>© 2026 يلا كيمياء - مستر زياد مبروك. جميع الحقوق محفوظة</p>
-    <p class="text-xs mt-2">⏱️ كل 10 دقائق تصفح = 1 نقطة كيمياء | زاكر أكثر، اكسب أكثر</p>
+    <p class="text-xs mt-1">⏱️ كل 10 دقائق تصفح = 1 نقطة كيمياء | زاكر أكثر، اكسب أكثر</p>
 </footer>
-
-<script>
-    // إصلاح duplicate ID في حسابي الشخصي
-    const watchedCountSpan = document.getElementById('watchedCount');
-    const watchedCountDupSpan = document.getElementById('watchedCountDup');
-    if (watchedCountSpan && watchedCountDupSpan) {
-        const observer = new MutationObserver(() => {
-            watchedCountDupSpan.textContent = watchedCountSpan.textContent;
-        });
-        observer.observe(watchedCountSpan, { childList: true, subtree: true, characterData: true });
-    }
-</script>
 </body>
 </html>
