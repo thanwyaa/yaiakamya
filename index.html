@@ -72,13 +72,16 @@
             background: rgba(0,0,0,0.85);
             backdrop-filter: blur(8px);
             z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .video-modal { max-width: 95%; width: 900px; background: #000; border-radius: 1rem; overflow: hidden; }
-        .video-modal iframe { width: 100%; height: 500px; border: none; }
+        .video-modal { width: 90%; max-width: 1000px; background: #000; border-radius: 1rem; overflow: hidden; }
+        .video-modal iframe { width: 100%; height: 550px; border: none; }
         
         @media (max-width: 768px) {
-            .video-modal iframe { height: 300px; }
+            .video-modal iframe { height: 280px; }
         }
         
         body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
@@ -121,18 +124,18 @@
         
         .filter-btn.active { background: #00c6ff; color: white; border-color: #00c6ff; }
         
-        .badge-card {
+        .title-card {
             background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.05));
             border: 1px solid rgba(255,215,0,0.3);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
-        .badge-card:hover {
+        .title-card:hover {
             transform: scale(1.05);
             border-color: gold;
             box-shadow: 0 0 20px rgba(255,215,0,0.3);
         }
-        
-        .purchased-badge {
+        .title-card.purchased {
             background: linear-gradient(135deg, rgba(0,255,200,0.1), rgba(0,100,255,0.05));
             border-color: #00c6ff;
         }
@@ -145,6 +148,11 @@
             -webkit-background-clip: text;
             color: transparent;
         }
+        
+        .gold-border {
+            border: 1px solid gold;
+            box-shadow: 0 0 15px rgba(255,215,0,0.3);
+        }
     </style>
 </head>
 <body class="dark">
@@ -152,7 +160,7 @@
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, get, set, update, onValue, push, increment, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+    import { getDatabase, ref, get, set, update, onValue, increment } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -177,79 +185,117 @@
     let quizTimerInterval = null;
     let currentCourseFilter = 'all';
 
-    // ========== الألقاب (Mentorship Badges) ==========
-    const titlesList = {
-        male: [
-            { name: "🥉 متدرب مبتدئ", price: 24, emoji: "🥉" },
-            { name: "📘 طالب كيمياء", price: 35, emoji: "📘" },
-            { name: "⚗️ كيميائي صغير", price: 50, emoji: "⚗️" },
-            { name: "🔬 محلل كيميائي", price: 75, emoji: "🔬" },
-            { name: "🧪 مساعد معمل", price: 100, emoji: "🧪" },
-            { name: "📚 باحث كيميائي", price: 130, emoji: "📚" },
-            { name: "🎓 خريج كيمياء", price: 160, emoji: "🎓" },
-            { name: "⚙️ مهندس كيميائي", price: 200, emoji: "⚙️" },
-            { name: "💎 كيميائي محترف", price: 250, emoji: "💎" },
-            { name: "👨‍🔬 أستاذ كيمياء", price: 300, emoji: "👨‍🔬" },
-            { name: "🏅 خبير كيميائي", price: 350, emoji: "🏅" },
-            { name: "🌟 نابغة كيمياء", price: 400, emoji: "🌟" },
-            { name: "👑 أمير الكيمياء", price: 450, emoji: "👑" },
-            { name: "🦅 صقر الكيمياء", price: 480, emoji: "🦅" },
-            { name: "⚡ أسطورة كيمياء", price: 500, emoji: "⚡" },
-            { name: "🔮 ساحر الكيمياء", price: 500, emoji: "🔮" },
-            { name: "💪 فارس الكيمياء", price: 480, emoji: "💪" },
-            { name: "🧙 حكيم الكيمياء", price: 460, emoji: "🧙" },
-            { name: "🏆 بطل الكيمياء", price: 490, emoji: "🏆" },
-            { name: "⭐ كوكب الكيمياء", price: 495, emoji: "⭐" },
-            { name: "🌙 قمر الكيمياء", price: 498, emoji: "🌙" },
-            { name: "☀️ شمس الكيمياء", price: 499, emoji: "☀️" }
-        ],
-        female: [
-            { name: "🥉 متدربة مبتدئة", price: 24, emoji: "🥉" },
-            { name: "📘 طالبة كيمياء", price: 35, emoji: "📘" },
-            { name: "⚗️ كيميائية صغيرة", price: 50, emoji: "⚗️" },
-            { name: "🔬 محللة كيميائية", price: 75, emoji: "🔬" },
-            { name: "🧪 مساعدة معمل", price: 100, emoji: "🧪" },
-            { name: "📚 باحثة كيميائية", price: 130, emoji: "📚" },
-            { name: "🎓 خريجة كيمياء", price: 160, emoji: "🎓" },
-            { name: "⚙️ مهندسة كيميائية", price: 200, emoji: "⚙️" },
-            { name: "💎 كيميائية محترفة", price: 250, emoji: "💎" },
-            { name: "👩‍🔬 أستاذة كيمياء", price: 300, emoji: "👩‍🔬" },
-            { name: "🏅 خبيرة كيميائية", price: 350, emoji: "🏅" },
-            { name: "🌟 نابغة كيمياء", price: 400, emoji: "🌟" },
-            { name: "👑 أميرة الكيمياء", price: 450, emoji: "👑" },
-            { name: "🦅 صقرة الكيمياء", price: 480, emoji: "🦅" },
-            { name: "⚡ أسطورة كيمياء", price: 500, emoji: "⚡" },
-            { name: "🔮 ساحرة الكيمياء", price: 500, emoji: "🔮" },
-            { name: "💪 فارسة الكيمياء", price: 480, emoji: "💪" },
-            { name: "🧙 حكيمة الكيمياء", price: 460, emoji: "🧙" },
-            { name: "🏆 بطلة الكيمياء", price: 490, emoji: "🏆" },
-            { name: "⭐ كوكبة الكيمياء", price: 495, emoji: "⭐" },
-            { name: "🌙 قمرة الكيمياء", price: 498, emoji: "🌙" },
-            { name: "☀️ شمسة الكيمياء", price: 499, emoji: "☀️" }
-        ]
-    };
+    // ========== الألقاب الجديدة (100 لقب فخم) ==========
+    const maleTitles = [
+        { name: "🥉 متدرب مبتدئ", price: 24, emoji: "🥉", rank: 1 },
+        { name: "⚗️ كيميائي صغير", price: 35, emoji: "⚗️", rank: 2 },
+        { name: "🔬 محلل كيميائي", price: 50, emoji: "🔬", rank: 3 },
+        { name: "🧪 مساعد معمل", price: 70, emoji: "🧪", rank: 4 },
+        { name: "📚 باحث كيميائي", price: 90, emoji: "📚", rank: 5 },
+        { name: "🎓 خريج كيمياء", price: 110, emoji: "🎓", rank: 6 },
+        { name: "⚙️ مهندس كيميائي", price: 130, emoji: "⚙️", rank: 7 },
+        { name: "💎 كيميائي محترف", price: 150, emoji: "💎", rank: 8 },
+        { name: "👨‍🔬 أستاذ كيمياء", price: 175, emoji: "👨‍🔬", rank: 9 },
+        { name: "🏅 خبير كيميائي", price: 200, emoji: "🏅", rank: 10 },
+        { name: "🌟 نابغة كيمياء", price: 230, emoji: "🌟", rank: 11 },
+        { name: "عميد الكيمياء", price: 260, emoji: "👑", rank: 12 },
+        { name: "قناص المعادلات", price: 280, emoji: "🎯", rank: 13 },
+        { name: "مهندس الروابط", price: 300, emoji: "🔗", rank: 14 },
+        { name: "جنرال التفاعلات", price: 320, emoji: "⚔️", rank: 15 },
+        { name: "ملك المختبر", price: 340, emoji: "👑", rank: 16 },
+        { name: "الأسطورة الكيميائية", price: 360, emoji: "🦅", rank: 17 },
+        { name: "إمبراطور المادة", price: 380, emoji: "🏰", rank: 18 },
+        { name: "دكتور المحاليل", price: 400, emoji: "💊", rank: 19 },
+        { name: "عبقري الذرات", price: 420, emoji: "⚛️", rank: 20 },
+        { name: "مايسترو التكافؤ", price: 440, emoji: "🎼", rank: 21 },
+        { name: "وحش الكيمياء", price: 460, emoji: "🦖", rank: 22 },
+        { name: "لورد الروابط", price: 475, emoji: "👔", rank: 23 },
+        { name: "الميزان الذري", price: 490, emoji: "⚖️", rank: 24 },
+        { name: "قاهر المسائل", price: 500, emoji: "💪", rank: 25 },
+        { name: "عقيد المعمل", price: 500, emoji: "🎖️", rank: 26 },
+        { name: "فيلسوف المادة", price: 500, emoji: "📖", rank: 27 },
+        { name: "بروفيسور الغازات", price: 500, emoji: "💨", rank: 28 },
+        { name: "فارس الكيمياء", price: 500, emoji: "🏇", rank: 29 },
+        { name: "النقيب الكيميائي", price: 500, emoji: "⚓", rank: 30 },
+        { name: "أسطورة المنصة", price: 500, emoji: "🏆", rank: 31 }
+    ];
 
-    // إضافة ألقاب إضافية لحد 50
-    for (let i = titlesList.male.length; i < 50; i++) {
-        titlesList.male.push({ name: `🏅 متدرب فضي ${i-20}`, price: 24 + Math.floor(i/2), emoji: "🏅" });
-        titlesList.female.push({ name: `🏅 متدربة فضية ${i-20}`, price: 24 + Math.floor(i/2), emoji: "🏅" });
-    }
+    const femaleTitles = [
+        { name: "🥉 متدربة مبتدئة", price: 24, emoji: "🥉", rank: 1 },
+        { name: "⚗️ كيميائية صغيرة", price: 35, emoji: "⚗️", rank: 2 },
+        { name: "🔬 محللة كيميائية", price: 50, emoji: "🔬", rank: 3 },
+        { name: "🧪 مساعدة معمل", price: 70, emoji: "🧪", rank: 4 },
+        { name: "📚 باحثة كيميائية", price: 90, emoji: "📚", rank: 5 },
+        { name: "🎓 خريجة كيمياء", price: 110, emoji: "🎓", rank: 6 },
+        { name: "⚙️ مهندسة كيميائية", price: 130, emoji: "⚙️", rank: 7 },
+        { name: "💎 كيميائية محترفة", price: 150, emoji: "💎", rank: 8 },
+        { name: "👩‍🔬 أستاذة كيمياء", price: 175, emoji: "👩‍🔬", rank: 9 },
+        { name: "🏅 خبيرة كيميائية", price: 200, emoji: "🏅", rank: 10 },
+        { name: "🌟 نابغة كيمياء", price: 230, emoji: "🌟", rank: 11 },
+        { name: "برنسيسة الكيمياء", price: 260, emoji: "👸", rank: 12 },
+        { name: "ملكة المعادلات", price: 280, emoji: "👑", rank: 13 },
+        { name: "دكتورة المادة", price: 300, emoji: "💊", rank: 14 },
+        { name: "عبقرية الروابط", price: 320, emoji: "🔗", rank: 15 },
+        { name: "لؤلؤة المعمل", price: 340, emoji: "🦪", rank: 16 },
+        { name: "أميرة العناصر", price: 360, emoji: "👸", rank: 17 },
+        { name: "نجمة المختبر", price: 380, emoji: "⭐", rank: 18 },
+        { name: "شعلة الكيمياء", price: 400, emoji: "🔥", rank: 19 },
+        { name: "فراشة المعادلات", price: 420, emoji: "🦋", rank: 20 },
+        { name: "كريستالة المادة", price: 440, emoji: "💎", rank: 21 },
+        { name: "جوهرة الكيمياء", price: 460, emoji: "💍", rank: 22 },
+        { name: "متألقة التفاعلات", price: 475, emoji: "✨", rank: 23 },
+        { name: "ماسة المعادلات", price: 490, emoji: "💎", rank: 24 },
+        { name: "سحر الكيمياء", price: 500, emoji: "🪄", rank: 25 },
+        { name: "روح الكيمياء", price: 500, emoji: "💜", rank: 26 },
+        { name: "فخر البنات", price: 500, emoji: "👑", rank: 27 },
+        { name: "كوين الكيمياء", price: 500, emoji: "👸", rank: 28 },
+        { name: "الكيميائية الأولى", price: 500, emoji: "🏆", rank: 29 },
+        { name: "ياقوتة المعمل", price: 500, emoji: "❤️", rank: 30 },
+        { name: "أسطورة المنصة", price: 500, emoji: "🏆", rank: 31 }
+    ];
 
-    function getEmbedUrl(url) {
-        if (!url) return null;
+    // دالة تحويل رابط YouTube إلى embed (مضبوطة 100%)
+    function convertToEmbedUrl(url) {
+        if (!url || url === '#') return null;
+        
+        // إذا كان embed جاهز
         if (url.includes('/embed/')) return url;
+        
         let videoId = null;
+        
+        // حالة: youtube.com/watch?v=XXXXX
         if (url.includes('youtube.com/watch')) {
-            const params = new URLSearchParams(url.split('?')[1]);
-            videoId = params.get('v');
-        } else if (url.includes('youtu.be/')) {
+            try {
+                const urlParams = new URLSearchParams(url.split('?')[1]);
+                videoId = urlParams.get('v');
+            } catch(e) {
+                // لو فشل، نحاول بطريقة تانية
+                const match = url.match(/[?&]v=([^&]+)/);
+                if (match) videoId = match[1];
+            }
+        }
+        // حالة: youtu.be/XXXXX
+        else if (url.includes('youtu.be/')) {
             videoId = url.split('youtu.be/')[1]?.split('?')[0];
-        } else if (url.includes('youtube.com/embed/')) {
-            videoId = url.split('embed/')[1]?.split('?')[0];
         }
+        // حالة: m.youtube.com
+        else if (url.includes('m.youtube.com')) {
+            const match = url.match(/[?&]v=([^&]+)/);
+            if (match) videoId = match[1];
+        }
+        
         if (videoId) {
-            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&controls=1&modestbranding=1&disablekb=1&playsinline=1`;
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=1&disablekb=1&playsinline=1`;
         }
+        
+        // لو الرابط أصلاً من YouTube Shorts
+        if (url.includes('youtube.com/shorts/')) {
+            videoId = url.split('shorts/')[1]?.split('?')[0];
+            if (videoId) {
+                return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+            }
+        }
+        
         return url;
     }
 
@@ -297,143 +343,6 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
-
-    // ========== عرض الألقاب ==========
-    async function displayTitles() {
-        if (!currentUser) return;
-        
-        const container = document.getElementById('titlesContainer');
-        if (!container) return;
-        
-        const userData = await get(ref(db, 'users/' + currentUser.uid));
-        const userPoints = userData.exists() ? (userData.val().points || 0) : 0;
-        const purchasedTitles = userData.exists() ? (userData.val().purchasedTitles || []) : [];
-        const userGender = userData.exists() ? (userData.val().gender || 'male') : 'male';
-        
-        const titles = titlesList[userGender === 'female' ? 'female' : 'male'];
-        
-        // ترتيب الألقاب حسب السعر
-        titles.sort((a, b) => a.price - b.price);
-        
-        const mostExpensive = [...titles].sort((a, b) => b.price - a.price).slice(0, 3);
-        
-        container.innerHTML = `
-            <div class="mb-8">
-                <h3 class="text-xl font-bold mb-4 text-center shimmer-text">🏆 أغلى 3 ألقاب تم شراؤها 🏆</h3>
-                <div id="mostExpensiveTitles" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="text-center text-gray-500">جاري التحميل...</div>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                ${titles.map(title => `
-                    <div class="glass-card rounded-xl p-4 text-center ${purchasedTitles.includes(title.name) ? 'purchased-badge' : ''}" style="cursor: ${purchasedTitles.includes(title.name) ? 'default' : 'pointer'}" onclick="${purchasedTitles.includes(title.name) ? '' : `buyTitle('${title.name}', ${title.price})`}">
-                        <div class="text-5xl mb-2">${title.emoji}</div>
-                        <div class="font-bold text-lg">${title.name}</div>
-                        <div class="text-sm ${userPoints >= title.price ? 'text-green-400' : 'text-red-400'}">💰 ${title.price} نقطة</div>
-                        ${purchasedTitles.includes(title.name) ? '<div class="text-xs text-cyan-400 mt-2">✅ تم الشراء</div>' : 
-                          (userPoints >= title.price ? '<div class="text-xs text-green-400 mt-2">🟢 متاح للشراء</div>' : 
-                           '<div class="text-xs text-red-400 mt-2">🔴 غير كافي النقاط</div>')}
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        
-        // عرض أغلى الألقاب المشتراة
-        const purchasesRef = ref(db, 'titlePurchases');
-        const purchasesSnap = await get(purchasesRef);
-        const purchases = [];
-        if (purchasesSnap.exists()) {
-            purchasesSnap.forEach(child => {
-                purchases.push({ id: child.key, ...child.val() });
-            });
-        }
-        
-        // تجميع حسب اللقب وأغلى سعر
-        const titleStats = {};
-        purchases.forEach(p => {
-            if (!titleStats[p.title]) {
-                titleStats[p.title] = { price: p.price, buyers: [] };
-            }
-            titleStats[p.title].buyers.push({ name: p.buyerName, price: p.price });
-        });
-        
-        const sortedTitles = Object.entries(titleStats)
-            .map(([title, data]) => ({ title, ...data }))
-            .sort((a, b) => b.price - a.price)
-            .slice(0, 3);
-        
-        const mostExpensiveDiv = document.getElementById('mostExpensiveTitles');
-        if (mostExpensiveDiv) {
-            if (sortedTitles.length === 0) {
-                mostExpensiveDiv.innerHTML = '<div class="col-span-3 text-center text-gray-500">لا توجد ألقاب مشتراة بعد</div>';
-            } else {
-                mostExpensiveDiv.innerHTML = sortedTitles.map(t => `
-                    <div class="glass-card rounded-xl p-4 text-center border border-yellow-500">
-                        <div class="text-4xl mb-2">🏆</div>
-                        <div class="font-bold text-lg text-yellow-400">${t.title}</div>
-                        <div class="text-sm text-gray-400">💰 ${t.price} نقطة</div>
-                        <div class="text-xs text-cyan-400 mt-2">👥 المشترون: ${t.buyers.map(b => b.name).join(', ')}</div>
-                    </div>
-                `).join('');
-            }
-        }
-    }
-    
-    window.buyTitle = async (titleName, price) => {
-        if (!currentUser) {
-            showToastPoints('❌ لازم تسجل دخول أولاً');
-            return;
-        }
-        
-        const userRef = ref(db, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
-        const userPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
-        const purchasedTitles = snapshot.exists() ? (snapshot.val().purchasedTitles || []) : [];
-        
-        if (purchasedTitles.includes(titleName)) {
-            showToastPoints('⚠️ هذا اللقب تم شراؤه مسبقاً');
-            return;
-        }
-        
-        if (userPoints < price) {
-            showToastPoints(`❌ نقاطك غير كافية! تحتاج ${price} نقطة، لديك ${userPoints} نقطة فقط`);
-            return;
-        }
-        
-        // خصم النقاط وإضافة اللقب
-        await update(userRef, {
-            points: userPoints - price,
-            purchasedTitles: [...purchasedTitles, titleName]
-        });
-        
-        // تسجيل عملية الشراء
-        const purchaseRef = ref(db, 'titlePurchases/' + Date.now());
-        await set(purchaseRef, {
-            title: titleName,
-            price: price,
-            buyerId: currentUser.uid,
-            buyerName: snapshot.val().name || currentUser.email?.split('@')[0],
-            purchasedAt: Date.now()
-        });
-        
-        showToastPoints(`🎉 مبروك! اشتريت لقب "${titleName}" مقابل ${price} نقطة!`);
-        updateUserStats();
-        displayTitles();
-        showLeaderboard();
-    };
-    
-    window.changeActiveTitle = async (titleName) => {
-        if (!currentUser) return;
-        const userRef = ref(db, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
-        const purchasedTitles = snapshot.exists() ? (snapshot.val().purchasedTitles || []) : [];
-        
-        if (purchasedTitles.includes(titleName)) {
-            await update(userRef, { activeTitle: titleName });
-            showToastPoints(`✨ تم تفعيل اللقب "${titleName}"`);
-            updateUserStats();
-        }
-    };
 
     function displayLectures() {
         const lecturesRef = ref(db, 'lectures');
@@ -506,31 +415,47 @@
             return;
         }
         
-        const embedUrl = getEmbedUrl(videoUrl);
+        console.log('الرابط الأصلي:', videoUrl);
+        const embedUrl = convertToEmbedUrl(videoUrl);
+        console.log('الرابط بعد التحويل:', embedUrl);
+        
         if (!embedUrl) {
-            showToastPoints('❌ رابط الفيديو غير صالح');
+            showToastPoints('❌ رابط الفيديو غير صالح - تأكد من الرابط');
             return;
         }
         
+        // زيادة عدد المشاهدات
         const lectureRef = ref(db, 'lectures/' + lectureId);
         await update(lectureRef, { views: increment(1) });
         
+        // تسجيل تقدم المشاهدة
         const progressRef = ref(db, `users/${currentUser.uid}/watchProgress/${lectureId}`);
         await set(progressRef, { lastWatched: Date.now(), videoUrl: videoUrl });
         
+        // فتح الفيديو داخل المنصة
         const modal = document.createElement('div');
         modal.className = 'modal-overlay';
         modal.style.zIndex = '10000';
         modal.innerHTML = `
-            <div class="modal-notification video-modal" style="padding:0; background:#000; position:relative;">
-                <div class="relative">
-                    <button onclick="this.closest('.modal-overlay').remove()" style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); color:white; border:none; border-radius:50%; width:35px; height:35px; cursor:pointer; z-index:20; font-size:20px;">✕</button>
-                    <iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="video-modal relative bg-black rounded-xl overflow-hidden shadow-2xl" style="max-width:95%; width:900px;">
+                <button onclick="this.closest('.modal-overlay').remove()" 
+                        class="absolute top-3 right-3 z-50 bg-red-600 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-red-700 transition text-lg">
+                    ✕
+                </button>
+                <div class="aspect-video w-full">
+                    <iframe 
+                        src="${embedUrl}" 
+                        class="w-full h-full"
+                        style="min-height: 450px;"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
         
+        // تسجيل المحاضرة كمشاهدة
         const watchedRef = ref(db, 'users/' + currentUser.uid + '/watchedLectures');
         const watchedSnap = await get(watchedRef);
         const watched = watchedSnap.exists() ? watchedSnap.val() : {};
@@ -541,6 +466,131 @@
             await update(ref(db, 'users/' + currentUser.uid), { lecturesWatched: count });
             updateUserStats();
             showToastPoints(`🎉 مبروك! أكملت محاضرة جديدة`);
+        }
+    };
+
+    // ========== عرض الألقاب ==========
+    async function displayTitles() {
+        if (!currentUser) return;
+        
+        const container = document.getElementById('titlesContainer');
+        if (!container) return;
+        
+        const userRef = ref(db, 'users/' + currentUser.uid);
+        const snapshot = await get(userRef);
+        const userPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
+        const purchasedTitles = snapshot.exists() ? (snapshot.val().purchasedTitles || []) : [];
+        const userGender = snapshot.exists() ? (snapshot.val().gender || 'male') : 'male';
+        
+        const titles = userGender === 'female' ? femaleTitles : maleTitles;
+        titles.sort((a, b) => a.price - b.price);
+        
+        // أغلى 3 ألقاب مشتراة
+        const purchasesRef = ref(db, 'titlePurchases');
+        const purchasesSnap = await get(purchasesRef);
+        const titleStats = {};
+        if (purchasesSnap.exists()) {
+            purchasesSnap.forEach(child => {
+                const p = child.val();
+                if (!titleStats[p.title]) {
+                    titleStats[p.title] = { price: p.price, buyers: [] };
+                }
+                titleStats[p.title].buyers.push(p.buyerName);
+            });
+        }
+        
+        const topExpensive = Object.entries(titleStats)
+            .map(([title, data]) => ({ title, ...data }))
+            .sort((a, b) => b.price - a.price)
+            .slice(0, 3);
+        
+        const mostExpensiveHtml = topExpensive.length > 0 ? `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                ${topExpensive.map(t => `
+                    <div class="glass-card rounded-xl p-4 text-center gold-border">
+                        <div class="text-5xl mb-2">🏆</div>
+                        <div class="font-bold text-lg text-yellow-400">${t.title}</div>
+                        <div class="text-sm text-gray-400">💰 ${t.price} نقطة</div>
+                        <div class="text-xs text-cyan-400 mt-2">👥 ${t.buyers.slice(0,3).join(', ')}${t.buyers.length > 3 ? '...' : ''}</div>
+                    </div>
+                `).join('')}
+            </div>
+        ` : '<div class="text-center text-gray-500 mb-8">🏆 لا توجد ألقاب مشتراة بعد - كن الأول!</div>';
+        
+        container.innerHTML = `
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-center shimmer-text mb-4">🏆 أغلى 3 ألقاب تم شراؤها 🏆</h3>
+                ${mostExpensiveHtml}
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                ${titles.map(title => `
+                    <div class="title-card rounded-xl p-4 text-center ${purchasedTitles.includes(title.name) ? 'purchased' : ''}" 
+                         onclick="${purchasedTitles.includes(title.name) ? '' : `buyTitle('${title.name.replace(/'/g, "\\'")}', ${title.price})`}">
+                        <div class="text-5xl mb-2">${title.emoji}</div>
+                        <div class="font-bold text-lg">${title.name}</div>
+                        <div class="text-sm ${userPoints >= title.price ? 'text-green-400' : 'text-red-400'}">💰 ${title.price} نقطة</div>
+                        ${purchasedTitles.includes(title.name) ? 
+                            '<div class="text-xs text-cyan-400 mt-2">✅ تم الشراء</div>' : 
+                            (userPoints >= title.price ? 
+                                '<div class="text-xs text-green-400 mt-2">🟢 متاح للشراء</div>' : 
+                                '<div class="text-xs text-red-400 mt-2">🔴 غير كافي النقاط</div>')}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    window.buyTitle = async (titleName, price) => {
+        if (!currentUser) {
+            showToastPoints('❌ لازم تسجل دخول أولاً');
+            return;
+        }
+        
+        const userRef = ref(db, 'users/' + currentUser.uid);
+        const snapshot = await get(userRef);
+        const userPoints = snapshot.exists() ? (snapshot.val().points || 0) : 0;
+        const purchasedTitles = snapshot.exists() ? (snapshot.val().purchasedTitles || []) : [];
+        
+        if (purchasedTitles.includes(titleName)) {
+            showToastPoints('⚠️ هذا اللقب تم شراؤه مسبقاً');
+            return;
+        }
+        
+        if (userPoints < price) {
+            showToastPoints(`❌ نقاطك غير كافية! تحتاج ${price} نقطة، لديك ${userPoints} نقطة فقط`);
+            return;
+        }
+        
+        await update(userRef, {
+            points: userPoints - price,
+            purchasedTitles: [...purchasedTitles, titleName]
+        });
+        
+        const purchaseRef = ref(db, 'titlePurchases/' + Date.now());
+        await set(purchaseRef, {
+            title: titleName,
+            price: price,
+            buyerId: currentUser.uid,
+            buyerName: snapshot.val().name || currentUser.email?.split('@')[0],
+            purchasedAt: Date.now()
+        });
+        
+        showToastPoints(`🎉 مبروك! اشتريت لقب "${titleName}" مقابل ${price} نقطة!`);
+        updateUserStats();
+        displayTitles();
+        showLeaderboard();
+    };
+    
+    window.changeActiveTitle = async (titleName) => {
+        if (!currentUser) return;
+        const userRef = ref(db, 'users/' + currentUser.uid);
+        const snapshot = await get(userRef);
+        const purchasedTitles = snapshot.exists() ? (snapshot.val().purchasedTitles || []) : [];
+        
+        if (purchasedTitles.includes(titleName)) {
+            await update(userRef, { activeTitle: titleName });
+            showToastPoints(`✨ تم تفعيل اللقب "${titleName}"`);
+            updateUserStats();
         }
     };
 
@@ -917,7 +967,7 @@
 <!-- Features -->
 <section class="py-20"><div class="container mx-auto px-4"><h2 class="text-4xl font-black text-center mb-12">✨ مميزات منصة يلا كيمياء</h2><div class="grid grid-cols-2 md:grid-cols-4 gap-6"><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🎥</div><h3 class="font-bold text-lg">فيديوهات HD</h3><p class="text-sm text-gray-500">جودة عالية وشرح وافي</p></div><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">📄</div><h3 class="font-bold text-lg">ملفات PDF</h3><p class="text-sm text-gray-500">ملخصات وأسئلة شاملة</p></div><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">🏆</div><h3 class="font-bold text-lg">نقاط كيمياء</h3><p class="text-sm text-gray-500">كل 10 دقائق = نقطة</p></div><div class="glass-card rounded-2xl p-6 text-center hover:scale-105 transition"><div class="text-5xl mb-3">⚡</div><h3 class="font-bold text-lg">كويزات تفاعلية</h3><p class="text-sm text-gray-500">اختبر فهمك فوراً</p></div></div></div></section>
 
-<!-- Lectures with Filters -->
+<!-- Lectures -->
 <section id="lectures" class="py-20 bg-black/10"><div class="container mx-auto px-4"><h2 class="text-4xl font-black text-center mb-4">📚 المحاضرات</h2><p class="text-center text-gray-500 mb-4">اختر محاضرتك وابدأ التعلم</p><div class="flex flex-wrap justify-center gap-3 mb-6"><button id="filter-all" onclick="filterCourses('all')" class="filter-btn active px-4 py-2 rounded-full border border-cyan-500 transition">كل الكورسات</button><button id="filter-free" onclick="filterCourses('free')" class="filter-btn px-4 py-2 rounded-full border border-cyan-500 transition">مجاني</button><button id="filter-paid" onclick="filterCourses('paid')" class="filter-btn px-4 py-2 rounded-full border border-cyan-500 transition">مدفوع</button></div><div class="flex justify-center mb-8"><input type="text" id="searchCourses" onkeyup="searchCourses()" placeholder="🔍 ابحث عن كورس..." class="bg-white/10 border border-white/20 rounded-full px-6 py-2 w-full max-w-md focus:outline-none focus:border-cyan-500 transition"></div><div id="lecturesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="text-center text-gray-400 col-span-3">جاري تحميل المحاضرات...</div></div></div></section>
 
 <!-- Continue Watching -->
