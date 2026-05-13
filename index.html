@@ -58,25 +58,49 @@
             max-width: 500px;
             text-align: center;
         }
-        .modal-overlay {
+        
+        /* مهم: الـ Modal بتاع الفيديو */
+        .video-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 999;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .video-modal { width: 90%; max-width: 1000px; background: #000; border-radius: 1rem; overflow: hidden; }
-        .video-modal iframe { width: 100%; height: 550px; border: none; }
-        
+        .video-modal-container {
+            background: #000;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 1000px;
+            overflow: hidden;
+            position: relative;
+        }
+        .video-modal-container iframe {
+            width: 100%;
+            height: 550px;
+            border: none;
+        }
+        .close-video-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 20;
+        }
         @media (max-width: 768px) {
-            .video-modal iframe { height: 280px; }
+            .video-modal-container iframe { height: 280px; }
         }
         
         body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
@@ -372,7 +396,7 @@
         });
     }
     
-    // ========== دالة watchLecture المصححة ==========
+    // ========== دالة watchLecture اللي بتظهر الـ Modal أكيد ==========
     window.watchLecture = async (lectureId, videoUrl) => {
         if (!currentUser) {
             showToastPoints('❌ لازم تسجل دخول أولاً');
@@ -389,7 +413,7 @@
         console.log('🔗 الرابط بعد التحويل:', embedUrl);
         
         if (!embedUrl) {
-            showToastPoints('❌ رابط الفيديو غير صالح - تأكد من الرابط في قاعدة البيانات');
+            showToastPoints('❌ رابط الفيديو غير صالح');
             return;
         }
         
@@ -401,28 +425,22 @@
         const progressRef = ref(db, `users/${currentUser.uid}/watchProgress/${lectureId}`);
         await set(progressRef, { lastWatched: Date.now(), videoUrl: videoUrl });
         
-        // فتح الفيديو داخل المنصة
-        const modal = document.createElement('div');
-        modal.className = 'modal-overlay';
-        modal.style.zIndex = '10000';
-        modal.innerHTML = `
-            <div class="video-modal relative bg-black rounded-xl overflow-hidden shadow-2xl">
-                <button onclick="this.closest('.modal-overlay').remove()" 
-                        class="absolute top-3 right-3 z-50 bg-red-600 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-red-700 transition text-lg font-bold">
-                    ✕
-                </button>
-                <div class="aspect-video w-full">
-                    <iframe 
-                        src="${embedUrl}" 
-                        class="w-full h-full"
-                        style="min-height: 450px;"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
+        // ========== إنشاء الـ Modal بطريقة مبسطة ومضمونة ==========
+        const overlay = document.createElement('div');
+        overlay.className = 'video-modal-overlay';
+        
+        overlay.innerHTML = `
+            <div class="video-modal-container">
+                <button class="close-video-btn" onclick="this.closest('.video-modal-overlay').remove()">✕</button>
+                <iframe 
+                    src="${embedUrl}"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
             </div>
         `;
-        document.body.appendChild(modal);
+        
+        document.body.appendChild(overlay);
         
         // تسجيل المحاضرة كمشاهدة
         const watchedRef = ref(db, 'users/' + currentUser.uid + '/watchedLectures');
