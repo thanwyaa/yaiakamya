@@ -26,10 +26,6 @@
             70% { transform: scale(1.05); }
             100% { transform: scale(1); opacity: 1; }
         }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
         
         .float-logo { animation: floatLogo 4s ease-in-out infinite; }
         .glow-border { animation: glowPulse 2s ease-in-out infinite; }
@@ -129,20 +125,9 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
-        .title-card:hover {
-            transform: scale(1.05);
-            border-color: gold;
-            box-shadow: 0 0 20px rgba(255,215,0,0.3);
-        }
-        .title-card.purchased {
-            background: linear-gradient(135deg, rgba(0,255,200,0.1), rgba(0,100,255,0.05));
-            border-color: #00c6ff;
-        }
-        
-        .gold-border {
-            border: 1px solid gold;
-            box-shadow: 0 0 15px rgba(255,215,0,0.3);
-        }
+        .title-card:hover { transform: scale(1.05); border-color: gold; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .title-card.purchased { background: linear-gradient(135deg, rgba(0,255,200,0.1), rgba(0,100,255,0.05)); border-color: #00c6ff; }
+        .gold-border { border: 1px solid gold; box-shadow: 0 0 15px rgba(255,215,0,0.3); }
     </style>
 </head>
 <body class="dark">
@@ -175,61 +160,40 @@
     let quizTimerInterval = null;
     let currentCourseFilter = 'all';
 
-    // ========== دالة تحويل رابط YouTube إلى Embed (مضبوطة 100%) ==========
-    function convertToEmbedUrl(url) {
+    // ========== دالة تحويل رابط YouTube إلى Embed (بسيطة ومضمونة) ==========
+    function getYouTubeEmbedUrl(url) {
         if (!url || url === '#') return null;
-        
-        // تنظيف الرابط من أي مسافات
-        url = url.trim();
-        
-        // إذا كان الرابط بالفعل embed
-        if (url.includes('/embed/')) return url;
         
         let videoId = null;
         
-        try {
-            // حالة 1: youtube.com/watch?v=XXXXX
-            if (url.includes('youtube.com/watch')) {
-                const urlObj = new URL(url);
-                videoId = urlObj.searchParams.get('v');
+        // حالة: youtube.com/watch?v=XXXXX
+        if (url.includes('youtube.com/watch')) {
+            const vIndex = url.indexOf('v=');
+            if (vIndex !== -1) {
+                videoId = url.substring(vIndex + 2);
+                const ampIndex = videoId.indexOf('&');
+                if (ampIndex !== -1) videoId = videoId.substring(0, ampIndex);
+                const qIndex = videoId.indexOf('?');
+                if (qIndex !== -1) videoId = videoId.substring(0, qIndex);
             }
-            // حالة 2: youtu.be/XXXXX
-            else if (url.includes('youtu.be/')) {
-                const match = url.match(/youtu\.be\/([^?&]+)/);
-                if (match) videoId = match[1];
+        }
+        // حالة: youtu.be/XXXXX
+        else if (url.includes('youtu.be/')) {
+            const beIndex = url.indexOf('youtu.be/');
+            if (beIndex !== -1) {
+                videoId = url.substring(beIndex + 9);
+                const qIndex = videoId.indexOf('?');
+                if (qIndex !== -1) videoId = videoId.substring(0, qIndex);
             }
-            // حالة 3: youtube.com/embed/XXXXX
-            else if (url.includes('youtube.com/embed/')) {
-                const match = url.match(/embed\/([^?&]+)/);
-                if (match) videoId = match[1];
-            }
-            // حالة 4: youtube.com/shorts/XXXXX
-            else if (url.includes('youtube.com/shorts/')) {
-                const match = url.match(/shorts\/([^?&]+)/);
-                if (match) videoId = match[1];
-            }
-            // حالة 5: m.youtube.com
-            else if (url.includes('m.youtube.com')) {
-                const urlObj = new URL(url);
-                videoId = urlObj.searchParams.get('v');
-            }
-        } catch(e) {
-            // لو فشل URL constructor، نحاول بـ Regex
-            const regexMatch = url.match(/[?&]v=([^&]+)/);
-            if (regexMatch) videoId = regexMatch[1];
-            
-            const youtuBeMatch = url.match(/youtu\.be\/([^?&]+)/);
-            if (youtuBeMatch) videoId = youtuBeMatch[1];
+        }
+        // حالة: youtube.com/embed/XXXXX (جاهز)
+        else if (url.includes('/embed/')) {
+            return url;
         }
         
         if (videoId) {
-            // إزالة أي معاملات إضافية من videoId
-            videoId = videoId.split('?')[0].split('&')[0];
-            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=1&disablekb=1&playsinline=1&enablejsapi=1`;
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=1&playsinline=1`;
         }
-        
-        // لو مش YouTube، حاول تستخدم الرابط الأصلي
-        if (url.startsWith('http')) return url;
         
         return null;
     }
@@ -408,6 +372,7 @@
         });
     }
     
+    // ========== دالة watchLecture المصححة ==========
     window.watchLecture = async (lectureId, videoUrl) => {
         if (!currentUser) {
             showToastPoints('❌ لازم تسجل دخول أولاً');
@@ -420,7 +385,7 @@
         }
         
         console.log('📹 الرابط الأصلي:', videoUrl);
-        const embedUrl = convertToEmbedUrl(videoUrl);
+        const embedUrl = getYouTubeEmbedUrl(videoUrl);
         console.log('🔗 الرابط بعد التحويل:', embedUrl);
         
         if (!embedUrl) {
@@ -661,7 +626,6 @@
         const titles = userGender === 'female' ? femaleTitles : maleTitles;
         titles.sort((a, b) => a.price - b.price);
         
-        // أغلى 3 ألقاب مشتراة
         const purchasesRef = ref(db, 'titlePurchases');
         const purchasesSnap = await get(purchasesRef);
         const titleStats = {};
@@ -755,19 +719,6 @@
         updateUserStats();
         displayTitles();
         showLeaderboard();
-    };
-    
-    window.changeActiveTitle = async (titleName) => {
-        if (!currentUser) return;
-        const userRef = ref(db, 'users/' + currentUser.uid);
-        const snapshot = await get(userRef);
-        const purchasedTitles = snapshot.exists() ? (snapshot.val().purchasedTitles || []) : [];
-        
-        if (purchasedTitles.includes(titleName)) {
-            await update(userRef, { activeTitle: titleName });
-            showToastPoints(`✨ تم تفعيل اللقب "${titleName}"`);
-            updateUserStats();
-        }
     };
 
     function watchNotifications() {
