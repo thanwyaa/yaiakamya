@@ -60,12 +60,6 @@
             box-shadow: 0 15px 35px rgba(0,200,255,0.2);
         }
         
-        .btn-disabled {
-            background: linear-gradient(135deg, #6c757d, #5a6268);
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
         body.dark { background: linear-gradient(135deg, #0a0a1a, #0f0f2a, #1a1a3a); color: #ffffff; }
         body.light { background: linear-gradient(135deg, #f5f7fc, #eef2f8, #e8edf5); color: #1a202c; }
         body.light .glass-card { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.08); color: #1a202c; }
@@ -93,16 +87,24 @@
             height: 100%;
             border: none;
         }
+        
+        .section-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body class="dark">
 
 <script type="module">
-    // ملاحظة: تم تعطيل تسجيل الدخول مؤقتاً بسبب أعمال التطوير والصيانة
-    // سيتم إعادة تفعيله فور الانتهاء من التحديثات
     console.log('🛠️ المنصة تحت التطوير - تم تعطيل تسجيل الدخول مؤقتاً');
     
-    // إخفاء أزرار تسجيل الدخول وعرض رسالة الصيانة
     window.toggleTheme = () => {
         const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
         document.body.className = newTheme;
@@ -112,10 +114,8 @@
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.body.className = savedTheme;
     
-    // عرض رسالة توضيحية عند محاولة الدخول
     window.showMaintenanceMsg = () => {
-        const msg = '🛠️ عذراً، المنصة تحت التطوير حاليًا\n\nسيتم إعادة فتح التسجيل قريبًا\nنعتذر عن الإزعاج، ومستمرون في التطوير لتقديم الأفضل 🌟';
-        alert(msg);
+        alert('🛠️ عذراً، المنصة تحت التطوير حاليًا\n\nسيتم إعادة فتح التسجيل قريبًا\nنعتذر عن الإزعاج 🌟');
     };
 </script>
 
@@ -130,7 +130,8 @@
         </div>
         <div class="hidden md:flex gap-8">
             <a href="#" class="hover:text-cyan-500 transition font-medium">الرئيسية</a>
-            <a href="#lecture" class="hover:text-cyan-500 transition font-medium">المحاضرة</a>
+            <a href="#lecture30" class="hover:text-cyan-500 transition font-medium">30 فكرة</a>
+            <a href="#lecture" class="hover:text-cyan-500 transition font-medium">تقيمات</a>
             <a href="#pdf" class="hover:text-cyan-500 transition font-medium">PDF</a>
         </div>
         <div class="flex gap-3 items-center">
@@ -157,8 +158,9 @@
         <p class="text-base max-w-2xl mx-auto text-gray-500 mb-8">أقوى منصة لتعليم الكيمياء للثانوية العامة والأزهر الشريف</p>
         
         <div class="flex gap-4 justify-center flex-wrap">
-            <a href="#lecture" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">🎓 شوف المحاضرة</a>
-            <a href="#pdf" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">📄 حمل PDF</a>
+            <a href="#lecture30" class="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">🎓 أهم 30 فكرة</a>
+            <a href="#lecture" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">📚 حل التقيمات</a>
+            <a href="#pdf" class="bg-gradient-to-r from-emerald-500 to-teal-600 px-8 py-3 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">📄 PDF</a>
         </div>
     </div>
 </section>
@@ -183,20 +185,125 @@
     </div>
 </section>
 
-<!-- المحاضرة -->
+<!-- ========== القسم الجديد: حل أهم 30 فكرة على المنهج كامل ========== -->
+<section id="lecture30" class="py-12">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-6">
+            <span class="section-badge">🎯 حصرياً على منصة يلا كيمياء</span>
+            <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">حل أهم 30 فكرة على المنهج كامل</h2>
+            <p class="text-gray-400 mt-2">مراجعة نهائية شاملة قبل الامتحانات | إعداد مستر زياد مبروك</p>
+        </div>
+        
+        <div class="lecture-card glass-card rounded-2xl overflow-hidden">
+            <!-- الصورة الجديدة -->
+            <div class="relative w-full">
+                <img src="https://videotourl.com/images/1778853801530-b2fbaa90-3ac7-49b8-a83a-c3c9f7fcbdea.jpg" 
+                     class="w-full h-auto object-cover" 
+                     alt="حل أهم 30 فكرة على المنهج الكامل - مستر زياد مبروك"
+                     style="max-height: 500px;">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end justify-start p-6">
+                    <div class="text-white">
+                        <span class="bg-gradient-to-r from-orange-500 to-red-500 px-3 py-1 rounded-full text-sm mb-2 inline-block">🔥 مراجعة نهائية 2026</span>
+                        <h2 class="text-2xl md:text-3xl font-bold">أهم 30 فكرة في الكيمياء</h2>
+                        <p class="text-gray-200">شرح شامل لكل الأفكار اللي بتجيب امتياز | مستر زياد مبروك</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                    <div>
+                        <span class="bg-orange-500/20 px-3 py-1 rounded-full text-sm">🔥 أهم 30 فكرة</span>
+                        <span class="bg-red-500/20 px-3 py-1 rounded-full text-sm ml-2">📖 مراجعة نهائية</span>
+                        <span class="bg-cyan-500/20 px-3 py-1 rounded-full text-sm ml-2">🎯 ضمان التفوق</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="https://youtu.be/MQd-b8n09VA?si=HNcFPeH-StQqfjpE" target="_blank" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-full text-sm font-bold transition">▶️ شوف على يوتيوب</a>
+                        <a href="#pdf30" class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-full text-sm font-bold transition">📄 حمل المذكرة</a>
+                    </div>
+                </div>
+                
+                <h3 class="text-xl font-bold mb-3">📝 عن المحاضرة:</h3>
+                <p class="text-gray-400 mb-4 leading-relaxed">
+                    🔥 أقوى مراجعة نهائية للكيمياء 2026 🔥<br>
+                    حل أهم 30 فكرة على المنهج الكامل والتي تأتي في الامتحانات بنسبة كبيرة.
+                    شرح مبسط ومباشر مع حلول نموذجية لكل فكرة، وملخص PDF شامل للمراجعة.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <span class="text-orange-400">✓</span> أهم 30 فكرة في المنهج
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <span class="text-orange-400">✓</span> حلول نموذجية وجاهزة للامتحان
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <span class="text-orange-400">✓</span> مراجعة شاملة لكل الأجزاء الصعبة
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <span class="text-orange-400">✓</span> مذكرة PDF جاهزة للتحميل
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- الفيديو الأول - أهم 30 فكرة -->
+<section class="py-12 bg-black/20">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8">🎥 أهم 30 فكرة - الشرح كامل</h2>
+        <div class="max-w-4xl mx-auto glass-card rounded-2xl p-4">
+            <div class="video-wrapper">
+                <iframe 
+                    src="https://www.youtube.com/embed/MQd-b8n09VA?autoplay=0&rel=0&modestbranding=1"
+                    title="أهم 30 فكرة على المنهج الكامل - مستر زياد مبروك"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <p class="text-center text-gray-400 mt-3 text-sm">⚡ أهم 30 فكرة في الكيمياء | مراجعة نهائية 2026</p>
+        </div>
+    </div>
+</section>
+
+<!-- مذكرة PDF - أهم 30 فكرة -->
+<section id="pdf30" class="py-12">
+    <div class="container mx-auto px-4">
+        <div class="glass-card rounded-2xl p-6 text-center">
+            <div class="text-6xl mb-4">📘</div>
+            <h2 class="text-2xl font-bold mb-3">تحميل مذكرة أهم 30 فكرة</h2>
+            <p class="text-gray-400 mb-6">مذكرة شاملة تحتوي على أهم 30 فكرة في منهج الكيمياء + الحلول النموذجية</p>
+            <a href="https://drive.google.com/file/d/14oWky8cu5tNy4e_r2Kxmcb1x-wCYxJqa/view?usp=sharing" 
+               target="_blank" 
+               class="inline-block bg-gradient-to-r from-orange-500 to-red-600 px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition shadow-lg">
+                📥 تحميل المذكرة الآن
+            </a>
+            <p class="text-xs text-gray-500 mt-4">من إعداد مستر زياد مبروك | مراجعة نهائية 2026</p>
+        </div>
+    </div>
+</section>
+
+<!-- ========== القسم القديم: حل التقيمات كاملة ========== -->
 <section id="lecture" class="py-12">
     <div class="container mx-auto px-4">
+        <div class="text-center mb-6">
+            <span class="section-badge" style="background: linear-gradient(135deg, #00c6ff, #0072ff);">📚 محتوى إضافي</span>
+            <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">حل التقيمات كاملة - الكيمياء</h2>
+            <p class="text-gray-400 mt-2">شرح وحل جميع تقيمات الفصل الدراسي الثاني 2026</p>
+        </div>
+        
         <div class="lecture-card glass-card rounded-2xl overflow-hidden">
-            <!-- الصورة الكبيرة -->
             <div class="relative w-full">
                 <img src="https://videotourl.com/images/1778696530575-9cda3850-e4f7-4064-a4e1-d9989c2de9a2.jpg" 
                      class="w-full h-auto object-cover" 
                      alt="حل التقيمات كاملة - مستر زياد مبروك"
-                     style="max-height: 500px;">
+                     style="max-height: 400px;">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-start p-6">
                     <div class="text-white">
                         <span class="bg-red-600 px-3 py-1 rounded-full text-sm mb-2 inline-block">📺 حصري</span>
-                        <h2 class="text-2xl md:text-3xl font-bold">حل التقيمات كاملة - الكيمياء</h2>
+                        <h2 class="text-2xl md:text-3xl font-bold">حل التقيمات كاملة</h2>
                         <p class="text-gray-200">مع مستر زياد مبروك | الترم التاني 2026</p>
                     </div>
                 </div>
@@ -218,32 +325,23 @@
                 <p class="text-gray-400 mb-4 leading-relaxed">
                     حل شامل ومفصل لجميع تقيمات الكيمياء للفصل الدراسي الثاني 2026.
                     شرح كامل لكل الأسئلة مع توضيح الإجابات النموذجية والأخطاء الشائعة.
-                    المحاضرة من إعداد مستر زياد مبروك، وتشمل مراجعة نهائية قبل الامتحانات.
                 </p>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div class="flex items-center gap-2 text-gray-400">
-                        <span class="text-cyan-400">✓</span> حل جميع التقيمات الوزارية
-                    </div>
-                    <div class="flex items-center gap-2 text-gray-400">
-                        <span class="text-cyan-400">✓</span> شرح الأفكار الصعبة بطريقة مبسطة
-                    </div>
-                    <div class="flex items-center gap-2 text-gray-400">
-                        <span class="text-cyan-400">✓</span> تدريبات مكثفة على أهم النقاط
-                    </div>
-                    <div class="flex items-center gap-2 text-gray-400">
-                        <span class="text-cyan-400">✓</span> ملخص PDF قابل للتحميل والطباعة
-                    </div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="text-cyan-400">✓</span> حل جميع التقيمات الوزارية</div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="text-cyan-400">✓</span> شرح الأفكار الصعبة بطريقة مبسطة</div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="text-cyan-400">✓</span> تدريبات مكثفة على أهم النقاط</div>
+                    <div class="flex items-center gap-2 text-gray-400"><span class="text-cyan-400">✓</span> ملخص PDF قابل للتحميل والطباعة</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- الفيديو داخل المنصة -->
+<!-- الفيديو الثاني - حل التقيمات -->
 <section class="py-12 bg-black/20">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-8">🎥 مشاهدة المحاضرة</h2>
+        <h2 class="text-3xl font-bold text-center mb-8">🎥 حل التقيمات كاملة</h2>
         <div class="max-w-4xl mx-auto glass-card rounded-2xl p-4">
             <div class="video-wrapper">
                 <iframe 
@@ -254,24 +352,24 @@
                     allowfullscreen>
                 </iframe>
             </div>
-            <p class="text-center text-gray-400 mt-3 text-sm">⚡ اضغط على الفيديو للمشاهدة | يفضل استخدام اتصال إنترنت جيد</p>
+            <p class="text-center text-gray-400 mt-3 text-sm">⚡ حل التقيمات كاملة | شرح وافي لكل الأسئلة</p>
         </div>
     </div>
 </section>
 
-<!-- PDF -->
+<!-- PDF الثاني - حل التقيمات -->
 <section id="pdf" class="py-12">
     <div class="container mx-auto px-4">
         <div class="glass-card rounded-2xl p-6 text-center">
             <div class="text-6xl mb-4">📄</div>
-            <h2 class="text-2xl font-bold mb-3">تحميل ملف PDF</h2>
+            <h2 class="text-2xl font-bold mb-3">تحميل PDF - حل التقيمات</h2>
             <p class="text-gray-400 mb-6">ملخص حل التقيمات الكاملة بصيغة PDF - جاهز للطباعة والمذاكرة</p>
             <a href="https://drive.google.com/file/d/1dJn2LQgLGhvc5YxABg9pVc0NgmuE_TFB/view?usp=sharing" 
                target="_blank" 
                class="inline-block bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition shadow-lg">
                 📥 تحميل PDF الآن
             </a>
-            <p class="text-xs text-gray-500 mt-4">الملف من إعداد مستر زياد مبروك | 70 صفحة شاملة</p>
+            <p class="text-xs text-gray-500 mt-4">من إعداد مستر زياد مبروك | 70 صفحة شاملة</p>
         </div>
     </div>
 </section>
@@ -281,15 +379,9 @@
     <div class="container mx-auto px-4 text-center">
         <h3 class="text-2xl font-bold mb-6">📱 تابع منصة يلا كيمياء</h3>
         <div class="flex justify-center gap-4 flex-wrap">
-            <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-green-500/30 flex items-center gap-2">
-                📱 واتساب
-            </a>
-            <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-blue-500/30 flex items-center gap-2">
-                📢 تليجرام
-            </a>
-            <a href="https://youtu.be/0maOk6zRp0s?si=m2Vub7ldHK1GhYVz" target="_blank" class="bg-red-600/20 hover:bg-red-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-red-500/30 flex items-center gap-2">
-                ▶️ يوتيوب
-            </a>
+            <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w" target="_blank" class="bg-green-600/20 hover:bg-green-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-green-500/30 flex items-center gap-2">📱 واتساب</a>
+            <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-blue-500/30 flex items-center gap-2">📢 تليجرام</a>
+            <a href="https://youtu.be/0maOk6zRp0s?si=m2Vub7ldHK1GhYVz" target="_blank" class="bg-red-600/20 hover:bg-red-600/30 transition-all px-6 py-3 rounded-full text-sm font-semibold border border-red-500/30 flex items-center gap-2">▶️ يوتيوب</a>
         </div>
     </div>
 </section>
