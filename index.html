@@ -61,103 +61,51 @@
       color: white;
     }
 
-    .card-hover {
-      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
-    }
-    .card-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-    }
+    .card-hover { transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2); }
+    .card-hover:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
 
-    .social-card {
-      transition: all 0.3s ease;
-    }
-    .social-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px -10px rgba(214,40,40,0.3);
-    }
+    .social-card { transition: all 0.3s ease; }
+    .social-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -10px rgba(214,40,40,0.3); }
 
-    .fade-in {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-    .fun-card {
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    .fun-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 20px 40px rgba(214,40,40,0.2);
-    }
+    .fun-card { transition: all 0.3s ease; cursor: pointer; }
+    .fun-card:hover { transform: scale(1.03); box-shadow: 0 20px 40px rgba(214,40,40,0.2); }
 
-    /* Course card */
-    .course-card {
-      transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
-    }
-    .course-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 25px 50px -12px rgba(214,40,40,0.25);
-    }
-    .course-card:hover .course-img {
-      transform: scale(1.05);
-    }
-    .course-img {
-      transition: transform 0.5s ease;
-    }
+    .course-card { transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2); }
+    .course-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(214,40,40,0.25); }
+    .course-card:hover .course-img { transform: scale(1.05); }
+    .course-img { transition: transform 0.5s ease; }
 
-    /* Leaderboard glow */
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(214,40,40,0.3); }
-      50% { box-shadow: 0 0 40px rgba(214,40,40,0.6); }
-    }
-    .leaderboard-glow {
-      animation: glow 2s ease-in-out infinite;
-    }
-    @keyframes float-slow {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .animate-float-slow {
-      animation: float-slow 4s ease-in-out infinite;
-    }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(214,40,40,0.3); } 50% { box-shadow: 0 0 40px rgba(214,40,40,0.6); } }
+    .leaderboard-glow { animation: glow 2s ease-in-out infinite; }
+    
+    @keyframes float-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .animate-float-slow { animation: float-slow 4s ease-in-out infinite; }
 
-    /* Quiz feedback */
-    @keyframes correctPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); background: #10b981; }
-      100% { transform: scale(1); }
-    }
-    @keyframes wrongShake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
+    @keyframes correctPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); background: #10b981; } 100% { transform: scale(1); } }
+    @keyframes wrongShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
     .correct-answer { animation: correctPulse 0.5s ease; }
     .wrong-answer { animation: wrongShake 0.5s ease; background: #ef4444 !important; color: white !important; }
 
     .image-placeholder {
       background: linear-gradient(135deg, #e9f2fa 0%, #d4e4f7 50%, #e9f2fa 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 5rem;
-      color: #D62828;
-      border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; color: #D62828; border-radius: 24px;
     }
 
-    /* Locked course overlay */
     .locked-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: white;
-      pointer-events: none;
+      position: absolute; inset: 0; background: rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: white; pointer-events: none;
+    }
+
+    .leaderboard-bg {
+      background-image: url('https://r2.image-upload.app/tyImg/1t2HoqVM.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     @media (max-width: 768px) {
@@ -171,13 +119,10 @@
   <nav class="glass-nav py-4 px-4 md:px-8 shadow-sm">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <a href="#" class="flex items-center gap-3 no-underline">
-        <img src="https://r2.image-upload.app/tyImg/Tyuyqlcy.jpg"
-             alt="يلا كيمياء"
-             class="w-12 h-12 rounded-xl object-cover shadow-lg border-2 border-red-500"
-             loading="eager">
+        <img src="https://r2.image-upload.app/tyImg/Tyuyqlcy.jpg" alt="يلا كيمياء" class="w-12 h-12 rounded-xl object-cover shadow-lg border-2 border-red-500" loading="eager">
         <span class="font-lalezar text-2xl md:text-3xl text-[#D62828] tracking-tight">يلا كيمياء</span>
       </a>
-      <div class="flex gap-3">
+      <div class="flex gap-3" id="navButtons">
         <a href="login.html" id="loginButton" class="btn-primary text-white font-bold py-2.5 px-6 rounded-full text-sm no-underline">
           <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
         </a>
@@ -185,14 +130,10 @@
     </div>
   </nav>
 
-  <!-- ========== HERO SECTION ========== -->
+  <!-- HERO SECTION -->
   <section class="max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-20 text-center fade-in">
     <div class="w-full max-w-2xl mx-auto mb-10 rounded-3xl overflow-hidden shadow-2xl">
-      <img src="https://r2.image-upload.app/tyImg/sAY1JzKU.png" alt="مستر زياد مبروك - يلا كيمياء" class="w-full h-auto object-cover" loading="eager"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-      <div class="image-placeholder hidden" style="min-height: 400px; display: none;">
-        <div class="text-center"><i class="fas fa-flask text-7xl mb-4"></i><p class="font-lalezar text-3xl text-gray-700">مستر زياد مبروك</p><p class="text-gray-500 mt-2">يلا كيمياء</p></div>
-      </div>
+      <img src="https://r2.image-upload.app/tyImg/sAY1JzKU.png" alt="مستر زياد مبروك" class="w-full h-auto object-cover" loading="eager">
     </div>
     <h1 class="font-lalezar text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#0B0F19] mb-6 leading-tight">ابدأ صح… وخلّي الكيمياء تبقى لعبتك 🔥</h1>
     <p class="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">مهما كان مستواك، هنا هتبدأ من الأول خالص… وهتمشي خطوة خطوة لحد ما توصل للفهم الحقيقي 💪</p>
@@ -202,7 +143,7 @@
     </div>
   </section>
 
-  <!-- ========== STATS SECTION ========== -->
+  <!-- STATS SECTION -->
   <section class="max-w-6xl mx-auto px-4 md:px-8 py-12">
     <div class="bg-gradient-to-r from-[#0B0F19] to-[#1a1f2e] rounded-3xl p-8 md:p-12 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center text-white fade-in shadow-2xl">
       <div class="p-4"><i class="fab fa-youtube text-5xl text-red-500 mb-4 block"></i><p class="font-lalezar text-4xl md:text-5xl text-[#FFD60A]">+1,800</p><p class="text-gray-400 mt-2 text-lg font-semibold">🎥 مشترك على YouTube</p></div>
@@ -211,14 +152,12 @@
     </div>
   </section>
 
-  <!-- ========== FUNNY HOOK SECTION ========== -->
+  <!-- FUNNY HOOK -->
   <section class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20">
     <div class="flex flex-col md:flex-row-reverse items-center gap-10 md:gap-16 fade-in">
       <div class="w-full md:w-1/2 flex justify-center">
         <div class="w-full max-w-md rounded-3xl overflow-hidden shadow-xl">
-          <img src="https://r2.image-upload.app/tyImg/WqzEX1Ee.png" alt="Funny Hook" class="w-full h-auto object-cover" loading="lazy"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="image-placeholder hidden" style="min-height: 350px; display: none;"><i class="fas fa-laugh-squint text-7xl"></i></div>
+          <img src="https://r2.image-upload.app/tyImg/WqzEX1Ee.png" alt="Funny Hook" class="w-full h-auto object-cover" loading="lazy">
         </div>
       </div>
       <div class="w-full md:w-1/2 text-center md:text-right">
@@ -231,14 +170,12 @@
     </div>
   </section>
 
-  <!-- ========== WHY FOLLOW SECTION ========== -->
+  <!-- WHY FOLLOW -->
   <section class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20">
     <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16 fade-in">
       <div class="w-full md:w-1/2 flex justify-center">
         <div class="w-full max-w-md rounded-3xl overflow-hidden shadow-xl">
-          <img src="https://r2.image-upload.app/tyImg/oCgbxIB4.png" alt="ليه تتابع" class="w-full h-auto object-cover" loading="lazy"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="image-placeholder hidden" style="min-height: 350px; display: none;"><i class="fas fa-graduation-cap text-7xl"></i></div>
+          <img src="https://r2.image-upload.app/tyImg/oCgbxIB4.png" alt="ليه تتابع" class="w-full h-auto object-cover" loading="lazy">
         </div>
       </div>
       <div class="w-full md:w-1/2 text-center md:text-right">
@@ -253,7 +190,7 @@
     </div>
   </section>
 
-  <!-- ========== FUN CARDS SECTION ========== -->
+  <!-- FUN CARDS -->
   <section class="max-w-6xl mx-auto px-4 md:px-8 py-12">
     <h2 class="font-lalezar text-3xl md:text-4xl text-center text-[#0B0F19] mb-12 fade-in">🎉 جرب واختبر نفسك</h2>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 fade-in">
@@ -263,124 +200,82 @@
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- 🆕 سيكشن 1: الكورسات (Courses Section - Dynamic from Firebase) -->
-  <!-- ========================================== -->
+  <!-- COURSES -->
   <section class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16">
     <h2 class="font-lalezar text-3xl md:text-4xl text-center text-[#0B0F19] mb-4 fade-in">📚 الكورسات المتاحة</h2>
     <p class="text-center text-gray-500 mb-12 fade-in">ابدأ رحلتك في الكيمياء مع كورسات منظمة ومبسطة</p>
-    
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 fade-in" id="coursesGrid">
-      <!-- Skeleton loading -->
       <div class="course-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 skeleton" style="height:380px"></div>
       <div class="course-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 skeleton" style="height:380px"></div>
       <div class="course-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 skeleton" style="height:380px"></div>
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- 🆕 سيكشن 2: الكويز التفاعلي (Quiz Section) -->
-  <!-- ========================================== -->
+  <!-- QUIZ -->
   <section class="max-w-4xl mx-auto px-4 md:px-8 py-12 md:py-16">
     <h2 class="font-lalezar text-3xl md:text-4xl text-center text-[#0B0F19] mb-4 fade-in">🧠 اختبر نفسك</h2>
     <p class="text-center text-gray-500 mb-10 fade-in">جرب السؤال ده وشوف هل إجابتك صح ولا غلط؟</p>
-    
     <div class="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-10 fade-in">
       <div class="text-center mb-8">
         <span class="inline-block bg-red-50 text-[#D62828] font-bold px-4 py-1.5 rounded-full text-sm mb-4">⚡ سؤال تجريبي</span>
         <h3 class="font-bold text-xl md:text-2xl text-[#0B0F19] leading-snug">ما هو العنصر الكيميائي الذي رمزه "Au"؟</h3>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="quizOptions">
-        <button onclick="checkAnswer(this, false)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200">
-          <span class="text-gray-400 ml-3">أ</span> الفضة
-        </button>
-        <button onclick="checkAnswer(this, true)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200">
-          <span class="text-gray-400 ml-3">ب</span> الذهب
-        </button>
-        <button onclick="checkAnswer(this, false)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200">
-          <span class="text-gray-400 ml-3">ج</span> الحديد
-        </button>
-        <button onclick="checkAnswer(this, false)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200">
-          <span class="text-gray-400 ml-3">د</span> النحاس
-        </button>
+        <button onclick="checkAnswer(this, false)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200"><span class="text-gray-400 ml-3">أ</span> الفضة</button>
+        <button onclick="checkAnswer(this, true)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200"><span class="text-gray-400 ml-3">ب</span> الذهب</button>
+        <button onclick="checkAnswer(this, false)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200"><span class="text-gray-400 ml-3">ج</span> الحديد</button>
+        <button onclick="checkAnswer(this, false)" class="quiz-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-2xl p-5 text-right font-semibold text-lg transition-all duration-200"><span class="text-gray-400 ml-3">د</span> النحاس</button>
       </div>
-
-      <div id="quizFeedback" class="text-center mt-6 hidden">
-        <p id="quizFeedbackText" class="font-bold text-xl"></p>
-      </div>
-
-      <div class="text-center mt-6">
-        <button onclick="resetQuiz()" class="text-[#D62828] font-semibold hover:underline text-sm">🔄 جرب سؤال تاني</button>
-      </div>
+      <div id="quizFeedback" class="text-center mt-6 hidden"><p id="quizFeedbackText" class="font-bold text-xl"></p></div>
+      <div class="text-center mt-6"><button onclick="resetQuiz()" class="text-[#D62828] font-semibold hover:underline text-sm">🔄 جرب سؤال تاني</button></div>
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- 🆕 سيكشن 3: المتصدرين (Leaderboard from Firebase) -->
-  <!-- ========================================== -->
-  <section class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16 relative">
-    <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center overflow-hidden">
-      <img src="https://r2.image-upload.app/tyImg/1t2HoqVM.png" alt="Leaderboard Background" class="w-full max-w-lg object-contain" loading="lazy">
+  <!-- LEADERBOARD - صورة ظاهرة بوضوح والكلام تحتها -->
+  <section class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16">
+    <h2 class="font-lalezar text-3xl md:text-4xl text-center text-[#0B0F19] mb-4 fade-in">🏆 المتصدرين</h2>
+    <p class="text-center text-gray-500 mb-8 fade-in">أفضل الطلاب في منصة يلا كيمياء</p>
+    
+    <!-- الصورة ظاهرة بوضوح -->
+    <div class="flex justify-center mb-8 fade-in">
+      <img src="https://r2.image-upload.app/tyImg/1t2HoqVM.png" alt="المتصدرين" class="w-full max-w-md rounded-3xl shadow-xl object-cover" loading="lazy">
     </div>
 
-    <h2 class="font-lalezar text-3xl md:text-4xl text-center text-[#0B0F19] mb-4 fade-in relative z-10">🏆 المتصدرين</h2>
-    <p class="text-center text-gray-500 mb-12 fade-in relative z-10">أفضل الطلاب في منصة يلا كيمياء</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-10 fade-in" id="leaderboardGrid">
-      <!-- Skeleton loading -->
+    <!-- الكلام تحت الصورة -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 fade-in" id="leaderboardGrid">
       <div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 text-center skeleton" style="height:280px"></div>
       <div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 text-center skeleton" style="height:280px"></div>
       <div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 text-center skeleton" style="height:280px"></div>
     </div>
 
-    <div class="text-center mt-10 relative z-10">
-      <a href="login.html" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg no-underline inline-flex items-center gap-2">
-        🚀 انضم وكن من المتصدرين
-      </a>
+    <div class="text-center mt-10">
+      <a href="login.html" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg no-underline inline-flex items-center gap-2">🚀 انضم وكن من المتصدرين</a>
     </div>
   </section>
 
-  <!-- ========== SOCIAL SECTION ========== -->
+  <!-- SOCIAL -->
   <section class="max-w-6xl mx-auto px-4 md:px-8 py-12">
     <h2 class="font-lalezar text-3xl md:text-4xl text-center text-[#0B0F19] mb-12 fade-in">انضم لمجتمعنا 🚀</h2>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 fade-in">
-      <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card bg-white p-8 rounded-3xl text-center no-underline text-[#0B0F19] border border-gray-100 shadow-sm hover:bg-[#229ED9] hover:text-white group transition-all duration-300">
-        <i class="fab fa-telegram-plane text-5xl text-[#229ED9] group-hover:text-white mb-4 block"></i><span class="font-bold text-lg">تيليجرام</span>
-      </a>
-      <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w/621" target="_blank" rel="noopener" class="social-card bg-white p-8 rounded-3xl text-center no-underline text-[#0B0F19] border border-gray-100 shadow-sm hover:bg-[#25D366] hover:text-white group transition-all duration-300">
-        <i class="fab fa-whatsapp text-5xl text-[#25D366] group-hover:text-white mb-4 block"></i><span class="font-bold text-lg">واتساب</span>
-      </a>
-      <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" rel="noopener" class="social-card bg-white p-8 rounded-3xl text-center no-underline text-[#0B0F19] border border-gray-100 shadow-sm hover:bg-[#FF0000] hover:text-white group transition-all duration-300">
-        <i class="fab fa-youtube text-5xl text-[#FF0000] group-hover:text-white mb-4 block"></i><span class="font-bold text-lg">يوتيوب</span>
-      </a>
+      <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card bg-white p-8 rounded-3xl text-center no-underline text-[#0B0F19] border border-gray-100 shadow-sm hover:bg-[#229ED9] hover:text-white group transition-all duration-300"><i class="fab fa-telegram-plane text-5xl text-[#229ED9] group-hover:text-white mb-4 block"></i><span class="font-bold text-lg">تيليجرام</span></a>
+      <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w/621" target="_blank" rel="noopener" class="social-card bg-white p-8 rounded-3xl text-center no-underline text-[#0B0F19] border border-gray-100 shadow-sm hover:bg-[#25D366] hover:text-white group transition-all duration-300"><i class="fab fa-whatsapp text-5xl text-[#25D366] group-hover:text-white mb-4 block"></i><span class="font-bold text-lg">واتساب</span></a>
+      <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" rel="noopener" class="social-card bg-white p-8 rounded-3xl text-center no-underline text-[#0B0F19] border border-gray-100 shadow-sm hover:bg-[#FF0000] hover:text-white group transition-all duration-300"><i class="fab fa-youtube text-5xl text-[#FF0000] group-hover:text-white mb-4 block"></i><span class="font-bold text-lg">يوتيوب</span></a>
     </div>
   </section>
 
-  <!-- ========== FOOTER ========== -->
+  <!-- FOOTER -->
   <footer class="bg-[#0B0F19] text-gray-400 py-10 px-4 md:px-8 mt-16">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-3">
-        <img src="https://r2.image-upload.app/tyImg/Tyuyqlcy.jpg" alt="يلا كيمياء" class="w-10 h-10 rounded-xl object-cover border border-red-500" loading="lazy">
-        <span class="font-lalezar text-2xl text-white">يلا كيمياء</span>
-      </div>
-      <div class="flex gap-6 text-sm">
-        <a href="#" class="hover:text-white transition">الرئيسية</a>
-        <a href="login.html" class="hover:text-white transition">تسجيل الدخول</a>
-        <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" class="hover:text-white transition">تيليجرام</a>
-        <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" class="hover:text-white transition">يوتيوب</a>
-      </div>
+      <div class="flex items-center gap-3"><img src="https://r2.image-upload.app/tyImg/Tyuyqlcy.jpg" alt="يلا كيمياء" class="w-10 h-10 rounded-xl object-cover border border-red-500" loading="lazy"><span class="font-lalezar text-2xl text-white">يلا كيمياء</span></div>
+      <div class="flex gap-6 text-sm"><a href="#" class="hover:text-white transition">الرئيسية</a><a href="login.html" class="hover:text-white transition">تسجيل الدخول</a></div>
       <p class="text-sm text-center">جميع الحقوق محفوظة © يلا كيمياء 2026</p>
     </div>
   </footer>
 
-  <!-- ========== FIREBASE + SECURITY LAYER ========== -->
+  <!-- FIREBASE -->
   <script type="module">
-    // ============================================
-    // AUTH MODULE (Security Layer)
-    // ============================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -396,246 +291,130 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ============================================
-    // SECURITY: DOM Protection
-    // ============================================
-    // Prevent console tampering (basic)
-    (function() {
-      const noop = () => {};
-      // Detect DevTools opening
-      let devtoolsOpen = false;
-      const threshold = 160;
-      setInterval(() => {
-        if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
-          if (!devtoolsOpen) {
-            devtoolsOpen = true;
-            console.clear();
-            console.log('%c⚠️ DevTools detected - Please close for your security', 'color: red; font-size: 20px;');
-          }
-        } else {
-          devtoolsOpen = false;
-        }
-      }, 1000);
-    })();
-
-    // ============================================
-    // AUTH MODULE: User State Management
-    // ============================================
     let currentUser = null;
 
+    // ✅ تعديل الزر حسب حالة المستخدم
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
-      const loginBtn = document.getElementById('loginButton');
+      const navButtons = document.getElementById('navButtons');
       
       if (user) {
-        // User is authenticated
-        if (loginBtn) {
-          loginBtn.innerHTML = '🔥 ادخل على حسابك';
-          loginBtn.href = 'dashboard.html';
-        }
-        // Load real data from Firebase
+        // مستخدم مسجل - زر تسجيل خروج
+        navButtons.innerHTML = `
+          <a href="dashboard.html" class="btn-primary text-white font-bold py-2.5 px-6 rounded-full text-sm no-underline">
+            📊 لوحة التحكم
+          </a>
+          <button onclick="handleLogout()" class="btn-outline font-bold py-2.5 px-6 rounded-full text-sm">
+            🚪 تسجيل خروج
+          </button>
+        `;
         loadCoursesFromFirebase();
         loadLeaderboardFromFirebase();
       } else {
-        // User is NOT authenticated - show static content
-        if (loginBtn) {
-          loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-          loginBtn.href = 'login.html';
-        }
-        // Show default content (skeleton already there)
+        // زائر - زر تسجيل دخول
+        navButtons.innerHTML = `
+          <a href="login.html" class="btn-primary text-white font-bold py-2.5 px-6 rounded-full text-sm no-underline">
+            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+          </a>
+        `;
       }
     });
 
-    // ============================================
-    // COURSES MODULE: Dynamic from Firestore
-    // ============================================
+    // ✅ دالة تسجيل الخروج
+    window.handleLogout = async () => {
+      await signOut(auth);
+      window.location.reload();
+    };
+
     async function loadCoursesFromFirebase() {
       if (!currentUser) return;
-      
       try {
         const coursesSnap = await getDocs(collection(db, 'courses'));
         const coursesGrid = document.getElementById('coursesGrid');
-        
-        if (coursesSnap.empty) {
-          // No courses in Firebase - keep skeleton
-          return;
-        }
-
+        if (coursesSnap.empty) return;
         coursesGrid.innerHTML = '';
         coursesSnap.forEach(doc => {
           const course = doc.data();
-          const isFree = course.isFree !== false; // Default to free if not set
-          const lessons = course.lessons || [];
-          
+          const isFree = course.isFree !== false;
           coursesGrid.innerHTML += `
             <div class="course-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 relative">
               <div class="overflow-hidden h-48 relative">
-                <img src="${course.image || 'https://placehold.co/600x400/1a1f2e/D62828?text=' + encodeURIComponent(course.title || 'كورس')}" 
-                     alt="${course.title || 'كورس'}" 
-                     class="course-img w-full h-full object-cover" 
-                     loading="lazy">
+                <img src="${course.image || 'https://placehold.co/600x400/1a1f2e/D62828?text=كورس'}" alt="${course.title}" class="course-img w-full h-full object-cover" loading="lazy">
                 ${!isFree ? '<div class="locked-overlay">🔒</div>' : ''}
               </div>
               <div class="p-5">
-                <span class="inline-block ${isFree ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} font-bold px-3 py-1 rounded-full text-xs mb-3">
-                  ${isFree ? '🆓 مجاني' : '🔒 مدفوع'}
-                </span>
-                <h3 class="font-bold text-xl mb-2">${course.title || 'كورس بدون عنوان'}</h3>
-                <p class="text-gray-500 text-sm mb-4 leading-relaxed">${course.description || 'لا يوجد وصف'}</p>
-                <div class="flex items-center justify-between text-xs text-gray-400 mb-4">
-                  <span><i class="far fa-play-circle ml-1"></i> ${lessons.length} درس</span>
-                  <span><i class="far fa-clock ml-1"></i> ${course.duration || '--'}</span>
-                </div>
-                ${isFree 
-                  ? `<a href="dashboard.html" class="btn-primary text-white font-bold py-3 rounded-xl text-sm w-full no-underline">ابدأ الآن 🚀</a>`
-                  : `<a href="login.html" class="btn-primary text-white font-bold py-3 rounded-xl text-sm w-full no-underline">اشترك الآن 🔥</a>`
-                }
+                <span class="inline-block ${isFree ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} font-bold px-3 py-1 rounded-full text-xs mb-3">${isFree ? '🆓 مجاني' : '🔒 مدفوع'}</span>
+                <h3 class="font-bold text-xl mb-2">${course.title}</h3>
+                <p class="text-gray-500 text-sm mb-4">${course.description || ''}</p>
+                ${isFree ? `<a href="dashboard.html" class="btn-primary text-white font-bold py-3 rounded-xl text-sm w-full no-underline">ابدأ الآن 🚀</a>` : `<a href="login.html" class="btn-primary text-white font-bold py-3 rounded-xl text-sm w-full no-underline">اشترك الآن 🔥</a>`}
               </div>
-            </div>
-          `;
+            </div>`;
         });
-      } catch (error) {
-        console.error('Error loading courses:', error);
-        // Keep skeleton on error
-      }
+      } catch (error) { console.error('Error:', error); }
     }
 
-    // ============================================
-    // LEADERBOARD MODULE: Real data from Firestore
-    // ============================================
     async function loadLeaderboardFromFirebase() {
       if (!currentUser) return;
-
       try {
         const usersQuery = query(collection(db, 'users'), orderBy('points', 'desc'), limit(3));
         const usersSnap = await getDocs(usersQuery);
-        const leaderboardGrid = document.getElementById('leaderboardGrid');
-        
-        if (usersSnap.empty) {
-          return; // Keep skeleton
-        }
-
+        const grid = document.getElementById('leaderboardGrid');
+        if (usersSnap.empty) return;
         const topUsers = [];
-        usersSnap.forEach(doc => {
-          topUsers.push({ id: doc.id, ...doc.data() });
-        });
-
-        // Ensure we have 3 users (fill with placeholders if needed)
-        while (topUsers.length < 3) {
-          topUsers.push({ name: 'طالب', points: 0, level: 1 });
-        }
-
+        usersSnap.forEach(doc => topUsers.push(doc.data()));
+        while (topUsers.length < 3) topUsers.push({ name: 'طالب', points: 0 });
+        
         const medals = [
           { order: 'order-1 md:order-2', border: 'border-2 border-[#FFD60A]', glow: 'leaderboard-glow', translate: 'md:-translate-y-4', badge: '🥇 الأول', badgeBg: 'bg-[#FFD60A] text-[#0B0F19]', points: 'text-[#D62828]', size: 'w-24 h-24', borderColor: 'border-[#FFD60A]', crown: '👑', crownBg: 'bg-[#FFD60A] text-[#0B0F19]' },
           { order: 'order-2 md:order-1', border: 'border border-gray-100', glow: '', translate: 'md:translate-y-6', badge: '🥈 الثاني', badgeBg: 'bg-gray-100 text-gray-700', points: 'text-gray-500', size: 'w-20 h-20', borderColor: 'border-gray-300', crown: '2', crownBg: 'bg-gray-400 text-white' },
           { order: 'order-3 md:order-3', border: 'border border-gray-100', glow: '', translate: 'md:translate-y-6', badge: '🥉 الثالث', badgeBg: 'bg-orange-50 text-orange-600', points: 'text-orange-400', size: 'w-20 h-20', borderColor: 'border-orange-400', crown: '3', crownBg: 'bg-orange-400 text-white' }
         ];
 
-        leaderboardGrid.innerHTML = '';
-        topUsers.forEach((user, index) => {
-          const m = medals[index];
-          leaderboardGrid.innerHTML += `
-            <div class="bg-white rounded-3xl shadow-lg ${m.border} p-6 text-center ${m.order} transform ${m.translate} ${m.glow}">
-              <div class="relative inline-block mb-4">
-                <img src="${user.photoURL || 'https://placehold.co/100x100/e9f2fa/0B0F19?text=' + (user.name?.[0] || 'ط')}" 
-                     alt="${user.name}" 
-                     class="${m.size} rounded-full object-cover border-4 ${m.borderColor} mx-auto" 
-                     loading="lazy">
-                <span class="absolute -top-3 -right-3 ${m.crownBg} w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shadow-xl">${m.crown}</span>
-              </div>
-              <span class="inline-block ${m.badgeBg} font-bold px-4 py-1 rounded-full text-xs mb-3">${m.badge}</span>
-              <h3 class="font-bold text-xl mb-1">${user.name || 'طالب'}</h3>
-              <p class="text-gray-500 text-sm mb-3">${user.level ? 'Lv.' + user.level : 'طالب مجتهد'}</p>
-              <p class="font-lalezar text-4xl ${m.points}">${(user.points || 0).toLocaleString()}</p>
-              <p class="text-gray-400 text-xs">XP نقطة</p>
+        grid.innerHTML = topUsers.map((user, i) => {
+          const m = medals[i];
+          return `<div class="bg-white rounded-3xl shadow-lg ${m.border} p-6 text-center ${m.order} transform ${m.translate} ${m.glow}">
+            <div class="relative inline-block mb-4">
+              <img src="${user.photoURL || 'https://placehold.co/100x100/e9f2fa/0B0F19?text=' + (user.name?.[0] || 'ط')}" alt="${user.name}" class="${m.size} rounded-full object-cover border-4 ${m.borderColor} mx-auto" loading="lazy">
+              <span class="absolute -top-3 -right-3 ${m.crownBg} w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shadow-xl">${m.crown}</span>
             </div>
-          `;
-        });
-      } catch (error) {
-        console.error('Error loading leaderboard:', error);
-      }
+            <span class="inline-block ${m.badgeBg} font-bold px-4 py-1 rounded-full text-xs mb-3">${m.badge}</span>
+            <h3 class="font-bold text-xl mb-1">${user.name}</h3>
+            <p class="font-lalezar text-4xl ${m.points}">${(user.points||0).toLocaleString()}</p>
+            <p class="text-gray-400 text-xs">XP نقطة</p>
+          </div>`;
+        }).join('');
+      } catch (error) { console.error('Error:', error); }
     }
-
-    // ============================================
-    // SECURITY: Input Validation Helper
-    // ============================================
-    function sanitizeInput(str) {
-      if (!str) return '';
-      return str.replace(/[<>"'&]/g, '').trim();
-    }
-
-    // Make load functions available globally
-    window.loadCoursesFromFirebase = loadCoursesFromFirebase;
-    window.loadLeaderboardFromFirebase = loadLeaderboardFromFirebase;
   </script>
 
-  <!-- ========== QUIZ LOGIC ========== -->
+  <!-- QUIZ LOGIC -->
   <script>
     let quizAnswered = false;
-
-    function checkAnswer(button, isCorrect) {
+    function checkAnswer(btn, correct) {
       if (quizAnswered) return;
       quizAnswered = true;
-
-      const feedback = document.getElementById('quizFeedback');
-      const feedbackText = document.getElementById('quizFeedbackText');
-      const allOptions = document.querySelectorAll('.quiz-option');
-
-      allOptions.forEach(btn => {
-        btn.disabled = true;
-        btn.classList.add('cursor-not-allowed');
-      });
-
-      if (isCorrect) {
-        button.classList.add('correct-answer');
-        button.style.background = '#10b981';
-        button.style.color = 'white';
-        button.style.borderColor = '#059669';
-        feedbackText.textContent = '🎉 إجابة صحيحة! أحسنت!';
-        feedbackText.style.color = '#10b981';
+      document.querySelectorAll('.quiz-option').forEach(b => { b.disabled = true; b.classList.add('cursor-not-allowed'); });
+      const fb = document.getElementById('quizFeedback');
+      const ft = document.getElementById('quizFeedbackText');
+      if (correct) {
+        btn.classList.add('correct-answer'); btn.style.background = '#10b981'; btn.style.color = 'white'; btn.style.borderColor = '#059669';
+        ft.textContent = '🎉 إجابة صحيحة! أحسنت!'; ft.style.color = '#10b981';
       } else {
-        button.classList.add('wrong-answer');
-        feedbackText.textContent = '❌ إجابة خاطئة! حاول مرة أخرى.';
-        feedbackText.style.color = '#ef4444';
-        
-        allOptions.forEach(btn => {
-          if (btn.textContent.includes('الذهب')) {
-            btn.style.background = '#10b981';
-            btn.style.color = 'white';
-            btn.style.borderColor = '#059669';
-            btn.classList.add('correct-answer');
-          }
-        });
+        btn.classList.add('wrong-answer');
+        ft.textContent = '❌ إجابة خاطئة! حاول مرة أخرى.'; ft.style.color = '#ef4444';
+        document.querySelectorAll('.quiz-option').forEach(b => { if (b.textContent.includes('الذهب')) { b.style.background = '#10b981'; b.style.color = 'white'; b.style.borderColor = '#059669'; b.classList.add('correct-answer'); } });
       }
-
-      feedback.classList.remove('hidden');
+      fb.classList.remove('hidden');
     }
-
     function resetQuiz() {
       quizAnswered = false;
-      const allOptions = document.querySelectorAll('.quiz-option');
-      allOptions.forEach(btn => {
-        btn.disabled = false;
-        btn.classList.remove('cursor-not-allowed', 'correct-answer', 'wrong-answer');
-        btn.style.background = '';
-        btn.style.color = '';
-        btn.style.borderColor = '';
-      });
+      document.querySelectorAll('.quiz-option').forEach(b => { b.disabled = false; b.classList.remove('cursor-not-allowed','correct-answer','wrong-answer'); b.style.background = ''; b.style.color = ''; b.style.borderColor = ''; });
       document.getElementById('quizFeedback').classList.add('hidden');
     }
   </script>
 
-  <!-- ========== FADE-IN ANIMATION ========== -->
   <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
-
+    const observer = new IntersectionObserver((e) => { e.forEach(x => { if (x.isIntersecting) { x.target.classList.add('visible'); observer.unobserve(x.target); } }); }, { threshold: 0.1 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     document.querySelector('.fade-in')?.classList.add('visible');
   </script>
