@@ -1,316 +1,617 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول | يلا كيمياء - مستر زياد مبروك</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        * { font-family: 'Tajawal', 'Cairo', sans-serif; }
-        
-        @keyframes floatBG { 0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-        @keyframes popIn { 0%{transform:scale(0);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
-        
-        .bg-float { animation: floatBG 20s ease infinite }
-        
-        .modal-terms { 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background: linear-gradient(135deg, #0f0c29, #302b63); 
-            border-radius: 2rem; 
-            padding: 2rem; 
-            z-index: 1000; 
-            border: 2px solid #00c6ff; 
-            max-width: 550px; 
-            width: 90%; 
-            animation: popIn 0.3s ease-out; 
-        }
-        
-        .overlay-terms { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            bottom: 0; 
-            background: rgba(0,0,0,0.9); 
-            backdrop-filter: blur(10px); 
-            z-index: 999; 
-        }
-        
-        /* تحسين نافذة الشروط - خط كبير وواضح */
-        .terms-text { 
-            height: auto; 
-            max-height: 350px; 
-            overflow-y: auto; 
-            background: rgba(255,255,255,0.1); 
-            border-radius: 1rem; 
-            padding: 1.5rem; 
-            margin: 1.2rem 0; 
-            font-size: 17px; 
-            line-height: 1.8; 
-            color: #e2e8f0;
-            text-align: center;
-        }
-        
-        .terms-text p {
-            font-size: 17px;
-            margin-bottom: 12px;
-        }
-        
-        .terms-text li {
-            font-size: 16px;
-            margin-bottom: 8px;
-            text-align: right;
-        }
-        
-        .terms-text .text-red-400, .terms-text .text-red-500 {
-            font-size: 20px;
-            font-weight: 800;
-        }
-        
-        .terms-text .text-cyan-400 {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        /* الوضع النهاري */
-        body.light .terms-text {
-            color: #1a202c;
-            background: rgba(0,0,0,0.05);
-        }
-        
-        body.light .modal-terms {
-            background: linear-gradient(135deg, #ffffff, #f0f4f8);
-            border: 2px solid #00c6ff;
-        }
-        
-        body.light .modal-terms h2 {
-            color: #1a202c !important;
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-        }
-    </style>
-</head>
-<body class="bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen flex items-center justify-center p-4" style="font-family: 'Tajawal', 'Cairo', sans-serif;">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https://r2.image-upload.app https://placehold.co data:; connect-src 'self' https://*.firebaseio.com https://*.firebaseapp.com https://identitytoolkit.googleapis.com;">
+  <title>يلا كيمياء | تسجيل الدخول</title>
 
-<script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-    import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #0a0f16;
+      overflow-x: hidden;
+      overflow-y: auto;
+      min-height: 100vh;
+    }
+    .font-lalezar { font-family: 'Lalezar', cursive; }
+    
+    .loading-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+      z-index: 9998; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1.5rem; transition: opacity 0.4s ease;
+    }
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .loading-spinner {
+      width: 60px; height: 60px; border: 4px solid rgba(255,255,255,0.1);
+      border-top-color: #d62828; border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .split-container { display: flex; flex-direction: row-reverse; min-height: 100vh; width: 100%; }
+    .image-half { width: 60%; height: 100vh; position: sticky; top: 0; background-color: #000; overflow: hidden; }
+    .form-half {
+      width: 40%; min-height: 100vh; background: linear-gradient(135deg, #0b1018 0%, #111827 50%, #0d1117 100%);
+      display: flex; align-items: center; justify-content: center; padding: 2rem;
+    }
+    .auth-image {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      filter: brightness(0.85) contrast(1.1);
+      transition: opacity 0.8s cubic-bezier(0.4,0,0.2,1);
+      animation: zoomSlow 20s infinite alternate;
+    }
+    @keyframes zoomSlow { from { transform: scale(1.02); } to { transform: scale(1.08); } }
+    
+    .glass-card {
+      background: rgba(15,23,42,0.75); backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 40px 80px rgba(0,0,0,0.7);
+      width: 100%; max-width: 460px; border-radius: 28px; padding: 2.5rem;
+    }
+    .custom-input {
+      transition: all 0.3s ease; background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1);
+    }
+    .custom-input:focus { border-color: #d62828; box-shadow: 0 0 25px rgba(214,40,40,0.2); background: rgba(214,40,40,0.05); outline: none; }
+    
+    .strength-meter { height: 6px; border-radius: 10px; background: #333; margin-top: 8px; overflow: hidden; }
+    .strength-meter-fill { height: 100%; border-radius: 10px; transition: width 0.3s ease, background 0.3s ease; }
+    
+    .btn-primary { background: linear-gradient(135deg, #ff2e2e 0%, #b91c1c 100%); box-shadow: 0 10px 30px rgba(255,0,0,0.3); transition: all 0.3s ease; }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(255,0,0,0.5); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: white; transition: all 0.3s ease; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.4); }
+    
+    .tab-active { background: linear-gradient(135deg, #d62828 0%, #c0392b 100%); box-shadow: 0 8px 25px rgba(214,40,40,0.4); color: white !important; transform: scale(1.05); transition: all 0.3s ease; }
+    
+    .toast-notification {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999;
+      min-width: 300px; text-align: center; padding: 16px 28px; border-radius: 16px;
+      font-weight: 600; font-size: 0.95rem; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      animation: slideDown 0.4s ease-out; pointer-events: none;
+    }
+    @keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-30px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    
+    .input-error { border-color: #ef4444 !important; }
+    
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      z-index: 9997; display: flex; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.hidden { display: none; }
+    
+    .form-half::-webkit-scrollbar { width: 5px; }
+    .form-half::-webkit-scrollbar-track { background: transparent; }
+    .form-half::-webkit-scrollbar-thumb { background: #d62828; border-radius: 10px; }
+
+    @media (max-width: 1024px) { .image-half { width: 50%; } .form-half { width: 50%; } }
+    @media (max-width: 768px) {
+      .split-container { flex-direction: column; }
+      .image-half { width: 100%; height: 40vh; min-height: 300px; position: relative; top: auto; }
+      .form-half { width: 100%; height: auto; padding: 1.5rem 1rem; }
+      .glass-card { max-width: 100%; padding: 1.8rem; border-radius: 24px; }
+      .auth-image { object-position: center 30%; }
+    }
+    @media (max-width: 480px) { .image-half { height: 35vh; min-height: 250px; } .glass-card { padding: 1.5rem; border-radius: 20px; } }
+  </style>
+</head>
+<body>
+
+  <div id="loadingOverlay" class="loading-overlay"><div class="loading-spinner"></div><p class="text-white font-bold text-lg">جاري التحميل...</p></div>
+  <div id="toastContainer"></div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal-overlay hidden">
+    <div class="glass-card" style="max-width:400px;padding:2rem">
+      <h3 class="font-lalezar text-2xl text-white text-center mb-4">استعادة كلمة المرور</h3>
+      <p class="text-gray-400 text-sm text-center mb-6">أدخل بريدك الإلكتروني</p>
+      <input type="email" id="resetEmail" class="custom-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 text-sm mb-4" placeholder="example@email.com">
+      <p id="resetEmailError" class="text-red-400 text-xs mb-3 hidden"></p>
+      <p id="resetRateLimit" class="text-yellow-400 text-xs mb-3 hidden"></p>
+      <button id="sendResetBtn" class="btn-primary w-full font-bold py-3 rounded-xl text-white text-sm flex items-center justify-center gap-2 mb-3"><span>إرسال الرابط</span><i class="fas fa-paper-plane"></i></button>
+      <button id="closeModalBtn" class="btn-secondary w-full font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2"><span>إلغاء</span></button>
+    </div>
+  </div>
+
+  <!-- Resend Verification Modal -->
+  <div id="resendVerificationModal" class="modal-overlay hidden">
+    <div class="glass-card" style="max-width:400px;padding:2rem">
+      <h3 class="font-lalezar text-2xl text-white text-center mb-4">إعادة إرسال التفعيل</h3>
+      <p class="text-gray-400 text-sm text-center mb-6">أدخل بريدك الإلكتروني</p>
+      <input type="email" id="resendVerificationEmail" class="custom-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 text-sm mb-4" placeholder="example@email.com">
+      <p id="resendVerificationError" class="text-red-400 text-xs mb-3 hidden"></p>
+      <p id="resendRateLimit" class="text-yellow-400 text-xs mb-3 hidden"></p>
+      <button id="sendVerificationBtn" class="btn-primary w-full font-bold py-3 rounded-xl text-white text-sm flex items-center justify-center gap-2 mb-3"><span>إرسال رابط التفعيل</span><i class="fas fa-envelope"></i></button>
+      <button id="closeVerificationModalBtn" class="btn-secondary w-full font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2"><span>إلغاء</span></button>
+    </div>
+  </div>
+
+  <div class="split-container">
+    <div class="image-half">
+      <img id="loginImage" src="https://r2.image-upload.app/tyImg/qZhlMXe2.png" alt="تسجيل الدخول" class="auth-image" style="opacity:1" loading="eager">
+      <img id="registerImage" src="https://r2.image-upload.app/tyImg/FTtj8a4k.png" alt="إنشاء حساب" class="auth-image" style="opacity:0" loading="lazy">
+      <div class="absolute inset-0 bg-gradient-to-l from-black/80 via-black/30 to-transparent pointer-events-none"></div>
+      <div class="absolute bottom-8 left-8 md:bottom-12 md:left-12 text-white z-10">
+        <h2 class="font-lalezar text-3xl md:text-4xl lg:text-5xl drop-shadow-lg mb-3">الكيمياء أسهل</h2>
+        <p class="text-base md:text-lg text-gray-200 drop-shadow mb-4">مع مستر زياد مبروك</p>
+        <div class="flex gap-6">
+          <div class="text-center"><p class="font-lalezar text-2xl text-red-400">+25K</p><p class="text-sm text-gray-400">طالب</p></div>
+          <div class="text-center"><p class="font-lalezar text-2xl text-red-400">+500</p><p class="text-sm text-gray-400">محاضرة</p></div>
+          <div class="text-center"><p class="font-lalezar text-2xl text-red-400">98%</p><p class="text-sm text-gray-400">رضا</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-half">
+      <div class="glass-card">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-red-600 to-red-800 shadow-2xl shadow-red-500/25 mb-4">
+            <img src="https://r2.image-upload.app/tyImg/Tyuyqlcy.jpg" alt="يلا كيمياء" class="w-14 h-14 rounded-xl object-cover border-2 border-white/20" loading="eager">
+          </div>
+          <h1 class="font-lalezar text-3xl md:text-4xl text-white mb-1">يلا كيمياء</h1>
+          <p class="text-gray-400 text-sm">منصة مستر زياد مبروك التعليمية</p>
+        </div>
+
+        <div class="flex bg-white/5 rounded-2xl p-1.5 mb-8">
+          <button id="loginTabBtn" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-300 tab-active"><i class="fas fa-sign-in-alt ml-2"></i>تسجيل الدخول</button>
+          <button id="registerTabBtn" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-300 text-gray-400 hover:text-white"><i class="fas fa-user-plus ml-2"></i>إنشاء حساب</button>
+        </div>
+
+        <form id="loginForm" class="space-y-5" novalidate>
+          <div>
+            <label class="block text-sm font-semibold text-gray-300 mb-2"><i class="fas fa-envelope ml-1 text-red-400"></i>البريد الإلكتروني</label>
+            <input type="email" id="loginEmail" autocomplete="email" required class="custom-input w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm" placeholder="example@email.com">
+            <p id="loginEmailError" class="text-red-400 text-xs mt-1.5 hidden"></p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-300 mb-2"><i class="fas fa-lock ml-1 text-red-400"></i>كلمة المرور</label>
+            <div class="relative">
+              <input type="password" id="loginPassword" autocomplete="current-password" required class="custom-input w-full rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm" placeholder="••••••••">
+              <button type="button" id="toggleLoginPassword" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-2"><i class="far fa-eye"></i></button>
+            </div>
+            <p id="loginPasswordError" class="text-red-400 text-xs mt-1.5 hidden"></p>
+          </div>
+          <div class="flex justify-between items-center" dir="ltr">
+            <button type="button" id="forgotPasswordBtn" class="text-red-400 hover:text-red-300 text-xs font-semibold transition">نسيت كلمة المرور؟</button>
+            <button type="button" id="resendVerificationBtn" class="text-yellow-400 hover:text-yellow-300 text-xs font-semibold transition">إعادة إرسال التفعيل</button>
+          </div>
+          <button type="submit" id="loginSubmitBtn" class="btn-primary w-full font-bold py-4 rounded-xl text-white text-base shadow-2xl flex items-center justify-center gap-2 mt-2"><span>تسجيل الدخول</span><i class="fas fa-arrow-left"></i></button>
+          <p id="loginBlockMsg" class="text-yellow-400 text-sm text-center hidden bg-yellow-400/10 py-3 rounded-xl"></p>
+        </form>
+
+        <form id="registerForm" class="space-y-4 hidden" novalidate>
+          <div>
+            <label class="block text-sm font-semibold text-gray-300 mb-2"><i class="fas fa-user ml-1 text-red-400"></i>الاسم الكامل</label>
+            <input type="text" id="regName" autocomplete="name" required class="custom-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 text-sm" placeholder="أدخل الاسم ثلاثي (عربي)">
+            <p id="regNameError" class="text-red-400 text-xs mt-1.5 hidden"></p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-semibold text-gray-300 mb-2"><i class="fas fa-mobile-alt ml-1 text-red-400"></i>رقم الطالب</label>
+              <input type="tel" id="regStudentPhone" autocomplete="tel" required class="custom-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 text-sm" placeholder="01xxxxxxxxx" maxlength="11">
+              <p id="regStudentPhoneError" class="text-red-400 text-xs mt-1.5 hidden"></p>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-300 mb-2"><i class="fas fa-phone ml-1 text-red-400"></i>ولي الأمر</label>
+              <input type="tel" id="regParentPhone" autocomplete="tel" required class="custom-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 text-sm" placeholder="01xxxxxxxxx" maxlength="11">
+              <p id="regParentPhoneError" class="text-red-400 text-xs mt-1.5 hidden"></p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-300 mb-2"><i class="fas fa-envelope ml-1 text-red-400"></i>البريد الإلكتروني</label>
+            <input type="email" id="regEmail" autocomplete="email" required class="custom-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 text-sm" placeholder="example@email.com">
+            <p id="regEmailError" class="text-red-400 text-xs mt-1.5 hidden"></p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-300 mb-2"><i class="fas fa-lock ml-1 text-red-400"></i>كلمة المرور</label>
+            <div class="relative">
+              <input type="password" id="regPassword" autocomplete="new-password" required class="custom-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-500 text-sm" placeholder="Abc@1234">
+              <button type="button" id="toggleRegPassword" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition p-2"><i class="far fa-eye"></i></button>
+            </div>
+            <div class="strength-meter"><div class="strength-meter-fill" id="strengthFill" style="width:0%"></div></div>
+            <p id="strengthText" class="text-xs mt-1 text-gray-500"></p>
+            <p id="regPasswordError" class="text-red-400 text-xs mt-1.5 hidden"></p>
+          </div>
+          <button type="submit" id="registerSubmitBtn" class="btn-primary w-full font-bold py-4 rounded-xl text-white text-base shadow-2xl flex items-center justify-center gap-2 mt-2"><span>إنشاء الحساب</span><i class="fas fa-user-plus"></i></button>
+        </form>
+
+        <p class="text-center text-gray-500 text-xs mt-8">© 2026 يلا كيمياء | جميع الحقوق محفوظة</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
+    ============================================
+    SECURITY ARCHITECTURE NOTE
+    ============================================
+    This file contains ALL security layers.
+    For production, split into:
+    - /js/auth.js      (Firebase logic)
+    - /js/validate.js  (validation + sanitize)
+    - /js/security.js  (rate limit + abuse)
+    - /js/ui.js        (toast + loading)
+    
+    SERVER-SIDE REQUIRED (Cloud Functions):
+    - Rate limiting by IP
+    - Block email writing (client only reads)
+    - Email verification API
+    ============================================
+  -->
+  
+  <script type="module">
+    // ============================================
+    // SECURITY MODULE: Rate Limiting + Sanitize
+    // ============================================
+    const Security = {
+      rateLimitStore: {},
+      checkRateLimit(action, max = 1, windowMs = 120000) {
+        const now = Date.now(), key = `rl_${action}`;
+        if (!this.rateLimitStore[key]) {
+          try { this.rateLimitStore[key] = JSON.parse(localStorage.getItem(key) || '[]'); } 
+          catch { this.rateLimitStore[key] = []; }
+        }
+        this.rateLimitStore[key] = this.rateLimitStore[key].filter(t => now - t < windowMs);
+        if (this.rateLimitStore[key].length >= max) return false;
+        this.rateLimitStore[key].push(now);
+        try { localStorage.setItem(key, JSON.stringify(this.rateLimitStore[key])); } catch {}
+        return true;
+      },
+      sanitize(str) {
+        return typeof DOMPurify !== 'undefined' 
+          ? DOMPurify.sanitize(str, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim() 
+          : str.replace(/[<>"'&]/g, '').trim();
+      }
+    };
+
+    // ============================================
+    // VALIDATION MODULE
+    // ============================================
+    const Validation = {
+      email: e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e),
+      phone: p => /^01[0-9]{9}$/.test(p),
+      arabicName(s) {
+        const t = s.trim();
+        if (t.length < 6) return false;
+        const w = t.split(/\s+/).filter(Boolean);
+        if (w.length < 3) return false;
+        return w.every(x => /^[\u0600-\u06FF]{2,}$/.test(x));
+      },
+      strongPassword(p) {
+        return p.length >= 8 && /[a-z]/.test(p) && /[A-Z]/.test(p) && /[0-9]/.test(p) && /[^a-zA-Z0-9]/.test(p);
+      },
+      passwordEntropy(p) {
+        if (!p.length) return 0;
+        const cs = (/[a-z]/.test(p)?26:0) + (/[A-Z]/.test(p)?26:0) + (/[0-9]/.test(p)?10:0) + (/[^a-zA-Z0-9]/.test(p)?32:0);
+        return p.length * Math.log2(Math.max(cs, 1));
+      }
+    };
+
+    // ============================================
+    // UI MODULE: Toast + Loading
+    // ============================================
+    const UI = {
+      showToast(msg, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500', warning: 'bg-yellow-500' };
+        const t = document.createElement('div');
+        t.className = `toast-notification ${colors[type]} text-white`;
+        t.textContent = msg;
+        document.getElementById('toastContainer').appendChild(t);
+        setTimeout(() => t.remove(), 5000);
+      },
+      showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); },
+      hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); },
+      clearErrors() {
+        document.querySelectorAll('[id$="Error"]').forEach(e => e.classList.add('hidden'));
+        document.querySelectorAll('input').forEach(i => i.classList.remove('input-error'));
+        document.getElementById('loginBlockMsg').classList.add('hidden');
+      },
+      setButton(btn, loading) {
+        if (!UI._locks) UI._locks = new Set();
+        if (loading) {
+          if (UI._locks.has(btn)) return;
+          UI._locks.add(btn);
+          btn.disabled = true;
+          btn.dataset.o = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+          btn.classList.add('opacity-70');
+        } else {
+          UI._locks.delete(btn);
+          btn.disabled = false;
+          btn.innerHTML = btn.dataset.o || btn.innerHTML;
+          btn.classList.remove('opacity-70');
+        }
+      }
+    };
+
+    // ============================================
+    // FIREBASE INIT
+    // ============================================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getDatabase, ref, set, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
-        authDomain: "yalla-chemistry-github.firebaseapp.com",
-        projectId: "yalla-chemistry-github",
-        storageBucket: "yalla-chemistry-github.firebasestorage.app",
-        messagingSenderId: "112757887385",
-        appId: "1:112757887385:web:eb77f8fd77bf5503fc4308"
+      apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
+      authDomain: "yalla-chemistry-github.firebaseapp.com",
+      databaseURL: "https://yalla-chemistry-github-default-rtdb.firebaseio.com",
+      projectId: "yalla-chemistry-github",
+      storageBucket: "yalla-chemistry-github.firebasestorage.app",
+      messagingSenderId: "112757887385",
+      appId: "1:112757887385:web:eb77f8fd77bf5503fc4308",
+      measurementId: "G-Y1HCV6CYV3"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let pendingSignup = null;
+    // ============================================
+    // DOM REFS
+    // ============================================
+    const $ = id => document.getElementById(id);
 
-    window.showTermsModal = () => {
-        document.getElementById('termsModal').classList.remove('hidden');
-    };
+    // ============================================
+    // IMAGE SWITCHING
+    // ============================================
+    function toLoginImg() { $('registerImage').style.opacity = '0'; $('loginImage').style.opacity = '1'; }
+    function toRegImg() { $('loginImage').style.opacity = '0'; $('registerImage').style.opacity = '1'; }
 
-    window.closeTermsModal = () => {
-        document.getElementById('termsModal').classList.add('hidden');
-    };
-
-    window.acceptTerms = () => {
-        document.getElementById('termsModal').classList.add('hidden');
-        if (pendingSignup) {
-            executeSignup(pendingSignup);
-            pendingSignup = null;
-        }
-    };
-
-    async function executeSignup(data) {
-        const { name, email, password } = data;
-        try {
-            const result = await createUserWithEmailAndPassword(auth, email, password);
-            await set(ref(db, 'users/' + result.user.uid), { 
-                email, 
-                name, 
-                points: 0, 
-                createdAt: Date.now(), 
-                banned: false,
-                termsAccepted: true,
-                termsAcceptedAt: Date.now()
-            });
-            showMessage('✅ تم إنشاء الحساب بنجاح! مرحباً بك في منصة يلا كيمياء', 'success');
-            setTimeout(() => window.location.href = 'index.html', 1500);
-        } catch (e) { 
-            showMessage('❌ ' + e.message, 'error'); 
-        }
+    function switchTab(tab) {
+      UI.clearErrors();
+      if (tab === 'login') {
+        $('loginTabBtn').classList.add('tab-active'); $('loginTabBtn').classList.remove('text-gray-400');
+        $('registerTabBtn').classList.remove('tab-active'); $('registerTabBtn').classList.add('text-gray-400');
+        $('loginForm').classList.remove('hidden'); $('registerForm').classList.add('hidden');
+        toLoginImg(); setTimeout(() => $('loginEmail').focus(), 100);
+      } else {
+        $('registerTabBtn').classList.add('tab-active'); $('registerTabBtn').classList.remove('text-gray-400');
+        $('loginTabBtn').classList.remove('tab-active'); $('loginTabBtn').classList.add('text-gray-400');
+        $('registerForm').classList.remove('hidden'); $('loginForm').classList.add('hidden');
+        toRegImg(); setTimeout(() => $('regName').focus(), 100);
+      }
     }
 
-    window.loginWithEmail = async () => {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        if (!email || !password) {
-            showMessage('❌ الرجاء إدخال البريد الإلكتروني وكلمة المرور', 'error');
-            return;
-        }
-        try {
-            const result = await signInWithEmailAndPassword(auth, email, password);
-            const userRef = ref(db, 'users/' + result.user.uid);
-            const snapshot = await get(userRef);
-            if (snapshot.exists() && snapshot.val().banned === true) {
-                showMessage('⛔ تم حظر حسابك بسبب مخالفة قواعد المنصة. للاستفسار، يرجى التواصل مع الدعم.', 'error');
-                await auth.signOut();
-                return;
-            }
-            showMessage('✅ مرحباً بك! جاري التحويل...', 'success');
-            setTimeout(() => window.location.href = 'index.html', 1000);
-        } catch (e) { 
-            if (e.code === 'auth/invalid-credential') {
-                showMessage('❌ البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error');
-            } else {
-                showMessage('❌ ' + e.message, 'error');
-            }
-        }
-    };
+    $('loginTabBtn').addEventListener('click', () => switchTab('login'));
+    $('registerTabBtn').addEventListener('click', () => switchTab('register'));
 
-    window.initiateSignup = () => {
-        const name = document.getElementById('signupName').value.trim();
-        const email = document.getElementById('signupEmail').value.trim();
-        const password = document.getElementById('signupPassword').value;
-        
-        if (!name) { showMessage('❌ الرجاء إدخال اسمك الكامل', 'error'); return; }
-        if (!email) { showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error'); return; }
-        if (password.length < 6) { showMessage('❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error'); return; }
-        
-        pendingSignup = { name, email, password };
-        showTermsModal();
-    };
+    // Password toggle
+    $('toggleLoginPassword').addEventListener('click', () => {
+      const p = $('loginPassword').type === 'password';
+      $('loginPassword').type = p ? 'text' : 'password';
+      $('toggleLoginPassword').innerHTML = p ? '<i class="far fa-eye-slash"></i>' : '<i class="far fa-eye"></i>';
+    });
+    $('toggleRegPassword').addEventListener('click', () => {
+      const p = $('regPassword').type === 'password';
+      $('regPassword').type = p ? 'text' : 'password';
+      $('toggleRegPassword').innerHTML = p ? '<i class="far fa-eye-slash"></i>' : '<i class="far fa-eye"></i>';
+    });
 
-    window.signupWithEmail = () => {
-        initiateSignup();
-    };
+    // Password strength
+    $('regPassword').addEventListener('input', () => {
+      const e = Validation.passwordEntropy($('regPassword').value);
+      const s = Math.min((e / 60) * 100, 100);
+      $('strengthFill').style.width = s + '%';
+      if (s < 25) { $('strengthFill').style.background = '#ef4444'; $('strengthText').textContent = 'ضعيفة'; $('strengthText').style.color = '#ef4444'; }
+      else if (s < 50) { $('strengthFill').style.background = '#f59e0b'; $('strengthText').textContent = 'متوسطة'; $('strengthText').style.color = '#f59e0b'; }
+      else if (s < 75) { $('strengthFill').style.background = '#3b82f6'; $('strengthText').textContent = 'قوية'; $('strengthText').style.color = '#3b82f6'; }
+      else { $('strengthFill').style.background = '#10b981'; $('strengthText').textContent = 'قوية جداً'; $('strengthText').style.color = '#10b981'; }
+    });
 
-    window.resetPassword = async () => {
-        const email = document.getElementById('email').value;
-        if (!email) { showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error'); return; }
-        try {
-            await sendPasswordResetEmail(auth, email);
-            showMessage('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 'success');
-        } catch (e) { 
-            showMessage('❌ ' + e.message, 'error'); 
-        }
-    };
-
-    window.toggleMode = () => {
-        const loginDiv = document.getElementById('loginMode');
-        const signupDiv = document.getElementById('signupMode');
-        const toggleBtn = document.getElementById('modeToggle');
-        if (loginDiv.classList.contains('hidden')) {
-            loginDiv.classList.remove('hidden');
-            signupDiv.classList.add('hidden');
-            toggleBtn.innerHTML = 'ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span>';
-        } else {
-            loginDiv.classList.add('hidden');
-            signupDiv.classList.remove('hidden');
-            toggleBtn.innerHTML = 'لديك حساب بالفعل؟ <span class="text-cyan-400">تسجيل الدخول</span>';
-        }
-    };
-
-    function showMessage(msg, type) {
-        const div = document.getElementById('message');
-        div.textContent = msg;
-        div.className = `p-3 rounded-lg mb-4 text-center text-base ${type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500' : 'bg-red-500/20 text-red-400 border border-red-500'}`;
-        div.classList.remove('hidden');
-        setTimeout(() => div.classList.add('hidden'), 4000);
+    // Server block check (CLIENT ONLY READS)
+    async function isEmailBlocked(email) {
+      try {
+        const snap = await get(ref(db, 'blockedEmails/' + email.replace(/\./g, '_')));
+        return snap.exists() && Date.now() < snap.val().until ? snap.val().until : null;
+      } catch { return null; }
     }
-</script>
 
-<!-- نافذة الشروط - محسنة بالكامل -->
-<div id="termsModal" class="hidden overlay-terms" onclick="if(event.target===this) closeTermsModal()">
-    <div class="modal-terms">
-        <div class="text-center mb-4">
-            <div class="text-6xl mb-3">📜</div>
-            <h2 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">شروط التسجيل</h2>
-        </div>
-        <div class="terms-text">
-            <p class="font-bold text-xl text-center mb-4">مرحباً بك في منصة <span class="text-cyan-400 text-xl">يلا كيمياء</span></p>
-            <p class="text-lg mb-3 text-center">بالتسجيل في المنصة، أنت توافق على:</p>
-            <ul class="list-disc list-inside space-y-2 pr-3 text-right">
-                <li class="text-base">تقديم بيانات صحيحة ودقيقة عند التسجيل</li>
-                <li class="text-base">الالتزام بآداب التعلم وعدم إساءة استخدام المنصة</li>
-                <li class="text-base">عدم مشاركة حسابك مع أي شخص آخر</li>
-                <li class="text-base">احترام آراء الزملاء والمعلم</li>
-            </ul>
-            <div class="border-t border-cyan-500/30 my-4"></div>
-            <p class="text-red-500 font-bold text-2xl text-center">⚠️ تنبيه هام ⚠️</p>
-            <p class="text-center text-lg my-2">أي مخالفة للقواعد أو تقديم بيانات غير صحيحة</p>
-            <p class="text-center text-red-500 font-bold text-2xl">سوف يتم حظرك نهائياً من المنصة</p>
-            <div class="border-t border-cyan-500/30 my-4"></div>
-            <p class="text-center text-base font-bold">بالمتابعة، أنت توافق على جميع الشروط والأحكام</p>
-        </div>
-        <div class="flex gap-3 mt-4">
-            <button onclick="acceptTerms()" class="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-full font-bold text-lg hover:scale-105 transition text-white">✅ أوافق على الشروط</button>
-            <button onclick="closeTermsModal()" class="flex-1 bg-gray-600 py-3 rounded-full font-bold text-lg hover:scale-105 transition text-white">❌ إلغاء</button>
-        </div>
-    </div>
-</div>
+    async function isUserBlocked(uid) {
+      try { const s = await get(ref(db, 'students/' + uid)); return s.exists() && s.val().isBlocked === true; } 
+      catch { return false; }
+    }
 
-<!-- نموذج تسجيل الدخول -->
-<div class="relative w-full max-w-md">
-    <div class="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500 rounded-full filter blur-3xl opacity-20 bg-float"></div>
-    <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-20 bg-float"></div>
+    // ============================================
+    // FORGOT PASSWORD MODAL
+    // ============================================
+    $('forgotPasswordBtn').addEventListener('click', () => {
+      $('forgotPasswordModal').classList.remove('hidden');
+      $('resetEmail').value = $('loginEmail').value || '';
+      setTimeout(() => $('resetEmail').focus(), 100);
+    });
+    $('closeModalBtn').addEventListener('click', () => $('forgotPasswordModal').classList.add('hidden'));
+    $('forgotPasswordModal').addEventListener('click', e => { if (e.target === $('forgotPasswordModal')) $('forgotPasswordModal').classList.add('hidden'); });
     
-    <div class="relative bg-white/10 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/20">
-        <!-- اللوجو -->
-        <div class="text-center mb-6">
-            <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-3 border-2 border-cyan-400 shadow-lg">
-            <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
-            <p class="text-gray-400 text-base">مستر زياد مبروك</p>
-        </div>
+    $('sendResetBtn').addEventListener('click', async () => {
+      const email = Security.sanitize($('resetEmail').value);
+      if (!email || !Validation.email(email)) {
+        $('resetEmailError').textContent = 'بريد غير صالح'; $('resetEmailError').classList.remove('hidden'); return;
+      }
+      if (!Security.checkRateLimit('reset', 1, 120000)) {
+        $('resetRateLimit').textContent = '⏳ انتظر دقيقتين'; $('resetRateLimit').classList.remove('hidden'); return;
+      }
+      $('sendResetBtn').disabled = true;
+      $('sendResetBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري...';
+      try {
+        await sendPasswordResetEmail(auth, email, { url: location.origin + '/login.html' });
+        UI.showToast('📧 تم الإرسال', 'success');
+        $('forgotPasswordModal').classList.add('hidden');
+      } catch (err) {
+        UI.showToast(err.code === 'auth/user-not-found' ? '❌ لا يوجد حساب' : '❌ خطأ', 'error');
+      } finally {
+        $('sendResetBtn').disabled = false;
+        $('sendResetBtn').innerHTML = '<span>إرسال</span><i class="fas fa-paper-plane"></i>';
+      }
+    });
+
+    // ============================================
+    // RESEND VERIFICATION MODAL
+    // ============================================
+    $('resendVerificationBtn').addEventListener('click', () => {
+      $('resendVerificationModal').classList.remove('hidden');
+      $('resendVerificationEmail').value = $('loginEmail').value || '';
+      setTimeout(() => $('resendVerificationEmail').focus(), 100);
+    });
+    $('closeVerificationModalBtn').addEventListener('click', () => $('resendVerificationModal').classList.add('hidden'));
+    $('resendVerificationModal').addEventListener('click', e => { if (e.target === $('resendVerificationModal')) $('resendVerificationModal').classList.add('hidden'); });
+    
+    $('sendVerificationBtn').addEventListener('click', async () => {
+      const email = Security.sanitize($('resendVerificationEmail').value);
+      if (!email || !Validation.email(email)) {
+        $('resendVerificationError').textContent = 'بريد غير صالح'; $('resendVerificationError').classList.remove('hidden'); return;
+      }
+      if (!Security.checkRateLimit('verify', 1, 120000)) {
+        $('resendRateLimit').textContent = '⏳ انتظر دقيقتين'; $('resendRateLimit').classList.remove('hidden'); return;
+      }
+      $('sendVerificationBtn').disabled = true;
+      $('sendVerificationBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري...';
+      try {
+        const u = auth.currentUser;
+        if (u && u.email === email) {
+          await sendEmailVerification(u);
+          UI.showToast('📧 تم إعادة التفعيل', 'success');
+        } else {
+          UI.showToast('⚠️ سجل دخولك أولاً ليصلك رابط التفعيل', 'warning');
+        }
+        $('resendVerificationModal').classList.add('hidden');
+      } catch (err) {
+        UI.showToast('❌ خطأ', 'error');
+      } finally {
+        $('sendVerificationBtn').disabled = false;
+        $('sendVerificationBtn').innerHTML = '<span>إرسال</span><i class="fas fa-envelope"></i>';
+      }
+    });
+
+    // ============================================
+    // ANTI-ABUSE (client fallback)
+    // ============================================
+    const ABUSE = {
+      MAX: 3, BLOCK: 5 * 60 * 1000, KEY: '_abx2',
+      get() { 
+        try { const r = localStorage.getItem(this.KEY); if (!r) return { a: 0, b: null }; const d = JSON.parse(atob(r)); return (typeof d.a == 'number') ? { a: d.a, b: d.b } : { a: 0, b: null }; } 
+        catch { return { a: 0, b: null }; } 
+      },
+      set(s) { try { localStorage.setItem(this.KEY, btoa(JSON.stringify({ a: s.a, b: s.b }))); } catch {} },
+      blocked() { const s = this.get(); if (s.b && Date.now() < s.b) return true; if (s.b && Date.now() >= s.b) { this.set({ a: 0, b: null }); return false; } return false; },
+      fail() { const s = this.get(); s.a++; if (s.a >= this.MAX) { s.b = Date.now() + this.BLOCK; this.set(s); return s.a; } this.set(s); return s.a; },
+      reset() { this.set({ a: 0, b: null }); $('loginBlockMsg').classList.add('hidden'); }
+    };
+
+    if (ABUSE.blocked()) { $('loginBlockMsg').textContent = '⛔ محظور مؤقتاً'; $('loginBlockMsg').classList.remove('hidden'); }
+
+    // ============================================
+    // SESSION TIMEOUT
+    // ============================================
+    let sessionTimer;
+    const SESSION_DURATION = 30 * 60 * 1000;
+    function resetSession() {
+      clearTimeout(sessionTimer);
+      if (auth.currentUser) sessionTimer = setTimeout(async () => { try { await signOut(auth); UI.showToast('⏰ انتهت الجلسة', 'warning'); } catch {} }, SESSION_DURATION);
+    }
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetSession));
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') resetSession(); else clearTimeout(sessionTimer); });
+    resetSession();
+
+    // ============================================
+    // AUTO LOGIN
+    // ============================================
+    onAuthStateChanged(auth, async user => {
+      UI.hideLoading();
+      if (user) {
+        try {
+          if (!user.emailVerified) { UI.showToast('⚠️ فعل بريدك أولاً', 'warning'); await signOut(auth); return; }
+          if (await isUserBlocked(user.uid)) { UI.showToast('🚫 محظور', 'error'); await signOut(auth); return; }
+          UI.showLoading();
+          setTimeout(() => location.href = 'student.html', 500);
+        } catch { await signOut(auth); }
+      }
+    });
+
+    // ============================================
+    // LOGIN
+    // ============================================
+    $('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      UI.clearErrors();
+      const em = Security.sanitize($('loginEmail').value), pw = $('loginPassword').value;
+      let ok = true;
+      if (!em || !Validation.email(em)) { $('loginEmailError').textContent = 'بريد غير صالح'; $('loginEmailError').classList.remove('hidden'); $('loginEmail').classList.add('input-error'); ok = false; }
+      if (!pw || pw.length < 6) { $('loginPasswordError').textContent = '6 أحرف على الأقل'; $('loginPasswordError').classList.remove('hidden'); $('loginPassword').classList.add('input-error'); ok = false; }
+      if (!ok) return;
+      
+      const sb = await isEmailBlocked(em);
+      if (sb) { $('loginBlockMsg').textContent = `⛔ محظور ${Math.ceil((sb - Date.now()) / 60000)} دقيقة`; $('loginBlockMsg').classList.remove('hidden'); return; }
+      if (ABUSE.blocked()) { $('loginBlockMsg').textContent = '⛔ محظور مؤقتاً'; $('loginBlockMsg').classList.remove('hidden'); return; }
+      
+      UI.setButton($('loginSubmitBtn'), true);
+      try {
+        const c = await signInWithEmailAndPassword(auth, em, pw);
+        if (!c.user.emailVerified) { await signOut(auth); UI.showToast('⚠️ فعل بريدك أولاً', 'warning'); UI.setButton($('loginSubmitBtn'), false); return; }
+        if (await isUserBlocked(c.user.uid)) { await signOut(auth); UI.showToast('🚫 محظور', 'error'); UI.setButton($('loginSubmitBtn'), false); return; }
+        try { await set(ref(db, 'students/' + c.user.uid + '/lastLogin'), new Date().toISOString()); } catch {}
+        ABUSE.reset(); resetSession();
+        UI.showToast('✅ أهلاً بك', 'success');
+        UI.showLoading();
+        setTimeout(() => location.href = 'student.html', 800);
+      } catch (err) {
+        ABUSE.fail();
+        UI.showToast('❌ البريد أو كلمة المرور غير صحيحة', 'error');
+      } finally { UI.setButton($('loginSubmitBtn'), false); }
+    });
+
+    // ============================================
+    // REGISTER
+    // ============================================
+    $('registerForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      UI.clearErrors();
+      const nm = Security.sanitize($('regName').value), sp = Security.sanitize($('regStudentPhone').value), pp = Security.sanitize($('regParentPhone').value), em = Security.sanitize($('regEmail').value), pw = $('regPassword').value;
+      let ok = true;
+      if (!nm || !Validation.arabicName(nm)) { $('regNameError').textContent = 'اسم عربي ثلاثي'; $('regNameError').classList.remove('hidden'); $('regName').classList.add('input-error'); ok = false; }
+      if (!sp || !Validation.phone(sp)) { $('regStudentPhoneError').textContent = '11 رقم'; $('regStudentPhoneError').classList.remove('hidden'); $('regStudentPhone').classList.add('input-error'); ok = false; }
+      if (!pp || !Validation.phone(pp)) { $('regParentPhoneError').textContent = '11 رقم'; $('regParentPhoneError').classList.remove('hidden'); $('regParentPhone').classList.add('input-error'); ok = false; }
+      if (sp && pp && sp === pp) { UI.showToast('❌ رقمان مختلفان', 'error'); return; }
+      if (!em || !Validation.email(em)) { $('regEmailError').textContent = 'بريد غير صالح'; $('regEmailError').classList.remove('hidden'); $('regEmail').classList.add('input-error'); ok = false; }
+      if (!pw || !Validation.strongPassword(pw)) { $('regPasswordError').textContent = '8+ أحرف،كبير،رقم،رمز'; $('regPasswordError').classList.remove('hidden'); $('regPassword').classList.add('input-error'); ok = false; }
+      if (!ok) return;
+      
+      UI.setButton($('registerSubmitBtn'), true);
+      try {
+        const ss = await get(query(ref(db, 'students'), orderByChild('studentPhone'), equalTo(sp)));
+        if (ss.exists()) { UI.showToast('⚠️ رقم الطالب مسجل', 'error'); UI.setButton($('registerSubmitBtn'), false); return; }
+        const ps = await get(query(ref(db, 'students'), orderByChild('parentPhone'), equalTo(pp)));
+        if (ps.exists()) { UI.showToast('⚠️ رقم ولي الأمر مسجل', 'error'); UI.setButton($('registerSubmitBtn'), false); return; }
         
-        <div id="message" class="hidden"></div>
-        
-        <!-- واجهة تسجيل الدخول -->
-        <div id="loginMode">
-            <input type="email" id="email" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition text-base">
-            <input type="password" id="password" placeholder="🔒 كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition text-base">
-            <button onclick="loginWithEmail()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold text-lg hover:scale-105 transition duration-200 text-white">🚀 تسجيل الدخول</button>
-            <button onclick="resetPassword()" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block text-center w-full transition">نسيت كلمة المرور؟</button>
-        </div>
-        
-        <!-- واجهة إنشاء حساب -->
-        <div id="signupMode" class="hidden">
-            <input type="text" id="signupName" placeholder="👤 الاسم الكامل (ثلاثي)" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition text-base">
-            <input type="email" id="signupEmail" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition text-base">
-            <input type="password" id="signupPassword" placeholder="🔒 كلمة المرور (6 أحرف على الأقل)" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition text-base">
-            <button onclick="signupWithEmail()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold text-lg hover:scale-105 transition duration-200 text-white">✨ إنشاء حساب جديد</button>
-        </div>
-        
-        <!-- الفاصل -->
-        <div class="relative my-6">
-            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/20"></div></div>
-            <div class="relative flex justify-center text-sm"><span class="px-2 bg-transparent text-gray-400">أو</span></div>
-        </div>
-        
-        <!-- زر تبديل الوضع -->
-        <p id="modeToggle" onclick="toggleMode()" class="text-center text-base text-gray-400 cursor-pointer hover:text-cyan-400 transition mt-2">
-            ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span>
-        </p>
-        <a href="index.html" class="block text-center mt-4 text-base text-gray-500 hover:text-gray-300 transition">← العودة للصفحة الرئيسية</a>
-        
-        <!-- تنبيه الشروط -->
-        <div class="mt-6 pt-4 border-t border-white/10 text-center">
-            <p class="text-gray-400 text-sm">بالتسجيل، أنت توافق على <span class="text-cyan-400">شروط وسياسة استخدام المنصة</span></p>
-            <p class="text-red-400/80 text-sm mt-1">⚠️ أي مخالفة للقواعد أو بيانات غير صحيحة تستوجب الحظر النهائي</p>
-        </div>
-    </div>
-</div>
+        const c = await createUserWithEmailAndPassword(auth, em, pw);
+        const uid = c.user.uid;
+        await set(ref(db, 'students/' + uid), { name: nm, studentPhone: sp, parentPhone: pp, email: em, createdAt: new Date().toISOString(), lastLogin: null, userAgent: navigator.userAgent, progress: 0, isBlocked: false });
+        await set(ref(db, 'phones/' + sp), uid);
+        await sendEmailVerification(c.user);
+        await signOut(auth);
+        UI.showToast('📧 تم التسجيل. فعل بريدك.', 'success');
+        switchTab('login');
+        $('loginEmail').value = em;
+      } catch (err) {
+        UI.showToast(err.code === 'auth/email-already-in-use' ? '⚠️ البريد مستخدم' : '❌ خطأ', 'error');
+      } finally { UI.setButton($('registerSubmitBtn'), false); }
+    });
+
+    // Enter key
+    $('loginEmail').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('loginPassword').focus(); } });
+    $('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('loginSubmitBtn').click(); } });
+
+    UI.hideLoading();
+    $('loginEmail').focus();
+    console.log('✅ يلا كيمياء v8 - Modular Security Architecture');
+  </script>
+
 </body>
 </html>
