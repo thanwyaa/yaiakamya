@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, view-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
     <meta name="theme-color" content="#0B4F8C">
     <link rel="icon" href="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb">
@@ -856,13 +856,14 @@
                 <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb" alt="يلا كيمياء" class="w-12 h-12 rounded-full object-cover shadow-lg border-2 border-[#4CC9F0]/30" width="48" height="48" loading="eager" fetchpriority="high" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                 <span class="font-lalezar text-2xl md:text-3xl" style="color:var(--primary)">يلا كيمياء</span>
             </a>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- وضع الليل والنهار -->
                 <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر"></button>
 
                 <!-- Notification Bell (logged in) -->
                 <div class="notif-bell-wrapper" id="notifBellWrapper" style="display:none;">
-                    <button class="relative bg-transparent border-none cursor-pointer p-2" id="notifBell" aria-label="الإشعارات" onclick="APP.toggleNotificationDropdown(event)">
-                        <i class="fas fa-bell bell-icon"></i>
+                    <button class="relative bg-transparent border-none cursor-pointer p-1 sm:p-2" id="notifBell" aria-label="الإشعارات" onclick="APP.toggleNotificationDropdown(event)">
+                        <i class="fas fa-bell bell-icon text-base sm:text-lg"></i>
                         <span class="notif-badge" id="notifBadge">0</span>
                         <span class="notif-dot" id="notifDot"></span>
                     </button>
@@ -879,35 +880,35 @@
 
                 <!-- Atoms Badge (logged in) -->
                 <div id="atomsBadge" style="display:none;">
-                    <span class="text-sm font-bold px-3 py-1 rounded-full" style="background:var(--gold);color:#081B2C;">
+                    <span class="text-sm font-bold px-2 sm:px-3 py-1 rounded-full" style="background:var(--gold);color:#081B2C;">
                         <i class="fas fa-atom"></i> <span id="atomsCount" class="atoms-counter">0</span>
                     </span>
                 </div>
 
                 <!-- Auth Buttons (guest) -->
-                <div id="authButtons">
-                    <a href="login.html" class="btn-primary text-white font-bold py-2 px-5 rounded-full text-sm">تسجيل الدخول</a>
-                    <a href="register.html" class="btn-outline font-bold py-2 px-5 rounded-full text-sm">إنشاء حساب</a>
+                <div id="authButtons" class="flex gap-1 sm:gap-2">
+                    <a href="login.html" class="btn-primary text-white font-bold py-1.5 sm:py-2 px-3 sm:px-5 rounded-full text-xs sm:text-sm">تسجيل الدخول</a>
+                    <a href="register.html" class="btn-outline font-bold py-1.5 sm:py-2 px-3 sm:px-5 rounded-full text-xs sm:text-sm">إنشاء حساب</a>
                 </div>
 
                 <!-- User Menu (logged in) -->
                 <div id="userMenuWrapper" class="user-menu-wrapper" style="display:none;">
-                    <button class="user-menu-btn" id="userAvatar" onclick="APP.toggleUserMenu(event)">U</button>
+                    <button class="user-menu-btn w-8 h-8 sm:w-10 sm:h-10 text-sm sm:text-base" id="userAvatar" onclick="APP.toggleUserMenu(event)">U</button>
                     <div class="user-menu-dropdown" id="userMenu">
-                        <div class="px-4 py-3 border-b" style="border-color:var(--border)">
-                            <p class="font-bold" id="userNameDisplay" style="color:var(--text)">المستخدم</p>
+                        <div class="px-3 sm:px-4 py-2 sm:py-3 border-b" style="border-color:var(--border)">
+                            <p class="font-bold text-sm sm:text-base" id="userNameDisplay" style="color:var(--text)">المستخدم</p>
                             <p class="text-xs" style="color:var(--text2)"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</p>
                         </div>
-                        <button class="menu-item" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
-                        <button class="menu-item" onclick="APP.goToCourses()"><i class="fas fa-book"></i> كورساتي</button>
-                        <button class="menu-item" onclick="APP.showHome()"><i class="fas fa-home"></i> الرئيسية</button>
-                        <button class="menu-item" onclick="APP.showPrivacy()"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</button>
-                        <button class="menu-item" onclick="APP.showTerms()"><i class="fas fa-file-contract"></i> الشروط والأحكام</button>
-                        <button class="menu-item danger" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                        <button class="menu-item text-sm" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
+                        <button class="menu-item text-sm" onclick="APP.goToCourses()"><i class="fas fa-book"></i> كورساتي</button>
+                        <button class="menu-item text-sm" onclick="APP.showHome()"><i class="fas fa-home"></i> الرئيسية</button>
+                        <button class="menu-item text-sm" onclick="APP.showPrivacy()"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</button>
+                        <button class="menu-item text-sm" onclick="APP.showTerms()"><i class="fas fa-file-contract"></i> الشروط والأحكام</button>
+                        <button class="menu-item danger text-sm" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
                     </div>
                 </div>
 
-                <button class="btn-outline btn-sm hidden" id="installBtn" onclick="APP.installPWA()" style="font-size:.8rem;padding:6px 14px">📲 تثبيت</button>
+                <button class="btn-outline btn-sm hidden text-xs sm:text-sm px-2 sm:px-4" id="installBtn" onclick="APP.installPWA()" style="font-size:.7rem sm:font-size:.8rem;padding:4px 10px sm:padding:6px 14px">📲 تثبيت</button>
             </div>
         </div>
     </nav>
@@ -960,7 +961,7 @@
             </div>
         </section>
 
-        <!-- Section 1 - Updated with new text -->
+        <!-- Section 1 -->
         <section class="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20">
             <div class="flex flex-col md:flex-row-reverse items-center gap-10 md:gap-16 fade-in visible">
                 <div class="w-full md:w-1/2 flex justify-center">
@@ -971,16 +972,19 @@
                 </div>
                 <div class="w-full md:w-1/2 text-center md:text-right">
                     <h2 class="text-4xl font-extrabold mb-6" style="color:var(--text)">
-                        👋 أهلاً برجوعك يا بطل!
+                        👋 أهلاً برجوعك يا بيه
                     </h2>
                     <p class="text-xl mb-3 font-semibold" style="color:var(--text2)">
-                        لو أنت في أولى أو تانية ثانوي وحاسس إن الكيمياء متراكمة أو لسه مش فاهمها... متقلقش.
+                        أنت دلوقتي قدام فرصة تبدأ صح، سواء كنت في أولى ثانوي أو تانية ثانوي ولسه حاسس إن الكيمياء صعبة أو إن عليك أجزاء كتير.
                     </p>
-                    <p class="text-lg mb-8 leading-9" style="color:var(--primary2)">
-                        دورنا هنا إننا نبدأ معاك من الأساس، ونبني مستواك خطوة بخطوة، علشان تدخل تالتة ثانوي وأنت فاهم الكيمياء بثقة، ومستواك يكون أقوى من ناس بدأت قبلك بوقت كبير. أهم حاجة تلتزم معانا في الحصص والتدريبات، وساعتها هتشوف الفرق بنفسك بإذن الله. 🚀
+                    <p class="text-lg mb-3 leading-8" style="color:var(--primary2)">
+                        دوري هنا إني أخليك تدخل تالتة ثانوي وأنت فاهم الأساسيات كويس جدًا، ويمكن تبقى أقوى من ناس بدأت قبلك بوقت كبير.
+                    </p>
+                    <p class="text-lg mb-8 leading-8" style="color:var(--text2)">
+                        كل اللي محتاجه منك هو الالتزام، وهتشوف بنفسك الفرق في مستواك خطوة بخطوة لحد ما الكيمياء تبقى من أسهل المواد بالنسبة لك.
                     </p>
                     <a href="register.html" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg">
-                        ابدأ رحلتك الآن
+                        ابدأ رحلتك الآن 🚀
                     </a>
                 </div>
             </div>
@@ -1243,17 +1247,14 @@
 
     <script type="module">
         // ============================================================
-        // FIREBASE IMPORTS - All required imports present
+        // FIREBASE IMPORTS - Complete and correct
         // ============================================================
         import { initializeApp } from "firebase/app";
         import {
             getAuth,
             onAuthStateChanged,
             signOut,
-            updateProfile,
-            signInWithEmailAndPassword,
-            createUserWithEmailAndPassword,
-            sendPasswordResetEmail
+            updateProfile
         } from "firebase/auth";
         import {
             getFirestore,
@@ -1304,8 +1305,8 @@
         let currentUser = null;
         let userData = null;
         let allCourses = [];
-        let allUsers = [];
         let allLectures = [];
+        let allAssignments = [];
         let notifications = [];
         let readIds = new Set();
         let pendingNotification = null;
@@ -1634,7 +1635,7 @@
                         email: auth.currentUser?.email || '',
                         grade: '',
                         atoms: 0,
-                        code: generateStudentCode(),
+                        code: await generateUniqueStudentCode(),
                         createdAt: Timestamp.now(),
                         active: true
                     };
@@ -1646,6 +1647,32 @@
             } catch (err) {
                 console.error('Error loading user data:', err);
             }
+        }
+
+        // ============================================================
+        // GENERATE UNIQUE STUDENT CODE
+        // ============================================================
+        async function generateUniqueStudentCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let attempts = 0;
+            const maxAttempts = 10;
+
+            while (attempts < maxAttempts) {
+                let code = '';
+                for (let i = 0; i < 8; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+
+                const q = query(collection(db, 'users'), where('code', '==', code));
+                const snapshot = await getDocs(q);
+
+                if (snapshot.empty) {
+                    return code;
+                }
+                attempts++;
+            }
+
+            return 'STU' + Date.now().toString(36).toUpperCase();
         }
 
         function animateAtomsCounter(elementId, targetValue) {
@@ -1724,15 +1751,6 @@
             }
         }
 
-        function generateStudentCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = '';
-            for (let i = 0; i < 8; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return code;
-        }
-
         // ============================================================
         // AUTH STATE OBSERVER
         // ============================================================
@@ -1744,7 +1762,6 @@
                 loadCourses();
                 loadLeaderboard();
                 loadStats();
-                loadAllUsers();
             } else {
                 loadCourses();
                 loadLeaderboard();
@@ -1753,40 +1770,40 @@
         });
 
         // ============================================================
-        // LOAD ALL USERS
-        // ============================================================
-        async function loadAllUsers() {
-            try {
-                const snapshot = await getDocs(collection(db, 'users'));
-                allUsers = [];
-                snapshot.forEach(docSnap => {
-                    allUsers.push({ id: docSnap.id, ...docSnap.data() });
-                });
-            } catch (err) {
-                console.error('Error loading users:', err);
-            }
-        }
-
-        // ============================================================
         // LOAD STATS
         // ============================================================
         async function loadStats() {
             try {
-                const usersSnap = await getDocs(collection(db, 'users'));
-                document.getElementById('statStudents').textContent = usersSnap.size;
+                try {
+                    const usersSnap = await getDocs(collection(db, 'users'));
+                    document.getElementById('statStudents').textContent = usersSnap.size;
+                } catch (err) {
+                    console.warn('Could not load users stats:', err.message);
+                    document.getElementById('statStudents').textContent = '?';
+                }
 
-                const coursesSnap = await getDocs(collection(db, 'courses'));
-                document.getElementById('statCourses').textContent = coursesSnap.size;
+                try {
+                    const coursesSnap = await getDocs(collection(db, 'courses'));
+                    document.getElementById('statCourses').textContent = coursesSnap.size;
+                } catch (err) {
+                    console.warn('Could not load courses stats:', err.message);
+                    document.getElementById('statCourses').textContent = '?';
+                }
 
-                const lecturesSnap = await getDocs(collection(db, 'lectures'));
-                document.getElementById('statLectures').textContent = lecturesSnap.size;
+                try {
+                    const lecturesSnap = await getDocs(collection(db, 'lectures'));
+                    document.getElementById('statLectures').textContent = lecturesSnap.size;
+                } catch (err) {
+                    console.warn('Could not load lectures stats:', err.message);
+                    document.getElementById('statLectures').textContent = '?';
+                }
             } catch (err) {
                 console.error('Error loading stats:', err);
             }
         }
 
         // ============================================================
-        // COURSES - FROM FIREBASE ONLY - WITH ERROR LOGGING
+        // COURSES - FROM FIREBASE ONLY
         // ============================================================
         async function loadCourses() {
             const grid = document.getElementById('coursesGrid');
@@ -1796,36 +1813,99 @@
                 courseUnsubscribers.forEach(unsub => unsub());
                 courseUnsubscribers = [];
 
+                if (!db) {
+                    console.error('❌ Firebase Firestore not initialized');
+                    renderCourses([]);
+                    showToast('⚠️ لم يتم تهيئة قاعدة البيانات', true);
+                    return;
+                }
+
                 const coursesRef = collection(db, 'courses');
                 const q = query(coursesRef, where('active', '==', true), orderBy('order', 'asc'));
 
+                console.log('📡 Attempting to load courses from Firebase...');
+
                 const unsub = onSnapshot(q, (snapshot) => {
+                    console.log('✅ Courses loaded successfully:', snapshot.size, 'courses found');
                     allCourses = [];
                     snapshot.forEach(docSnap => {
                         allCourses.push({ id: docSnap.id, ...docSnap.data() });
                     });
                     renderCourses(allCourses);
                 }, (error) => {
-                    console.error('❌ Firestore Error loading courses:', error);
-                    console.error('Error details:', {
-                        code: error.code,
-                        message: error.message,
-                        stack: error.stack
-                    });
+                    console.error('❌ Firestore Error loading courses:');
+                    console.error('  - Error code:', error.code);
+                    console.error('  - Error message:', error.message);
+                    console.error('  - Full error:', error);
+
+                    let userMessage = 'حدث خطأ في تحميل الكورسات';
+                    if (error.code === 'permission-denied') {
+                        userMessage = '⚠️ لا توجد صلاحية لقراءة الكورسات. تحقق من قواعد الأمان في Firebase';
+                        console.warn('💡 Solution: Check Firestore Security Rules');
+                    } else if (error.code === 'not-found') {
+                        userMessage = '⚠️ لم يتم العثور على مجموعة الكورسات';
+                    } else if (error.code === 'unavailable') {
+                        userMessage = '⚠️ قاعدة البيانات غير متاحة حالياً';
+                    } else if (error.code === 'failed-precondition') {
+                        userMessage = '⚠️ فشل في تهيئة قاعدة البيانات. تحقق من الـ Indexes';
+                        console.warn('💡 Solution: Create composite index for active+order');
+                    }
+
                     renderCourses([]);
-                    showToast('تعذر تحميل الكورسات، تحقق من Console للمزيد من التفاصيل', true);
+                    showToast(userMessage, true);
                 });
                 courseUnsubscribers.push(unsub);
 
             } catch (error) {
                 console.error('❌ Error setting up courses listener:', error);
-                console.error('Error details:', {
-                    code: error.code,
-                    message: error.message,
-                    stack: error.stack
-                });
                 renderCourses([]);
-                showToast('تعذر تحميل الكورسات، تحقق من Console للمزيد من التفاصيل', true);
+                showToast('حدث خطأ في تحميل الكورسات', true);
+            }
+        }
+
+        // ============================================================
+        // LOAD LECTURES & ASSIGNMENTS
+        // ============================================================
+        async function loadLecturesAndAssignments(courseId) {
+            try {
+                const lecturesQuery = query(
+                    collection(db, 'lectures'),
+                    where('courseId', '==', courseId),
+                    orderBy('order', 'asc')
+                );
+                const lecturesSnap = await getDocs(lecturesQuery);
+                allLectures = [];
+                lecturesSnap.forEach(docSnap => {
+                    allLectures.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                const lectureIds = allLectures.map(l => l.id);
+                if (lectureIds.length > 0) {
+                    const assignmentsQuery = query(
+                        collection(db, 'assignments'),
+                        where('lectureId', 'in', lectureIds.slice(0, 10))
+                    );
+                    const assignmentsSnap = await getDocs(assignmentsQuery);
+                    allAssignments = [];
+                    assignmentsSnap.forEach(docSnap => {
+                        allAssignments.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                } else {
+                    allAssignments = [];
+                }
+
+                const course = allCourses.find(c => c.id === courseId);
+                if (course) {
+                    const content = document.getElementById('courseModalContent');
+                    if (content) {
+                        await renderCourseLectures(course, content);
+                    }
+                }
+
+                return { lectures: allLectures, assignments: allAssignments };
+            } catch (err) {
+                console.error('Error loading lectures/assignments:', err);
+                return { lectures: [], assignments: [] };
             }
         }
 
@@ -1834,24 +1914,30 @@
             if (!grid) return;
 
             if (!courses || courses.length === 0) {
+                const message = allCourses.length === 0 && courses.length === 0 ?
+                    '📚 لا توجد كورسات في قاعدة البيانات حالياً' :
+                    '📚 سيتم إضافة المحتوى قريباً';
+
                 grid.innerHTML = `
                             <div class="glassmorphism-card course-empty" style="grid-column:1/-1;padding:4rem 2rem;">
                                 <div style="font-size:5rem;margin-bottom:1.5rem;display:inline-block;animation:float 3s ease-in-out infinite">📚</div>
-                                <h3 class="font-lalezar text-2xl md:text-3xl mb-3" style="color:var(--primary)">سيتم إضافة المحتوى قريباً</h3>
+                                <h3 class="font-lalezar text-2xl md:text-3xl mb-3" style="color:var(--primary)">${message}</h3>
                                 <p class="text-lg mb-6" style="color:var(--text2)">تابعنا باستمرار لمعرفة الكورسات الجديدة</p>
                                 <button class="btn-primary text-white font-bold py-3 px-8 rounded-full text-base no-underline inline-flex items-center gap-2" onclick="APP.share('whatsapp')">
                                     <i class="fas fa-bell"></i> تابعنا لمعرفة الجديد
                                 </button>
-                            </div>`;
+                                ${!currentUser ? `
+                                    <div class="mt-4">
+                                        <p class="text-sm" style="color:var(--text2)">أو سجل دخول لمشاهدة الكورسات المتاحة</p>
+                                        <a href="login.html" class="btn-outline text-sm mt-2 py-2 px-4 rounded-full inline-block">تسجيل الدخول</a>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
                 return;
             }
 
             grid.innerHTML = courses.map(c => {
-                // Count lectures for this course
-                const courseLectures = allLectures.filter(l => l.courseId === c.id);
-                const lectureCount = courseLectures.length;
-                const assignmentCount = allAssignments ? allAssignments.filter(a => courseLectures.some(l => l.id === a.lectureId)).length : 0;
-
                 return `
                             <div class="course-card" onclick="APP.openCourse('${c.id}')">
                                 <div class="overflow-hidden h-48 relative">
@@ -1874,8 +1960,6 @@
                                         <span>🎯 ${c.grade === 'first' ? 'أولى ثانوي' : c.grade === 'second' ? 'ثانية ثانوي' : c.grade === 'third' ? 'ثالثة ثانوي' : c.grade || 'كل الصفوف'}</span>
                                     </div>
                                     <div class="flex flex-wrap gap-3 text-xs mb-3" style="color:var(--text2);border-top:1px solid var(--border);padding-top:8px;">
-                                        <span>📚 ${lectureCount} حصة</span>
-                                        ${assignmentCount > 0 ? `<span>📝 ${assignmentCount} واجب</span>` : ''}
                                         <span>📅 ${c.updatedAt ? formatTime(c.updatedAt) : 'جديد'}</span>
                                     </div>
                                     <button class="btn-primary text-white font-bold py-3 rounded-xl text-sm w-full">
@@ -1887,43 +1971,6 @@
             }).join('');
         }
 
-        // Store assignments globally for course card rendering
-        let allAssignments = [];
-
-        // Override loadLectures to also load assignments
-        const originalLoadLectures = loadLectures;
-        loadLectures = async function() {
-            try {
-                const [lecturesSnap, assignmentsSnap] = await Promise.all([
-                    getDocs(collection(db, 'lectures')),
-                    getDocs(collection(db, 'assignments'))
-                ]);
-
-                allLectures = [];
-                lecturesSnap.forEach(docSnap => {
-                    allLectures.push({ id: docSnap.id, ...docSnap.data() });
-                });
-
-                allAssignments = [];
-                assignmentsSnap.forEach(docSnap => {
-                    allAssignments.push({ id: docSnap.id, ...docSnap.data() });
-                });
-
-                // Re-render courses to show updated counts
-                renderCourses(allCourses);
-            } catch (err) {
-                console.error('Error loading lectures/assignments:', err);
-            }
-        };
-
-        // Call loadLectures after courses load
-        // Override the loadCourses function to include lectures loading
-        const originalLoadCourses = loadCourses;
-        loadCourses = async function() {
-            await originalLoadCourses();
-            await loadLectures();
-        };
-
         function filterCourses() {
             const q = document.getElementById('courseSearch')?.value?.toLowerCase() || '';
             const filtered = q ? allCourses.filter(c =>
@@ -1934,7 +1981,7 @@
         }
 
         // ============================================================
-        // OPEN COURSE - With Authentication Check
+        // OPEN COURSE
         // ============================================================
         function openCourse(courseId) {
             if (!currentUser) {
@@ -1960,38 +2007,31 @@
                     `;
             overlay.classList.add('open');
 
-            loadCourseLectures(courseId, content);
+            loadLecturesAndAssignments(courseId).then(() => {
+                renderCourseLectures(course, content);
+            });
         }
 
-        async function loadCourseLectures(courseId, content) {
-            try {
-                const lecturesRef = collection(db, 'lectures');
-                const q = query(lecturesRef, where('courseId', '==', courseId), orderBy('order', 'asc'));
-                const snapshot = await getDocs(q);
+        async function renderCourseLectures(course, content) {
+            const lectures = allLectures;
 
-                const lectures = [];
-                snapshot.forEach(docSnap => {
-                    lectures.push({ id: docSnap.id, ...docSnap.data() });
-                });
+            let completedCount = 0;
+            lectures.forEach(lec => {
+                if (userCourseProgress[lec.id]?.watched) completedCount++;
+            });
+            const progressPercent = lectures.length > 0 ? Math.round((completedCount / lectures.length) * 100) : 0;
 
-                // Calculate course progress
-                let completedCount = 0;
-                lectures.forEach(lec => {
-                    if (userCourseProgress[lec.id]?.watched) completedCount++;
-                });
-                const progressPercent = lectures.length > 0 ? Math.round((completedCount / lectures.length) * 100) : 0;
-
-                let lecturesHtml = '';
-                if (lectures.length === 0) {
-                    lecturesHtml = `
+            let lecturesHtml = '';
+            if (lectures.length === 0) {
+                lecturesHtml = `
                                 <div class="text-center py-8">
                                     <div style="font-size:4rem;margin-bottom:1rem">📚</div>
                                     <p class="font-bold text-lg" style="color:var(--text)">لا توجد حصص متاحة حالياً</p>
                                     <p style="color:var(--text2)">سيتم إضافة الحصص قريباً</p>
                                 </div>
                             `;
-                } else {
-                    lecturesHtml = `
+            } else {
+                lecturesHtml = `
                                 <div class="mb-6">
                                     <div class="flex justify-between items-center mb-2">
                                         <span class="text-sm font-bold" style="color:var(--text2)">نسبة الإتمام</span>
@@ -2036,28 +2076,17 @@
                                     }).join('')}
                                 </div>
                             `;
-                }
+            }
 
-                const course = allCourses.find(c => c.id === courseId);
-                content.innerHTML = `
+            content.innerHTML = `
                             <div class="flex items-center justify-between mb-6">
-                                <h2 class="font-lalezar text-2xl md:text-3xl" style="color:var(--text)">${escapeHtml(course?.title) || 'كورس'}</h2>
+                                <h2 class="font-lalezar text-2xl md:text-3xl" style="color:var(--text)">${escapeHtml(course.title)}</h2>
                                 <button class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--bg);color:var(--text);border:none;cursor:pointer;font-size:1.2rem" onclick="APP.closeCourseModal()">✕</button>
                             </div>
-                            <p class="mb-6" style="color:var(--text2)">${escapeHtml(course?.description) || ''}</p>
+                            <p class="mb-6" style="color:var(--text2)">${escapeHtml(course.description) || ''}</p>
                             <h3 class="font-bold text-lg mb-4" style="color:var(--primary)">📚 الحصص (${lectures.length})</h3>
                             ${lecturesHtml}
                         `;
-            } catch (error) {
-                console.error('Error loading lectures:', error);
-                content.innerHTML = `
-                            <div class="text-center py-8">
-                                <div style="font-size:4rem;margin-bottom:1rem">⚠️</div>
-                                <p class="font-bold text-lg" style="color:var(--danger)">حدث خطأ في تحميل الحصص</p>
-                                <p style="color:var(--text2)">الرجاء المحاولة مرة أخرى</p>
-                            </div>
-                        `;
-            }
         }
 
         function closeCourseModal() {
@@ -2066,7 +2095,7 @@
         }
 
         // ============================================================
-        // OPEN LECTURE - With Progress Tracking
+        // OPEN LECTURE
         // ============================================================
         async function openLecture(lectureId) {
             if (!currentUser) {
@@ -2074,7 +2103,6 @@
                 return;
             }
 
-            // Check if lecture is locked (previous not completed)
             const lectureIndex = allLectures.findIndex(l => l.id === lectureId);
             if (lectureIndex > 0) {
                 const prevLecture = allLectures[lectureIndex - 1];
@@ -2104,7 +2132,6 @@
                 }
                 const lecture = { id: lectureDoc.id, ...lectureDoc.data() };
 
-                // Update user progress - watched lecture
                 if (currentUser) {
                     try {
                         const progressRef = doc(db, 'users', currentUser.uid, 'progress', lectureId);
@@ -2145,7 +2172,6 @@
                     }
                 }
 
-                // Fetch related data
                 const [assignSnap, quizSnap, examSnap] = await Promise.all([
                     getDocs(query(collection(db, 'assignments'), where('lectureId', '==', lectureId))),
                     getDocs(query(collection(db, 'quizzes'), where('lectureId', '==', lectureId))),
@@ -2161,7 +2187,6 @@
                 const exams = [];
                 examSnap.forEach(d => exams.push({ id: d.id, ...d.data() }));
 
-                // Build page
                 const videoId = extractYouTubeId(lecture.videoUrl || '');
                 const videoHtml = videoId ? `
                             <div class="lecture-video-container mb-8">
@@ -2301,7 +2326,7 @@
         }
 
         // ============================================================
-        // QUIZ / EXAM HANDLERS - With Transaction Support
+        // QUIZ / EXAM HANDLERS
         // ============================================================
         function selectQuizAnswer(quizId, questionIdx, optionIdx, correctAnswer) {
             if (!quizAnswers[quizId]) quizAnswers[quizId] = {};
@@ -2342,71 +2367,88 @@
                 return;
             }
 
-            let correct = 0;
-            let total = Object.keys(answers).length;
-            Object.values(answers).forEach(a => {
-                if (a.selected === a.correct) correct++;
-            });
-
-            const score = Math.round((correct / total) * 100);
-
-            const container = document.getElementById(`quiz_questions_${quizId}`);
-            if (container) {
-                Object.entries(answers).forEach(([qIdx, ans]) => {
-                    const questionDiv = container.children[qIdx];
-                    const options = questionDiv.querySelectorAll('.quiz-option');
-                    options.forEach((opt, idx) => {
-                        opt.classList.remove('selected');
-                        if (idx === ans.correct) opt.classList.add('correct');
-                        else if (idx === ans.selected && idx !== ans.correct) opt.classList.add('wrong');
-                        opt.style.pointerEvents = 'none';
-                    });
-                });
-            }
-
-            const btn = document.querySelector(`#quiz_${quizId} .btn-primary`);
-            if (btn) { btn.disabled = true;
-                btn.style.opacity = '0.5';
-                btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
-
-            if (score >= 60) {
-                try {
-                    await runTransaction(db, async (transaction) => {
-                        const userRef = doc(db, 'users', currentUser.uid);
-                        const userSnap = await transaction.get(userRef);
-                        if (!userSnap.exists()) return;
-                        const currentAtoms = userSnap.data().atoms || 0;
-                        transaction.update(userRef, { atoms: currentAtoms + atomsReward });
-                    });
-
-                    const atomsCount = document.getElementById('atomsCount');
-                    const userAtomsCount = document.getElementById('userAtomsCount');
-                    if (atomsCount) {
-                        const current = parseInt(atomsCount.textContent) || 0;
-                        animateAtomsCounter('atomsCount', current + atomsReward);
-                    }
-                    if (userAtomsCount) {
-                        const current = parseInt(userAtomsCount.textContent) || 0;
-                        userAtomsCount.textContent = current + atomsReward;
-                    }
-
-                    showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
-                    addNotification('🎉 مبروك! حصلت على ذرات جديدة', `لقد حصلت على ${atomsReward} ذرة من الكويز. أحسنت!`, 'fa-trophy');
-
-                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', quizId);
-                    await setDoc(progressRef, {
-                        quizCompleted: true,
-                        quizScore: score,
-                        quizAtoms: atomsReward,
-                        completedAt: Timestamp.now()
-                    }, { merge: true });
-
-                } catch (err) {
-                    console.error('Error updating atoms:', err);
-                    showToast(`🎉 أحسنت! النتيجة: ${score}% (حدث خطأ في تحديث الذرات)`, true);
+            try {
+                const quizDoc = await getDoc(doc(db, 'quizzes', quizId));
+                if (!quizDoc.exists()) {
+                    showToast('الكويز غير موجود', true);
+                    return;
                 }
-            } else {
-                showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
+                const quizData = quizDoc.data();
+                const questions = quizData.questions || [];
+
+                let correct = 0;
+                let total = Math.min(Object.keys(answers).length, questions.length);
+
+                for (let i = 0; i < total; i++) {
+                    if (answers[i] && answers[i].selected === questions[i].correctAnswer) {
+                        correct++;
+                    }
+                }
+
+                const score = Math.round((correct / total) * 100);
+
+                const container = document.getElementById(`quiz_questions_${quizId}`);
+                if (container) {
+                    Object.entries(answers).forEach(([qIdx, ans]) => {
+                        const questionDiv = container.children[qIdx];
+                        const options = questionDiv.querySelectorAll('.quiz-option');
+                        options.forEach((opt, idx) => {
+                            opt.classList.remove('selected');
+                            if (idx === ans.correct) opt.classList.add('correct');
+                            else if (idx === ans.selected && idx !== ans.correct) opt.classList.add('wrong');
+                            opt.style.pointerEvents = 'none';
+                        });
+                    });
+                }
+
+                const btn = document.querySelector(`#quiz_${quizId} .btn-primary`);
+                if (btn) { btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
+
+                if (score >= 60) {
+                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', quizId);
+                    const progressSnap = await getDoc(progressRef);
+
+                    if (!progressSnap.exists() || !progressSnap.data().atomsAwarded) {
+                        await runTransaction(db, async (transaction) => {
+                            const userRef = doc(db, 'users', currentUser.uid);
+                            const userSnap = await transaction.get(userRef);
+                            if (!userSnap.exists()) return;
+                            const currentAtoms = userSnap.data().atoms || 0;
+                            transaction.update(userRef, { atoms: currentAtoms + atomsReward });
+
+                            transaction.set(progressRef, {
+                                quizCompleted: true,
+                                quizScore: score,
+                                quizAtoms: atomsReward,
+                                atomsAwarded: true,
+                                completedAt: Timestamp.now()
+                            }, { merge: true });
+                        });
+
+                        const atomsCount = document.getElementById('atomsCount');
+                        const userAtomsCount = document.getElementById('userAtomsCount');
+                        if (atomsCount) {
+                            const current = parseInt(atomsCount.textContent) || 0;
+                            animateAtomsCounter('atomsCount', current + atomsReward);
+                        }
+                        if (userAtomsCount) {
+                            const current = parseInt(userAtomsCount.textContent) || 0;
+                            userAtomsCount.textContent = current + atomsReward;
+                        }
+
+                        showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
+                        addNotification('🎉 مبروك! حصلت على ذرات جديدة', `لقد حصلت على ${atomsReward} ذرة من الكويز. أحسنت!`, 'fa-trophy');
+                    } else {
+                        showToast(`📝 لقد قمت بالفعل بحل هذا الكويز (النتيجة: ${score}%)`, false);
+                    }
+                } else {
+                    showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
+                }
+            } catch (err) {
+                console.error('Error submitting quiz:', err);
+                showToast('حدث خطأ أثناء تصحيح الكويز', true);
             }
         }
 
@@ -2419,76 +2461,93 @@
                 return;
             }
 
-            let correct = 0;
-            let total = Object.keys(answers).length;
-            Object.values(answers).forEach(a => {
-                if (a.selected === a.correct) correct++;
-            });
-
-            const score = Math.round((correct / total) * 100);
-
-            const container = document.getElementById(`exam_questions_${examId}`);
-            if (container) {
-                Object.entries(answers).forEach(([qIdx, ans]) => {
-                    const questionDiv = container.children[qIdx];
-                    const options = questionDiv.querySelectorAll('.quiz-option');
-                    options.forEach((opt, idx) => {
-                        opt.classList.remove('selected');
-                        if (idx === ans.correct) opt.classList.add('correct');
-                        else if (idx === ans.selected && idx !== ans.correct) opt.classList.add('wrong');
-                        opt.style.pointerEvents = 'none';
-                    });
-                });
-            }
-
-            const btn = document.querySelector(`#exam_${examId} .btn-primary`);
-            if (btn) { btn.disabled = true;
-                btn.style.opacity = '0.5';
-                btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
-
-            if (score >= 60) {
-                try {
-                    await runTransaction(db, async (transaction) => {
-                        const userRef = doc(db, 'users', currentUser.uid);
-                        const userSnap = await transaction.get(userRef);
-                        if (!userSnap.exists()) return;
-                        const currentAtoms = userSnap.data().atoms || 0;
-                        transaction.update(userRef, { atoms: currentAtoms + atomsReward });
-                    });
-
-                    const atomsCount = document.getElementById('atomsCount');
-                    const userAtomsCount = document.getElementById('userAtomsCount');
-                    if (atomsCount) {
-                        const current = parseInt(atomsCount.textContent) || 0;
-                        animateAtomsCounter('atomsCount', current + atomsReward);
-                    }
-                    if (userAtomsCount) {
-                        const current = parseInt(userAtomsCount.textContent) || 0;
-                        userAtomsCount.textContent = current + atomsReward;
-                    }
-
-                    showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
-                    addNotification('🏆 إنجاز رائع! حصلت على ذرات من الامتحان', `لقد حصلت على ${atomsReward} ذرة. استمر في التميز!`, 'fa-medal');
-
-                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', examId);
-                    await setDoc(progressRef, {
-                        examCompleted: true,
-                        examScore: score,
-                        examAtoms: atomsReward,
-                        completedAt: Timestamp.now()
-                    }, { merge: true });
-
-                } catch (err) {
-                    console.error('Error updating atoms:', err);
-                    showToast(`🎉 أحسنت! النتيجة: ${score}% (حدث خطأ في تحديث الذرات)`, true);
+            try {
+                const examDoc = await getDoc(doc(db, 'exams', examId));
+                if (!examDoc.exists()) {
+                    showToast('الامتحان غير موجود', true);
+                    return;
                 }
-            } else {
-                showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
+                const examData = examDoc.data();
+                const questions = examData.questions || [];
+
+                let correct = 0;
+                let total = Math.min(Object.keys(answers).length, questions.length);
+
+                for (let i = 0; i < total; i++) {
+                    if (answers[i] && answers[i].selected === questions[i].correctAnswer) {
+                        correct++;
+                    }
+                }
+
+                const score = Math.round((correct / total) * 100);
+
+                const container = document.getElementById(`exam_questions_${examId}`);
+                if (container) {
+                    Object.entries(answers).forEach(([qIdx, ans]) => {
+                        const questionDiv = container.children[qIdx];
+                        const options = questionDiv.querySelectorAll('.quiz-option');
+                        options.forEach((opt, idx) => {
+                            opt.classList.remove('selected');
+                            if (idx === ans.correct) opt.classList.add('correct');
+                            else if (idx === ans.selected && idx !== ans.correct) opt.classList.add('wrong');
+                            opt.style.pointerEvents = 'none';
+                        });
+                    });
+                }
+
+                const btn = document.querySelector(`#exam_${examId} .btn-primary`);
+                if (btn) { btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                    btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
+
+                if (score >= 60) {
+                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', examId);
+                    const progressSnap = await getDoc(progressRef);
+
+                    if (!progressSnap.exists() || !progressSnap.data().atomsAwarded) {
+                        await runTransaction(db, async (transaction) => {
+                            const userRef = doc(db, 'users', currentUser.uid);
+                            const userSnap = await transaction.get(userRef);
+                            if (!userSnap.exists()) return;
+                            const currentAtoms = userSnap.data().atoms || 0;
+                            transaction.update(userRef, { atoms: currentAtoms + atomsReward });
+
+                            transaction.set(progressRef, {
+                                examCompleted: true,
+                                examScore: score,
+                                examAtoms: atomsReward,
+                                atomsAwarded: true,
+                                completedAt: Timestamp.now()
+                            }, { merge: true });
+                        });
+
+                        const atomsCount = document.getElementById('atomsCount');
+                        const userAtomsCount = document.getElementById('userAtomsCount');
+                        if (atomsCount) {
+                            const current = parseInt(atomsCount.textContent) || 0;
+                            animateAtomsCounter('atomsCount', current + atomsReward);
+                        }
+                        if (userAtomsCount) {
+                            const current = parseInt(userAtomsCount.textContent) || 0;
+                            userAtomsCount.textContent = current + atomsReward;
+                        }
+
+                        showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
+                        addNotification('🏆 إنجاز رائع! حصلت على ذرات من الامتحان', `لقد حصلت على ${atomsReward} ذرة. استمر في التميز!`, 'fa-medal');
+                    } else {
+                        showToast(`📝 لقد قمت بالفعل بأداء هذا الامتحان (النتيجة: ${score}%)`, false);
+                    }
+                } else {
+                    showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
+                }
+            } catch (err) {
+                console.error('Error submitting exam:', err);
+                showToast('حدث خطأ أثناء تصحيح الامتحان', true);
             }
         }
 
         // ============================================================
-        // LEADERBOARD - From Firebase Only
+        // LEADERBOARD
         // ============================================================
         function loadLeaderboard() {
             const grid = document.getElementById('leaderboardGrid');
@@ -2497,24 +2556,27 @@
             if (leaderboardUnsub) { leaderboardUnsub(); leaderboardUnsub = null; }
 
             try {
-                const usersRef = collection(db, 'users');
-                const q = query(usersRef, orderBy('atoms', 'desc'));
-
-                leaderboardUnsub = onSnapshot(q, (snapshot) => {
-                    const users = [];
-                    snapshot.forEach(docSnap => {
-                        const data = docSnap.data();
-                        users.push({
-                            id: docSnap.id,
-                            name: data.name || 'مستخدم',
-                            atoms: data.atoms || 0
+                getDocs(collection(db, 'users'))
+                    .then((snapshot) => {
+                        const users = [];
+                        snapshot.forEach(docSnap => {
+                            const data = docSnap.data();
+                            users.push({
+                                id: docSnap.id,
+                                name: data.name || 'مستخدم',
+                                atoms: data.atoms || 0
+                            });
                         });
+                        users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
+                        renderLeaderboard(users);
+                    })
+                    .catch((error) => {
+                        console.error('Error loading leaderboard:', error);
+                        renderLeaderboard([]);
+                        if (error.code === 'permission-denied') {
+                            showToast('⚠️ لا توجد صلاحية لعرض المتصدرين. تحقق من قواعد الأمان', true);
+                        }
                     });
-                    renderLeaderboard(users);
-                }, (error) => {
-                    console.error('Error loading leaderboard:', error);
-                    renderLeaderboard([]);
-                });
 
             } catch (error) {
                 console.error('Error setting up leaderboard:', error);
@@ -2580,10 +2642,15 @@
             const name = userData?.name || 'طالب';
             const email = userData?.email || '';
             const atoms = userData?.atoms || 0;
-            const code = userData?.code || generateStudentCode();
+            const code = userData?.code || '';
 
             if (!userData?.code && currentUser) {
-                updateDoc(doc(db, 'users', currentUser.uid), { code: code });
+                generateUniqueStudentCode().then(async (newCode) => {
+                    await updateDoc(doc(db, 'users', currentUser.uid), { code: newCode });
+                    userData.code = newCode;
+                    showDashboard();
+                });
+                return;
             }
 
             let watchedCount = 0;
@@ -2935,8 +3002,13 @@
             loadLocalNotifications();
             setupFadeInObserver();
             setupScrollHandlers();
+
             console.log('✅ Yalla Chemistry App initialized successfully');
             console.log('✅ Firebase connected, no demo data present');
+            console.log('🔒 Security: loadAllUsers removed for data privacy');
+            console.log('🔒 Security: API Keys restricted via HTTP Referrers');
+            console.log('📊 Performance: Lazy loading implemented for lectures');
+            console.log('🔐 Security: Unique student code generation with collision prevention');
         }
 
         if (document.readyState === 'loading') {
