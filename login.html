@@ -13,12 +13,17 @@
         .modal-terms { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #0f0c29, #302b63); border-radius: 2rem; padding: 2rem; z-index: 1000; border: 2px solid #00c6ff; max-width: 500px; width: 90%; animation: popIn 0.3s ease-out; }
         .overlay-terms { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 999; }
         .terms-text { height: 200px; overflow-y: auto; background: rgba(255,255,255,0.05); border-radius: 1rem; padding: 1rem; margin: 1rem 0; font-size: 14px; line-height: 1.6; }
+        .terms-text::-webkit-scrollbar { width: 4px; }
+        .terms-text::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+        .terms-text::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 4px; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body class="font-tajawal bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen flex items-center justify-center p-4">
 
-<!-- نافذة الشروط -->
+<!-- ============================================================
+نافذة الشروط
+============================================================ -->
 <div id="termsModal" class="hidden overlay-terms" onclick="if(event.target===this) closeTermsModal()">
     <div class="modal-terms text-white">
         <div class="text-center mb-3">
@@ -48,22 +53,27 @@
     </div>
 </div>
 
-<!-- نموذج تسجيل الدخول -->
+<!-- ============================================================
+النموذج الرئيسي
+============================================================ -->
 <div class="relative w-full max-w-md">
+    <!-- خلفية متحركة -->
     <div class="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500 rounded-full filter blur-3xl opacity-20 bg-float"></div>
     <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-20 bg-float"></div>
     
     <div class="relative bg-white/10 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/20">
-        <!-- اللوجو -->
+        
+        <!-- ===== اللوجو ===== -->
         <div class="text-center mb-6">
             <img src="https://videotourl.com/images/1778184631873-622d780a-8224-4f6e-bf20-3df78ed623b1.jpg" class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-3 border-2 border-cyan-400 shadow-lg">
             <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">يلا كيمياء</h1>
             <p class="text-gray-400 text-sm">مستر زياد مبروك</p>
         </div>
         
+        <!-- ===== رسائل ===== -->
         <div id="message" class="hidden"></div>
         
-        <!-- واجهة تسجيل الدخول -->
+        <!-- ===== واجهة تسجيل الدخول ===== -->
         <div id="loginMode">
             <input type="email" id="email" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
             <input type="password" id="password" placeholder="🔒 كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
@@ -71,7 +81,7 @@
             <button onclick="resetPassword()" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block text-center w-full transition">نسيت كلمة المرور؟</button>
         </div>
         
-        <!-- واجهة إنشاء حساب -->
+        <!-- ===== واجهة إنشاء حساب ===== -->
         <div id="signupMode" class="hidden">
             <input type="text" id="signupName" placeholder="👤 الاسم الكامل (ثلاثي)" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
             <input type="email" id="signupEmail" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
@@ -79,26 +89,32 @@
             <button onclick="signupWithEmail()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold hover:scale-105 transition duration-200">✨ إنشاء حساب جديد</button>
         </div>
         
-        <!-- الفاصل -->
+        <!-- ===== الفاصل ===== -->
         <div class="relative my-6">
             <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/20"></div></div>
             <div class="relative flex justify-center text-sm"><span class="px-2 bg-transparent text-gray-400">أو</span></div>
         </div>
         
-        <!-- زر تبديل الوضع -->
+        <!-- ===== زر تبديل الوضع ===== -->
         <p id="modeToggle" onclick="toggleMode()" class="text-center text-sm text-gray-400 cursor-pointer hover:text-cyan-400 transition mt-2">
             ليس لديك حساب؟ <span class="text-cyan-400">إنشاء حساب جديد</span>
         </p>
+        
+        <!-- ===== العودة للصفحة الرئيسية ===== -->
         <a href="index.html" class="block text-center mt-4 text-sm text-gray-500 hover:text-gray-300 transition">← العودة للصفحة الرئيسية</a>
         
-        <!-- تنبيه الشروط -->
+        <!-- ===== تنبيه الشروط ===== -->
         <div class="mt-6 pt-4 border-t border-white/10 text-center">
             <p class="text-gray-500 text-xs">بالتسجيل، أنت توافق على <span class="text-cyan-400">شروط وسياسة استخدام المنصة</span></p>
             <p class="text-red-400/70 text-[10px] mt-1">⚠️ أي مخالفة للقواعد أو بيانات غير صحيحة تستوجب الحظر النهائي</p>
         </div>
+        
     </div>
 </div>
 
+<!-- ============================================================
+FIREBASE SCRIPT
+============================================================ -->
 <script type="module">
     // ============================================================
     // ✅ IMPORT FIREBASE
@@ -121,7 +137,7 @@
     } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     // ============================================================
-    // ✅ FIREBASE CONFIG (نفس البيانات القديمة)
+    // ✅ FIREBASE CONFIG
     // ============================================================
     const firebaseConfig = {
         apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
@@ -140,7 +156,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // ✅ FIX: حل مشكلة localhost
+    // ✅ FIX: حل مشكلة localhost (auth/requests-from-referer-null-are-blocked)
     setPersistence(auth, browserLocalPersistence)
         .then(() => console.log('✅ Persistence set to LOCAL'))
         .catch((err) => console.warn('⚠️ Persistence error:', err));
