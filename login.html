@@ -9,6 +9,7 @@
     <style>
         @keyframes floatBG { 0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
         @keyframes popIn { 0%{transform:scale(0);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5}}
         .bg-float { animation: floatBG 20s ease infinite }
         .modal-terms { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #0f0c29, #302b63); border-radius: 2rem; padding: 2rem; z-index: 1000; border: 2px solid #00c6ff; max-width: 500px; width: 90%; animation: popIn 0.3s ease-out; }
         .overlay-terms { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 999; }
@@ -17,6 +18,12 @@
         .terms-text::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
         .terms-text::-webkit-scrollbar-thumb { background: #00c6ff; border-radius: 4px; }
         .hidden { display: none !important; }
+        .input-field { transition: all 0.3s ease; }
+        .input-field:focus { transform: translateY(-1px); box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.2); }
+        .loading-spinner { display: none; }
+        .loading-spinner.show { display: inline-block; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .security-badge { background: rgba(0,198,255,0.1); border: 1px solid rgba(0,198,255,0.2); padding: 8px 12px; border-radius: 8px; font-size: 11px; color: #94a3b8; }
     </style>
 </head>
 <body class="font-tajawal bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] min-h-screen flex items-center justify-center p-4">
@@ -38,6 +45,7 @@
                 <li>الالتزام بآداب التعلم وعدم إساءة استخدام المنصة</li>
                 <li>عدم مشاركة حسابك مع أي شخص آخر</li>
                 <li>احترام آراء الزملاء والمعلم</li>
+                <li>عدم استخدام المنصة في أي نشاط غير قانوني</li>
             </ul>
             <div class="border-t border-cyan-500/30 my-3"></div>
             <p class="text-red-400 font-bold text-center">⚠️ تنبيه هام ⚠️</p>
@@ -57,7 +65,6 @@
 النموذج الرئيسي
 ============================================================ -->
 <div class="relative w-full max-w-md">
-    <!-- خلفية متحركة -->
     <div class="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500 rounded-full filter blur-3xl opacity-20 bg-float"></div>
     <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-20 bg-float"></div>
     
@@ -75,17 +82,61 @@
         
         <!-- ===== واجهة تسجيل الدخول ===== -->
         <div id="loginMode">
-            <input type="email" id="email" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
-            <input type="password" id="password" placeholder="🔒 كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
+            <input type="email" id="email" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+            <input type="password" id="password" placeholder="🔒 كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
             <button onclick="loginWithEmail()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-xl font-bold hover:scale-105 transition duration-200">🚀 تسجيل الدخول</button>
             <button onclick="resetPassword()" class="text-sm text-cyan-400 hover:text-cyan-300 mt-3 block text-center w-full transition">نسيت كلمة المرور؟</button>
         </div>
         
-        <!-- ===== واجهة إنشاء حساب ===== -->
+        <!-- ===== واجهة إنشاء حساب - النسخة الجديدة ===== -->
         <div id="signupMode" class="hidden">
-            <input type="text" id="signupName" placeholder="👤 الاسم الكامل (ثلاثي)" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
-            <input type="email" id="signupEmail" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
-            <input type="password" id="signupPassword" placeholder="🔒 كلمة المرور (6 أحرف على الأقل)" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition">
+            
+            <!-- الاسم الكامل -->
+            <input type="text" id="signupName" placeholder="👤 الاسم الكامل (ثلاثي)" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+            
+            <!-- البريد الإلكتروني -->
+            <input type="email" id="signupEmail" placeholder="📧 البريد الإلكتروني" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+            
+            <!-- رقم الهاتف -->
+            <input type="tel" id="signupPhone" placeholder="📱 رقم الهاتف (مثال: 01012345678)" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+            
+            <!-- رقم ولي الأمر -->
+            <input type="tel" id="signupParentPhone" placeholder="📱 رقم ولي الأمر" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+            
+            <!-- نوع الدراسة -->
+            <select id="signupStudyType" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+                <option value="" class="text-black">اختر نوع الدراسة</option>
+                <option value="general" class="text-black">ثانوي عام</option>
+                <option value="azhar" class="text-black">أزهر</option>
+            </select>
+            
+            <!-- السنة الدراسية -->
+            <select id="signupGrade" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+                <option value="" class="text-black">اختر السنة الدراسية</option>
+                <option value="1" class="text-black">أولى ثانوي</option>
+                <option value="2" class="text-black">ثانية ثانوي</option>
+                <option value="3" class="text-black">ثالثة ثانوي</option>
+            </select>
+            
+            <!-- كيف عرفت المنصة -->
+            <select id="signupHowFound" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+                <option value="" class="text-black">كيف عرفت منصة يلا كيمياء؟</option>
+                <option value="youtube" class="text-black">📺 يوتيوب</option>
+                <option value="facebook" class="text-black">📘 فيسبوك</option>
+                <option value="instagram" class="text-black">📸 إنستغرام</option>
+                <option value="tiktok" class="text-black">🎵 تيك توك</option>
+                <option value="friend" class="text-black">👥 صديق / زميل</option>
+                <option value="teacher" class="text-black">👨‍🏫 مدرس / مدرسة</option>
+                <option value="whatsapp" class="text-black">💬 واتساب</option>
+                <option value="other" class="text-black">🔗 أخرى</option>
+            </select>
+            
+            <!-- كلمة المرور -->
+            <input type="password" id="signupPassword" placeholder="🔒 كلمة المرور (6 أحرف على الأقل)" class="w-full mb-3 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+            
+            <!-- تأكيد كلمة المرور -->
+            <input type="password" id="signupConfirmPassword" placeholder="🔒 تأكيد كلمة المرور" class="w-full mb-4 px-4 py-3 bg-white/10 rounded-xl border border-white/20 text-white placeholder-gray-400 focus:border-cyan-400 outline-none transition input-field">
+            
             <button onclick="signupWithEmail()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-bold hover:scale-105 transition duration-200">✨ إنشاء حساب جديد</button>
         </div>
         
@@ -103,8 +154,13 @@
         <!-- ===== العودة للصفحة الرئيسية ===== -->
         <a href="index.html" class="block text-center mt-4 text-sm text-gray-500 hover:text-gray-300 transition">← العودة للصفحة الرئيسية</a>
         
-        <!-- ===== تنبيه الشروط ===== -->
+        <!-- ===== شارة الأمان ===== -->
         <div class="mt-6 pt-4 border-t border-white/10 text-center">
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="security-badge">🔒 AES-256</span>
+                <span class="security-badge">🛡️ Firewall</span>
+                <span class="security-badge">🔐 SSL</span>
+            </div>
             <p class="text-gray-500 text-xs">بالتسجيل، أنت توافق على <span class="text-cyan-400">شروط وسياسة استخدام المنصة</span></p>
             <p class="text-red-400/70 text-[10px] mt-1">⚠️ أي مخالفة للقواعد أو بيانات غير صحيحة تستوجب الحظر النهائي</p>
         </div>
@@ -113,7 +169,7 @@
 </div>
 
 <!-- ============================================================
-FIREBASE SCRIPT
+FIREBASE SCRIPT - المشروع الجديد مع نظام تسجيل متكامل
 ============================================================ -->
 <script type="module">
     // ============================================================
@@ -137,16 +193,17 @@ FIREBASE SCRIPT
     } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
     // ============================================================
-    // ✅ FIREBASE CONFIG
+    // ✅ FIREBASE CONFIG - المشروع الجديد
     // ============================================================
     const firebaseConfig = {
-        apiKey: "AIzaSyDX-DEv8K5aOyXk12L_3qQNnKGdAui6paE",
-        authDomain: "yalla-chemistry-github.firebaseapp.com",
-        databaseURL: "https://yalla-chemistry-github-default-rtdb.firebaseio.com",
-        projectId: "yalla-chemistry-github",
-        storageBucket: "yalla-chemistry-github.firebasestorage.app",
-        messagingSenderId: "112757887385",
-        appId: "1:112757887385:web:eb77f8fd77bf5503fc4308"
+        apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
+        authDomain: "yalla-kimya.firebaseapp.com",
+        databaseURL: "https://yalla-kimya-default-rtdb.firebaseio.com",
+        projectId: "yalla-kimya",
+        storageBucket: "yalla-kimya.firebasestorage.app",
+        messagingSenderId: "1052374689829",
+        appId: "1:1052374689829:web:fbb815ab42d753e63377cc",
+        measurementId: "G-B3SJFF8R1R"
     };
 
     // ============================================================
@@ -156,10 +213,11 @@ FIREBASE SCRIPT
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // ✅ FIX: حل مشكلة localhost (auth/requests-from-referer-null-are-blocked)
     setPersistence(auth, browserLocalPersistence)
         .then(() => console.log('✅ Persistence set to LOCAL'))
         .catch((err) => console.warn('⚠️ Persistence error:', err));
+
+    console.log('🔥 Firebase initialized: yalla-kimya');
 
     // ============================================================
     // ✅ STATE
@@ -175,6 +233,22 @@ FIREBASE SCRIPT
         div.className = `p-3 rounded-lg mb-4 text-center text-sm ${type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500' : 'bg-red-500/20 text-red-400 border border-red-500'}`;
         div.classList.remove('hidden');
         setTimeout(() => div.classList.add('hidden'), 4000);
+    }
+
+    // ============================================================
+    // ✅ VALIDATION
+    // ============================================================
+    function isValidEgyptianPhone(phone) {
+        return /^(010|011|012|015)\d{8}$/.test(phone);
+    }
+
+    function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isValidName(name) {
+        const trimmed = name.trim().replace(/\s+/g, ' ');
+        return trimmed.split(' ').length >= 3 && trimmed.length >= 6;
     }
 
     // ============================================================
@@ -197,44 +271,115 @@ FIREBASE SCRIPT
     };
 
     // ============================================================
-    // ✅ EXECUTE SIGNUP
+    // ✅ EXECUTE SIGNUP - النسخة المتكاملة
     // ============================================================
     async function executeSignup(data) {
-        const { name, email, password } = data;
+        const { 
+            name, 
+            email, 
+            phone, 
+            parentPhone, 
+            studyType, 
+            grade, 
+            howFound, 
+            password 
+        } = data;
+
         try {
+            // 1. إنشاء المستخدم في Firebase Auth
             const result = await createUserWithEmailAndPassword(auth, email, password);
-            await set(ref(db, 'users/' + result.user.uid), { 
-                email, 
-                name, 
-                points: 0, 
-                createdAt: Date.now(), 
+            const uid = result.user.uid;
+
+            // 2. حفظ جميع البيانات في Realtime Database
+            await set(ref(db, 'users/' + uid), { 
+                uid: uid,
+                name: name,
+                email: email,
+                phone: phone,
+                parentPhone: parentPhone,
+                studyType: studyType,
+                grade: grade,
+                howFound: howFound,
+                points: 0,
+                createdAt: Date.now(),
                 banned: false,
                 termsAccepted: true,
                 termsAcceptedAt: Date.now(),
                 role: 'student',
                 active: true,
-                loginCount: 0
+                loginCount: 0,
+                lastLogin: null,
+                // أمان إضافي
+                ipAddress: 'pending',
+                deviceId: 'pending',
+                lastPasswordChange: Date.now()
             });
+
+            // 3. حفظ رقم الهاتف في فهرس منفصل للبحث السريع
+            await set(ref(db, 'phoneIndex/' + phone), { uid: uid });
+
             showMessage('✅ تم إنشاء الحساب بنجاح! مرحباً بك في منصة يلا كيمياء', 'success');
             setTimeout(() => window.location.href = 'index.html', 1500);
+
         } catch (e) { 
-            showMessage('❌ ' + e.message, 'error'); 
+            console.error('Signup error:', e);
+            if (e.code === 'PERMISSION_DENIED') {
+                showMessage('❌ خطأ في صلاحيات قاعدة البيانات. يرجى تحديث قواعد الأمان في Firebase Console.', 'error');
+            } else if (e.code === 'auth/email-already-in-use') {
+                showMessage('❌ هذا البريد الإلكتروني مسجل بالفعل', 'error');
+            } else {
+                showMessage('❌ ' + e.message, 'error'); 
+            }
         }
     }
 
     // ============================================================
-    // ✅ SIGNUP
+    // ✅ SIGNUP - مع التحقق من جميع الحقول
     // ============================================================
     window.signupWithEmail = () => {
         const name = document.getElementById('signupName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
+        const phone = document.getElementById('signupPhone').value.trim();
+        const parentPhone = document.getElementById('signupParentPhone').value.trim();
+        const studyType = document.getElementById('signupStudyType').value;
+        const grade = document.getElementById('signupGrade').value;
+        const howFound = document.getElementById('signupHowFound').value;
         const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+        // ===== التحقق من جميع الحقول =====
+        if (!name) { showMessage('❌ الرجاء إدخال الاسم الكامل', 'error'); return; }
+        if (!isValidName(name)) { showMessage('❌ الاسم يجب أن يحتوي على 3 كلمات على الأقل', 'error'); return; }
         
-        if (!name) { showMessage('❌ الرجاء إدخال اسمك الكامل', 'error'); return; }
         if (!email) { showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error'); return; }
-        if (password.length < 6) { showMessage('❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error'); return; }
+        if (!isValidEmail(email)) { showMessage('❌ البريد الإلكتروني غير صحيح', 'error'); return; }
         
-        pendingSignup = { name, email, password };
+        if (!phone) { showMessage('❌ الرجاء إدخال رقم الهاتف', 'error'); return; }
+        if (!isValidEgyptianPhone(phone)) { showMessage('❌ رقم الهاتف غير صحيح (يجب أن يبدأ بـ 010/011/012/015)', 'error'); return; }
+        
+        if (!parentPhone) { showMessage('❌ الرجاء إدخال رقم ولي الأمر', 'error'); return; }
+        if (!isValidEgyptianPhone(parentPhone)) { showMessage('❌ رقم ولي الأمر غير صحيح', 'error'); return; }
+        if (phone === parentPhone) { showMessage('❌ رقم ولي الأمر لا يمكن أن يكون مطابقاً لرقم الطالب', 'error'); return; }
+        
+        if (!studyType) { showMessage('❌ الرجاء اختيار نوع الدراسة', 'error'); return; }
+        if (!grade) { showMessage('❌ الرجاء اختيار السنة الدراسية', 'error'); return; }
+        if (!howFound) { showMessage('❌ الرجاء اختيار كيف عرفت المنصة', 'error'); return; }
+        
+        if (password.length < 6) { showMessage('❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error'); return; }
+        if (password !== confirmPassword) { showMessage('❌ كلمة المرور غير متطابقة', 'error'); return; }
+
+        // ===== حفظ البيانات مؤقتاً لعرض الشروط =====
+        pendingSignup = { 
+            name, 
+            email, 
+            phone, 
+            parentPhone, 
+            studyType, 
+            grade, 
+            howFound, 
+            password 
+        };
+        
         showTermsModal();
     };
 
@@ -253,17 +398,15 @@ FIREBASE SCRIPT
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             
-            // ✅ التحقق من الحظر
             const userRef = ref(db, 'users/' + result.user.uid);
             const snapshot = await get(userRef);
             
             if (snapshot.exists() && snapshot.val().banned === true) {
-                showMessage('⛔ تم حظر حسابك بسبب مخالفة قواعد المنصة. للاستفسار، يرجى التواصل مع الدعم.', 'error');
+                showMessage('⛔ تم حظر حسابك بسبب مخالفة قواعد المنصة.', 'error');
                 await auth.signOut();
                 return;
             }
             
-            // ✅ تحديث عدد مرات تسجيل الدخول
             if (snapshot.exists()) {
                 await update(ref(db, 'users/' + result.user.uid), {
                     loginCount: (snapshot.val().loginCount || 0) + 1,
@@ -275,12 +418,11 @@ FIREBASE SCRIPT
             setTimeout(() => window.location.href = 'index.html', 1000);
             
         } catch (e) { 
+            console.error('Login error:', e);
             if (e.code === 'auth/invalid-credential') {
                 showMessage('❌ البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error');
             } else if (e.code === 'auth/user-not-found') {
                 showMessage('❌ لم يتم العثور على حساب بهذا البريد الإلكتروني', 'error');
-            } else if (e.code === 'auth/too-many-requests') {
-                showMessage('❌ تم إرسال العديد من الطلبات، حاول لاحقاً', 'error');
             } else {
                 showMessage('❌ ' + e.message, 'error');
             }
@@ -295,13 +437,9 @@ FIREBASE SCRIPT
         if (!email) { showMessage('❌ الرجاء إدخال البريد الإلكتروني', 'error'); return; }
         try {
             await sendPasswordResetEmail(auth, email);
-            showMessage('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 'success');
+            showMessage('✅ تم إرسال رابط إعادة تعيين كلمة المرور', 'success');
         } catch (e) { 
-            if (e.code === 'auth/user-not-found') {
-                showMessage('❌ لم يتم العثور على حساب بهذا البريد الإلكتروني', 'error');
-            } else {
-                showMessage('❌ ' + e.message, 'error'); 
-            }
+            showMessage('❌ ' + e.message, 'error'); 
         }
     };
 
@@ -324,8 +462,7 @@ FIREBASE SCRIPT
     };
 
     console.log('✅ Firebase initialized successfully');
-    console.log('🔥 Auth:', auth);
-    console.log('📁 Database:', db);
+    console.log('📦 Project: yalla-kimya');
 </script>
 
 </body>
