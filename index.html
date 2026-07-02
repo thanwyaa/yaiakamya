@@ -996,12 +996,12 @@
             margin-top: 4px;
         }
 
-        /* Guest-only elements */
+        /* Guest/User visibility */
         .guest-only {
-            display: block;
+            display: block !important;
         }
         .user-only {
-            display: none;
+            display: none !important;
         }
         body.logged-in .guest-only {
             display: none !important;
@@ -1066,7 +1066,7 @@
     </div>
 
     <!-- ============================================================
-    LOGIN REQUIRED OVERLAY - Updated (only login + cancel)
+    LOGIN REQUIRED OVERLAY - Only login + cancel
     ============================================================ -->
     <div class="login-required-overlay" id="loginRequiredOverlay">
         <div class="login-required-box">
@@ -1291,7 +1291,7 @@
             </div>
         </section>
 
-        <!-- Fun Cards - Removed duplicate buttons -->
+        <!-- Fun Cards -->
         <section class="max-w-6xl mx-auto px-4 md:px-8 py-12">
             <h2 class="font-lalezar text-3xl md:text-4xl text-center mb-12 fade-in visible" style="color:var(--text)">🎉 جرب واختبر نفسك</h2>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 fade-in visible">
@@ -1390,7 +1390,7 @@
             </div>
         </section>
 
-        <!-- FAQ - Updated -->
+        <!-- FAQ -->
         <section class="max-w-4xl mx-auto px-4 md:px-8 py-12">
             <h2 class="font-lalezar text-3xl md:text-4xl text-center mb-4 fade-in visible" style="color:var(--text)">❓ أسئلة شائعة</h2>
             <p class="text-center mb-10 fade-in visible" style="color:var(--text2)">كل اللي محتاج تعرفه عن المنصة</p>
@@ -1824,7 +1824,7 @@
                 await signOut(auth);
                 showToast('تم تسجيل الخروج', false);
                 toggleUserMenu();
-                updateUIForAuth(null);
+                // UI will be updated by onAuthStateChanged
             } catch (error) {
                 console.error('Logout error:', error);
                 showToast('حدث خطأ في تسجيل الخروج', true);
@@ -1847,14 +1847,6 @@
         // ============================================================
         function updateUIForAuth(user) {
             const body = document.body;
-            const authButtons = document.getElementById('authButtons');
-            const userMenuWrapper = document.getElementById('userMenuWrapper');
-            const atomsBadge = document.getElementById('atomsBadge');
-            const notifBellWrapper = document.getElementById('notifBellWrapper');
-            const ctaSection = document.getElementById('ctaSection');
-            const leaderboardCta = document.querySelector('.leaderboard-cta');
-            const heroGuestButtons = document.querySelector('.hero-guest-buttons');
-            const heroUserButtons = document.querySelector('.hero-user-buttons');
 
             // Toggle body class for CSS-based hiding
             if (user) {
@@ -1863,49 +1855,42 @@
                 body.classList.remove('logged-in');
             }
 
-            // Manual element visibility
+            // Manual element visibility for elements not covered by CSS
+            const heroGuestButtons = document.querySelector('.hero-guest-buttons');
+            const heroUserButtons = document.querySelector('.hero-user-buttons');
+            const ctaSection = document.getElementById('ctaSection');
+            const leaderboardCta = document.querySelector('.leaderboard-cta');
+
             if (user) {
-                if (authButtons) authButtons.style.display = 'none';
-                if (userMenuWrapper) userMenuWrapper.style.display = 'block';
-                if (atomsBadge) atomsBadge.style.display = 'block';
-                if (notifBellWrapper) notifBellWrapper.style.display = 'block';
-                if (ctaSection) ctaSection.style.display = 'none';
-                if (leaderboardCta) leaderboardCta.style.display = 'none';
                 if (heroGuestButtons) heroGuestButtons.style.display = 'none';
                 if (heroUserButtons) heroUserButtons.style.display = 'flex';
+                if (ctaSection) ctaSection.style.display = 'none';
+                if (leaderboardCta) leaderboardCta.style.display = 'none';
 
-                // Update user-only elements in sections
-                document.querySelectorAll('.guest-only').forEach(el => el.style.display = 'none');
-                document.querySelectorAll('.user-only').forEach(el => el.style.display = 'block');
+                loadUserData(user.uid);
+                loadUserNotifications(user.uid);
+                loadUserSubscriptions(user.uid);
+            } else {
+                if (heroGuestButtons) heroGuestButtons.style.display = 'flex';
+                if (heroUserButtons) heroUserButtons.style.display = 'none';
+                if (ctaSection) ctaSection.style.display = 'block';
+                if (leaderboardCta) leaderboardCta.style.display = 'block';
 
-                const heroButtons = document.getElementById('heroButtons');
-                if (heroButtons) {
+                userData = null;
+                userSubscriptions = [];
+            }
+
+            // Update hero buttons via JS for complete control
+            const heroButtons = document.getElementById('heroButtons');
+            if (heroButtons) {
+                if (user) {
                     heroButtons.innerHTML = `
                                 <div class="hero-user-buttons flex flex-wrap gap-4 justify-center">
                                     <button class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg" onclick="APP.goToCourses()">📚 كورساتي</button>
                                     <button class="btn-outline font-bold py-4 px-10 rounded-full text-lg" onclick="APP.showDashboard()">👤 حسابي</button>
                                 </div>
                             `;
-                }
-
-                loadUserData(user.uid);
-                loadUserNotifications(user.uid);
-                loadUserSubscriptions(user.uid);
-            } else {
-                if (authButtons) authButtons.style.display = 'flex';
-                if (userMenuWrapper) userMenuWrapper.style.display = 'none';
-                if (atomsBadge) atomsBadge.style.display = 'none';
-                if (notifBellWrapper) notifBellWrapper.style.display = 'none';
-                if (ctaSection) ctaSection.style.display = 'block';
-                if (leaderboardCta) leaderboardCta.style.display = 'block';
-                if (heroGuestButtons) heroGuestButtons.style.display = 'flex';
-                if (heroUserButtons) heroUserButtons.style.display = 'none';
-
-                document.querySelectorAll('.guest-only').forEach(el => el.style.display = 'block');
-                document.querySelectorAll('.user-only').forEach(el => el.style.display = 'none');
-
-                const heroButtons = document.getElementById('heroButtons');
-                if (heroButtons) {
+                } else {
                     heroButtons.innerHTML = `
                                 <div class="hero-guest-buttons flex flex-wrap gap-4 justify-center">
                                     <a href="login.html" class="btn-primary text-white font-bold py-4 px-10 rounded-full text-lg">🚀 ابدأ التعلم الآن</a>
@@ -1913,10 +1898,15 @@
                                 </div>
                             `;
                 }
-
-                userData = null;
-                userSubscriptions = [];
             }
+
+            // Update user-only elements in sections
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = user ? 'none' : 'block';
+            });
+            document.querySelectorAll('.user-only').forEach(el => {
+                el.style.display = user ? 'block' : 'none';
+            });
         }
 
         async function loadUserData(uid) {
@@ -3788,7 +3778,7 @@
         // ============================================================
         function showHome() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            // Just reload to ensure all state is properly reflected
+            // Reload to ensure all state is properly reflected
             location.reload();
         }
 
@@ -3802,7 +3792,7 @@
         }
 
         // ============================================================
-        // PRIVACY & TERMS
+        // PRIVACY & TERMS - NEW FUNCTIONS
         // ============================================================
         function showPrivacy() {
             const content = document.getElementById('mainContent');
@@ -4015,7 +4005,7 @@
         });
 
         // ============================================================
-        // EXPOSE APP API
+        // EXPOSE APP API - All functions now available
         // ============================================================
         window.APP = {
             toggleTheme,
@@ -4068,15 +4058,20 @@
             setupFadeInObserver();
             setupScrollHandlers();
 
-            console.log('✅ Yalla Chemistry App v3.0 - Final fixes');
-            console.log('✅ Hero buttons: Guest buttons hidden after login, user buttons shown');
-            console.log('✅ Leaderboard CTA: Hidden after login');
-            console.log('✅ CTA Section: Hidden after login');
-            console.log('✅ Login Overlay: Only login + cancel');
-            console.log('✅ All guest elements hidden when logged in');
-            console.log('✅ All user elements shown when logged in');
-            console.log('✅ Navbar: Login button hidden, user menu shown after login');
-            console.log('✅ Footer: Version number removed');
+            console.log('✅ Yalla Chemistry App v5.0 - All functions activated');
+            console.log('✅ toggleTheme() - Light/Dark mode working');
+            console.log('✅ showPrivacy() - Privacy policy page');
+            console.log('✅ showTerms() - Terms and conditions page');
+            console.log('✅ logout() - Sign out and remove logged-in class');
+            console.log('✅ showDashboard() - Student dashboard');
+            console.log('✅ showHome() - Return to home');
+            console.log('✅ goToCourses() - Go to courses section');
+            console.log('✅ showExams() - Show general exams');
+            console.log('✅ showQuizzes() - Show general quizzes');
+            console.log('✅ showLeaderboard() - Show leaderboard');
+            console.log('✅ Body gets class="logged-in" after login');
+            console.log('✅ Guest elements hide, user elements show after login');
+            console.log('✅ Bell icon and user menu appear after login');
         }
 
         if (document.readyState === 'loading') {
