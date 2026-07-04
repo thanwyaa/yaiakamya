@@ -2200,33 +2200,39 @@
                 let lessonExams = [];
                 let lessonQuizzes = [];
 
-                if (lessonIds.length > 0) {
-                    const assignQuery = query(
-                        collection(db, 'assignments'),
-                        where('lessonId', 'in', lessonIds.slice(0, 10))
-                    );
-                    const assignSnap = await getDocs(assignQuery);
-                    assignSnap.forEach(docSnap => {
-                        assignments.push({ id: docSnap.id, ...docSnap.data() });
-                    });
+                // Firestore 'in' query limit is 30, so we process in batches
+                const batchSize = 30;
+                for (let i = 0; i < lessonIds.length; i += batchSize) {
+                    const batch = lessonIds.slice(i, i + batchSize);
+                    
+                    if (batch.length > 0) {
+                        const assignQuery = query(
+                            collection(db, 'assignments'),
+                            where('lessonId', 'in', batch)
+                        );
+                        const assignSnap = await getDocs(assignQuery);
+                        assignSnap.forEach(docSnap => {
+                            assignments.push({ id: docSnap.id, ...docSnap.data() });
+                        });
 
-                    const examQuery = query(
-                        collection(db, 'lessonExams'),
-                        where('lessonId', 'in', lessonIds.slice(0, 10))
-                    );
-                    const examSnap = await getDocs(examQuery);
-                    examSnap.forEach(docSnap => {
-                        lessonExams.push({ id: docSnap.id, ...docSnap.data() });
-                    });
+                        const examQuery = query(
+                            collection(db, 'lessonExams'),
+                            where('lessonId', 'in', batch)
+                        );
+                        const examSnap = await getDocs(examQuery);
+                        examSnap.forEach(docSnap => {
+                            lessonExams.push({ id: docSnap.id, ...docSnap.data() });
+                        });
 
-                    const quizQuery = query(
-                        collection(db, 'lessonQuizzes'),
-                        where('lessonId', 'in', lessonIds.slice(0, 10))
-                    );
-                    const quizSnap = await getDocs(quizQuery);
-                    quizSnap.forEach(docSnap => {
-                        lessonQuizzes.push({ id: docSnap.id, ...docSnap.data() });
-                    });
+                        const quizQuery = query(
+                            collection(db, 'lessonQuizzes'),
+                            where('lessonId', 'in', batch)
+                        );
+                        const quizSnap = await getDocs(quizQuery);
+                        quizSnap.forEach(docSnap => {
+                            lessonQuizzes.push({ id: docSnap.id, ...docSnap.data() });
+                        });
+                    }
                 }
 
                 return { videos, assignments, lessonExams, lessonQuizzes };
