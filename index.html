@@ -573,12 +573,11 @@
             flex-shrink: 0;
             background: var(--primary);
             color: #fff;
-            object-fit: cover;
+            overflow: hidden;
         }
         .leaderboard-item .avatar img {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
             object-fit: cover;
         }
         .leaderboard-item .info { flex: 1; }
@@ -759,7 +758,6 @@
             justify-content: center;
             transition: var(--transition);
             overflow: hidden;
-            object-fit: cover;
         }
         .user-menu-btn img {
             width: 100%;
@@ -788,20 +786,19 @@
 
         /* ===== Profile Avatar ===== */
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--primary);
-            background: var(--bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--primary);
-            margin: 0 auto;
+            background: var(--primary);
+            color: #fff;
             overflow: hidden;
+            flex-shrink: 0;
+            border: 3px solid var(--border);
         }
         .profile-avatar img {
             width: 100%;
@@ -809,24 +806,28 @@
             object-fit: cover;
         }
 
-        /* ===== Analysis Card ===== */
-        .analysis-card {
+        /* ===== Performance Analysis ===== */
+        .performance-card {
+            padding: 16px 20px;
+            border-radius: var(--radius);
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            transition: var(--transition);
+            margin-bottom: 12px;
         }
-        .analysis-card:hover { box-shadow: var(--shadow); }
-        .analysis-level {
-            font-size: 2.5rem;
-            font-weight: 900;
-            font-family: 'Lalezar', cursive;
+        .performance-card .level-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
         }
-        .analysis-level.excellent { color: #22C55E; }
-        .analysis-level.good { color: #22C55E; }
-        .analysis-level.average { color: #FFA726; }
-        .analysis-level.needs-improvement { color: #EF4444; }
+        .performance-card .level-badge.excellent { background: #22C55E; color: #fff; }
+        .performance-card .level-badge.good { background: #FFD60A; color: #081B2C; }
+        .performance-card .level-badge.fair { background: #FFA726; color: #fff; }
+        .performance-card .level-badge.need-improve { background: #EF4444; color: #fff; }
+
+        /* ===== Hidden file input ===== */
+        .hidden-input { display: none; }
     </style>
 </head>
 <body>
@@ -862,7 +863,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo" onclick="APP.showHome()">
-                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb" alt="يلا كيمياء" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
+                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/%D9%84%D9%88%D8%AC%D9%88_%D8%B2%D9%88%D8%B2_qyvlkb" alt="يلا كيمياء" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
                 <span>يلا كيمياء</span>
             </a>
 
@@ -888,7 +889,10 @@
                     <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatar">U</button>
                     <div id="userMenu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow:hidden;z-index:200;">
                         <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-                            <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem;flex-shrink:0;" id="menuAvatar">U</div>
+                            <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;" id="menuAvatarContainer">
+                                <span id="menuAvatarText">U</span>
+                                <img id="menuAvatarImg" style="display:none;width:100%;height:100%;object-fit:cover;" alt="">
+                            </div>
                             <div>
                                 <p style="font-weight:700;font-size:0.9rem;color:var(--text);" id="userNameDisplay">مستخدم</p>
                                 <p style="font-size:0.75rem;color:var(--text2);"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</p>
@@ -1182,7 +1186,7 @@
     <footer style="background:var(--card);border-top:1px solid var(--border);padding:20px;margin-top:16px;">
         <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
-                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb" alt="يلا كيمياء" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" loading="lazy">
+                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/%D9%84%D9%88%D8%AC%D9%88_%D8%B2%D9%88%D8%B2_qyvlkb" alt="يلا كيمياء" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" loading="lazy">
                 <span style="font-family:'Lalezar',cursive;font-size:1.2rem;color:var(--primary);">يلا كيمياء</span>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.85rem;">
@@ -1204,8 +1208,8 @@
                 "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
                 "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
                 "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js",
-                "firebase/storage": "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js",
-                "firebase/analytics": "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js"
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"
             }
         }
     </script>
@@ -1270,7 +1274,7 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        console.log('✅ Yalla Chemistry - Firebase initialized with Storage');
+        console.log('✅ Yalla Chemistry - Firebase initialized');
 
         // ============================================================
         // APP STATE
@@ -1284,6 +1288,7 @@
         let allGeneralQuizzes = [];
         let courseUnsubscribers = [];
         let leaderboardUnsub = null;
+        let userProfileImageUrl = null;
 
         // ============================================================
         // UTILITY FUNCTIONS
@@ -1334,17 +1339,29 @@
         }
 
         // ============================================================
-        // GENERATE UNIQUE STUDENT CODE
+        // STUDENT CODE GENERATION
         // ============================================================
-        function generateStudentCode(name, phone) {
-            const namePrefix = (name || 'STU').substring(0, 2).toUpperCase();
-            const phoneSuffix = (phone || '').slice(-2) || '00';
-            const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let random = '';
-            for (let i = 0; i < 4; i++) {
-                random += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+        async function generateUniqueStudentCode(name, phone) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            // Get first 2 letters of name
+            const namePrefix = name ? name.substring(0, 2).toUpperCase() : 'ST';
+            // Get last 2 digits of phone if available
+            const phoneSuffix = phone && phone.length >= 2 ? phone.slice(-2) : '00';
+            let attempts = 0;
+            while (attempts < 20) {
+                let randomPart = '';
+                for (let i = 0; i < 4; i++) {
+                    randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                const code = namePrefix + phoneSuffix + randomPart;
+                // Check if code exists
+                const q = query(collection(db, 'users'), where('code', '==', code));
+                const snapshot = await getDocs(q);
+                if (snapshot.empty) return code;
+                attempts++;
             }
-            return namePrefix + phoneSuffix + random;
+            // Fallback: use timestamp
+            return 'STU' + Date.now().toString(36).toUpperCase().slice(0, 8);
         }
 
         // ============================================================
@@ -1408,6 +1425,85 @@
         }
 
         // ============================================================
+        // PROFILE IMAGE
+        // ============================================================
+        function updateProfileImageDisplay(url) {
+            userProfileImageUrl = url;
+            // Update navbar avatar
+            const avatarBtn = document.getElementById('userAvatar');
+            if (avatarBtn) {
+                if (url) {
+                    avatarBtn.innerHTML = `<img src="${url}" alt="صورة شخصية">`;
+                } else {
+                    const name = userData?.name || 'مستخدم';
+                    avatarBtn.innerHTML = name[0].toUpperCase();
+                }
+            }
+            // Update menu avatar
+            const menuContainer = document.getElementById('menuAvatarContainer');
+            const menuText = document.getElementById('menuAvatarText');
+            const menuImg = document.getElementById('menuAvatarImg');
+            if (menuContainer && menuText && menuImg) {
+                if (url) {
+                    menuText.style.display = 'none';
+                    menuImg.style.display = 'block';
+                    menuImg.src = url;
+                } else {
+                    menuText.style.display = 'block';
+                    menuImg.style.display = 'none';
+                    const name = userData?.name || 'مستخدم';
+                    menuText.textContent = name[0].toUpperCase();
+                }
+            }
+            // Update any profile avatars on dashboard
+            document.querySelectorAll('.profile-avatar-img').forEach(el => {
+                if (url) {
+                    el.src = url;
+                    el.style.display = 'block';
+                    el.parentElement.querySelector('.profile-avatar-text')?.style.setProperty('display', 'none');
+                }
+            });
+        }
+
+        async function uploadProfileImage(file) {
+            if (!currentUser) {
+                showToast('يرجى تسجيل الدخول أولاً', true);
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                showToast('الرجاء اختيار صورة فقط', true);
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('حجم الصورة يجب أن يكون أقل من 5 ميجابايت', true);
+                return;
+            }
+
+            try {
+                const storageRef = ref(storage, `profile_images/${currentUser.uid}`);
+                await uploadBytes(storageRef, file);
+                const downloadUrl = await getDownloadURL(storageRef);
+
+                // Update user document
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    profileImage: downloadUrl,
+                    updatedAt: Timestamp.now()
+                });
+
+                if (userData) {
+                    userData.profileImage = downloadUrl;
+                }
+                updateProfileImageDisplay(downloadUrl);
+                showToast('✅ تم تحديث الصورة الشخصية بنجاح', false);
+            } catch (error) {
+                console.error('Error uploading profile image:', error);
+                showToast('حدث خطأ أثناء رفع الصورة', true);
+            }
+        }
+
+        // ============================================================
         // AUTH
         // ============================================================
         async function logout() {
@@ -1434,36 +1530,35 @@
                 body.classList.add('logged-in');
                 guestElements.forEach(el => el.style.display = 'none');
                 userElements.forEach(el => el.style.display = 'block');
-                document.getElementById('heroButtons').querySelector('.guest-only').style.display = 'none';
-                document.getElementById('heroButtons').querySelector('.user-only').style.display = 'flex';
+                const heroBtns = document.getElementById('heroButtons');
+                if (heroBtns) {
+                    heroBtns.querySelector('.guest-only').style.display = 'none';
+                    heroBtns.querySelector('.user-only').style.display = 'flex';
+                }
                 document.getElementById('atomsBadge').style.display = 'block';
-                document.getElementById('ctaSection')?.classList.add('guest-only');
-                document.getElementById('ctaSection')?.style.setProperty('display', 'none', 'important');
+                const cta = document.getElementById('ctaSection');
+                if (cta) {
+                    cta.classList.add('guest-only');
+                    cta.style.setProperty('display', 'none', 'important');
+                }
             } else {
                 body.classList.remove('logged-in');
                 guestElements.forEach(el => el.style.display = 'block');
                 userElements.forEach(el => el.style.display = 'none');
-                document.getElementById('heroButtons').querySelector('.guest-only').style.display = 'flex';
-                document.getElementById('heroButtons').querySelector('.user-only').style.display = 'none';
+                const heroBtns = document.getElementById('heroButtons');
+                if (heroBtns) {
+                    heroBtns.querySelector('.guest-only').style.display = 'flex';
+                    heroBtns.querySelector('.user-only').style.display = 'none';
+                }
                 document.getElementById('atomsBadge').style.display = 'none';
-                document.getElementById('ctaSection')?.classList.remove('guest-only');
-                document.getElementById('ctaSection')?.style.setProperty('display', 'block', 'important');
+                const cta = document.getElementById('ctaSection');
+                if (cta) {
+                    cta.classList.remove('guest-only');
+                    cta.style.setProperty('display', 'block', 'important');
+                }
                 userData = null;
                 userSubscriptions = [];
             }
-        }
-
-        async function generateUniqueStudentCodeWithCheck(name, phone) {
-            let code = generateStudentCode(name, phone);
-            let attempts = 0;
-            while (attempts < 20) {
-                const q = query(collection(db, 'users'), where('code', '==', code));
-                const snapshot = await getDocs(q);
-                if (snapshot.empty) return code;
-                code = generateStudentCode(name, phone + attempts.toString());
-                attempts++;
-            }
-            return 'STU' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
         }
 
         async function loadUserData(uid) {
@@ -1474,62 +1569,55 @@
                     const atoms = userData.atoms || 0;
                     document.getElementById('atomsCount').textContent = atoms;
                     document.getElementById('userAtomsCount').textContent = atoms;
-
+                    // Show real name
                     const displayName = userData.name || 'مستخدم';
                     document.getElementById('userNameDisplay').textContent = displayName;
-
-                    // Update avatar
-                    const avatarEl = document.getElementById('userAvatar');
-                    const menuAvatar = document.getElementById('menuAvatar');
-                    if (userData.photoURL) {
-                        avatarEl.innerHTML = `<img src="${userData.photoURL}" alt="${displayName}">`;
-                        if (menuAvatar) menuAvatar.innerHTML = `<img src="${userData.photoURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                    } else {
-                        avatarEl.textContent = (displayName || 'U')[0].toUpperCase();
-                        if (menuAvatar) {
-                            menuAvatar.innerHTML = '';
-                            menuAvatar.textContent = (displayName || 'U')[0].toUpperCase();
-                            menuAvatar.style.display = 'flex';
-                            menuAvatar.style.alignItems = 'center';
-                            menuAvatar.style.justifyContent = 'center';
-                            menuAvatar.style.background = 'var(--primary)';
-                            menuAvatar.style.color = '#fff';
+                    const avatarBtn = document.getElementById('userAvatar');
+                    if (avatarBtn) {
+                        if (userData.profileImage) {
+                            avatarBtn.innerHTML = `<img src="${userData.profileImage}" alt="صورة شخصية">`;
+                            userProfileImageUrl = userData.profileImage;
+                        } else {
+                            avatarBtn.textContent = displayName[0].toUpperCase();
                         }
                     }
-
+                    // Update menu avatar
+                    const menuContainer = document.getElementById('menuAvatarContainer');
+                    const menuText = document.getElementById('menuAvatarText');
+                    const menuImg = document.getElementById('menuAvatarImg');
+                    if (menuContainer && menuText && menuImg) {
+                        if (userData.profileImage) {
+                            menuText.style.display = 'none';
+                            menuImg.style.display = 'block';
+                            menuImg.src = userData.profileImage;
+                        } else {
+                            menuText.style.display = 'block';
+                            menuImg.style.display = 'none';
+                            menuText.textContent = displayName[0].toUpperCase();
+                        }
+                    }
                     await loadUserProgress(uid);
                 } else {
+                    // Create new user with code
                     const name = auth.currentUser?.displayName || 'مستخدم';
                     const email = auth.currentUser?.email || '';
                     const phone = auth.currentUser?.phoneNumber || '';
-                    const code = await generateUniqueStudentCodeWithCheck(name, phone);
-
+                    const code = await generateUniqueStudentCode(name, phone);
                     const newUser = {
                         name: name,
                         email: email,
                         phone: phone,
                         grade: '',
                         atoms: 0,
-                        points: 0,
                         code: code,
-                        photoURL: '',
                         createdAt: Timestamp.now(),
-                        active: true,
-                        lastActivity: Timestamp.now()
+                        active: true
                     };
                     await setDoc(doc(db, 'users', uid), newUser);
                     userData = newUser;
                     document.getElementById('userNameDisplay').textContent = name;
-                    document.getElementById('userAvatar').textContent = (name || 'U')[0].toUpperCase();
-                    const menuAvatar = document.getElementById('menuAvatar');
-                    if (menuAvatar) {
-                        menuAvatar.textContent = (name || 'U')[0].toUpperCase();
-                        menuAvatar.style.display = 'flex';
-                        menuAvatar.style.alignItems = 'center';
-                        menuAvatar.style.justifyContent = 'center';
-                        menuAvatar.style.background = 'var(--primary)';
-                        menuAvatar.style.color = '#fff';
-                    }
+                    const avatarBtn = document.getElementById('userAvatar');
+                    if (avatarBtn) avatarBtn.textContent = name[0].toUpperCase();
                 }
             } catch (err) {
                 console.error('Error loading user data:', err);
@@ -1566,51 +1654,6 @@
 
         function isUserSubscribed(courseId) {
             return userSubscriptions.some(sub => sub.courseId === courseId && sub.status === 'active');
-        }
-
-        // ============================================================
-        // PROFILE PICTURE UPLOAD
-        // ============================================================
-        async function uploadProfilePicture(file) {
-            if (!currentUser) {
-                showToast('يجب تسجيل الدخول أولاً', true);
-                return;
-            }
-
-            try {
-                const storageRef = ref(storage, `profile_pictures/${currentUser.uid}`);
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
-
-                await updateDoc(doc(db, 'users', currentUser.uid), {
-                    photoURL: downloadURL
-                });
-
-                if (userData) userData.photoURL = downloadURL;
-
-                // Update UI
-                const avatarEl = document.getElementById('userAvatar');
-                const menuAvatar = document.getElementById('menuAvatar');
-                const displayName = userData?.name || 'مستخدم';
-
-                if (avatarEl) {
-                    avatarEl.innerHTML = `<img src="${downloadURL}" alt="${displayName}">`;
-                }
-                if (menuAvatar) {
-                    menuAvatar.innerHTML = `<img src="${downloadURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                }
-
-                // Update dashboard if open
-                const dashboardAvatar = document.getElementById('dashboardAvatar');
-                if (dashboardAvatar) {
-                    dashboardAvatar.innerHTML = `<img src="${downloadURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                }
-
-                showToast('✅ تم تحديث الصورة الشخصية بنجاح', false);
-            } catch (error) {
-                console.error('Error uploading profile picture:', error);
-                showToast('حدث خطأ أثناء رفع الصورة', true);
-            }
         }
 
         // ============================================================
@@ -2277,37 +2320,42 @@
                 if (btn) { btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
 
-                if (score >= 60) {
-                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
-                    const progressSnap = await getDoc(progressRef);
-                    if (!progressSnap.exists() || !progressSnap.data().atomsAwarded) {
-                        await runTransaction(db, async (transaction) => {
-                            const userRef = doc(db, 'users', currentUser.uid);
-                            const userSnap = await transaction.get(userRef);
-                            if (!userSnap.exists()) return;
-                            const currentAtoms = userSnap.data().atoms || 0;
-                            transaction.update(userRef, { atoms: currentAtoms + atomsReward });
-                            transaction.set(progressRef, {
-                                completed: true,
-                                score: score,
-                                atomsAwarded: true,
-                                completedAt: Timestamp.now()
-                            }, { merge: true });
+                // Save exam result
+                const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
+                const progressSnap = await getDoc(progressRef);
+                const alreadyCompleted = progressSnap.exists() && progressSnap.data().completed;
+
+                await setDoc(progressRef, {
+                    completed: true,
+                    score: score,
+                    completedAt: Timestamp.now()
+                }, { merge: true });
+
+                if (score >= 60 && !alreadyCompleted) {
+                    await runTransaction(db, async (transaction) => {
+                        const userRef = doc(db, 'users', currentUser.uid);
+                        const userSnap = await transaction.get(userRef);
+                        if (!userSnap.exists()) return;
+                        const currentAtoms = userSnap.data().atoms || 0;
+                        transaction.update(userRef, {
+                            atoms: currentAtoms + atomsReward,
+                            examsPassed: increment(1)
                         });
-                        const atomsEl = document.getElementById('atomsCount');
-                        const userAtomsEl = document.getElementById('userAtomsCount');
-                        if (atomsEl) {
-                            const current = parseInt(atomsEl.textContent) || 0;
-                            animateAtoms('atomsCount', current + atomsReward);
-                        }
-                        if (userAtomsEl) {
-                            const current = parseInt(userAtomsEl.textContent) || 0;
-                            userAtomsEl.textContent = current + atomsReward;
-                        }
-                        showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
-                    } else {
-                        showToast(`📝 لقد قمت بالفعل بأداء هذا الامتحان (النتيجة: ${score}%)`, false);
+                        transaction.set(progressRef, { atomsAwarded: true }, { merge: true });
+                    });
+                    const atomsEl = document.getElementById('atomsCount');
+                    const userAtomsEl = document.getElementById('userAtomsCount');
+                    if (atomsEl) {
+                        const current = parseInt(atomsEl.textContent) || 0;
+                        animateAtoms('atomsCount', current + atomsReward);
                     }
+                    if (userAtomsEl) {
+                        const current = parseInt(userAtomsEl.textContent) || 0;
+                        userAtomsEl.textContent = current + atomsReward;
+                    }
+                    showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
+                } else if (alreadyCompleted) {
+                    showToast(`📝 لقد قمت بالفعل بأداء هذا الامتحان (النتيجة: ${score}%)`, false);
                 } else {
                     showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
                 }
@@ -2356,37 +2404,41 @@
                 if (btn) { btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
 
-                if (score >= 60) {
-                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
-                    const progressSnap = await getDoc(progressRef);
-                    if (!progressSnap.exists() || !progressSnap.data().atomsAwarded) {
-                        await runTransaction(db, async (transaction) => {
-                            const userRef = doc(db, 'users', currentUser.uid);
-                            const userSnap = await transaction.get(userRef);
-                            if (!userSnap.exists()) return;
-                            const currentAtoms = userSnap.data().atoms || 0;
-                            transaction.update(userRef, { atoms: currentAtoms + atomsReward });
-                            transaction.set(progressRef, {
-                                completed: true,
-                                score: score,
-                                atomsAwarded: true,
-                                completedAt: Timestamp.now()
-                            }, { merge: true });
+                const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
+                const progressSnap = await getDoc(progressRef);
+                const alreadyCompleted = progressSnap.exists() && progressSnap.data().completed;
+
+                await setDoc(progressRef, {
+                    completed: true,
+                    score: score,
+                    completedAt: Timestamp.now()
+                }, { merge: true });
+
+                if (score >= 60 && !alreadyCompleted) {
+                    await runTransaction(db, async (transaction) => {
+                        const userRef = doc(db, 'users', currentUser.uid);
+                        const userSnap = await transaction.get(userRef);
+                        if (!userSnap.exists()) return;
+                        const currentAtoms = userSnap.data().atoms || 0;
+                        transaction.update(userRef, {
+                            atoms: currentAtoms + atomsReward,
+                            quizzesPassed: increment(1)
                         });
-                        const atomsEl = document.getElementById('atomsCount');
-                        const userAtomsEl = document.getElementById('userAtomsCount');
-                        if (atomsEl) {
-                            const current = parseInt(atomsEl.textContent) || 0;
-                            animateAtoms('atomsCount', current + atomsReward);
-                        }
-                        if (userAtomsEl) {
-                            const current = parseInt(userAtomsEl.textContent) || 0;
-                            userAtomsEl.textContent = current + atomsReward;
-                        }
-                        showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
-                    } else {
-                        showToast(`📝 لقد قمت بالفعل بحل هذا الكويز (النتيجة: ${score}%)`, false);
+                        transaction.set(progressRef, { atomsAwarded: true }, { merge: true });
+                    });
+                    const atomsEl = document.getElementById('atomsCount');
+                    const userAtomsEl = document.getElementById('userAtomsCount');
+                    if (atomsEl) {
+                        const current = parseInt(atomsEl.textContent) || 0;
+                        animateAtoms('atomsCount', current + atomsReward);
                     }
+                    if (userAtomsEl) {
+                        const current = parseInt(userAtomsEl.textContent) || 0;
+                        userAtomsEl.textContent = current + atomsReward;
+                    }
+                    showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
+                } else if (alreadyCompleted) {
+                    showToast(`📝 لقد قمت بالفعل بحل هذا الكويز (النتيجة: ${score}%)`, false);
                 } else {
                     showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
                 }
@@ -2706,19 +2758,14 @@
                         id: docSnap.id,
                         name: data.name || 'مستخدم',
                         atoms: data.atoms || 0,
-                        points: data.points || 0,
-                        photoURL: data.photoURL || '',
                         code: data.code || '',
+                        profileImage: data.profileImage || null,
                         coursesCount: data.coursesCount || 0,
                         examsPassed: data.examsPassed || 0,
                         quizzesPassed: data.quizzesPassed || 0
                     });
                 });
-                // Sort by atoms (desc), then points (desc)
-                users.sort((a, b) => {
-                    if (b.atoms !== a.atoms) return (b.atoms || 0) - (a.atoms || 0);
-                    return (b.points || 0) - (a.points || 0);
-                });
+                users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
                 const topUsers = users.slice(0, 10);
 
                 container.innerHTML = topUsers.length === 0 ? `
@@ -2734,8 +2781,8 @@
                         medal = '🥇'; } else if (idx === 1) { rankClass = 'silver';
                         medal = '🥈'; } else if (idx === 2) { rankClass = 'bronze';
                         medal = '🥉'; }
-                    const avatarHtml = user.photoURL ?
-                        `<img src="${user.photoURL}" alt="${escapeHtml(user.name)}">` :
+                    const avatarHtml = user.profileImage ?
+                        `<img src="${user.profileImage}" alt="${escapeHtml(user.name)}">` :
                         (user.name || 'U')[0].toUpperCase();
                     return `
                                 <div class="leaderboard-item">
@@ -2743,14 +2790,13 @@
                                     <div class="avatar">${avatarHtml}</div>
                                     <div class="info">
                                         <div class="name">${escapeHtml(user.name)}</div>
-                                        <div class="stats">📚 ${user.coursesCount || 0} كورس • 📝 ${user.examsPassed || 0} امتحان • 🧪 ${user.quizzesPassed || 0} كويز</div>
+                                        <div class="stats">🔑 ${escapeHtml(user.code || '')} • 📚 ${user.coursesCount || 0} كورس • 📝 ${user.examsPassed || 0} امتحان • 🧪 ${user.quizzesPassed || 0} كويز</div>
                                     </div>
                                     <div class="points">⚛️ ${(user.atoms || 0).toLocaleString()}</div>
                                 </div>
                             `;
                 }).join('');
 
-                // Update home leaderboard
                 renderLeaderboard(users);
             } catch (err) {
                 console.error('Error loading leaderboard:', err);
@@ -2777,14 +2823,10 @@
                                 id: docSnap.id,
                                 name: data.name || 'مستخدم',
                                 atoms: data.atoms || 0,
-                                points: data.points || 0,
-                                photoURL: data.photoURL || ''
+                                profileImage: data.profileImage || null
                             });
                         });
-                        users.sort((a, b) => {
-                            if (b.atoms !== a.atoms) return (b.atoms || 0) - (a.atoms || 0);
-                            return (b.points || 0) - (a.points || 0);
-                        });
+                        users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
                         renderLeaderboard(users);
                     })
                     .catch((error) => {
@@ -2813,24 +2855,32 @@
             }
 
             const topUsers = users.slice(0, 3);
-            const medals = ['🥇', '🥈', '🥉'];
-            const bgColors = ['#FFD60A', '#94A3B8', '#CD7F32'];
-            const textColors = ['#081B2C', '#fff', '#fff'];
+            const medals = [
+                { order: 'order-1 md:order-2', border: 'border-2 border-[#FFD60A]', glow: 'leaderboard-gold',
+                    t: 'md:-translate-y-4', badge: '🥇 الأول', bg: 'bg-[#FFD60A] text-[#081B2C]',
+                    pts: 'text-[#FFA726]', s: 'w-24 h-24', bc: 'border-[#FFD60A]', crown: '🥇' },
+                { order: 'order-2 md:order-1', border: 'border', glow: 'leaderboard-silver', t: 'md:translate-y-6',
+                    badge: '🥈 الثاني', bg: 'bg-gray-100 text-gray-700', pts: 'text-[#0B4F8C]', s: 'w-20 h-20',
+                    bc: 'border-gray-300', crown: '🥈' },
+                { order: 'order-3 md:order-3', border: 'border', glow: 'leaderboard-ice', t: 'md:translate-y-6',
+                    badge: '🥉 الثالث', bg: 'bg-[#EAF6FF] text-[#0B4F8C]', pts: 'text-[#4CC9F0]', s: 'w-20 h-20',
+                    bc: 'border-[#4CC9F0]', crown: '🥉' }
+            ];
 
             grid.innerHTML = topUsers.map((user, i) => {
-                const avatarHtml = user.photoURL ?
-                    `<img src="${user.photoURL}" alt="${escapeHtml(user.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
+                const avatarHtml = user.profileImage ?
+                    `<img src="${user.profileImage}" alt="${escapeHtml(user.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
                     (user.name || 'U')[0].toUpperCase();
                 return `
                             <div class="card" style="text-align:center;padding:20px;border-color:var(--border);">
                                 <div style="position:relative;display:inline-block;margin-bottom:12px;">
-                                    <div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.5rem;font-weight:700;border:4px solid ${bgColors[i]};overflow:hidden;">${avatarHtml}</div>
-                                    <span style="position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;background:${bgColors[i]};color:${textColors[i]};">${medals[i]}</span>
+                                    <div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.5rem;font-weight:700;border:4px solid ${i === 0 ? '#FFD60A' : i === 1 ? 'var(--border)' : 'var(--border)'};overflow:hidden;">${avatarHtml}</div>
+                                    <span style="position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};">${medals[i].crown}</span>
                                 </div>
+                                <span style="display:inline-block;font-weight:700;padding:2px 12px;border-radius:50px;font-size:0.7rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};margin-bottom:6px;">${medals[i].badge}</span>
                                 <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);">${escapeHtml(user.name) || 'مستخدم'}</h3>
                                 <p style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);">${(user.atoms || 0).toLocaleString()}</p>
                                 <p style="font-size:0.75rem;color:var(--text2);">⚛️ ذرة</p>
-                                <p style="font-size:0.7rem;color:var(--text2);">🏅 ${user.points || 0} نقطة</p>
                             </div>
                         `;
             }).join('');
@@ -2850,128 +2900,76 @@
 
             const name = userData?.name || 'طالب';
             const email = userData?.email || '';
-            const phone = userData?.phone || 'غير مسجل';
+            const phone = userData?.phone || '';
             const atoms = userData?.atoms || 0;
-            const points = userData?.points || 0;
             const code = userData?.code || '';
             const grade = userData?.grade || 'لم يحدد';
-            const photoURL = userData?.photoURL || '';
+            const profileImage = userData?.profileImage || null;
 
-            // Calculate stats
             let watchedCount = 0;
-            let quizCount = 0;
-            let assignmentCount = 0;
-            let examCount = 0;
+            let quizCompletedCount = 0;
+            let assignmentCompletedCount = 0;
+            let examCompletedCount = 0;
             let totalScore = 0;
             let scoresCount = 0;
             let lastActivity = null;
-            let lastWatched = null;
+            let lastLesson = null;
             let lastExam = null;
 
-            Object.values(userCourseProgress).forEach(progress => {
-                if (progress.watched) {
-                    watchedCount++;
-                    if (progress.completedAt && (!lastWatched || progress.completedAt > lastWatched)) {
-                        lastWatched = progress.completedAt;
-                    }
-                }
-                if (progress.quizCompleted) {
-                    quizCount++;
-                    totalScore += progress.quizScore || 0;
+            Object.entries(userCourseProgress).forEach(([id, progress]) => {
+                if (progress.watched) watchedCount++;
+                if (progress.completed && progress.score !== undefined) {
+                    totalScore += progress.score || 0;
                     scoresCount++;
                 }
-                if (progress.assignmentCompleted) assignmentCount++;
-                if (progress.examCompleted) {
-                    examCount++;
-                    if (progress.completedAt && (!lastExam || progress.completedAt > lastExam)) {
-                        lastExam = progress.completedAt;
+                if (progress.quizCompleted) quizCompletedCount++;
+                if (progress.assignmentCompleted) assignmentCompletedCount++;
+                if (progress.examCompleted) examCompletedCount++;
+                if (progress.completedAt) {
+                    const date = progress.completedAt.toDate ? progress.completedAt.toDate() : new Date(progress.completedAt);
+                    if (!lastActivity || date > lastActivity) lastActivity = date;
+                    // Track last lesson/exam
+                    if (id.startsWith('lesson_')) {
+                        if (!lastLesson || date > lastLesson) lastLesson = { id, date };
                     }
-                    totalScore += progress.examScore || 0;
-                    scoresCount++;
                 }
             });
 
             const avgScore = scoresCount > 0 ? Math.round(totalScore / scoresCount) : 0;
             const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
-            const totalLessons = allCourses.reduce((acc, c) => acc + (c.lessonsCount || 0), 0);
-            const progressPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
+            const totalLessons = subscribedCourses.reduce((sum, c) => sum + (c.lessonsCount || 0), 0);
+            const completionPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
 
-            // Update last activity from userData
-            if (userData?.lastActivity) {
-                lastActivity = userData.lastActivity;
-            }
+            // Performance analysis
+            let performanceLevel = 'جيد';
+            let levelClass = 'good';
+            let performanceMessage = 'أنت في طريقك الصحيح، استمر في التعلم!';
+            let performanceAdvice = 'حاول مشاهدة المزيد من الفيديوهات وحل المزيد من الكويزات لتحسين مستواك.';
 
-            // AI Analysis
-            let levelText = '';
-            let levelClass = '';
-            let levelScore = 0;
-            let analysisNotes = [];
-
-            if (watchedCount > 0 || examCount > 0 || quizCount > 0) {
-                const watchScore = Math.min((watchedCount / (totalLessons || 1)) * 100, 100);
-                const examScore = examCount > 0 ? Math.min((examCount / (allCourses.length || 1)) * 100, 100) : 0;
-                const quizScore = quizCount > 0 ? Math.min((quizCount / (allCourses.length || 1)) * 100, 100) : 0;
-                const avgScoreWeighted = avgScore || 0;
-
-                levelScore = Math.round((watchScore * 0.35) + (examScore * 0.25) + (quizScore * 0.20) + (avgScoreWeighted *
-                0.20));
-
-                if (levelScore >= 85) {
-                    levelText = 'ممتاز جداً';
-                    levelClass = 'excellent';
-                    analysisNotes = ['🎯 مستواك في تقدم مستمر', '🏆 أنت من أفضل الطلاب نشاطاً', '📚 استمر في هذا الأداء الرائع'];
-                } else if (levelScore >= 70) {
-                    levelText = 'جيد جداً';
-                    levelClass = 'good';
-                    analysisNotes = ['📈 مستواك جيد جداً', '💪 حاول إنهاء باقي الحصص', '📝 ركز على حل الامتحانات'];
-                } else if (levelScore >= 55) {
-                    levelText = 'جيد';
-                    levelClass = 'average';
-                    analysisNotes = ['📖 تحتاج إلى مشاهدة المزيد من الفيديوهات', '✍️ حاول حل الواجبات بانتظام', '🎯 ركز على الامتحانات'];
-                } else {
-                    levelText = 'يحتاج إلى تحسين';
-                    levelClass = 'needs-improvement';
-                    analysisNotes = ['📚 ابدأ من الأساسيات', '🎥 شاهد الفيديوهات أولاً', '📝 حل الامتحانات خطوة بخطوة'];
-                }
-
-                if (watchedCount === 0) {
-                    analysisNotes.push('🎬 لم تشاهد أي فيديو حتى الآن');
-                }
-                if (examCount === 0) {
-                    analysisNotes.push('📝 لم تحل أي امتحان حتى الآن');
-                }
-                if (progressPercent >= 80) {
-                    analysisNotes.push('🌟 أنت من أكثر الطلاب التزاماً');
-                }
-                if (subscribedCourses.length === 0) {
-                    analysisNotes.push('📚 اشترك في كورس لبدء رحلتك التعليمية');
-                }
+            if (completionPercent >= 80 && avgScore >= 85 && atoms >= 200) {
+                performanceLevel = 'ممتاز جدًا';
+                levelClass = 'excellent';
+                performanceMessage = '🎉 أداءك رائع! أنت من أفضل الطلاب على المنصة.';
+                performanceAdvice = 'استمر في التميز وساعد زملائك في التعلم.';
+            } else if (completionPercent >= 60 && avgScore >= 70 && atoms >= 100) {
+                performanceLevel = 'جيد جدًا';
+                levelClass = 'good';
+                performanceMessage = '👏 أداءك ممتاز، أنت على الطريق الصحيح.';
+                performanceAdvice = 'ركز على حل المزيد من الامتحانات لتعزيز مستواك.';
+            } else if (completionPercent >= 30 && avgScore >= 50) {
+                performanceLevel = 'جيد';
+                levelClass = 'fair';
+                performanceMessage = '📚 بداية جيدة، استمر في التعلم.';
+                performanceAdvice = 'احرص على مشاهدة جميع الفيديوهات وحل الواجبات.';
             } else {
-                levelText = 'لم تبدأ بعد';
-                levelClass = 'needs-improvement';
-                levelScore = 0;
-                analysisNotes = ['🚀 ابدأ رحلتك التعليمية الآن', '🎥 شاهد أول فيديو', '📝 حل أول امتحان'];
+                performanceLevel = 'يحتاج إلى تحسين';
+                levelClass = 'need-improve';
+                performanceMessage = '💪 لا تستسلم! كلنا بدأنا من الصفر.';
+                performanceAdvice = 'ابدأ بمشاهدة الفيديوهات من البداية وحل الكويزات البسيطة.';
             }
 
-            // Get rank
-            let rank = '-';
-            getDocs(collection(db, 'users')).then(snapshot => {
-                const users = [];
-                snapshot.forEach(docSnap => {
-                    users.push({ id: docSnap.id, atoms: docSnap.data().atoms || 0, points: docSnap.data()
-                            .points || 0 });
-                });
-                users.sort((a, b) => {
-                    if (b.atoms !== a.atoms) return (b.atoms || 0) - (a.atoms || 0);
-                    return (b.points || 0) - (a.points || 0);
-                });
-                const userRank = users.findIndex(u => u.id === currentUser.uid);
-                if (userRank !== -1) rank = (userRank + 1).toString();
-                document.getElementById('dashboardRank')?.textContent = rank;
-            }).catch(() => { document.getElementById('dashboardRank')?.textContent = '-'; });
-
-            const avatarHtml = photoURL ?
-                `<img src="${photoURL}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
+            const avatarHtml = profileImage ?
+                `<img src="${profileImage}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
                 (name || 'U')[0].toUpperCase();
 
             main.innerHTML = `
@@ -2985,20 +2983,26 @@
 
                             <div class="card" style="padding:20px;margin-bottom:16px;">
                                 <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-                                    <div class="profile-avatar" id="dashboardAvatar">${avatarHtml}</div>
+                                    <div class="profile-avatar" style="position:relative;">
+                                        ${profileImage ? `<img src="${profileImage}" alt="صورة شخصية">` : name[0].toUpperCase()}
+                                    </div>
                                     <div style="text-align:center;">
                                         <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);">${escapeHtml(name)}</h3>
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-envelope"></i> ${escapeHtml(email)}</p>
-                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-phone"></i> ${escapeHtml(phone)}</p>
-                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-graduation-cap"></i> ${grade}</p>
+                                        ${phone ? `<p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-phone"></i> ${escapeHtml(phone)}</p>` : ''}
+                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-graduation-cap"></i> ${escapeHtml(grade)}</p>
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-book"></i> ${subscribedCourses.length} كورس مشترك</p>
-                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-trophy"></i> الترتيب: #<span id="dashboardRank">${rank}</span></p>
+                                        ${lastActivity ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-clock"></i> آخر نشاط: ${formatTime(lastActivity.toISOString())}</p>` : ''}
+                                        ${lastLesson ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-play"></i> آخر حصة: ${formatTime(lastLesson.date.toISOString())}</p>` : ''}
                                     </div>
                                     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-                                        <button class="btn-primary btn-sm" onclick="document.getElementById('profilePicInput').click()">
-                                            <i class="fas fa-camera"></i> تغيير الصورة
+                                        <button class="btn-primary btn-sm" onclick="document.getElementById('profileImageInput').click()">
+                                            <i class="fas fa-camera"></i> تغيير الصورة الشخصية
                                         </button>
-                                        <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="APP.uploadProfilePicture(this.files[0])">
+                                        <input type="file" id="profileImageInput" class="hidden-input" accept="image/*" onchange="APP.uploadProfileImage(this.files[0])">
+                                        <button class="btn-outline btn-sm" onclick="APP.showPerformanceAnalysis()">
+                                            <i class="fas fa-chart-line"></i> تحليل مستواك
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -3011,45 +3015,18 @@
                                 </button>
                             </div>
 
-                            <!-- AI Analysis -->
-                            <div class="analysis-card" style="margin-bottom:16px;">
-                                <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:8px;">🤖 تحليل مستواك</h3>
-                                <div style="display:flex;flex-direction:column;gap:8px;">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
-                                        <span style="font-weight:600;color:var(--text);">مستوى الطالب:</span>
-                                        <span class="analysis-level ${levelClass}">${levelText} (${levelScore}%)</span>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="fill" style="width:${levelScore}%;"></div>
-                                    </div>
-                                    <div style="display:flex;flex-direction:column;gap:4px;margin-top:4px;">
-                                        ${analysisNotes.map(note => `
-                                            <p style="font-size:0.9rem;color:var(--text2);margin:0;">${note}</p>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="grid-dashboard" style="margin-bottom:16px;">
                                 <div class="stat-card"><div class="number">${watchedCount}</div><div class="label">🎬 فيديوهات</div></div>
-                                <div class="stat-card"><div class="number">${quizCount}</div><div class="label">🧪 كويزات</div></div>
-                                <div class="stat-card"><div class="number">${assignmentCount}</div><div class="label">📝 واجبات</div></div>
-                                <div class="stat-card"><div class="number">${examCount}</div><div class="label">📋 امتحانات</div></div>
+                                <div class="stat-card"><div class="number">${quizCompletedCount}</div><div class="label">🧪 كويزات</div></div>
+                                <div class="stat-card"><div class="number">${assignmentCompletedCount}</div><div class="label">📝 واجبات</div></div>
+                                <div class="stat-card"><div class="number">${examCompletedCount}</div><div class="label">📋 امتحانات</div></div>
                             </div>
 
                             <div class="grid-dashboard" style="margin-bottom:16px;">
                                 <div class="stat-card"><div class="number">${avgScore}%</div><div class="label">⭐ متوسط الدرجات</div></div>
                                 <div class="stat-card"><div class="number">${subscribedCourses.length}</div><div class="label">📚 الكورسات</div></div>
-                                <div class="stat-card"><div class="number">${progressPercent}%</div><div class="label">🎯 نسبة الإنجاز</div></div>
-                                <div class="stat-card"><div class="number">${Object.keys(userCourseProgress).length}</div><div class="label">🔥 الأنشطة</div></div>
-                            </div>
-
-                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:12px;">
+                                <div class="stat-card"><div class="number">${completionPercent}%</div><div class="label">📈 نسبة الإنجاز</div></div>
                                 <div class="stat-card"><div class="number">${atoms}</div><div class="label">⚛️ الذرات</div></div>
-                                <div class="stat-card"><div class="number">${points}</div><div class="label">🏅 النقاط</div></div>
-                                ${lastActivity ? `<div class="stat-card"><div class="number" style="font-size:1.2rem;">${formatTime(lastActivity.toDate ? lastActivity.toDate().toISOString() : lastActivity)}</div><div class="label">⏰ آخر نشاط</div></div>` : ''}
-                                ${lastWatched ? `<div class="stat-card"><div class="number" style="font-size:1.2rem;">${formatTime(lastWatched.toDate ? lastWatched.toDate().toISOString() : lastWatched)}</div><div class="label">🎬 آخر حصة</div></div>` : ''}
-                                ${lastExam ? `<div class="stat-card"><div class="number" style="font-size:1.2rem;">${formatTime(lastExam.toDate ? lastExam.toDate().toISOString() : lastExam)}</div><div class="label">📝 آخر امتحان</div></div>` : ''}
                             </div>
 
                             ${subscribedCourses.length > 0 ? `
@@ -3081,14 +3058,20 @@
         }
 
         function copyStudentCode(code) {
-            if (!code) {
-                showToast('لا يوجد كود للنسخ', true);
-                return;
-            }
-            navigator.clipboard.writeText(code).then(() => {
-                showToast('✅ تم نسخ كود الطالب بنجاح', false);
-            }).catch(() => {
-                // Fallback
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showToast('✅ تم نسخ كود الطالب بنجاح', false);
+                }).catch(() => {
+                    // Fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = code;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showToast('✅ تم نسخ كود الطالب بنجاح', false);
+                });
+            } else {
                 const textarea = document.createElement('textarea');
                 textarea.value = code;
                 document.body.appendChild(textarea);
@@ -3096,7 +3079,153 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 showToast('✅ تم نسخ كود الطالب بنجاح', false);
+            }
+        }
+
+        // ============================================================
+        // PERFORMANCE ANALYSIS
+        // ============================================================
+        function showPerformanceAnalysis() {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+
+            const name = userData?.name || 'طالب';
+            const atoms = userData?.atoms || 0;
+            const profileImage = userData?.profileImage || null;
+
+            let watchedCount = 0;
+            let quizCompletedCount = 0;
+            let assignmentCompletedCount = 0;
+            let examCompletedCount = 0;
+            let totalScore = 0;
+            let scoresCount = 0;
+
+            Object.entries(userCourseProgress).forEach(([id, progress]) => {
+                if (progress.watched) watchedCount++;
+                if (progress.completed && progress.score !== undefined) {
+                    totalScore += progress.score || 0;
+                    scoresCount++;
+                }
+                if (progress.quizCompleted) quizCompletedCount++;
+                if (progress.assignmentCompleted) assignmentCompletedCount++;
+                if (progress.examCompleted) examCompletedCount++;
             });
+
+            const avgScore = scoresCount > 0 ? Math.round(totalScore / scoresCount) : 0;
+            const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
+            const totalLessons = subscribedCourses.reduce((sum, c) => sum + (c.lessonsCount || 0), 0);
+            const completionPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
+
+            // Performance analysis
+            let performanceLevel = 'جيد';
+            let levelClass = 'good';
+            let performanceMessage = 'أنت في طريقك الصحيح، استمر في التعلم!';
+            let performanceAdvice = 'حاول مشاهدة المزيد من الفيديوهات وحل المزيد من الكويزات لتحسين مستواك.';
+            let strengths = [];
+            let weaknesses = [];
+
+            if (completionPercent >= 80 && avgScore >= 85 && atoms >= 200) {
+                performanceLevel = 'ممتاز جدًا';
+                levelClass = 'excellent';
+                performanceMessage = '🎉 أداءك رائع! أنت من أفضل الطلاب على المنصة.';
+                performanceAdvice = 'استمر في التميز وساعد زملائك في التعلم.';
+                strengths = ['نسبة إنجاز عالية', 'درجات ممتازة', 'عدد كبير من الذرات'];
+                weaknesses = [];
+            } else if (completionPercent >= 60 && avgScore >= 70 && atoms >= 100) {
+                performanceLevel = 'جيد جدًا';
+                levelClass = 'good';
+                performanceMessage = '👏 أداءك ممتاز، أنت على الطريق الصحيح.';
+                performanceAdvice = 'ركز على حل المزيد من الامتحانات لتعزيز مستواك.';
+                strengths = ['نسبة إنجاز جيدة', 'درجات جيدة'];
+                weaknesses = ['قلل من عدد الكويزات المكتملة'];
+            } else if (completionPercent >= 30 && avgScore >= 50) {
+                performanceLevel = 'جيد';
+                levelClass = 'fair';
+                performanceMessage = '📚 بداية جيدة، استمر في التعلم.';
+                performanceAdvice = 'احرص على مشاهدة جميع الفيديوهات وحل الواجبات.';
+                strengths = ['بدأت في التعلم', 'لديك أساسيات جيدة'];
+                weaknesses = ['نسبة إنجاز منخفضة', 'درجات تحتاج تحسين'];
+            } else {
+                performanceLevel = 'يحتاج إلى تحسين';
+                levelClass = 'need-improve';
+                performanceMessage = '💪 لا تستسلم! كلنا بدأنا من الصفر.';
+                performanceAdvice = 'ابدأ بمشاهدة الفيديوهات من البداية وحل الكويزات البسيطة.';
+                strengths = ['لديك الرغبة في التعلم'];
+                weaknesses = ['نسبة إنجاز منخفضة', 'قليل من الذرات', 'درجات منخفضة'];
+            }
+
+            const avatarHtml = profileImage ?
+                `<img src="${profileImage}" alt="${escapeHtml(name)}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">` :
+                (name || 'U')[0].toUpperCase();
+
+            main.innerHTML = `
+                        <div style="max-width:900px;margin:0 auto;padding:20px;">
+                            <button class="btn-outline btn-sm" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة للحساب</button>
+
+                            <div style="text-align:center;margin:16px 0;">
+                                <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);">📊 تحليل مستواك</h2>
+                                <p style="color:var(--text2);">تقرير مفصل عن أدائك على المنصة</p>
+                            </div>
+
+                            <div style="display:flex;align-items:center;gap:16px;background:var(--bg);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;">
+                                <div style="width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--primary);color:#fff;font-size:1.5rem;font-weight:700;overflow:hidden;flex-shrink:0;">${avatarHtml}</div>
+                                <div>
+                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);">${escapeHtml(name)}</h3>
+                                    <p style="font-size:0.85rem;color:var(--text2);">⚛️ ${atoms} ذرة</p>
+                                </div>
+                            </div>
+
+                            <div class="performance-card">
+                                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                                    <span style="font-weight:700;font-size:1.1rem;color:var(--text);">مستوى الأداء</span>
+                                    <span class="level-badge ${levelClass}">${performanceLevel}</span>
+                                </div>
+                                <p style="margin-top:8px;color:var(--text);">${performanceMessage}</p>
+                            </div>
+
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px;">
+                                <div class="stat-card"><div class="number">${completionPercent}%</div><div class="label">📈 نسبة الإنجاز</div></div>
+                                <div class="stat-card"><div class="number">${watchedCount}</div><div class="label">🎬 فيديوهات شاهدتها</div></div>
+                                <div class="stat-card"><div class="number">${avgScore}%</div><div class="label">⭐ متوسط الدرجات</div></div>
+                                <div class="stat-card"><div class="number">${examCompletedCount + quizCompletedCount}</div><div class="label">📝 اختبارات مكتملة</div></div>
+                            </div>
+
+                            ${strengths.length > 0 ? `
+                                <div class="performance-card" style="border-color:var(--success);">
+                                    <h4 style="font-weight:700;color:var(--success);margin-bottom:6px;">✅ نقاط القوة</h4>
+                                    <ul style="list-style:disc;padding-right:20px;color:var(--text);">
+                                        ${strengths.map(s => `<li>${s}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            ${weaknesses.length > 0 ? `
+                                <div class="performance-card" style="border-color:var(--danger);">
+                                    <h4 style="font-weight:700;color:var(--danger);margin-bottom:6px;">⚠️ نقاط الضعف</h4>
+                                    <ul style="list-style:disc;padding-right:20px;color:var(--text);">
+                                        ${weaknesses.map(w => `<li>${w}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            <div class="performance-card">
+                                <h4 style="font-weight:700;color:var(--primary);margin-bottom:6px;">💡 نصائح للتحسين</h4>
+                                <p style="color:var(--text);">${performanceAdvice}</p>
+                            </div>
+
+                            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
+                                <button class="btn-primary" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> استكشف الكورسات</button>
+                                <button class="btn-outline" onclick="APP.showExams()"><i class="fas fa-file-alt"></i> حل امتحانات</button>
+                                <button class="btn-outline" onclick="APP.showQuizzes()"><i class="fas fa-puzzle-piece"></i> حل كويزات</button>
+                            </div>
+                        </div>
+                    `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ============================================================
@@ -3261,12 +3390,13 @@
             openGeneralQuiz,
             showLeaderboard,
             showDashboard,
+            showPerformanceAnalysis,
             showPrivacy,
             showTerms,
-            uploadProfilePicture,
-            copyStudentCode,
             toast: showToast,
-            escapeHtml
+            escapeHtml,
+            uploadProfileImage,
+            copyStudentCode
         };
 
         // ============================================================
@@ -3274,13 +3404,13 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('✅ Yalla Chemistry Platform v4.0 - Enhanced');
-            console.log('✅ Real student names from Firebase');
-            console.log('✅ Unique student codes (e.g., AH1234X)');
-            console.log('✅ Profile picture upload with Firebase Storage');
-            console.log('✅ AI Student Analysis with real data');
-            console.log('✅ All stats from Firebase');
-            console.log('✅ Leaderboard sorted by atoms + points');
+            console.log('✅ Yalla Chemistry Platform v3.1 - Performance Analysis Added');
+            console.log('✅ Profile Image Upload Added');
+            console.log('✅ Student Code Generation Added');
+            console.log('✅ Real Data Dashboard Added');
+            console.log('✅ All Firebase config preserved');
+            console.log('✅ Dark/Light mode working');
+            console.log('✅ Guest/User separation working');
         }
 
         if (document.readyState === 'loading') {
