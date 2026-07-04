@@ -70,7 +70,6 @@
             color: var(--text);
             transition: var(--transition);
             min-height: 100vh;
-            overflow-x: hidden;
         }
         .font-lalezar { font-family: 'Lalezar', cursive; }
 
@@ -112,7 +111,6 @@
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            flex-shrink: 0;
         }
         .nav-logo img {
             width: 40px;
@@ -132,8 +130,6 @@
             align-items: center;
             gap: 6px;
             list-style: none;
-            flex-wrap: wrap;
-            justify-content: flex-end;
         }
         .nav-links a, .nav-links button {
             padding: 6px 14px;
@@ -147,7 +143,6 @@
             color: var(--text2);
             text-decoration: none;
             font-family: 'Cairo', sans-serif;
-            white-space: nowrap;
         }
         .nav-links a:hover, .nav-links button:hover {
             background: var(--border);
@@ -256,7 +251,7 @@
 
         .card-img {
             width: 100%;
-            height: 220px;
+            height: 180px;
             object-fit: cover;
             transition: transform 0.5s;
         }
@@ -292,8 +287,6 @@
             animation: slideUp 0.4s ease;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             font-size: 0.95rem;
-            max-width: 90%;
-            text-align: center;
         }
         .toast-success { background: var(--success); color: #fff; }
         .toast-error { background: var(--danger); color: #fff; }
@@ -312,7 +305,6 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
         .login-overlay.open { display: flex; }
         .login-box {
@@ -320,7 +312,7 @@
             border-radius: var(--radius-lg);
             padding: 36px 32px;
             max-width: 400px;
-            width: 100%;
+            width: 92%;
             text-align: center;
             box-shadow: 0 40px 80px rgba(0,0,0,0.3);
             border: 1px solid var(--border);
@@ -340,7 +332,6 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
         .course-overlay.open { display: flex; }
         .course-modal {
@@ -348,7 +339,7 @@
             border-radius: var(--radius-lg);
             padding: 24px;
             max-width: 720px;
-            width: 100%;
+            width: 94%;
             max-height: 90vh;
             overflow-y: auto;
             border: 1px solid var(--border);
@@ -383,7 +374,6 @@
             font-weight: 700;
             color: var(--text);
             font-size: 0.95rem;
-            gap: 8px;
         }
         .lesson-accordion .accordion-header:hover { background: var(--border); }
         .lesson-accordion .accordion-header .lesson-num {
@@ -421,7 +411,6 @@
             border: 1px solid var(--border);
             cursor: pointer;
             background: var(--card);
-            flex-wrap: wrap;
         }
         .lesson-item:hover { border-color: var(--primary); background: var(--bg); }
         .lesson-item .item-icon {
@@ -439,7 +428,7 @@
         .lesson-item .item-icon.exam { background: #F59E0B; }
         .lesson-item .item-icon.assignment { background: #8B5CF6; }
         .lesson-item .item-icon.quiz { background: #22C55E; }
-        .lesson-item .item-text { flex: 1; min-width: 120px; }
+        .lesson-item .item-text { flex: 1; }
         .lesson-item .item-text .title { font-weight: 600; color: var(--text); font-size: 0.9rem; }
         .lesson-item .item-text .sub { font-size: 0.75rem; color: var(--text2); }
 
@@ -511,10 +500,6 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ===== Responsive ===== */
-        @media (max-width: 1024px) {
-            .grid-courses { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-        }
-
         @media (max-width: 768px) {
             .nav-links a, .nav-links button { font-size: 0.75rem; padding: 4px 10px; }
             .nav-logo span { font-size: 1.2rem; }
@@ -522,54 +507,18 @@
             .btn-primary, .btn-outline { padding: 8px 18px; font-size: 0.85rem; width: 100%; justify-content: center; }
             .course-modal { padding: 16px; }
             .login-box { padding: 24px 16px; }
-            .card-img { height: 180px; }
+            .card-img { height: 140px; }
             .lesson-accordion .accordion-header { font-size: 0.85rem; padding: 12px 14px; }
-            .grid-courses { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-            .grid-dashboard { grid-template-columns: repeat(2, 1fr); }
-            section > div[style*="display:grid;grid-template-columns:1fr 1fr"] {
-                grid-template-columns: 1fr !important;
-            }
-            section > div[style*="display:grid;grid-template-columns:1fr 1fr"] > div:first-child {
-                order: 0 !important;
-            }
-            .social-card { padding: 16px; }
-            .testimonial-card { padding: 12px 14px; }
-            .nav-container { padding: 0 12px; }
-            .nav-links { gap: 4px; }
-            .profile-avatar { width: 64px; height: 64px; font-size: 1.5rem; }
         }
 
         @media (max-width: 480px) {
-            .nav-container { padding: 0 10px; gap: 6px; }
+            .nav-container { padding: 0 12px; gap: 8px; }
             .nav-links { gap: 2px; }
-            .nav-links a, .nav-links button { font-size: 0.65rem; padding: 3px 7px; }
-            .nav-logo span { font-size: 0.95rem; }
+            .nav-links a, .nav-links button { font-size: 0.7rem; padding: 3px 8px; }
+            .nav-logo span { font-size: 1rem; }
             .nav-logo img { width: 28px; height: 28px; }
             .theme-toggle { width: 36px; height: 20px; }
             .theme-toggle::after { width: 16px; height: 16px; }
-            .grid-courses { grid-template-columns: 1fr; }
-            .grid-dashboard { grid-template-columns: repeat(2, 1fr); }
-            .card-img { height: 160px; }
-            .stat-card .number { font-size: 1.5rem; }
-            .stat-card .label { font-size: 0.7rem; }
-            .btn-primary, .btn-outline { padding: 6px 14px; font-size: 0.75rem; }
-            .profile-avatar { width: 56px; height: 56px; font-size: 1.2rem; }
-            .profile-code { font-size: 1rem; padding: 10px; }
-            section { padding: 0 12px 24px !important; }
-            .login-box { padding: 20px 16px; }
-            .login-box h3 { font-size: 1.1rem; }
-            .course-modal { padding: 12px; }
-            .filter-tabs .tab { font-size: 0.75rem; padding: 4px 12px; }
-            .lesson-accordion .accordion-header { font-size: 0.8rem; padding: 10px 12px; }
-            .lesson-item { padding: 8px 10px; font-size: 0.8rem; }
-            .lesson-item .item-text .title { font-size: 0.8rem; }
-            .lesson-item .item-text .sub { font-size: 0.65rem; }
-            .leaderboard-item { padding: 8px 10px; gap: 8px; }
-            .leaderboard-item .avatar { width: 30px; height: 30px; font-size: 0.7rem; }
-            .leaderboard-item .info .name { font-size: 0.8rem; }
-            .leaderboard-item .info .stats { font-size: 0.65rem; }
-            .leaderboard-item .points { font-size: 0.8rem; }
-            .leaderboard-item .rank { width: 24px; height: 24px; font-size: 0.7rem; }
         }
 
         /* ===== Empty State ===== */
@@ -595,7 +544,6 @@
             border: 1px solid var(--border);
             background: var(--card);
             margin-bottom: 8px;
-            flex-wrap: wrap;
         }
         .leaderboard-item:hover { border-color: var(--primary); background: var(--bg); }
         .leaderboard-item .rank {
@@ -625,17 +573,11 @@
             flex-shrink: 0;
             background: var(--primary);
             color: #fff;
-            overflow: hidden;
         }
-        .leaderboard-item .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .leaderboard-item .info { flex: 1; min-width: 100px; }
+        .leaderboard-item .info { flex: 1; }
         .leaderboard-item .info .name { font-weight: 700; color: var(--text); font-size: 0.95rem; }
         .leaderboard-item .info .stats { font-size: 0.75rem; color: var(--text2); }
-        .leaderboard-item .points { font-weight: 800; color: var(--primary); font-size: 1rem; flex-shrink: 0; }
+        .leaderboard-item .points { font-weight: 800; color: var(--primary); font-size: 1rem; }
 
         /* ===== Filter Tabs ===== */
         .filter-tabs {
@@ -681,7 +623,6 @@
             font-size: 0.95rem;
             color: var(--text);
             user-select: none;
-            gap: 8px;
         }
         .faq-answer {
             padding: 0 18px 18px;
@@ -776,6 +717,11 @@
             gap: 12px;
         }
 
+        @media (max-width: 480px) {
+            .grid-courses { grid-template-columns: 1fr; }
+            .grid-dashboard { grid-template-columns: repeat(2, 1fr); }
+        }
+
         /* ===== Profile Code ===== */
         .profile-code {
             background: var(--bg);
@@ -788,7 +734,6 @@
             font-family: 'Lalezar', cursive;
             color: var(--primary);
             letter-spacing: 2px;
-            word-break: break-all;
         }
 
         /* ===== User Menu ===== */
@@ -806,12 +751,6 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-            overflow: hidden;
-        }
-        .user-menu-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
         .user-menu-btn:hover { transform: scale(1.05); }
 
@@ -832,230 +771,6 @@
         .menu-item:hover { background: var(--bg); }
         .menu-item.danger { color: var(--danger); }
         .menu-item.danger:hover { background: rgba(239,68,68,0.08); }
-
-        /* ===== Profile Avatar ===== */
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: var(--primary);
-            color: #fff;
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 3px solid var(--border);
-        }
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* ===== Performance Analysis ===== */
-        .performance-card {
-            padding: 16px 20px;
-            border-radius: var(--radius);
-            background: var(--card);
-            border: 1px solid var(--border);
-            margin-bottom: 12px;
-        }
-        .performance-card .level-badge {
-            display: inline-block;
-            padding: 4px 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-        .performance-card .level-badge.excellent { background: #22C55E; color: #fff; }
-        .performance-card .level-badge.good { background: #FFD60A; color: #081B2C; }
-        .performance-card .level-badge.fair { background: #FFA726; color: #fff; }
-        .performance-card .level-badge.need-improve { background: #EF4444; color: #fff; }
-
-        /* ===== Hidden file input ===== */
-        .hidden-input { display: none; }
-
-        /* ===== Responsive Hero Image ===== */
-        .hero-image {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            display: block;
-            max-height: 500px;
-        }
-
-        /* ===== Responsive Section Grid ===== */
-        .section-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            align-items: center;
-        }
-
-        @media (max-width: 768px) {
-            .section-grid-2 {
-                grid-template-columns: 1fr;
-            }
-            .section-grid-2 .order-2 { order: 2; }
-            .section-grid-2 .order-1 { order: 1; }
-        }
-
-        /* ===== Fun Cards Responsive ===== */
-        .fun-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .fun-cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .fun-cards {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== Social Cards Responsive ===== */
-        .social-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .social-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== Testimonials Grid ===== */
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== Leaderboard Grid ===== */
-        .leaderboard-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .leaderboard-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .leaderboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== Dashboard Courses Grid ===== */
-        .dashboard-courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        @media (max-width: 480px) {
-            .dashboard-courses-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== Dashboard Actions Grid ===== */
-        .dashboard-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 10px;
-        }
-
-        @media (max-width: 480px) {
-            .dashboard-actions {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* ===== Exams Grid ===== */
-        .exams-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .exams-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== Performance Stats Grid ===== */
-        .performance-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
-        }
-
-        @media (max-width: 480px) {
-            .performance-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* ===== Footer Responsive ===== */
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer-content > div:first-child {
-                flex-direction: column;
-            }
-        }
-
-        /* ===== Stats Row Responsive ===== */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .stats-row {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-            }
-            .stats-row > div {
-                padding: 12px 8px;
-            }
-            .stats-row .fab { font-size: 1.5rem !important; }
-            .stats-row span[style*="font-size:1.8rem"] { font-size: 1.3rem !important; }
-        }
     </style>
 </head>
 <body>
@@ -1091,7 +806,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo" onclick="APP.showHome()">
-                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/%D9%84%D9%88%D8%AC%D9%88_%D8%B2%D9%88%D8%B2_qyvlkb" alt="يلا كيمياء" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
+                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb" alt="يلا كيمياء" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
                 <span>يلا كيمياء</span>
             </a>
 
@@ -1115,16 +830,10 @@
                 <!-- User Menu -->
                 <li class="user-only" style="display:none;position:relative;" id="userMenuWrapper">
                     <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatar">U</button>
-                    <div id="userMenu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow:hidden;z-index:200;width:max-content;max-width:90vw;">
-                        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-                            <div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;" id="menuAvatarContainer">
-                                <span id="menuAvatarText">U</span>
-                                <img id="menuAvatarImg" style="display:none;width:100%;height:100%;object-fit:cover;" alt="">
-                            </div>
-                            <div>
-                                <p style="font-weight:700;font-size:0.9rem;color:var(--text);" id="userNameDisplay">مستخدم</p>
-                                <p style="font-size:0.75rem;color:var(--text2);"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</p>
-                            </div>
+                    <div id="userMenu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow:hidden;z-index:200;">
+                        <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
+                            <p style="font-weight:700;font-size:0.9rem;color:var(--text);" id="userNameDisplay">مستخدم</p>
+                            <p style="font-size:0.75rem;color:var(--text2);"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</p>
                         </div>
                         <button class="menu-item" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
                         <button class="menu-item" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
@@ -1151,7 +860,7 @@
         <!-- ===== HERO ===== -->
         <section id="heroSection" style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
             <div style="border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;">
-                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/09a66670-8de1-4268-a761-b3f097deaf8a_revphn" alt="مستر زياد مبروك" class="hero-image" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
+                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/09a66670-8de1-4268-a761-b3f097deaf8a_revphn" alt="مستر زياد مبروك" style="width:100%;height:auto;object-fit:cover;display:block;" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
             </div>
             <div style="text-align:center;">
                 <h1 style="font-family:'Lalezar',cursive;font-size:clamp(2rem,5vw,3.5rem);color:var(--text);margin-bottom:12px;">ابدأ صح… وخلّي الكيمياء تبقى لعبتك 🔥</h1>
@@ -1173,7 +882,7 @@
 
         <!-- ===== STATS ===== -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 24px;">
-            <div class="stats-row" style="background:var(--card);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;background:var(--card);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);">
                 <div style="text-align:center;">
                     <i class="fab fa-youtube" style="font-size:2rem;color:var(--accent);display:block;margin-bottom:4px;"></i>
                     <span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">+88,000</span>
@@ -1194,11 +903,11 @@
 
         <!-- ===== SECTION: أهلاً برجوعك ===== -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
-            <div class="section-grid-2">
-                <div class="order-2">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+                <div style="order:2;">
                     <img src="https://res.cloudinary.com/dwiovjdrb/image/upload/v1781445273/%D8%A7%D9%87%D9%84%D8%A7_%D8%A8%D8%B1%D8%AC%D9%88%D8%B9%D9%83_%D9%8A_%D8%A8%D9%8A%D9%87_e7j5jv.jpg" alt="أهلاً برجوعك" style="width:100%;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/3;" loading="lazy" onerror="this.style.display='none'">
                 </div>
-                <div class="order-1">
+                <div style="order:1;">
                     <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:900;color:var(--text);margin-bottom:12px;">👋 أهلاً برجوعك يا بيه</h2>
                     <p style="font-size:1rem;color:var(--text2);margin-bottom:8px;font-weight:600;">أنت دلوقتي قدام فرصة تبدأ صح، سواء كنت في أولى ثانوي أو تانية ثانوي ولسه حاسس إن الكيمياء صعبة أو إن عليك أجزاء كتير.</p>
                     <p style="font-size:0.95rem;color:var(--primary2);margin-bottom:8px;">دوري هنا إني أخليك تدخل تالتة ثانوي وأنت فاهم الأساسيات كويس جدًا، ويمكن تبقى أقوى من ناس بدأت قبلك بوقت كبير.</p>
@@ -1215,7 +924,7 @@
 
         <!-- ===== SECTION: ليه تتابع منصة يلا كيمياء ===== -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
-            <div class="section-grid-2">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
                 <div>
                     <img src="https://res.cloudinary.com/dwiovjdrb/image/upload/v1781444602/%D9%84%D9%8A%D9%87_%D8%AA%D8%AA%D8%AA%D8%A7%D8%A8%D8%B9_%D8%B2%D9%8A%D8%A7%D8%AF_mexro9.png" alt="ليه تتابع" style="width:100%;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/3;" loading="lazy" onerror="this.style.display='none'">
                 </div>
@@ -1236,11 +945,11 @@
 
         <!-- ===== SECTION: مستر زياد مبروك ===== -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
-            <div class="section-grid-2">
-                <div class="order-2">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+                <div style="order:2;">
                     <img src="https://res.cloudinary.com/dwiovjdrb/image/upload/v1781445017/Gemini_Generated_Image_51u16a51u16a51u1_jzaejt.png" alt="مستر زياد مبروك" style="width:100%;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/3;" loading="lazy" onerror="this.style.display='none'">
                 </div>
-                <div class="order-1">
+                <div style="order:1;">
                     <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,3vw,2.5rem);color:var(--text);margin-bottom:12px;">👨‍🏫 مستر زياد مبروك</h2>
                     <p style="font-size:1rem;color:var(--text2);margin-bottom:12px;">🧪 شرح مبسط وسهل | 📚 محتوى منظم | 🚀 متابعة مستمرة</p>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -1255,7 +964,7 @@
         <!-- ===== FUN CARDS ===== -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:16px;">🎉 جرب واختبر نفسك</h2>
-            <div class="fun-cards">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
                 <div class="card" style="padding:24px;text-align:center;cursor:pointer;" onclick="APP.showQuizzes()">
                     <div style="font-size:3rem;margin-bottom:8px;">🧪</div>
                     <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:4px;">كويز سريع</h3>
@@ -1294,7 +1003,7 @@
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">💬 آراء الطلاب</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:16px;">ماذا يقول طلابنا عن المنصة</p>
-            <div class="testimonials-grid">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
                 <div class="testimonial-card">
                     <div class="stars">⭐⭐⭐⭐⭐</div>
                     <p>"شكراً يا مستر ❤️ امتحان الأزهر كله تقريباً جه من فيديو الـ150 سؤال"</p>
@@ -1330,7 +1039,7 @@
             <div style="max-width:500px;margin:0 auto 16px;border-radius:var(--radius-lg);overflow:hidden;">
                 <img src="https://r2.image-upload.app/tyImg/1t2HoqVM.png" alt="المتصدرين" style="width:100%;height:auto;display:block;" loading="lazy" onerror="this.style.display='none'">
             </div>
-            <div class="leaderboard-grid" id="leaderboardGrid">
+            <div id="leaderboardGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
                 <div class="card skeleton" style="height:260px;"></div>
                 <div class="card skeleton" style="height:260px;"></div>
                 <div class="card skeleton" style="height:260px;"></div>
@@ -1378,7 +1087,7 @@
         <!-- ===== SOCIAL ===== -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:16px;">انضم لمجتمعنا 🚀</h2>
-            <div class="social-grid">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
                 <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card">
                     <i class="fab fa-telegram-plane" style="color:#229ED9;"></i>
                     <span>تيليجرام</span>
@@ -1412,12 +1121,12 @@
     FOOTER
     ============================================================ -->
     <footer style="background:var(--card);border-top:1px solid var(--border);padding:20px;margin-top:16px;">
-        <div class="footer-content" style="max-width:1280px;margin:0 auto;">
+        <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
-                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/%D9%84%D9%88%D8%AC%D9%88_%D8%B2%D9%88%D8%B2_qyvlkb" alt="يلا كيمياء" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" loading="lazy">
+                <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb" alt="يلا كيمياء" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" loading="lazy">
                 <span style="font-family:'Lalezar',cursive;font-size:1.2rem;color:var(--primary);">يلا كيمياء</span>
             </div>
-            <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.85rem;justify-content:center;">
+            <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.85rem;">
                 <a href="#" onclick="APP.showHome()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">الرئيسية</a>
                 <a href="login.html" style="color:var(--text2);text-decoration:none;transition:var(--transition);">تسجيل الدخول</a>
                 <a href="#" onclick="APP.showPrivacy()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">سياسة الخصوصية</a>
@@ -1436,8 +1145,7 @@
                 "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
                 "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
                 "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js",
-                "firebase/analytics": "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js",
-                "firebase/storage": "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"
+                "firebase/analytics": "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js"
             }
         }
     </script>
@@ -1472,15 +1180,9 @@
             addDoc,
             writeBatch,
             runTransaction,
-            limit
+            limit,
+            serverTimestamp
         } from "firebase/firestore";
-        import {
-            getStorage,
-            ref,
-            uploadBytes,
-            getDownloadURL,
-            deleteObject
-        } from "firebase/storage";
 
         // ============================================================
         // FIREBASE CONFIG
@@ -1500,7 +1202,6 @@
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         console.log('✅ Yalla Chemistry - Firebase initialized');
 
@@ -1516,7 +1217,9 @@
         let allGeneralQuizzes = [];
         let courseUnsubscribers = [];
         let leaderboardUnsub = null;
-        let userProfileImageUrl = null;
+        let examsUnsub = null;
+        let quizzesUnsub = null;
+        let userSubsUnsub = null;
 
         // ============================================================
         // UTILITY FUNCTIONS
@@ -1564,28 +1267,6 @@
                 else el.textContent = target;
             }
             update();
-        }
-
-        // ============================================================
-        // STUDENT CODE GENERATION
-        // ============================================================
-        async function generateUniqueStudentCode(name, phone) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            const namePrefix = name ? name.substring(0, 2).toUpperCase() : 'ST';
-            const phoneSuffix = phone && phone.length >= 2 ? phone.slice(-2) : '00';
-            let attempts = 0;
-            while (attempts < 20) {
-                let randomPart = '';
-                for (let i = 0; i < 4; i++) {
-                    randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                const code = namePrefix + phoneSuffix + randomPart;
-                const q = query(collection(db, 'users'), where('code', '==', code));
-                const snapshot = await getDocs(q);
-                if (snapshot.empty) return code;
-                attempts++;
-            }
-            return 'STU' + Date.now().toString(36).toUpperCase().slice(0, 8);
         }
 
         // ============================================================
@@ -1649,89 +1330,21 @@
         }
 
         // ============================================================
-        // PROFILE IMAGE
-        // ============================================================
-        function updateProfileImageDisplay(url) {
-            userProfileImageUrl = url;
-            const avatarBtn = document.getElementById('userAvatar');
-            if (avatarBtn) {
-                if (url) {
-                    avatarBtn.innerHTML = `<img src="${url}" alt="صورة شخصية">`;
-                } else {
-                    const name = userData?.name || 'مستخدم';
-                    avatarBtn.innerHTML = name[0].toUpperCase();
-                }
-            }
-            const menuContainer = document.getElementById('menuAvatarContainer');
-            const menuText = document.getElementById('menuAvatarText');
-            const menuImg = document.getElementById('menuAvatarImg');
-            if (menuContainer && menuText && menuImg) {
-                if (url) {
-                    menuText.style.display = 'none';
-                    menuImg.style.display = 'block';
-                    menuImg.src = url;
-                } else {
-                    menuText.style.display = 'block';
-                    menuImg.style.display = 'none';
-                    const name = userData?.name || 'مستخدم';
-                    menuText.textContent = name[0].toUpperCase();
-                }
-            }
-            document.querySelectorAll('.profile-avatar-img').forEach(el => {
-                if (url) {
-                    el.src = url;
-                    el.style.display = 'block';
-                    el.parentElement.querySelector('.profile-avatar-text')?.style.setProperty('display', 'none');
-                }
-            });
-        }
-
-        async function uploadProfileImage(file) {
-            if (!currentUser) {
-                showToast('يرجى تسجيل الدخول أولاً', true);
-                return;
-            }
-
-            if (!file.type.startsWith('image/')) {
-                showToast('الرجاء اختيار صورة فقط', true);
-                return;
-            }
-
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('حجم الصورة يجب أن يكون أقل من 5 ميجابايت', true);
-                return;
-            }
-
-            try {
-                const storageRef = ref(storage, `profile_images/${currentUser.uid}`);
-                await uploadBytes(storageRef, file);
-                const downloadUrl = await getDownloadURL(storageRef);
-
-                await updateDoc(doc(db, 'users', currentUser.uid), {
-                    profileImage: downloadUrl,
-                    updatedAt: Timestamp.now()
-                });
-
-                if (userData) {
-                    userData.profileImage = downloadUrl;
-                }
-                updateProfileImageDisplay(downloadUrl);
-                showToast('✅ تم تحديث الصورة الشخصية بنجاح', false);
-            } catch (error) {
-                console.error('Error uploading profile image:', error);
-                showToast('حدث خطأ أثناء رفع الصورة', true);
-            }
-        }
-
-        // ============================================================
         // AUTH
         // ============================================================
         async function logout() {
             try {
+                // Cleanup listeners
                 courseUnsubscribers.forEach(unsub => unsub());
                 courseUnsubscribers = [];
                 if (leaderboardUnsub) { leaderboardUnsub();
                     leaderboardUnsub = null; }
+                if (examsUnsub) { examsUnsub();
+                    examsUnsub = null; }
+                if (quizzesUnsub) { quizzesUnsub();
+                    quizzesUnsub = null; }
+                if (userSubsUnsub) { userSubsUnsub();
+                    userSubsUnsub = null; }
                 await signOut(auth);
                 showToast('تم تسجيل الخروج', false);
                 updateUIForAuth(null);
@@ -1750,123 +1363,104 @@
                 body.classList.add('logged-in');
                 guestElements.forEach(el => el.style.display = 'none');
                 userElements.forEach(el => el.style.display = 'block');
-                const heroBtns = document.getElementById('heroButtons');
-                if (heroBtns) {
-                    heroBtns.querySelector('.guest-only').style.display = 'none';
-                    heroBtns.querySelector('.user-only').style.display = 'flex';
-                }
+                document.getElementById('heroButtons').querySelector('.guest-only').style.display = 'none';
+                document.getElementById('heroButtons').querySelector('.user-only').style.display = 'flex';
                 document.getElementById('atomsBadge').style.display = 'block';
-                const cta = document.getElementById('ctaSection');
-                if (cta) {
-                    cta.classList.add('guest-only');
-                    cta.style.setProperty('display', 'none', 'important');
-                }
+                document.getElementById('ctaSection')?.classList.add('guest-only');
+                document.getElementById('ctaSection')?.style.setProperty('display', 'none', 'important');
             } else {
                 body.classList.remove('logged-in');
                 guestElements.forEach(el => el.style.display = 'block');
                 userElements.forEach(el => el.style.display = 'none');
-                const heroBtns = document.getElementById('heroButtons');
-                if (heroBtns) {
-                    heroBtns.querySelector('.guest-only').style.display = 'flex';
-                    heroBtns.querySelector('.user-only').style.display = 'none';
-                }
+                document.getElementById('heroButtons').querySelector('.guest-only').style.display = 'flex';
+                document.getElementById('heroButtons').querySelector('.user-only').style.display = 'none';
                 document.getElementById('atomsBadge').style.display = 'none';
-                const cta = document.getElementById('ctaSection');
-                if (cta) {
-                    cta.classList.remove('guest-only');
-                    cta.style.setProperty('display', 'block', 'important');
-                }
+                document.getElementById('ctaSection')?.classList.remove('guest-only');
+                document.getElementById('ctaSection')?.style.setProperty('display', 'block', 'important');
                 userData = null;
                 userSubscriptions = [];
+                userCourseProgress = {};
             }
         }
 
-        async function loadUserData(uid) {
-            try {
-                const userDoc = await getDoc(doc(db, 'users', uid));
-                if (userDoc.exists()) {
-                    userData = userDoc.data();
+        async function generateUniqueStudentCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let attempts = 0;
+            while (attempts < 10) {
+                let code = '';
+                for (let i = 0; i < 8; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                const q = query(collection(db, 'users'), where('code', '==', code));
+                const snapshot = await getDocs(q);
+                if (snapshot.empty) return code;
+                attempts++;
+            }
+            return 'STU' + Date.now().toString(36).toUpperCase();
+        }
+
+        // ============================================================
+        // USER DATA - with realtime updates
+        // ============================================================
+        function loadUserData(uid) {
+            const userRef = doc(db, 'users', uid);
+            const unsub = onSnapshot(userRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    userData = docSnap.data();
                     const atoms = userData.atoms || 0;
                     document.getElementById('atomsCount').textContent = atoms;
                     document.getElementById('userAtomsCount').textContent = atoms;
-                    const displayName = userData.name || 'مستخدم';
-                    document.getElementById('userNameDisplay').textContent = displayName;
-                    const avatarBtn = document.getElementById('userAvatar');
-                    if (avatarBtn) {
-                        if (userData.profileImage) {
-                            avatarBtn.innerHTML = `<img src="${userData.profileImage}" alt="صورة شخصية">`;
-                            userProfileImageUrl = userData.profileImage;
-                        } else {
-                            avatarBtn.textContent = displayName[0].toUpperCase();
-                        }
+                    document.getElementById('userNameDisplay').textContent = userData.name || 'مستخدم';
+                    document.getElementById('userAvatar').textContent = (userData.name || 'U')[0].toUpperCase();
+                    
+                    // Update dashboard if open
+                    if (document.querySelector('#section-dashboard')) {
+                        showDashboard();
                     }
-                    const menuContainer = document.getElementById('menuAvatarContainer');
-                    const menuText = document.getElementById('menuAvatarText');
-                    const menuImg = document.getElementById('menuAvatarImg');
-                    if (menuContainer && menuText && menuImg) {
-                        if (userData.profileImage) {
-                            menuText.style.display = 'none';
-                            menuImg.style.display = 'block';
-                            menuImg.src = userData.profileImage;
-                        } else {
-                            menuText.style.display = 'block';
-                            menuImg.style.display = 'none';
-                            menuText.textContent = displayName[0].toUpperCase();
-                        }
-                    }
-                    await loadUserProgress(uid);
                 } else {
-                    const name = auth.currentUser?.displayName || 'مستخدم';
-                    const email = auth.currentUser?.email || '';
-                    const phone = auth.currentUser?.phoneNumber || '';
-                    const code = await generateUniqueStudentCode(name, phone);
+                    // Create new user if not exists
                     const newUser = {
-                        name: name,
-                        email: email,
-                        phone: phone,
+                        name: 'مستخدم',
+                        email: auth.currentUser?.email || '',
                         grade: '',
                         atoms: 0,
-                        code: code,
-                        createdAt: Timestamp.now(),
+                        code: generateUniqueStudentCode(),
+                        createdAt: serverTimestamp(),
                         active: true
                     };
-                    await setDoc(doc(db, 'users', uid), newUser);
-                    userData = newUser;
-                    document.getElementById('userNameDisplay').textContent = name;
-                    const avatarBtn = document.getElementById('userAvatar');
-                    if (avatarBtn) avatarBtn.textContent = name[0].toUpperCase();
+                    setDoc(userRef, newUser).then(() => {
+                        userData = newUser;
+                        document.getElementById('userNameDisplay').textContent = 'مستخدم';
+                        document.getElementById('userAvatar').textContent = 'U';
+                    });
                 }
-            } catch (err) {
-                console.error('Error loading user data:', err);
-            }
+            }, (error) => {
+                console.error('Error loading user data:', error);
+            });
+            return unsub;
         }
 
-        async function loadUserProgress(uid) {
-            try {
-                const progressRef = collection(db, 'users', uid, 'progress');
-                const snapshot = await getDocs(progressRef);
-                userCourseProgress = {};
-                snapshot.forEach(docSnap => {
-                    userCourseProgress[docSnap.id] = docSnap.data();
-                });
-            } catch (err) {
-                console.error('Error loading progress:', err);
-                userCourseProgress = {};
-            }
-        }
-
-        async function loadUserSubscriptions(uid) {
-            try {
-                const q = query(collection(db, 'courseSubscriptions'), where('userId', '==', uid));
-                const snapshot = await getDocs(q);
+        // ============================================================
+        // USER SUBSCRIPTIONS - realtime
+        // ============================================================
+        function loadUserSubscriptions(uid) {
+            const q = query(collection(db, 'courseSubscriptions'), where('userId', '==', uid));
+            const unsub = onSnapshot(q, (snapshot) => {
                 userSubscriptions = [];
                 snapshot.forEach(docSnap => {
                     userSubscriptions.push({ id: docSnap.id, ...docSnap.data() });
                 });
-            } catch (err) {
-                console.error('Error loading subscriptions:', err);
+                // Update courses display
+                renderCourses(allCourses);
+                // Update dashboard if open
+                if (document.querySelector('#section-dashboard')) {
+                    showDashboard();
+                }
+            }, (error) => {
+                console.error('Error loading subscriptions:', error);
                 userSubscriptions = [];
-            }
+            });
+            return unsub;
         }
 
         function isUserSubscribed(courseId) {
@@ -1874,9 +1468,34 @@
         }
 
         // ============================================================
-        // COURSES
+        // USER PROGRESS - realtime
         // ============================================================
-        async function loadCourses() {
+        function loadUserProgress(uid) {
+            const progressRef = collection(db, 'users', uid, 'progress');
+            const unsub = onSnapshot(progressRef, (snapshot) => {
+                userCourseProgress = {};
+                snapshot.forEach(docSnap => {
+                    userCourseProgress[docSnap.id] = docSnap.data();
+                });
+                // Update courses display if modal is open
+                const overlay = document.getElementById('courseOverlay');
+                if (overlay.classList.contains('open')) {
+                    const courseId = overlay.dataset.courseId;
+                    if (courseId) {
+                        openCourse(courseId);
+                    }
+                }
+            }, (error) => {
+                console.error('Error loading progress:', error);
+                userCourseProgress = {};
+            });
+            return unsub;
+        }
+
+        // ============================================================
+        // COURSES - realtime with onSnapshot
+        // ============================================================
+        function loadCourses() {
             const grid = document.getElementById('coursesGrid');
             if (!grid) return;
 
@@ -1935,7 +1554,7 @@
                                     ${isLocked ? '<div class="lock-overlay">🔒</div>' : ''}
                                 </div>
                                 <div class="card-body">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px;">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                                         <span style="font-size:0.7rem;padding:2px 10px;border-radius:50px;background:${c.isFree !== false ? 'var(--success)' : 'var(--danger)'};color:#fff;font-weight:600;">
                                             ${c.isFree !== false ? '🆓 مجاني' : '💰 مدفوع'}
                                         </span>
@@ -1972,6 +1591,9 @@
             renderCourses(filtered);
         }
 
+        // ============================================================
+        // SUBSCRIBE TO COURSE - with realtime update
+        // ============================================================
         async function subscribeToCourse(courseId) {
             if (!currentUser) {
                 showLoginOverlay();
@@ -1989,22 +1611,21 @@
                     userId: currentUser.uid,
                     courseId: courseId,
                     status: 'active',
-                    subscribedAt: Timestamp.now(),
+                    subscribedAt: serverTimestamp(),
                     expiresAt: null
                 });
 
-                userSubscriptions.push({ courseId, status: 'active' });
-                showToast('🎉 تم الاشتراك في الكورس بنجاح!', false);
-
+                // Update course student count
                 const course = allCourses.find(c => c.id === courseId);
                 if (course) {
                     await updateDoc(doc(db, 'courses', courseId), {
                         studentsCount: increment(1)
                     });
-                    course.studentsCount = (course.studentsCount || 0) + 1;
                 }
 
-                renderCourses(allCourses);
+                showToast('🎉 تم الاشتراك في الكورس بنجاح!', false);
+                // The onSnapshot will update the UI automatically
+
             } catch (err) {
                 console.error('Error subscribing:', err);
                 showToast('حدث خطأ أثناء الاشتراك', true);
@@ -2023,6 +1644,8 @@
             const overlay = document.getElementById('courseOverlay');
             const modal = document.getElementById('courseModal');
             if (!overlay || !modal) return;
+
+            overlay.dataset.courseId = courseId;
 
             const course = allCourses.find(c => c.id === courseId);
             if (!course) {
@@ -2072,7 +1695,7 @@
             } else {
                 lessonsHtml = `
                             <div style="margin-bottom:12px;">
-                                <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px;flex-wrap:wrap;gap:4px;">
+                                <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px;">
                                     <span style="color:var(--text2);font-weight:600;">نسبة الإتمام</span>
                                     <span style="color:var(--primary);font-weight:700;">${progressPercent}%</span>
                                 </div>
@@ -2089,13 +1712,13 @@
                                     return `
                                         <div class="lesson-accordion ${isCompleted ? 'open' : ''}" id="lesson_${video.id}">
                                             <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
-                                                <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+                                                <div style="display:flex;align-items:center;gap:8px;flex:1;">
                                                     <span class="lesson-num">${idx + 1}</span>
-                                                    <span style="flex:1;word-break:break-word;">${escapeHtml(video.title)}</span>
-                                                    ${isCompleted ? '<span style="font-size:0.7rem;color:var(--success);font-weight:600;flex-shrink:0;">✅ تم</span>' : ''}
-                                                    ${isLocked ? '<span style="font-size:0.7rem;color:var(--danger);font-weight:600;flex-shrink:0;">🔒 مقفولة</span>' : ''}
+                                                    <span style="flex:1;">${escapeHtml(video.title)}</span>
+                                                    ${isCompleted ? '<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✅ تم</span>' : ''}
+                                                    ${isLocked ? '<span style="font-size:0.7rem;color:var(--danger);font-weight:600;">🔒 مقفولة</span>' : ''}
                                                 </div>
-                                                <i class="fas fa-chevron-down" style="flex-shrink:0;"></i>
+                                                <i class="fas fa-chevron-down"></i>
                                             </div>
                                             <div class="accordion-content">
                                                 ${!isLocked ? `
@@ -2106,7 +1729,7 @@
                                                                 <div class="title">مشاهدة الفيديو</div>
                                                                 <div class="sub">${isCompleted ? '✅ تم المشاهدة' : '▶️ اضغط للمشاهدة'}</div>
                                                             </div>
-                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;flex-shrink:0;"></i>
+                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
                                                         </div>
                                                     ` : ''}
                                                     ${videoExams.map(exam => `
@@ -2116,7 +1739,7 @@
                                                                 <div class="title">📝 امتحان الحصة</div>
                                                                 <div class="sub">${escapeHtml(exam.title)} • ${exam.questions?.length || 0} سؤال</div>
                                                             </div>
-                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;flex-shrink:0;"></i>
+                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
                                                         </div>
                                                     `).join('')}
                                                     ${videoQuizzes.map(quiz => `
@@ -2126,7 +1749,7 @@
                                                                 <div class="title">🧪 كويز الحصة</div>
                                                                 <div class="sub">${escapeHtml(quiz.title)} • ${quiz.questions?.length || 0} سؤال</div>
                                                             </div>
-                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;flex-shrink:0;"></i>
+                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
                                                         </div>
                                                     `).join('')}
                                                     ${videoAssignments.map(assign => `
@@ -2136,7 +1759,7 @@
                                                                 <div class="title">📚 الواجب</div>
                                                                 <div class="sub">${escapeHtml(assign.title)} • ${assign.grade || 10} درجة</div>
                                                             </div>
-                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;flex-shrink:0;"></i>
+                                                            <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
                                                         </div>
                                                     `).join('')}
                                                     ${!video.videoUrl && videoExams.length === 0 && videoQuizzes.length === 0 && videoAssignments.length === 0 ? `
@@ -2158,12 +1781,12 @@
             }
 
             modal.innerHTML = `
-                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px;flex-wrap:wrap;">
-                            <div style="flex:1;min-width:0;">
-                                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);word-break:break-word;">${escapeHtml(course.title)}</h2>
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                            <div>
+                                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">${escapeHtml(course.title)}</h2>
                                 <p style="font-size:0.8rem;color:var(--text2);">⭐ ${course.rating || 0} • 👥 ${course.studentsCount || 0} طالب • 📚 ${videos.length} حصة</p>
                             </div>
-                            <button style="width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);color:var(--text);cursor:pointer;font-size:1rem;flex-shrink:0;" onclick="APP.closeCourseModal()">✕</button>
+                            <button style="width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);color:var(--text);cursor:pointer;font-size:1rem;" onclick="APP.closeCourseModal()">✕</button>
                         </div>
                         <p style="color:var(--text2);margin-bottom:12px;font-size:0.95rem;">${escapeHtml(course.description) || ''}</p>
                         <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:10px;">📚 الحصص (${videos.length})</h3>
@@ -2173,6 +1796,7 @@
 
         function closeCourseModal() {
             document.getElementById('courseOverlay').classList.remove('open');
+            delete document.getElementById('courseOverlay').dataset.courseId;
         }
 
         function showLoginOverlay() {
@@ -2271,7 +1895,7 @@
                         await setDoc(progressRef, {
                             watched: true,
                             watchPercent: 100,
-                            completedAt: Timestamp.now()
+                            completedAt: serverTimestamp()
                         }, { merge: true });
 
                         const progressSnap = await getDoc(progressRef);
@@ -2323,7 +1947,7 @@
                                 <button class="btn-outline btn-sm" onclick="APP.showHome()">
                                     <i class="fas fa-arrow-right"></i> العودة
                                 </button>
-                                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;word-break:break-word;">${escapeHtml(video.title)}</h1>
+                                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">${escapeHtml(video.title)}</h1>
                                 <p style="color:var(--text2);margin-bottom:12px;">⏰ ${escapeHtml(video.duration) || '--'}</p>
                                 ${videoHtml}
                                 <div style="text-align:center;">
@@ -2389,12 +2013,12 @@
                 main.innerHTML = `
                             <div style="max-width:800px;margin:0 auto;padding:20px;">
                                 <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;word-break:break-word;">📚 ${escapeHtml(assign.title)}</h2>
+                                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📚 ${escapeHtml(assign.title)}</h2>
                                 <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(assign.description) || ''}</p>
                                 <div class="card" style="padding:16px;margin-bottom:12px;">
                                     <p style="color:var(--text);"><strong>الدرجة:</strong> ${assign.grade || 10}</p>
                                     <p style="color:var(--text);"><strong>الحالة:</strong> <span style="color:var(--warning);">⏳ في انتظار التقييم</span></p>
-                                    ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);word-break:break-word;">${escapeHtml(assign.content)}</div>` : ''}
+                                    ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);">${escapeHtml(assign.content)}</div>` : ''}
                                 </div>
                                 <div style="text-align:center;"><button class="btn-primary" onclick="APP.showHome()">🏠 العودة للرئيسية</button></div>
                             </div>
@@ -2412,12 +2036,12 @@
 
             const questionsHtml = (exam.questions || []).map((q, idx) => `
                         <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;word-break:break-word;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
                             <div style="display:flex;flex-direction:column;gap:6px;">
                                 ${q.options.map((opt, oIdx) => `
                                     <div class="quiz-option" onclick="APP.selectExamAnswer('${id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                                         <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span style="word-break:break-word;">${escapeHtml(opt)}</span>
+                                        <span>${escapeHtml(opt)}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -2427,7 +2051,7 @@
             main.innerHTML = `
                         <div style="max-width:800px;margin:0 auto;padding:20px;">
                             <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;word-break:break-word;">📝 ${escapeHtml(exam.title)}</h2>
+                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📝 ${escapeHtml(exam.title)}</h2>
                             <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
                             <div id="examContainer">${questionsHtml}</div>
                             <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitExam('${id}', ${exam.atomsReward || 30}, 'lessonExam')">
@@ -2445,12 +2069,12 @@
 
             const questionsHtml = (quiz.questions || []).map((q, idx) => `
                         <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;word-break:break-word;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
                             <div style="display:flex;flex-direction:column;gap:6px;">
                                 ${q.options.map((opt, oIdx) => `
                                     <div class="quiz-option" onclick="APP.selectQuizAnswer('${id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                                         <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span style="word-break:break-word;">${escapeHtml(opt)}</span>
+                                        <span>${escapeHtml(opt)}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -2460,7 +2084,7 @@
             main.innerHTML = `
                         <div style="max-width:800px;margin:0 auto;padding:20px;">
                             <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;word-break:break-word;">🧪 ${escapeHtml(quiz.title)}</h2>
+                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">🧪 ${escapeHtml(quiz.title)}</h2>
                             <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
                             <div id="quizContainer">${questionsHtml}</div>
                             <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitQuiz('${id}', ${quiz.atomsReward || 20}, 'lessonQuiz')">
@@ -2537,41 +2161,37 @@
                 if (btn) { btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
 
-                const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
-                const progressSnap = await getDoc(progressRef);
-                const alreadyCompleted = progressSnap.exists() && progressSnap.data().completed;
-
-                await setDoc(progressRef, {
-                    completed: true,
-                    score: score,
-                    completedAt: Timestamp.now()
-                }, { merge: true });
-
-                if (score >= 60 && !alreadyCompleted) {
-                    await runTransaction(db, async (transaction) => {
-                        const userRef = doc(db, 'users', currentUser.uid);
-                        const userSnap = await transaction.get(userRef);
-                        if (!userSnap.exists()) return;
-                        const currentAtoms = userSnap.data().atoms || 0;
-                        transaction.update(userRef, {
-                            atoms: currentAtoms + atomsReward,
-                            examsPassed: increment(1)
+                if (score >= 60) {
+                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
+                    const progressSnap = await getDoc(progressRef);
+                    if (!progressSnap.exists() || !progressSnap.data().atomsAwarded) {
+                        await runTransaction(db, async (transaction) => {
+                            const userRef = doc(db, 'users', currentUser.uid);
+                            const userSnap = await transaction.get(userRef);
+                            if (!userSnap.exists()) return;
+                            const currentAtoms = userSnap.data().atoms || 0;
+                            transaction.update(userRef, { atoms: currentAtoms + atomsReward });
+                            transaction.set(progressRef, {
+                                completed: true,
+                                score: score,
+                                atomsAwarded: true,
+                                completedAt: serverTimestamp()
+                            }, { merge: true });
                         });
-                        transaction.set(progressRef, { atomsAwarded: true }, { merge: true });
-                    });
-                    const atomsEl = document.getElementById('atomsCount');
-                    const userAtomsEl = document.getElementById('userAtomsCount');
-                    if (atomsEl) {
-                        const current = parseInt(atomsEl.textContent) || 0;
-                        animateAtoms('atomsCount', current + atomsReward);
+                        const atomsEl = document.getElementById('atomsCount');
+                        const userAtomsEl = document.getElementById('userAtomsCount');
+                        if (atomsEl) {
+                            const current = parseInt(atomsEl.textContent) || 0;
+                            animateAtoms('atomsCount', current + atomsReward);
+                        }
+                        if (userAtomsEl) {
+                            const current = parseInt(userAtomsEl.textContent) || 0;
+                            userAtomsEl.textContent = current + atomsReward;
+                        }
+                        showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
+                    } else {
+                        showToast(`📝 لقد قمت بالفعل بأداء هذا الامتحان (النتيجة: ${score}%)`, false);
                     }
-                    if (userAtomsEl) {
-                        const current = parseInt(userAtomsEl.textContent) || 0;
-                        userAtomsEl.textContent = current + atomsReward;
-                    }
-                    showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
-                } else if (alreadyCompleted) {
-                    showToast(`📝 لقد قمت بالفعل بأداء هذا الامتحان (النتيجة: ${score}%)`, false);
                 } else {
                     showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
                 }
@@ -2620,41 +2240,37 @@
                 if (btn) { btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
 
-                const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
-                const progressSnap = await getDoc(progressRef);
-                const alreadyCompleted = progressSnap.exists() && progressSnap.data().completed;
-
-                await setDoc(progressRef, {
-                    completed: true,
-                    score: score,
-                    completedAt: Timestamp.now()
-                }, { merge: true });
-
-                if (score >= 60 && !alreadyCompleted) {
-                    await runTransaction(db, async (transaction) => {
-                        const userRef = doc(db, 'users', currentUser.uid);
-                        const userSnap = await transaction.get(userRef);
-                        if (!userSnap.exists()) return;
-                        const currentAtoms = userSnap.data().atoms || 0;
-                        transaction.update(userRef, {
-                            atoms: currentAtoms + atomsReward,
-                            quizzesPassed: increment(1)
+                if (score >= 60) {
+                    const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
+                    const progressSnap = await getDoc(progressRef);
+                    if (!progressSnap.exists() || !progressSnap.data().atomsAwarded) {
+                        await runTransaction(db, async (transaction) => {
+                            const userRef = doc(db, 'users', currentUser.uid);
+                            const userSnap = await transaction.get(userRef);
+                            if (!userSnap.exists()) return;
+                            const currentAtoms = userSnap.data().atoms || 0;
+                            transaction.update(userRef, { atoms: currentAtoms + atomsReward });
+                            transaction.set(progressRef, {
+                                completed: true,
+                                score: score,
+                                atomsAwarded: true,
+                                completedAt: serverTimestamp()
+                            }, { merge: true });
                         });
-                        transaction.set(progressRef, { atomsAwarded: true }, { merge: true });
-                    });
-                    const atomsEl = document.getElementById('atomsCount');
-                    const userAtomsEl = document.getElementById('userAtomsCount');
-                    if (atomsEl) {
-                        const current = parseInt(atomsEl.textContent) || 0;
-                        animateAtoms('atomsCount', current + atomsReward);
+                        const atomsEl = document.getElementById('atomsCount');
+                        const userAtomsEl = document.getElementById('userAtomsCount');
+                        if (atomsEl) {
+                            const current = parseInt(atomsEl.textContent) || 0;
+                            animateAtoms('atomsCount', current + atomsReward);
+                        }
+                        if (userAtomsEl) {
+                            const current = parseInt(userAtomsEl.textContent) || 0;
+                            userAtomsEl.textContent = current + atomsReward;
+                        }
+                        showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
+                    } else {
+                        showToast(`📝 لقد قمت بالفعل بحل هذا الكويز (النتيجة: ${score}%)`, false);
                     }
-                    if (userAtomsEl) {
-                        const current = parseInt(userAtomsEl.textContent) || 0;
-                        userAtomsEl.textContent = current + atomsReward;
-                    }
-                    showToast(`🎉 مبروك! حصلت على ${atomsReward} ذرة! (النتيجة: ${score}%)`, false);
-                } else if (alreadyCompleted) {
-                    showToast(`📝 لقد قمت بالفعل بحل هذا الكويز (النتيجة: ${score}%)`, false);
                 } else {
                     showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
                 }
@@ -2665,38 +2281,65 @@
         }
 
         // ============================================================
-        // GENERAL EXAMS & QUIZZES
+        // GENERAL EXAMS - realtime
         // ============================================================
-        async function loadGeneralExams() {
+        function loadGeneralExams() {
             try {
+                if (examsUnsub) { examsUnsub();
+                    examsUnsub = null; }
                 const examsRef = collection(db, 'generalExams');
                 const q = query(examsRef, where('active', '==', true), orderBy('createdAt', 'desc'));
-                const snapshot = await getDocs(q);
-                allGeneralExams = [];
-                snapshot.forEach(docSnap => {
-                    allGeneralExams.push({ id: docSnap.id, ...docSnap.data() });
+
+                examsUnsub = onSnapshot(q, (snapshot) => {
+                    allGeneralExams = [];
+                    snapshot.forEach(docSnap => {
+                        allGeneralExams.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    // Update exams page if open
+                    if (document.querySelector('#examsGrid')) {
+                        filterExams('all');
+                    }
+                }, (error) => {
+                    console.error('Error loading general exams:', error);
+                    allGeneralExams = [];
                 });
             } catch (err) {
-                console.error('Error loading general exams:', err);
+                console.error('Error setting up exams listener:', err);
                 allGeneralExams = [];
             }
         }
 
-        async function loadGeneralQuizzes() {
+        // ============================================================
+        // GENERAL QUIZZES - realtime
+        // ============================================================
+        function loadGeneralQuizzes() {
             try {
+                if (quizzesUnsub) { quizzesUnsub();
+                    quizzesUnsub = null; }
                 const quizzesRef = collection(db, 'generalQuizzes');
                 const q = query(quizzesRef, where('active', '==', true), orderBy('createdAt', 'desc'));
-                const snapshot = await getDocs(q);
-                allGeneralQuizzes = [];
-                snapshot.forEach(docSnap => {
-                    allGeneralQuizzes.push({ id: docSnap.id, ...docSnap.data() });
+
+                quizzesUnsub = onSnapshot(q, (snapshot) => {
+                    allGeneralQuizzes = [];
+                    snapshot.forEach(docSnap => {
+                        allGeneralQuizzes.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    if (document.querySelector('#quizzesGrid')) {
+                        filterQuizzes('all');
+                    }
+                }, (error) => {
+                    console.error('Error loading general quizzes:', error);
+                    allGeneralQuizzes = [];
                 });
             } catch (err) {
-                console.error('Error loading general quizzes:', err);
+                console.error('Error setting up quizzes listener:', err);
                 allGeneralQuizzes = [];
             }
         }
 
+        // ============================================================
+        // SHOW EXAMS / QUIZZES
+        // ============================================================
         function showExams() {
             const main = document.getElementById('mainContent');
             if (!main) return;
@@ -2711,7 +2354,7 @@
                                 <button class="tab" onclick="APP.filterExams('second')">ثانية ثانوي</button>
                                 <button class="tab" onclick="APP.filterExams('third')">ثالثة ثانوي</button>
                             </div>
-                            <div class="exams-grid" id="examsGrid">
+                            <div id="examsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
                                 ${allGeneralExams.length === 0 ? `
                                     <div class="empty-state" style="grid-column:1/-1;">
                                         <div class="icon">📝</div>
@@ -2720,9 +2363,9 @@
                                     </div>
                                 ` : allGeneralExams.map(exam => `
                                     <div class="card" style="cursor:pointer;padding:16px;" onclick="APP.openGeneralExam('${exam.id}')">
-                                        <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;word-break:break-word;">${escapeHtml(exam.title)}</h3>
-                                        <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;word-break:break-word;">${escapeHtml(exam.description) || ''}</p>
-                                        <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);flex-wrap:wrap;">
+                                        <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;">${escapeHtml(exam.title)}</h3>
+                                        <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(exam.description) || ''}</p>
+                                        <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
                                             <span>🎯 ${exam.grade === 'first' ? 'أولى ثانوي' : exam.grade === 'second' ? 'ثانية ثانوي' : exam.grade === 'third' ? 'ثالثة ثانوي' : 'كل الصفوف'}</span>
                                             <span>📝 ${exam.questions?.length || 0} سؤال</span>
                                         </div>
@@ -2750,9 +2393,9 @@
                         </div>
                     ` : filtered.map(exam => `
                         <div class="card" style="cursor:pointer;padding:16px;" onclick="APP.openGeneralExam('${exam.id}')">
-                            <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;word-break:break-word;">${escapeHtml(exam.title)}</h3>
-                            <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;word-break:break-word;">${escapeHtml(exam.description) || ''}</p>
-                            <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);flex-wrap:wrap;">
+                            <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;">${escapeHtml(exam.title)}</h3>
+                            <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(exam.description) || ''}</p>
+                            <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
                                 <span>🎯 ${exam.grade === 'first' ? 'أولى ثانوي' : exam.grade === 'second' ? 'ثانية ثانوي' : exam.grade === 'third' ? 'ثالثة ثانوي' : 'كل الصفوف'}</span>
                                 <span>📝 ${exam.questions?.length || 0} سؤال</span>
                             </div>
@@ -2774,7 +2417,7 @@
                                 <button class="tab" onclick="APP.filterQuizzes('second')">ثانية ثانوي</button>
                                 <button class="tab" onclick="APP.filterQuizzes('third')">ثالثة ثانوي</button>
                             </div>
-                            <div class="exams-grid" id="quizzesGrid">
+                            <div id="quizzesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
                                 ${allGeneralQuizzes.length === 0 ? `
                                     <div class="empty-state" style="grid-column:1/-1;">
                                         <div class="icon">🧪</div>
@@ -2783,9 +2426,9 @@
                                     </div>
                                 ` : allGeneralQuizzes.map(quiz => `
                                     <div class="card" style="cursor:pointer;padding:16px;" onclick="APP.openGeneralQuiz('${quiz.id}')">
-                                        <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;word-break:break-word;">${escapeHtml(quiz.title)}</h3>
-                                        <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;word-break:break-word;">${escapeHtml(quiz.description) || ''}</p>
-                                        <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);flex-wrap:wrap;">
+                                        <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;">${escapeHtml(quiz.title)}</h3>
+                                        <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(quiz.description) || ''}</p>
+                                        <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
                                             <span>🎯 ${quiz.grade === 'first' ? 'أولى ثانوي' : quiz.grade === 'second' ? 'ثانية ثانوي' : quiz.grade === 'third' ? 'ثالثة ثانوي' : 'كل الصفوف'}</span>
                                             <span>🧪 ${quiz.questions?.length || 0} سؤال</span>
                                         </div>
@@ -2813,9 +2456,9 @@
                         </div>
                     ` : filtered.map(quiz => `
                         <div class="card" style="cursor:pointer;padding:16px;" onclick="APP.openGeneralQuiz('${quiz.id}')">
-                            <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;word-break:break-word;">${escapeHtml(quiz.title)}</h3>
-                            <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;word-break:break-word;">${escapeHtml(quiz.description) || ''}</p>
-                            <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);flex-wrap:wrap;">
+                            <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;">${escapeHtml(quiz.title)}</h3>
+                            <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(quiz.description) || ''}</p>
+                            <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
                                 <span>🎯 ${quiz.grade === 'first' ? 'أولى ثانوي' : quiz.grade === 'second' ? 'ثانية ثانوي' : quiz.grade === 'third' ? 'ثالثة ثانوي' : 'كل الصفوف'}</span>
                                 <span>🧪 ${quiz.questions?.length || 0} سؤال</span>
                             </div>
@@ -2832,12 +2475,12 @@
 
             const questionsHtml = (exam.questions || []).map((q, idx) => `
                         <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;word-break:break-word;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
                             <div style="display:flex;flex-direction:column;gap:6px;">
                                 ${q.options.map((opt, oIdx) => `
                                     <div class="quiz-option" onclick="APP.selectGeneralExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                                         <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span style="word-break:break-word;">${escapeHtml(opt)}</span>
+                                        <span>${escapeHtml(opt)}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -2847,7 +2490,7 @@
             main.innerHTML = `
                         <div style="max-width:800px;margin:0 auto;padding:20px;">
                             <button class="btn-outline btn-sm" onclick="APP.showExams()"><i class="fas fa-arrow-right"></i> العودة للامتحانات</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;word-break:break-word;">📝 ${escapeHtml(exam.title)}</h2>
+                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📝 ${escapeHtml(exam.title)}</h2>
                             <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
                             <div id="generalExamContainer">${questionsHtml}</div>
                             <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitGeneralExam('${exam.id}', ${exam.atomsReward || 30})">
@@ -2869,12 +2512,12 @@
 
             const questionsHtml = (quiz.questions || []).map((q, idx) => `
                         <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;word-break:break-word;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
                             <div style="display:flex;flex-direction:column;gap:6px;">
                                 ${q.options.map((opt, oIdx) => `
                                     <div class="quiz-option" onclick="APP.selectGeneralQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                                         <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span style="word-break:break-word;">${escapeHtml(opt)}</span>
+                                        <span>${escapeHtml(opt)}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -2884,7 +2527,7 @@
             main.innerHTML = `
                         <div style="max-width:800px;margin:0 auto;padding:20px;">
                             <button class="btn-outline btn-sm" onclick="APP.showQuizzes()"><i class="fas fa-arrow-right"></i> العودة للكويزات</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;word-break:break-word;">🧪 ${escapeHtml(quiz.title)}</h2>
+                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">🧪 ${escapeHtml(quiz.title)}</h2>
                             <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
                             <div id="generalQuizContainer">${questionsHtml}</div>
                             <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitGeneralQuiz('${quiz.id}', ${quiz.atomsReward || 20})">
@@ -2944,7 +2587,7 @@
         }
 
         // ============================================================
-        // LEADERBOARD
+        // LEADERBOARD - realtime with onSnapshot
         // ============================================================
         function showLeaderboard() {
             const main = document.getElementById('mainContent');
@@ -2961,12 +2604,15 @@
             loadFullLeaderboard();
         }
 
-        async function loadFullLeaderboard() {
+        function loadFullLeaderboard() {
             const container = document.getElementById('leaderboardFullList');
             if (!container) return;
 
-            try {
-                const snapshot = await getDocs(collection(db, 'users'));
+            // Use onSnapshot for realtime updates
+            if (leaderboardUnsub) { leaderboardUnsub();
+                leaderboardUnsub = null; }
+
+            leaderboardUnsub = onSnapshot(collection(db, 'users'), (snapshot) => {
                 const users = [];
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
@@ -2974,8 +2620,6 @@
                         id: docSnap.id,
                         name: data.name || 'مستخدم',
                         atoms: data.atoms || 0,
-                        code: data.code || '',
-                        profileImage: data.profileImage || null,
                         coursesCount: data.coursesCount || 0,
                         examsPassed: data.examsPassed || 0,
                         quizzesPassed: data.quizzesPassed || 0
@@ -2997,62 +2641,55 @@
                         medal = '🥇'; } else if (idx === 1) { rankClass = 'silver';
                         medal = '🥈'; } else if (idx === 2) { rankClass = 'bronze';
                         medal = '🥉'; }
-                    const avatarHtml = user.profileImage ?
-                        `<img src="${user.profileImage}" alt="${escapeHtml(user.name)}">` :
-                        (user.name || 'U')[0].toUpperCase();
                     return `
                                 <div class="leaderboard-item">
                                     <div class="rank ${rankClass}">${medal || (idx + 1)}</div>
-                                    <div class="avatar">${avatarHtml}</div>
+                                    <div class="avatar">${(user.name || 'U')[0].toUpperCase()}</div>
                                     <div class="info">
                                         <div class="name">${escapeHtml(user.name)}</div>
-                                        <div class="stats">🔑 ${escapeHtml(user.code || '')} • 📚 ${user.coursesCount || 0} كورس • 📝 ${user.examsPassed || 0} امتحان • 🧪 ${user.quizzesPassed || 0} كويز</div>
+                                        <div class="stats">📚 ${user.coursesCount || 0} كورس • 📝 ${user.examsPassed || 0} امتحان • 🧪 ${user.quizzesPassed || 0} كويز</div>
                                     </div>
                                     <div class="points">⚛️ ${(user.atoms || 0).toLocaleString()}</div>
                                 </div>
                             `;
                 }).join('');
 
+                // Update home leaderboard
                 renderLeaderboard(users);
-            } catch (err) {
-                console.error('Error loading leaderboard:', err);
+            }, (error) => {
+                console.error('Error loading leaderboard:', error);
                 container.innerHTML = `
                             <div class="empty-state">
                                 <div class="icon">🏆</div>
                                 <h3>حدث خطأ في تحميل المتصدرين</h3>
                             </div>
                         `;
-            }
+            });
         }
 
         function loadLeaderboard() {
             const grid = document.getElementById('leaderboardGrid');
             if (!grid) return;
 
-            try {
-                getDocs(collection(db, 'users'))
-                    .then((snapshot) => {
-                        const users = [];
-                        snapshot.forEach(docSnap => {
-                            const data = docSnap.data();
-                            users.push({
-                                id: docSnap.id,
-                                name: data.name || 'مستخدم',
-                                atoms: data.atoms || 0,
-                                profileImage: data.profileImage || null
-                            });
-                        });
-                        users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
-                        renderLeaderboard(users);
-                    })
-                    .catch((error) => {
-                        console.error('Error loading leaderboard:', error);
-                        renderLeaderboard([]);
+            if (leaderboardUnsub) { leaderboardUnsub();
+                leaderboardUnsub = null; }
+
+            leaderboardUnsub = onSnapshot(collection(db, 'users'), (snapshot) => {
+                const users = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    users.push({
+                        id: docSnap.id,
+                        name: data.name || 'مستخدم',
+                        atoms: data.atoms || 0
                     });
-            } catch (error) {
-                console.error('Error setting up leaderboard:', error);
+                });
+                users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
+                renderLeaderboard(users);
+            }, (error) => {
+                console.error('Error loading leaderboard:', error);
                 renderLeaderboard([]);
-            }
+            });
         }
 
         function renderLeaderboard(users) {
@@ -3072,28 +2709,29 @@
 
             const topUsers = users.slice(0, 3);
             const medals = [
-                { crown: '🥇', badge: '🥇 الأول', bg: '#FFD60A', color: '#081B2C' },
-                { crown: '🥈', badge: '🥈 الثاني', bg: '#94A3B8', color: '#fff' },
-                { crown: '🥉', badge: '🥉 الثالث', bg: '#CD7F32', color: '#fff' }
+                { order: 'order-1 md:order-2', border: 'border-2 border-[#FFD60A]', glow: 'leaderboard-gold',
+                    t: 'md:-translate-y-4', badge: '🥇 الأول', bg: 'bg-[#FFD60A] text-[#081B2C]',
+                    pts: 'text-[#FFA726]', s: 'w-24 h-24', bc: 'border-[#FFD60A]', crown: '🥇' },
+                { order: 'order-2 md:order-1', border: 'border', glow: 'leaderboard-silver', t: 'md:translate-y-6',
+                    badge: '🥈 الثاني', bg: 'bg-gray-100 text-gray-700', pts: 'text-[#0B4F8C]', s: 'w-20 h-20',
+                    bc: 'border-gray-300', crown: '🥈' },
+                { order: 'order-3 md:order-3', border: 'border', glow: 'leaderboard-ice', t: 'md:translate-y-6',
+                    badge: '🥉 الثالث', bg: 'bg-[#EAF6FF] text-[#0B4F8C]', pts: 'text-[#4CC9F0]', s: 'w-20 h-20',
+                    bc: 'border-[#4CC9F0]', crown: '🥉' }
             ];
 
-            grid.innerHTML = topUsers.map((user, i) => {
-                const avatarHtml = user.profileImage ?
-                    `<img src="${user.profileImage}" alt="${escapeHtml(user.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
-                    (user.name || 'U')[0].toUpperCase();
-                return `
-                            <div class="card" style="text-align:center;padding:20px;border-color:var(--border);">
-                                <div style="position:relative;display:inline-block;margin-bottom:12px;">
-                                    <div style="width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.8rem;font-weight:700;border:4px solid ${i === 0 ? '#FFD60A' : i === 1 ? 'var(--border)' : 'var(--border)'};overflow:hidden;">${avatarHtml}</div>
-                                    <span style="position:absolute;top:-8px;right:-8px;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;background:${medals[i].bg};color:${medals[i].color};">${medals[i].crown}</span>
-                                </div>
-                                <span style="display:inline-block;font-weight:700;padding:2px 12px;border-radius:50px;font-size:0.7rem;background:${medals[i].bg};color:${medals[i].color};margin-bottom:6px;">${medals[i].badge}</span>
-                                <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);word-break:break-word;">${escapeHtml(user.name) || 'مستخدم'}</h3>
-                                <p style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);">${(user.atoms || 0).toLocaleString()}</p>
-                                <p style="font-size:0.75rem;color:var(--text2);">⚛️ ذرة</p>
+            grid.innerHTML = topUsers.map((user, i) => `
+                        <div class="card" style="text-align:center;padding:20px;border-color:var(--border);">
+                            <div style="position:relative;display:inline-block;margin-bottom:12px;">
+                                <div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.5rem;font-weight:700;border:4px solid ${i === 0 ? '#FFD60A' : i === 1 ? 'var(--border)' : 'var(--border)'};">${(user.name || 'U')[0].toUpperCase()}</div>
+                                <span style="position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};">${medals[i].crown}</span>
                             </div>
-                        `;
-            }).join('');
+                            <span style="display:inline-block;font-weight:700;padding:2px 12px;border-radius:50px;font-size:0.7rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};margin-bottom:6px;">${medals[i].badge}</span>
+                            <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);">${escapeHtml(user.name) || 'مستخدم'}</h3>
+                            <p style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);">${(user.atoms || 0).toLocaleString()}</p>
+                            <p style="font-size:0.75rem;color:var(--text2);">⚛️ ذرة</p>
+                        </div>
+                    `).join('');
         }
 
         // ============================================================
@@ -3110,75 +2748,30 @@
 
             const name = userData?.name || 'طالب';
             const email = userData?.email || '';
-            const phone = userData?.phone || '';
             const atoms = userData?.atoms || 0;
             const code = userData?.code || '';
             const grade = userData?.grade || 'لم يحدد';
-            const profileImage = userData?.profileImage || null;
-            const createdAt = userData?.createdAt?.toDate ? userData.createdAt.toDate() : null;
 
             let watchedCount = 0;
-            let quizCompletedCount = 0;
-            let assignmentCompletedCount = 0;
-            let examCompletedCount = 0;
+            let quizCount = 0;
+            let assignmentCount = 0;
+            let examCount = 0;
             let totalScore = 0;
             let scoresCount = 0;
-            let lastActivity = null;
-            let lastLesson = null;
 
-            Object.entries(userCourseProgress).forEach(([id, progress]) => {
+            Object.values(userCourseProgress).forEach(progress => {
                 if (progress.watched) watchedCount++;
-                if (progress.completed && progress.score !== undefined) {
-                    totalScore += progress.score || 0;
-                    scoresCount++;
-                }
-                if (progress.quizCompleted) quizCompletedCount++;
-                if (progress.assignmentCompleted) assignmentCompletedCount++;
-                if (progress.examCompleted) examCompletedCount++;
-                if (progress.completedAt) {
-                    const date = progress.completedAt.toDate ? progress.completedAt.toDate() : new Date(progress.completedAt);
-                    if (!lastActivity || date > lastActivity) lastActivity = date;
-                    if (id.startsWith('lesson_')) {
-                        if (!lastLesson || date > lastLesson) lastLesson = { id, date };
-                    }
-                }
+                if (progress.quizCompleted) { quizCount++;
+                    totalScore += progress.quizScore || 0;
+                    scoresCount++; }
+                if (progress.assignmentCompleted) assignmentCount++;
+                if (progress.examCompleted) { examCount++;
+                    totalScore += progress.examScore || 0;
+                    scoresCount++; }
             });
 
             const avgScore = scoresCount > 0 ? Math.round(totalScore / scoresCount) : 0;
             const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
-            const totalLessons = subscribedCourses.reduce((sum, c) => sum + (c.lessonsCount || 0), 0);
-            const completionPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
-
-            let performanceLevel = 'جيد';
-            let levelClass = 'good';
-            let performanceMessage = 'أنت في طريقك الصحيح، استمر في التعلم!';
-            let performanceAdvice = 'حاول مشاهدة المزيد من الفيديوهات وحل المزيد من الكويزات لتحسين مستواك.';
-
-            if (completionPercent >= 80 && avgScore >= 85 && atoms >= 200) {
-                performanceLevel = 'ممتاز جدًا';
-                levelClass = 'excellent';
-                performanceMessage = '🎉 أداءك رائع! أنت من أفضل الطلاب على المنصة.';
-                performanceAdvice = 'استمر في التميز وساعد زملائك في التعلم.';
-            } else if (completionPercent >= 60 && avgScore >= 70 && atoms >= 100) {
-                performanceLevel = 'جيد جدًا';
-                levelClass = 'good';
-                performanceMessage = '👏 أداءك ممتاز، أنت على الطريق الصحيح.';
-                performanceAdvice = 'ركز على حل المزيد من الامتحانات لتعزيز مستواك.';
-            } else if (completionPercent >= 30 && avgScore >= 50) {
-                performanceLevel = 'جيد';
-                levelClass = 'fair';
-                performanceMessage = '📚 بداية جيدة، استمر في التعلم.';
-                performanceAdvice = 'احرص على مشاهدة جميع الفيديوهات وحل الواجبات.';
-            } else {
-                performanceLevel = 'يحتاج إلى تحسين';
-                levelClass = 'need-improve';
-                performanceMessage = '💪 لا تستسلم! كلنا بدأنا من الصفر.';
-                performanceAdvice = 'ابدأ بمشاهدة الفيديوهات من البداية وحل الكويزات البسيطة.';
-            }
-
-            const avatarHtml = profileImage ?
-                `<img src="${profileImage}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
-                (name || 'U')[0].toUpperCase();
 
             main.innerHTML = `
                         <div style="max-width:1280px;margin:0 auto;padding:20px;">
@@ -3190,28 +2783,13 @@
                             </div>
 
                             <div class="card" style="padding:20px;margin-bottom:16px;">
-                                <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
-                                    <div class="profile-avatar" style="position:relative;">
-                                        ${profileImage ? `<img src="${profileImage}" alt="صورة شخصية">` : name[0].toUpperCase()}
-                                    </div>
-                                    <div style="text-align:center;width:100%;">
-                                        <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);word-break:break-word;">${escapeHtml(name)}</h3>
-                                        <p style="font-size:0.85rem;color:var(--text2);word-break:break-word;"><i class="fas fa-envelope"></i> ${escapeHtml(email)}</p>
-                                        ${phone ? `<p style="font-size:0.85rem;color:var(--text2);word-break:break-word;"><i class="fas fa-phone"></i> ${escapeHtml(phone)}</p>` : ''}
-                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-graduation-cap"></i> ${escapeHtml(grade)}</p>
+                                <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                                    <div style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;background:var(--primary);color:#fff;">${(name || 'U')[0].toUpperCase()}</div>
+                                    <div style="text-align:center;">
+                                        <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);">${escapeHtml(name)}</h3>
+                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-envelope"></i> ${escapeHtml(email)}</p>
+                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-graduation-cap"></i> ${grade}</p>
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-book"></i> ${subscribedCourses.length} كورس مشترك</p>
-                                        ${lastActivity ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-clock"></i> آخر نشاط: ${formatTime(lastActivity.toISOString())}</p>` : ''}
-                                        ${lastLesson ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-play"></i> آخر حصة: ${formatTime(lastLesson.date.toISOString())}</p>` : ''}
-                                        ${createdAt ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-calendar-alt"></i> تاريخ التسجيل: ${createdAt.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' })}</p>` : ''}
-                                    </div>
-                                    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;">
-                                        <button class="btn-primary btn-sm" onclick="document.getElementById('profileImageInput').click()">
-                                            <i class="fas fa-camera"></i> تغيير الصورة
-                                        </button>
-                                        <input type="file" id="profileImageInput" class="hidden-input" accept="image/*" onchange="APP.uploadProfileImage(this.files[0])">
-                                        <button class="btn-outline btn-sm" onclick="APP.showPerformanceAnalysis()">
-                                            <i class="fas fa-chart-line"></i> تحليل مستواك
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -3219,31 +2797,30 @@
                             <div class="card" style="padding:16px;margin-bottom:16px;">
                                 <h4 style="font-weight:700;color:var(--primary);margin-bottom:6px;">🔑 كود الطالب الخاص</h4>
                                 <div class="profile-code">${escapeHtml(code)}</div>
-                                <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="APP.copyStudentCode('${escapeHtml(code)}')">
+                                <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="navigator.clipboard.writeText('${escapeHtml(code)}').then(()=>APP.toast('✅ تم نسخ الكود', false))">
                                     <i class="fas fa-copy"></i> نسخ الكود
                                 </button>
                             </div>
 
                             <div class="grid-dashboard" style="margin-bottom:16px;">
                                 <div class="stat-card"><div class="number">${watchedCount}</div><div class="label">🎬 فيديوهات</div></div>
-                                <div class="stat-card"><div class="number">${quizCompletedCount}</div><div class="label">🧪 كويزات</div></div>
-                                <div class="stat-card"><div class="number">${assignmentCompletedCount}</div><div class="label">📝 واجبات</div></div>
-                                <div class="stat-card"><div class="number">${examCompletedCount}</div><div class="label">📋 امتحانات</div></div>
+                                <div class="stat-card"><div class="number">${quizCount}</div><div class="label">🧪 كويزات</div></div>
+                                <div class="stat-card"><div class="number">${assignmentCount}</div><div class="label">📝 واجبات</div></div>
+                                <div class="stat-card"><div class="number">${examCount}</div><div class="label">📋 امتحانات</div></div>
                             </div>
 
                             <div class="grid-dashboard" style="margin-bottom:16px;">
                                 <div class="stat-card"><div class="number">${avgScore}%</div><div class="label">⭐ متوسط الدرجات</div></div>
                                 <div class="stat-card"><div class="number">${subscribedCourses.length}</div><div class="label">📚 الكورسات</div></div>
-                                <div class="stat-card"><div class="number">${completionPercent}%</div><div class="label">📈 نسبة الإنجاز</div></div>
-                                <div class="stat-card"><div class="number">${atoms}</div><div class="label">⚛️ الذرات</div></div>
+                                <div class="stat-card"><div class="number">${Object.keys(userCourseProgress).length}</div><div class="label">🔥 الأنشطة</div></div>
                             </div>
 
                             ${subscribedCourses.length > 0 ? `
                                 <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:8px;">📚 كورساتي</h3>
-                                <div class="dashboard-courses-grid" style="margin-bottom:16px;">
+                                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;">
                                     ${subscribedCourses.map(c => `
                                         <div class="card" style="padding:14px;cursor:pointer;" onclick="APP.openCourse('${c.id}')">
-                                            <h4 style="font-weight:700;color:var(--text);font-size:0.9rem;word-break:break-word;">${escapeHtml(c.title)}</h4>
+                                            <h4 style="font-weight:700;color:var(--text);font-size:0.9rem;">${escapeHtml(c.title)}</h4>
                                             <span style="font-size:0.7rem;color:var(--success);">✔ مشترك</span>
                                         </div>
                                     `).join('')}
@@ -3255,180 +2832,11 @@
                                 </div>
                             `}
 
-                            <div class="dashboard-actions">
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
                                 <button class="btn-primary" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
                                 <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showExams()"><i class="fas fa-file-alt"></i> الامتحانات</button>
                                 <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showQuizzes()"><i class="fas fa-puzzle-piece"></i> الكويزات</button>
                                 <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showLeaderboard()"><i class="fas fa-trophy"></i> المتصدرين</button>
-                            </div>
-                        </div>
-                    `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function copyStudentCode(code) {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(code).then(() => {
-                    showToast('✅ تم نسخ كود الطالب بنجاح', false);
-                }).catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = code;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    showToast('✅ تم نسخ كود الطالب بنجاح', false);
-                });
-            } else {
-                const textarea = document.createElement('textarea');
-                textarea.value = code;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                showToast('✅ تم نسخ كود الطالب بنجاح', false);
-            }
-        }
-
-        // ============================================================
-        // PERFORMANCE ANALYSIS
-        // ============================================================
-        function showPerformanceAnalysis() {
-            if (!currentUser) {
-                showLoginOverlay();
-                return;
-            }
-
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const name = userData?.name || 'طالب';
-            const atoms = userData?.atoms || 0;
-            const profileImage = userData?.profileImage || null;
-
-            let watchedCount = 0;
-            let quizCompletedCount = 0;
-            let assignmentCompletedCount = 0;
-            let examCompletedCount = 0;
-            let totalScore = 0;
-            let scoresCount = 0;
-
-            Object.entries(userCourseProgress).forEach(([id, progress]) => {
-                if (progress.watched) watchedCount++;
-                if (progress.completed && progress.score !== undefined) {
-                    totalScore += progress.score || 0;
-                    scoresCount++;
-                }
-                if (progress.quizCompleted) quizCompletedCount++;
-                if (progress.assignmentCompleted) assignmentCompletedCount++;
-                if (progress.examCompleted) examCompletedCount++;
-            });
-
-            const avgScore = scoresCount > 0 ? Math.round(totalScore / scoresCount) : 0;
-            const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
-            const totalLessons = subscribedCourses.reduce((sum, c) => sum + (c.lessonsCount || 0), 0);
-            const completionPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
-
-            let performanceLevel = 'جيد';
-            let levelClass = 'good';
-            let performanceMessage = 'أنت في طريقك الصحيح، استمر في التعلم!';
-            let performanceAdvice = 'حاول مشاهدة المزيد من الفيديوهات وحل المزيد من الكويزات لتحسين مستواك.';
-            let strengths = [];
-            let weaknesses = [];
-
-            if (completionPercent >= 80 && avgScore >= 85 && atoms >= 200) {
-                performanceLevel = 'ممتاز جدًا';
-                levelClass = 'excellent';
-                performanceMessage = '🎉 أداءك رائع! أنت من أفضل الطلاب على المنصة.';
-                performanceAdvice = 'استمر في التميز وساعد زملائك في التعلم.';
-                strengths = ['نسبة إنجاز عالية', 'درجات ممتازة', 'عدد كبير من الذرات'];
-                weaknesses = [];
-            } else if (completionPercent >= 60 && avgScore >= 70 && atoms >= 100) {
-                performanceLevel = 'جيد جدًا';
-                levelClass = 'good';
-                performanceMessage = '👏 أداءك ممتاز، أنت على الطريق الصحيح.';
-                performanceAdvice = 'ركز على حل المزيد من الامتحانات لتعزيز مستواك.';
-                strengths = ['نسبة إنجاز جيدة', 'درجات جيدة'];
-                weaknesses = ['قلل من عدد الكويزات المكتملة'];
-            } else if (completionPercent >= 30 && avgScore >= 50) {
-                performanceLevel = 'جيد';
-                levelClass = 'fair';
-                performanceMessage = '📚 بداية جيدة، استمر في التعلم.';
-                performanceAdvice = 'احرص على مشاهدة جميع الفيديوهات وحل الواجبات.';
-                strengths = ['بدأت في التعلم', 'لديك أساسيات جيدة'];
-                weaknesses = ['نسبة إنجاز منخفضة', 'درجات تحتاج تحسين'];
-            } else {
-                performanceLevel = 'يحتاج إلى تحسين';
-                levelClass = 'need-improve';
-                performanceMessage = '💪 لا تستسلم! كلنا بدأنا من الصفر.';
-                performanceAdvice = 'ابدأ بمشاهدة الفيديوهات من البداية وحل الكويزات البسيطة.';
-                strengths = ['لديك الرغبة في التعلم'];
-                weaknesses = ['نسبة إنجاز منخفضة', 'قليل من الذرات', 'درجات منخفضة'];
-            }
-
-            const avatarHtml = profileImage ?
-                `<img src="${profileImage}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
-                (name || 'U')[0].toUpperCase();
-
-            main.innerHTML = `
-                        <div style="max-width:900px;margin:0 auto;padding:20px;">
-                            <button class="btn-outline btn-sm" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة للحساب</button>
-
-                            <div style="text-align:center;margin:16px 0;">
-                                <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);">📊 تحليل مستواك</h2>
-                                <p style="color:var(--text2);">تقرير مفصل عن أدائك على المنصة</p>
-                            </div>
-
-                            <div style="display:flex;align-items:center;gap:16px;background:var(--bg);border-radius:var(--radius);padding:16px 20px;margin-bottom:16px;flex-wrap:wrap;">
-                                <div style="width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--primary);color:#fff;font-size:1.5rem;font-weight:700;overflow:hidden;flex-shrink:0;">${avatarHtml}</div>
-                                <div>
-                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);word-break:break-word;">${escapeHtml(name)}</h3>
-                                    <p style="font-size:0.85rem;color:var(--text2);">⚛️ ${atoms} ذرة</p>
-                                </div>
-                            </div>
-
-                            <div class="performance-card">
-                                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                                    <span style="font-weight:700;font-size:1.1rem;color:var(--text);">مستوى الأداء</span>
-                                    <span class="level-badge ${levelClass}">${performanceLevel}</span>
-                                </div>
-                                <p style="margin-top:8px;color:var(--text);">${performanceMessage}</p>
-                            </div>
-
-                            <div class="performance-stats" style="margin-bottom:16px;">
-                                <div class="stat-card"><div class="number">${completionPercent}%</div><div class="label">📈 نسبة الإنجاز</div></div>
-                                <div class="stat-card"><div class="number">${watchedCount}</div><div class="label">🎬 فيديوهات شاهدتها</div></div>
-                                <div class="stat-card"><div class="number">${avgScore}%</div><div class="label">⭐ متوسط الدرجات</div></div>
-                                <div class="stat-card"><div class="number">${examCompletedCount + quizCompletedCount}</div><div class="label">📝 اختبارات مكتملة</div></div>
-                            </div>
-
-                            ${strengths.length > 0 ? `
-                                <div class="performance-card" style="border-color:var(--success);">
-                                    <h4 style="font-weight:700;color:var(--success);margin-bottom:6px;">✅ نقاط القوة</h4>
-                                    <ul style="list-style:disc;padding-right:20px;color:var(--text);">
-                                        ${strengths.map(s => `<li>${s}</li>`).join('')}
-                                    </ul>
-                                </div>
-                            ` : ''}
-
-                            ${weaknesses.length > 0 ? `
-                                <div class="performance-card" style="border-color:var(--danger);">
-                                    <h4 style="font-weight:700;color:var(--danger);margin-bottom:6px;">⚠️ نقاط الضعف</h4>
-                                    <ul style="list-style:disc;padding-right:20px;color:var(--text);">
-                                        ${weaknesses.map(w => `<li>${w}</li>`).join('')}
-                                    </ul>
-                                </div>
-                            ` : ''}
-
-                            <div class="performance-card">
-                                <h4 style="font-weight:700;color:var(--primary);margin-bottom:6px;">💡 نصائح للتحسين</h4>
-                                <p style="color:var(--text);">${performanceAdvice}</p>
-                            </div>
-
-                            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
-                                <button class="btn-primary" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> استكشف الكورسات</button>
-                                <button class="btn-outline" onclick="APP.showExams()"><i class="fas fa-file-alt"></i> حل امتحانات</button>
-                                <button class="btn-outline" onclick="APP.showQuizzes()"><i class="fas fa-puzzle-piece"></i> حل كويزات</button>
                             </div>
                         </div>
                     `;
@@ -3523,8 +2931,13 @@
             updateUIForAuth(user);
 
             if (user) {
+                // Cleanup old listeners
+                if (userSubsUnsub) { userSubsUnsub();
+                    userSubsUnsub = null; }
+
                 loadUserData(user.uid);
-                loadUserSubscriptions(user.uid);
+                userSubsUnsub = loadUserSubscriptions(user.uid);
+                loadUserProgress(user.uid);
                 loadCourses();
                 loadLeaderboard();
                 loadGeneralExams();
@@ -3597,13 +3010,10 @@
             openGeneralQuiz,
             showLeaderboard,
             showDashboard,
-            showPerformanceAnalysis,
             showPrivacy,
             showTerms,
             toast: showToast,
-            escapeHtml,
-            uploadProfileImage,
-            copyStudentCode
+            escapeHtml
         };
 
         // ============================================================
@@ -3611,15 +3021,11 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('✅ Yalla Chemistry Platform v3.2 - Fully Responsive + Fixed All Issues');
-            console.log('✅ Profile Image Upload Working');
-            console.log('✅ Student Code Generation Working');
-            console.log('✅ Copy Code Working');
-            console.log('✅ Real Data Dashboard');
-            console.log('✅ All Firebase config preserved');
-            console.log('✅ Dark/Light mode working');
-            console.log('✅ Guest/User separation working');
-            console.log('✅ Fully Responsive for all devices');
+            console.log('✅ Yalla Chemistry Platform v4.0 - Fixed & Enhanced');
+            console.log('✅ All listeners are now realtime with onSnapshot');
+            console.log('✅ All CRUD operations update the UI instantly');
+            console.log('✅ Dashboard, Courses, Exams, Quizzes are all realtime');
+            console.log('✅ Leaderboard updates in realtime');
         }
 
         if (document.readyState === 'loading') {
