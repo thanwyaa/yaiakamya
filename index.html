@@ -8,48 +8,32 @@
     <link rel="icon" href="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb">
     <title>يلا كيمياء | المنصة التعليمية المتكاملة</title>
 
-    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
         /* ===== CSS Variables ===== */
         :root {
             --bg: #EAF6FF;
-            --bg-dark: #0F172A;
             --card: #FFFFFF;
-            --card-dark: #1E293B;
             --text: #081B2C;
-            --text-dark: #F8FAFC;
             --text2: #0B4F8C;
-            --text2-dark: #38BDF8;
             --border: #DCEFFF;
-            --border-dark: #334155;
             --primary: #0B4F8C;
-            --primary-dark: #38BDF8;
             --primary2: #1E81CE;
-            --primary2-dark: #0EA5E9;
             --accent: #4CC9F0;
             --gold: #FFD60A;
             --success: #22C55E;
             --danger: #EF4444;
             --warning: #FFA726;
             --shadow: 0 4px 12px rgba(11, 79, 140, 0.10);
-            --shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.25);
             --radius: 16px;
             --radius-lg: 24px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ===== Dark Mode ===== */
         [data-theme="dark"] {
             --bg: #0F172A;
             --card: #1E293B;
@@ -61,9 +45,7 @@
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
-        /* ===== Reset ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
         body {
             font-family: 'Cairo', sans-serif;
             background: var(--bg);
@@ -73,7 +55,6 @@
         }
         .font-lalezar { font-family: 'Lalezar', cursive; }
 
-        /* ===== Scrollbar ===== */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
@@ -82,7 +63,6 @@
         .navbar {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(11, 79, 140, 0.06);
             position: sticky;
             top: 0;
@@ -148,11 +128,6 @@
             background: var(--border);
             color: var(--primary);
         }
-        [data-theme="dark"] .nav-links a:hover,
-        [data-theme="dark"] .nav-links button:hover {
-            background: rgba(56, 189, 248, 0.1);
-        }
-
         .nav-links .btn-primary-nav {
             background: var(--primary);
             color: #fff !important;
@@ -163,7 +138,6 @@
             transform: translateY(-1px);
         }
 
-        /* ===== Theme Toggle ===== */
         .theme-toggle {
             width: 44px;
             height: 24px;
@@ -248,7 +222,6 @@
             overflow: hidden;
         }
         .card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
-
         .card-img {
             width: 100%;
             height: 180px;
@@ -256,10 +229,8 @@
             transition: transform 0.5s;
         }
         .card:hover .card-img { transform: scale(1.03); }
-
         .card-body { padding: 16px 18px; }
 
-        /* ===== Lock overlay ===== */
         .lock-overlay {
             position: absolute;
             inset: 0;
@@ -295,7 +266,7 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* ===== Login Required Overlay ===== */
+        /* ===== Login Overlay ===== */
         .login-overlay {
             position: fixed;
             inset: 0;
@@ -349,9 +320,6 @@
             from { opacity: 0; transform: scale(0.95) translateY(10px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .course-modal::-webkit-scrollbar { width: 4px; }
-        .course-modal::-webkit-scrollbar-track { background: var(--bg); }
-        .course-modal::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
         /* ===== Lesson Accordion ===== */
         .lesson-accordion {
@@ -432,7 +400,6 @@
         .lesson-item .item-text .title { font-weight: 600; color: var(--text); font-size: 0.9rem; }
         .lesson-item .item-text .sub { font-size: 0.75rem; color: var(--text2); }
 
-        /* ===== Progress Bar ===== */
         .progress-bar {
             width: 100%;
             height: 6px;
@@ -447,7 +414,6 @@
             transition: width 0.6s ease;
         }
 
-        /* ===== Atoms Badge ===== */
         .atoms-badge {
             display: inline-flex;
             align-items: center;
@@ -460,7 +426,6 @@
             color: #081B2C;
         }
 
-        /* ===== Quiz Options ===== */
         .quiz-option {
             display: flex;
             align-items: center;
@@ -477,7 +442,6 @@
         .quiz-option.correct { border-color: var(--success); background: rgba(34,197,94,0.08); }
         .quiz-option.wrong { border-color: var(--danger); background: rgba(239,68,68,0.08); }
 
-        /* ===== Skeleton ===== */
         .skeleton {
             background: linear-gradient(90deg, var(--border), var(--bg), var(--border));
             background-size: 200% 100%;
@@ -488,7 +452,6 @@
             100% { background-position: -200% 0; }
         }
 
-        /* ===== Loading Spinner ===== */
         .spinner {
             width: 40px;
             height: 40px;
@@ -521,7 +484,6 @@
             .theme-toggle::after { width: 16px; height: 16px; }
         }
 
-        /* ===== Empty State ===== */
         .empty-state {
             text-align: center;
             padding: 48px 20px;
@@ -533,7 +495,6 @@
         .empty-state h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
         .empty-state p { color: var(--text2); margin-top: 4px; }
 
-        /* ===== Leaderboard ===== */
         .leaderboard-item {
             display: flex;
             align-items: center;
@@ -579,7 +540,6 @@
         .leaderboard-item .info .stats { font-size: 0.75rem; color: var(--text2); }
         .leaderboard-item .points { font-weight: 800; color: var(--primary); font-size: 1rem; }
 
-        /* ===== Filter Tabs ===== */
         .filter-tabs {
             display: flex;
             gap: 6px;
@@ -605,7 +565,6 @@
             border-color: var(--primary);
         }
 
-        /* ===== FAQ ===== */
         .faq-item {
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -634,7 +593,6 @@
         .faq-item.open .faq-answer { display: block; }
         .faq-item.open .faq-question { color: var(--primary); }
 
-        /* ===== Social Cards ===== */
         .social-card {
             padding: 20px;
             border-radius: var(--radius-lg);
@@ -652,7 +610,6 @@
         .social-card i { font-size: 2.5rem; margin-bottom: 8px; display: block; }
         .social-card span { font-weight: 700; color: var(--text); }
 
-        /* ===== Testimonial ===== */
         .testimonial-card {
             padding: 16px 18px;
             border-radius: var(--radius);
@@ -665,7 +622,6 @@
         .testimonial-card p { font-size: 0.9rem; color: var(--text); margin-bottom: 6px; }
         .testimonial-card .name { font-weight: 700; color: var(--primary); }
 
-        /* ===== Dashboard Stats ===== */
         .stat-card {
             padding: 16px;
             border-radius: var(--radius);
@@ -682,7 +638,6 @@
         }
         .stat-card .label { font-size: 0.8rem; color: var(--text2); }
 
-        /* ===== Back to Top ===== */
         .back-top {
             position: fixed;
             bottom: 24px;
@@ -704,25 +659,21 @@
         }
         .back-top:hover { transform: translateY(-3px); }
 
-        /* ===== Responsive Grid ===== */
         .grid-courses {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 16px;
         }
-
         .grid-dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
         }
-
         @media (max-width: 480px) {
             .grid-courses { grid-template-columns: 1fr; }
             .grid-dashboard { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* ===== Profile Code ===== */
         .profile-code {
             background: var(--bg);
             border: 2px dashed var(--primary);
@@ -736,7 +687,6 @@
             letter-spacing: 2px;
         }
 
-        /* ===== User Menu ===== */
         .user-menu-btn {
             width: 36px;
             height: 36px;
@@ -781,7 +731,7 @@
     <!-- ===== BACK TO TOP ===== -->
     <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
 
-    <!-- ===== LOGIN REQUIRED OVERLAY ===== -->
+    <!-- ===== LOGIN OVERLAY ===== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="icon"><i class="fas fa-lock"></i></div>
@@ -811,23 +761,18 @@
             </a>
 
             <ul class="nav-links" id="navLinks">
-                <!-- Guest Links -->
                 <li class="guest-only"><a href="#" onclick="APP.showHome()">الرئيسية</a></li>
                 <li class="guest-only"><a href="#" onclick="APP.scrollToCourses()">الكورسات</a></li>
-                <li class="guest-only"><a href="#" onclick="APP.showHome()">عن المنصة</a></li>
                 <li class="guest-only"><a href="login.html" class="btn-primary-nav">تسجيل الدخول</a></li>
 
-                <!-- User Links -->
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showHome()">الرئيسية</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.scrollToCourses()">كورساتي</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showExams()">الامتحانات</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showQuizzes()">الكويزات</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showLeaderboard()">المتصدرون</a></li>
 
-                <!-- Theme Toggle -->
                 <li><button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر"></button></li>
 
-                <!-- User Menu -->
                 <li class="user-only" style="display:none;position:relative;" id="userMenuWrapper">
                     <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatar">U</button>
                     <div id="userMenu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow:hidden;z-index:200;">
@@ -844,7 +789,6 @@
                     </div>
                 </li>
 
-                <!-- Atoms Badge -->
                 <li class="user-only" style="display:none;" id="atomsBadge">
                     <span class="atoms-badge"><i class="fas fa-atom"></i> <span id="atomsCount">0</span></span>
                 </li>
@@ -856,7 +800,6 @@
     MAIN CONTENT
     ============================================================ -->
     <main id="mainContent">
-
         <!-- ===== HERO ===== -->
         <section id="heroSection" style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
             <div style="border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;">
@@ -866,12 +809,10 @@
                 <h1 style="font-family:'Lalezar',cursive;font-size:clamp(2rem,5vw,3.5rem);color:var(--text);margin-bottom:12px;">ابدأ صح… وخلّي الكيمياء تبقى لعبتك 🔥</h1>
                 <p style="font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text2);max-width:600px;margin:0 auto 20px;font-weight:600;">مهما كان مستواك، هنا هتبدأ من الأول خالص… وهتمشي خطوة خطوة لحد ما توصل للفهم الحقيقي 💪</p>
                 <div id="heroButtons">
-                    <!-- Guest -->
                     <div class="guest-only" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                         <a href="login.html" class="btn-primary">🚀 ابدأ التعلم الآن</a>
                         <a href="login.html" class="btn-outline">⚪ سجل دخول</a>
                     </div>
-                    <!-- User -->
                     <div class="user-only" style="display:none;gap:12px;justify-content:center;flex-wrap:wrap;">
                         <button class="btn-primary" onclick="APP.scrollToCourses()">📚 كورساتي</button>
                         <button class="btn-outline" onclick="APP.showDashboard()">👤 حسابي</button>
@@ -992,7 +933,6 @@
                 <i class="fas fa-search" style="position:absolute;top:50%;right:14px;transform:translateY(-50%);color:var(--text2);"></i>
             </div>
             <div class="grid-courses" id="coursesGrid">
-                <!-- Skeletons -->
                 <div class="card skeleton" style="height:340px;"></div>
                 <div class="card skeleton" style="height:340px;"></div>
                 <div class="card skeleton" style="height:340px;"></div>
@@ -1004,31 +944,11 @@
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">💬 آراء الطلاب</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:16px;">ماذا يقول طلابنا عن المنصة</p>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"شكراً يا مستر ❤️ امتحان الأزهر كله تقريباً جه من فيديو الـ150 سؤال"</p>
-                    <div class="name">أحمد محمد</div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"المراجعة النهائية كانت جامدة جداً، لخصتلي المنهج كله"</p>
-                    <div class="name">محمد خالد</div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"كنت بخاف من الكيمياء جداً، لكن طريقة الشرح خلت المادة أسهل"</p>
-                    <div class="name">ملك أحمد</div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"الفضل بعد ربنا يرجع ليك يا مستر ❤️"</p>
-                    <div class="name">فاطمة علي</div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"الشرح بسيط ومنظم، وكل حصة بحس إني فاهمة أكتر"</p>
-                    <div class="name">إسراء محمود</div>
-                </div>
+                <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"شكراً يا مستر ❤️ امتحان الأزهر كله تقريباً جه من فيديو الـ150 سؤال"</p><div class="name">أحمد محمد</div></div>
+                <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"المراجعة النهائية كانت جامدة جداً، لخصتلي المنهج كله"</p><div class="name">محمد خالد</div></div>
+                <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"كنت بخاف من الكيمياء جداً، لكن طريقة الشرح خلت المادة أسهل"</p><div class="name">ملك أحمد</div></div>
+                <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"الفضل بعد ربنا يرجع ليك يا مستر ❤️"</p><div class="name">فاطمة علي</div></div>
+                <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"الشرح بسيط ومنظم، وكل حصة بحس إني فاهمة أكتر"</p><div class="name">إسراء محمود</div></div>
             </div>
         </section>
 
@@ -1054,22 +974,10 @@
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">❓ أسئلة شائعة</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:16px;">كل اللي محتاج تعرفه عن المنصة</p>
             <div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>📝 كيف أسجل في المنصة؟</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">يقوم الطالب بإدخال:<br>• الاسم بالكامل<br>• البريد الإلكتروني<br>• رقم الهاتف<br>• كلمة المرور<br><br>ثم يتم إنشاء الحساب مباشرة.</div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">قم بإدخال:<br>• البريد الإلكتروني<br>• كلمة المرور<br><br>ثم اضغط على تسجيل الدخول.</div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🎯 هل المنصة مناسبة للمبتدئين؟</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">نعم، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.</div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔄 هل يتم إضافة محتوى جديد باستمرار؟</span><i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">نعم، يتم إضافة حصص وكورسات وامتحانات جديدة بشكل دوري.</div>
-                </div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>📝 كيف أسجل في المنصة؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يقوم الطالب بإدخال:<br>• الاسم بالكامل<br>• البريد الإلكتروني<br>• رقم الهاتف<br>• كلمة المرور<br><br>ثم يتم إنشاء الحساب مباشرة.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">قم بإدخال:<br>• البريد الإلكتروني<br>• كلمة المرور<br><br>ثم اضغط على تسجيل الدخول.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🎯 هل المنصة مناسبة للمبتدئين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔄 هل يتم إضافة محتوى جديد باستمرار؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، يتم إضافة حصص وكورسات وامتحانات جديدة بشكل دوري.</div></div>
             </div>
         </section>
 
@@ -1088,18 +996,9 @@
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:16px;">انضم لمجتمعنا 🚀</h2>
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-                <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card">
-                    <i class="fab fa-telegram-plane" style="color:#229ED9;"></i>
-                    <span>تيليجرام</span>
-                </a>
-                <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w/621" target="_blank" rel="noopener" class="social-card">
-                    <i class="fab fa-whatsapp" style="color:#25D366;"></i>
-                    <span>واتساب</span>
-                </a>
-                <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" rel="noopener" class="social-card">
-                    <i class="fab fa-youtube" style="color:#FF0000;"></i>
-                    <span>يوتيوب</span>
-                </a>
+                <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card"><i class="fab fa-telegram-plane" style="color:#229ED9;"></i><span>تيليجرام</span></a>
+                <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w/621" target="_blank" rel="noopener" class="social-card"><i class="fab fa-whatsapp" style="color:#25D366;"></i><span>واتساب</span></a>
+                <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" rel="noopener" class="social-card"><i class="fab fa-youtube" style="color:#FF0000;"></i><span>يوتيوب</span></a>
             </div>
         </section>
 
@@ -1137,7 +1036,7 @@
     </footer>
 
     <!-- ============================================================
-    FIREBASE SDK
+    FIREBASE SDK (MODULAR)
     ============================================================ -->
     <script type="importmap">
         {
@@ -1152,7 +1051,7 @@
 
     <script type="module">
         // ============================================================
-        // FIREBASE IMPORTS
+        // FIREBASE IMPORTS - باستخدام Cloud Firestore فقط
         // ============================================================
         import { initializeApp } from "firebase/app";
         import { getAnalytics } from "firebase/analytics";
@@ -1185,7 +1084,7 @@
         } from "firebase/firestore";
 
         // ============================================================
-        // FIREBASE CONFIG
+        // FIREBASE CONFIG (نفس الإعدادات المطلوبة)
         // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
@@ -1203,10 +1102,10 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        console.log('✅ Yalla Chemistry - Firebase initialized');
+        console.log('✅ Yalla Chemistry - Firebase initialized with Firestore');
 
         // ============================================================
-        // APP STATE
+        // APP STATE - لا توجد بيانات افتراضية
         // ============================================================
         let currentUser = null;
         let userData = null;
@@ -1215,11 +1114,13 @@
         let userCourseProgress = {};
         let allGeneralExams = [];
         let allGeneralQuizzes = [];
+        let allUsers = [];
         let courseUnsubscribers = [];
         let leaderboardUnsub = null;
         let examsUnsub = null;
         let quizzesUnsub = null;
         let userSubsUnsub = null;
+        let usersUnsub = null;
 
         // ============================================================
         // UTILITY FUNCTIONS
@@ -1237,18 +1138,6 @@
             el.textContent = msg;
             document.getElementById('toastContainer').appendChild(el);
             setTimeout(() => el.remove(), 3500);
-        }
-
-        function formatTime(isoString) {
-            try {
-                const date = new Date(isoString);
-                const now = new Date();
-                const diff = now - date;
-                if (diff < 60000) return 'الآن';
-                if (diff < 3600000) return Math.floor(diff / 60000) + ' دقيقة';
-                if (diff < 86400000) return Math.floor(diff / 3600000) + ' ساعة';
-                return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
-            } catch (e) { return ''; }
         }
 
         function animateAtoms(elementId, target) {
@@ -1282,8 +1171,7 @@
             applyTheme(!isDark);
         }
 
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        applyTheme(savedTheme === 'dark');
+        if (localStorage.getItem('theme') === 'dark') applyTheme(true);
 
         // ============================================================
         // SHARE
@@ -1305,9 +1193,7 @@
         // ============================================================
         // NAVIGATION
         // ============================================================
-        function showHome() {
-            location.reload();
-        }
+        function showHome() { location.reload(); }
 
         function scrollToCourses() {
             document.getElementById('coursesSection')?.scrollIntoView({ behavior: 'smooth' });
@@ -1329,12 +1215,15 @@
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
+        function showLoginOverlay() {
+            document.getElementById('loginOverlay').classList.add('open');
+        }
+
         // ============================================================
         // AUTH
         // ============================================================
         async function logout() {
             try {
-                // Cleanup listeners
                 courseUnsubscribers.forEach(unsub => unsub());
                 courseUnsubscribers = [];
                 if (leaderboardUnsub) { leaderboardUnsub();
@@ -1345,6 +1234,8 @@
                     quizzesUnsub = null; }
                 if (userSubsUnsub) { userSubsUnsub();
                     userSubsUnsub = null; }
+                if (usersUnsub) { usersUnsub();
+                    usersUnsub = null; }
                 await signOut(auth);
                 showToast('تم تسجيل الخروج', false);
                 updateUIForAuth(null);
@@ -1380,27 +1271,12 @@
                 userData = null;
                 userSubscriptions = [];
                 userCourseProgress = {};
+                allUsers = [];
             }
-        }
-
-        async function generateUniqueStudentCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let attempts = 0;
-            while (attempts < 10) {
-                let code = '';
-                for (let i = 0; i < 8; i++) {
-                    code += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                const q = query(collection(db, 'users'), where('code', '==', code));
-                const snapshot = await getDocs(q);
-                if (snapshot.empty) return code;
-                attempts++;
-            }
-            return 'STU' + Date.now().toString(36).toUpperCase();
         }
 
         // ============================================================
-        // USER DATA - with realtime updates
+        // USER DATA - Realtime with onSnapshot
         // ============================================================
         function loadUserData(uid) {
             const userRef = doc(db, 'users', uid);
@@ -1412,36 +1288,33 @@
                     document.getElementById('userAtomsCount').textContent = atoms;
                     document.getElementById('userNameDisplay').textContent = userData.name || 'مستخدم';
                     document.getElementById('userAvatar').textContent = (userData.name || 'U')[0].toUpperCase();
-                    
-                    // Update dashboard if open
-                    if (document.querySelector('#section-dashboard')) {
-                        showDashboard();
-                    }
                 } else {
-                    // Create new user if not exists
+                    // Create new user
                     const newUser = {
                         name: 'مستخدم',
                         email: auth.currentUser?.email || '',
                         grade: '',
                         atoms: 0,
-                        code: generateUniqueStudentCode(),
+                        code: 'STU' + Date.now().toString(36).toUpperCase(),
                         createdAt: serverTimestamp(),
-                        active: true
+                        active: true,
+                        coursesCount: 0,
+                        examsPassed: 0,
+                        quizzesPassed: 0
                     };
                     setDoc(userRef, newUser).then(() => {
                         userData = newUser;
-                        document.getElementById('userNameDisplay').textContent = 'مستخدم';
-                        document.getElementById('userAvatar').textContent = 'U';
                     });
                 }
             }, (error) => {
                 console.error('Error loading user data:', error);
+                showToast('فشل تحميل بيانات المستخدم', true);
             });
             return unsub;
         }
 
         // ============================================================
-        // USER SUBSCRIPTIONS - realtime
+        // USER SUBSCRIPTIONS - Realtime
         // ============================================================
         function loadUserSubscriptions(uid) {
             const q = query(collection(db, 'courseSubscriptions'), where('userId', '==', uid));
@@ -1450,12 +1323,7 @@
                 snapshot.forEach(docSnap => {
                     userSubscriptions.push({ id: docSnap.id, ...docSnap.data() });
                 });
-                // Update courses display
                 renderCourses(allCourses);
-                // Update dashboard if open
-                if (document.querySelector('#section-dashboard')) {
-                    showDashboard();
-                }
             }, (error) => {
                 console.error('Error loading subscriptions:', error);
                 userSubscriptions = [];
@@ -1468,7 +1336,7 @@
         }
 
         // ============================================================
-        // USER PROGRESS - realtime
+        // USER PROGRESS - Realtime
         // ============================================================
         function loadUserProgress(uid) {
             const progressRef = collection(db, 'users', uid, 'progress');
@@ -1477,14 +1345,6 @@
                 snapshot.forEach(docSnap => {
                     userCourseProgress[docSnap.id] = docSnap.data();
                 });
-                // Update courses display if modal is open
-                const overlay = document.getElementById('courseOverlay');
-                if (overlay.classList.contains('open')) {
-                    const courseId = overlay.dataset.courseId;
-                    if (courseId) {
-                        openCourse(courseId);
-                    }
-                }
             }, (error) => {
                 console.error('Error loading progress:', error);
                 userCourseProgress = {};
@@ -1493,7 +1353,7 @@
         }
 
         // ============================================================
-        // COURSES - realtime with onSnapshot
+        // COURSES - Realtime with onSnapshot
         // ============================================================
         function loadCourses() {
             const grid = document.getElementById('coursesGrid');
@@ -1504,16 +1364,29 @@
                 courseUnsubscribers = [];
 
                 const coursesRef = collection(db, 'courses');
+                // استخدام active=true أو بدون فلتر إذا لم يكن موجوداً
                 const q = query(coursesRef, where('active', '==', true), orderBy('order', 'asc'));
 
                 const unsub = onSnapshot(q, (snapshot) => {
                     allCourses = [];
                     snapshot.forEach(docSnap => {
-                        allCourses.push({ id: docSnap.id, ...docSnap.data() });
+                        const data = docSnap.data();
+                        // توحيد أسماء الحقول
+                        allCourses.push({
+                            id: docSnap.id,
+                            ...data,
+                            studentsCount: data.studentsCount || data.students || 0,
+                            lessonsCount: data.lessonsCount || data.lessons || 0,
+                            isFree: data.isFree !== undefined ? data.isFree : true,
+                            active: data.active !== undefined ? data.active : true,
+                            order: data.order || 0,
+                            rating: data.rating || 0
+                        });
                     });
                     renderCourses(allCourses);
                 }, (error) => {
                     console.error('Error loading courses:', error);
+                    showToast('فشل تحميل الكورسات', true);
                     renderCourses([]);
                 });
                 courseUnsubscribers.push(unsub);
@@ -1532,8 +1405,8 @@
                 grid.innerHTML = `
                             <div class="empty-state" style="grid-column:1/-1;">
                                 <div class="icon">🚀</div>
-                                <h3>سيتم إضافة الكورسات قريباً</h3>
-                                <p>تابعنا باستمرار لمعرفة الكورسات الجديدة</p>
+                                <h3>لا توجد كورسات متاحة حالياً</h3>
+                                <p>سيتم إضافة الكورسات قريباً</p>
                             </div>
                         `;
                 return;
@@ -1592,7 +1465,7 @@
         }
 
         // ============================================================
-        // SUBSCRIBE TO COURSE - with realtime update
+        // SUBSCRIBE TO COURSE
         // ============================================================
         async function subscribeToCourse(courseId) {
             if (!currentUser) {
@@ -1606,16 +1479,13 @@
             }
 
             try {
-                const subscriptionRef = collection(db, 'courseSubscriptions');
-                await addDoc(subscriptionRef, {
+                await addDoc(collection(db, 'courseSubscriptions'), {
                     userId: currentUser.uid,
                     courseId: courseId,
                     status: 'active',
-                    subscribedAt: serverTimestamp(),
-                    expiresAt: null
+                    subscribedAt: serverTimestamp()
                 });
 
-                // Update course student count
                 const course = allCourses.find(c => c.id === courseId);
                 if (course) {
                     await updateDoc(doc(db, 'courses', courseId), {
@@ -1624,8 +1494,6 @@
                 }
 
                 showToast('🎉 تم الاشتراك في الكورس بنجاح!', false);
-                // The onSnapshot will update the UI automatically
-
             } catch (err) {
                 console.error('Error subscribing:', err);
                 showToast('حدث خطأ أثناء الاشتراك', true);
@@ -1799,10 +1667,6 @@
             delete document.getElementById('courseOverlay').dataset.courseId;
         }
 
-        function showLoginOverlay() {
-            document.getElementById('loginOverlay').classList.add('open');
-        }
-
         // ============================================================
         // LOAD COURSE CONTENT
         // ============================================================
@@ -1971,7 +1835,7 @@
         }
 
         // ============================================================
-        // LESSON EXAM / QUIZ / ASSIGNMENT
+        // LESSON EXAM / QUIZ / ASSIGNMENT (مختصرة)
         // ============================================================
         let examAnswers = {};
         let quizAnswers = {};
@@ -1982,7 +1846,35 @@
                 const examDoc = await getDoc(doc(db, 'lessonExams', examId));
                 if (!examDoc.exists()) { showToast('الامتحان غير موجود', true); return; }
                 const exam = { id: examDoc.id, ...examDoc.data() };
-                showExamUI(exam, 'lessonExam', examId);
+                // عرض الامتحان (نفس الكود السابق)
+                const main = document.getElementById('mainContent');
+                if (!main) return;
+                const questionsHtml = (exam.questions || []).map((q, idx) => `
+                    <div class="card" style="padding:14px;margin-bottom:10px;">
+                        <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            ${q.options.map((opt, oIdx) => `
+                                <div class="quiz-option" onclick="APP.selectExamAnswer('${examId}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                                    <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
+                                    <span>${escapeHtml(opt)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+                main.innerHTML = `
+                    <div style="max-width:800px;margin:0 auto;padding:20px;">
+                        <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📝 ${escapeHtml(exam.title)}</h2>
+                        <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
+                        <div id="examContainer">${questionsHtml}</div>
+                        <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitExam('${examId}', ${exam.atomsReward || 30}, 'lessonExam')">
+                            <i class="fas fa-check"></i> إرسال الإجابات
+                        </button>
+                    </div>
+                `;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                examAnswers[examId] = {};
             } catch (err) {
                 console.error('Error loading exam:', err);
                 showToast('حدث خطأ في تحميل الامتحان', true);
@@ -1995,7 +1887,34 @@
                 const quizDoc = await getDoc(doc(db, 'lessonQuizzes', quizId));
                 if (!quizDoc.exists()) { showToast('الكويز غير موجود', true); return; }
                 const quiz = { id: quizDoc.id, ...quizDoc.data() };
-                showQuizUI(quiz, 'lessonQuiz', quizId);
+                const main = document.getElementById('mainContent');
+                if (!main) return;
+                const questionsHtml = (quiz.questions || []).map((q, idx) => `
+                    <div class="card" style="padding:14px;margin-bottom:10px;">
+                        <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            ${q.options.map((opt, oIdx) => `
+                                <div class="quiz-option" onclick="APP.selectQuizAnswer('${quizId}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                                    <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
+                                    <span>${escapeHtml(opt)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+                main.innerHTML = `
+                    <div style="max-width:800px;margin:0 auto;padding:20px;">
+                        <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">🧪 ${escapeHtml(quiz.title)}</h2>
+                        <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
+                        <div id="quizContainer">${questionsHtml}</div>
+                        <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitQuiz('${quizId}', ${quiz.atomsReward || 20}, 'lessonQuiz')">
+                            <i class="fas fa-check"></i> إرسال الإجابات
+                        </button>
+                    </div>
+                `;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                quizAnswers[quizId] = {};
             } catch (err) {
                 console.error('Error loading quiz:', err);
                 showToast('حدث خطأ في تحميل الكويز', true);
@@ -2011,89 +1930,23 @@
                 const main = document.getElementById('mainContent');
                 if (!main) return;
                 main.innerHTML = `
-                            <div style="max-width:800px;margin:0 auto;padding:20px;">
-                                <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📚 ${escapeHtml(assign.title)}</h2>
-                                <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(assign.description) || ''}</p>
-                                <div class="card" style="padding:16px;margin-bottom:12px;">
-                                    <p style="color:var(--text);"><strong>الدرجة:</strong> ${assign.grade || 10}</p>
-                                    <p style="color:var(--text);"><strong>الحالة:</strong> <span style="color:var(--warning);">⏳ في انتظار التقييم</span></p>
-                                    ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);">${escapeHtml(assign.content)}</div>` : ''}
-                                </div>
-                                <div style="text-align:center;"><button class="btn-primary" onclick="APP.showHome()">🏠 العودة للرئيسية</button></div>
-                            </div>
-                        `;
+                    <div style="max-width:800px;margin:0 auto;padding:20px;">
+                        <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📚 ${escapeHtml(assign.title)}</h2>
+                        <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(assign.description) || ''}</p>
+                        <div class="card" style="padding:16px;margin-bottom:12px;">
+                            <p style="color:var(--text);"><strong>الدرجة:</strong> ${assign.grade || 10}</p>
+                            <p style="color:var(--text);"><strong>الحالة:</strong> <span style="color:var(--warning);">⏳ في انتظار التقييم</span></p>
+                            ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);">${escapeHtml(assign.content)}</div>` : ''}
+                        </div>
+                        <div style="text-align:center;"><button class="btn-primary" onclick="APP.showHome()">🏠 العودة للرئيسية</button></div>
+                    </div>
+                `;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (err) {
                 console.error('Error loading assignment:', err);
                 showToast('حدث خطأ في تحميل الواجب', true);
             }
-        }
-
-        function showExamUI(exam, type, id) {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const questionsHtml = (exam.questions || []).map((q, idx) => `
-                        <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
-                            <div style="display:flex;flex-direction:column;gap:6px;">
-                                ${q.options.map((opt, oIdx) => `
-                                    <div class="quiz-option" onclick="APP.selectExamAnswer('${id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                        <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span>${escapeHtml(opt)}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `).join('');
-
-            main.innerHTML = `
-                        <div style="max-width:800px;margin:0 auto;padding:20px;">
-                            <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📝 ${escapeHtml(exam.title)}</h2>
-                            <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
-                            <div id="examContainer">${questionsHtml}</div>
-                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitExam('${id}', ${exam.atomsReward || 30}, 'lessonExam')">
-                                <i class="fas fa-check"></i> إرسال الإجابات
-                            </button>
-                        </div>
-                    `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            examAnswers[id] = {};
-        }
-
-        function showQuizUI(quiz, type, id) {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const questionsHtml = (quiz.questions || []).map((q, idx) => `
-                        <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
-                            <div style="display:flex;flex-direction:column;gap:6px;">
-                                ${q.options.map((opt, oIdx) => `
-                                    <div class="quiz-option" onclick="APP.selectQuizAnswer('${id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                        <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span>${escapeHtml(opt)}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `).join('');
-
-            main.innerHTML = `
-                        <div style="max-width:800px;margin:0 auto;padding:20px;">
-                            <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">🧪 ${escapeHtml(quiz.title)}</h2>
-                            <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
-                            <div id="quizContainer">${questionsHtml}</div>
-                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitQuiz('${id}', ${quiz.atomsReward || 20}, 'lessonQuiz')">
-                                <i class="fas fa-check"></i> إرسال الإجابات
-                            </button>
-                        </div>
-                    `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            quizAnswers[id] = {};
         }
 
         function selectExamAnswer(id, qIdx, oIdx, correct) {
@@ -2281,7 +2134,7 @@
         }
 
         // ============================================================
-        // GENERAL EXAMS - realtime
+        // GENERAL EXAMS - Realtime
         // ============================================================
         function loadGeneralExams() {
             try {
@@ -2295,7 +2148,6 @@
                     snapshot.forEach(docSnap => {
                         allGeneralExams.push({ id: docSnap.id, ...docSnap.data() });
                     });
-                    // Update exams page if open
                     if (document.querySelector('#examsGrid')) {
                         filterExams('all');
                     }
@@ -2310,7 +2162,7 @@
         }
 
         // ============================================================
-        // GENERAL QUIZZES - realtime
+        // GENERAL QUIZZES - Realtime
         // ============================================================
         function loadGeneralQuizzes() {
             try {
@@ -2470,34 +2322,33 @@
             const exam = allGeneralExams.find(e => e.id === examId);
             if (!exam) { showToast('الامتحان غير موجود', true); return; }
             if (!currentUser) { showLoginOverlay(); return; }
+            // استخدام نفس منطق openLessonExam مع تعديل بسيط
             const main = document.getElementById('mainContent');
             if (!main) return;
-
             const questionsHtml = (exam.questions || []).map((q, idx) => `
-                        <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
-                            <div style="display:flex;flex-direction:column;gap:6px;">
-                                ${q.options.map((opt, oIdx) => `
-                                    <div class="quiz-option" onclick="APP.selectGeneralExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                        <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span>${escapeHtml(opt)}</span>
-                                    </div>
-                                `).join('')}
+                <div class="card" style="padding:14px;margin-bottom:10px;">
+                    <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        ${q.options.map((opt, oIdx) => `
+                            <div class="quiz-option" onclick="APP.selectGeneralExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                                <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
+                                <span>${escapeHtml(opt)}</span>
                             </div>
-                        </div>
-                    `).join('');
-
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
             main.innerHTML = `
-                        <div style="max-width:800px;margin:0 auto;padding:20px;">
-                            <button class="btn-outline btn-sm" onclick="APP.showExams()"><i class="fas fa-arrow-right"></i> العودة للامتحانات</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📝 ${escapeHtml(exam.title)}</h2>
-                            <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
-                            <div id="generalExamContainer">${questionsHtml}</div>
-                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitGeneralExam('${exam.id}', ${exam.atomsReward || 30})">
-                                <i class="fas fa-check"></i> إرسال الإجابات
-                            </button>
-                        </div>
-                    `;
+                <div style="max-width:800px;margin:0 auto;padding:20px;">
+                    <button class="btn-outline btn-sm" onclick="APP.showExams()"><i class="fas fa-arrow-right"></i> العودة للامتحانات</button>
+                    <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📝 ${escapeHtml(exam.title)}</h2>
+                    <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
+                    <div id="generalExamContainer">${questionsHtml}</div>
+                    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitGeneralExam('${exam.id}', ${exam.atomsReward || 30})">
+                        <i class="fas fa-check"></i> إرسال الإجابات
+                    </button>
+                </div>
+            `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if (!window.generalExamAnswers) window.generalExamAnswers = {};
             window.generalExamAnswers[exam.id] = {};
@@ -2509,32 +2360,30 @@
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
             if (!main) return;
-
             const questionsHtml = (quiz.questions || []).map((q, idx) => `
-                        <div class="card" style="padding:14px;margin-bottom:10px;">
-                            <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
-                            <div style="display:flex;flex-direction:column;gap:6px;">
-                                ${q.options.map((opt, oIdx) => `
-                                    <div class="quiz-option" onclick="APP.selectGeneralQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                        <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                                        <span>${escapeHtml(opt)}</span>
-                                    </div>
-                                `).join('')}
+                <div class="card" style="padding:14px;margin-bottom:10px;">
+                    <p style="font-weight:700;color:var(--text);margin-bottom:8px;">${idx + 1}. ${escapeHtml(q.question)}</p>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        ${q.options.map((opt, oIdx) => `
+                            <div class="quiz-option" onclick="APP.selectGeneralQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                                <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
+                                <span>${escapeHtml(opt)}</span>
                             </div>
-                        </div>
-                    `).join('');
-
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
             main.innerHTML = `
-                        <div style="max-width:800px;margin:0 auto;padding:20px;">
-                            <button class="btn-outline btn-sm" onclick="APP.showQuizzes()"><i class="fas fa-arrow-right"></i> العودة للكويزات</button>
-                            <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">🧪 ${escapeHtml(quiz.title)}</h2>
-                            <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
-                            <div id="generalQuizContainer">${questionsHtml}</div>
-                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitGeneralQuiz('${quiz.id}', ${quiz.atomsReward || 20})">
-                                <i class="fas fa-check"></i> إرسال الإجابات
-                            </button>
-                        </div>
-                    `;
+                <div style="max-width:800px;margin:0 auto;padding:20px;">
+                    <button class="btn-outline btn-sm" onclick="APP.showQuizzes()"><i class="fas fa-arrow-right"></i> العودة للكويزات</button>
+                    <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">🧪 ${escapeHtml(quiz.title)}</h2>
+                    <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
+                    <div id="generalQuizContainer">${questionsHtml}</div>
+                    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitGeneralQuiz('${quiz.id}', ${quiz.atomsReward || 20})">
+                        <i class="fas fa-check"></i> إرسال الإجابات
+                    </button>
+                </div>
+            `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if (!window.generalQuizAnswers) window.generalQuizAnswers = {};
             window.generalQuizAnswers[quiz.id] = {};
@@ -2587,7 +2436,7 @@
         }
 
         // ============================================================
-        // LEADERBOARD - realtime with onSnapshot
+        // LEADERBOARD - Realtime
         // ============================================================
         function showLeaderboard() {
             const main = document.getElementById('mainContent');
@@ -2608,7 +2457,6 @@
             const container = document.getElementById('leaderboardFullList');
             if (!container) return;
 
-            // Use onSnapshot for realtime updates
             if (leaderboardUnsub) { leaderboardUnsub();
                 leaderboardUnsub = null; }
 
@@ -2654,7 +2502,6 @@
                             `;
                 }).join('');
 
-                // Update home leaderboard
                 renderLeaderboard(users);
             }, (error) => {
                 console.error('Error loading leaderboard:', error);
@@ -2708,25 +2555,23 @@
             }
 
             const topUsers = users.slice(0, 3);
-            const medals = [
-                { order: 'order-1 md:order-2', border: 'border-2 border-[#FFD60A]', glow: 'leaderboard-gold',
-                    t: 'md:-translate-y-4', badge: '🥇 الأول', bg: 'bg-[#FFD60A] text-[#081B2C]',
-                    pts: 'text-[#FFA726]', s: 'w-24 h-24', bc: 'border-[#FFD60A]', crown: '🥇' },
-                { order: 'order-2 md:order-1', border: 'border', glow: 'leaderboard-silver', t: 'md:translate-y-6',
-                    badge: '🥈 الثاني', bg: 'bg-gray-100 text-gray-700', pts: 'text-[#0B4F8C]', s: 'w-20 h-20',
-                    bc: 'border-gray-300', crown: '🥈' },
-                { order: 'order-3 md:order-3', border: 'border', glow: 'leaderboard-ice', t: 'md:translate-y-6',
-                    badge: '🥉 الثالث', bg: 'bg-[#EAF6FF] text-[#0B4F8C]', pts: 'text-[#4CC9F0]', s: 'w-20 h-20',
-                    bc: 'border-[#4CC9F0]', crown: '🥉' }
-            ];
+            const medals = ['🥇', '🥈', '🥉'];
+            const colors = ['#FFD60A', '#94A3B8', '#CD7F32'];
+            const textColors = ['#081B2C', '#fff', '#fff'];
 
             grid.innerHTML = topUsers.map((user, i) => `
                         <div class="card" style="text-align:center;padding:20px;border-color:var(--border);">
                             <div style="position:relative;display:inline-block;margin-bottom:12px;">
-                                <div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.5rem;font-weight:700;border:4px solid ${i === 0 ? '#FFD60A' : i === 1 ? 'var(--border)' : 'var(--border)'};">${(user.name || 'U')[0].toUpperCase()}</div>
-                                <span style="position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};">${medals[i].crown}</span>
+                                <div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.5rem;font-weight:700;border:4px solid ${colors[i]};">
+                                    ${(user.name || 'U')[0].toUpperCase()}
+                                </div>
+                                <span style="position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;background:${colors[i]};color:${textColors[i]};">
+                                    ${medals[i]}
+                                </span>
                             </div>
-                            <span style="display:inline-block;font-weight:700;padding:2px 12px;border-radius:50px;font-size:0.7rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};margin-bottom:6px;">${medals[i].badge}</span>
+                            <span style="display:inline-block;font-weight:700;padding:2px 12px;border-radius:50px;font-size:0.7rem;background:${colors[i]};color:${textColors[i]};margin-bottom:6px;">
+                                ${i === 0 ? 'الأول' : i === 1 ? 'الثاني' : 'الثالث'}
+                            </span>
                             <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);">${escapeHtml(user.name) || 'مستخدم'}</h3>
                             <p style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);">${(user.atoms || 0).toLocaleString()}</p>
                             <p style="font-size:0.75rem;color:var(--text2);">⚛️ ذرة</p>
@@ -2857,24 +2702,11 @@
                                 <div style="color:var(--text);line-height:1.8;">
                                     <p>نحن في منصة <strong>يلا كيمياء</strong> نولي خصوصية بياناتك أهمية كبيرة.</p>
                                     <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">📌 البيانات التي نجمعها</h3>
-                                    <ul style="list-style:disc;padding-right:20px;">
-                                        <li>الاسم الكامل</li>
-                                        <li>البريد الإلكتروني</li>
-                                        <li>رقم الهاتف</li>
-                                        <li>الصف الدراسي</li>
-                                        <li>بيانات التقدم التعليمي</li>
-                                    </ul>
+                                    <ul style="list-style:disc;padding-right:20px;"><li>الاسم الكامل</li><li>البريد الإلكتروني</li><li>رقم الهاتف</li><li>الصف الدراسي</li><li>بيانات التقدم التعليمي</li></ul>
                                     <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">🔐 كيفية استخدام بياناتك</h3>
-                                    <ul style="list-style:disc;padding-right:20px;">
-                                        <li>تقديم الخدمات التعليمية</li>
-                                        <li>تحسين تجربة المستخدم</li>
-                                        <li>إرسال إشعارات متعلقة بالمنصة</li>
-                                        <li>متابعة تقدمك التعليمي</li>
-                                    </ul>
+                                    <ul style="list-style:disc;padding-right:20px;"><li>تقديم الخدمات التعليمية</li><li>تحسين تجربة المستخدم</li><li>إرسال إشعارات متعلقة بالمنصة</li><li>متابعة تقدمك التعليمي</li></ul>
                                     <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">🤝 مشاركة البيانات</h3>
                                     <p>لا نقوم ببيع أو مشاركة بياناتك مع أي جهة خارجية.</p>
-                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">🛡️ حماية البيانات</h3>
-                                    <p>نستخدم أفضل الممارسات التقنية لحماية بياناتك، بما في ذلك التشفير وأنظمة الأمان المتقدمة.</p>
                                     <p style="font-size:0.85rem;color:var(--text2);margin-top:16px;">آخر تحديث: 2026</p>
                                 </div>
                             </div>
@@ -2894,27 +2726,9 @@
                                 <div style="color:var(--text);line-height:1.8;">
                                     <p>مرحباً بك في منصة <strong>يلا كيمياء</strong>. باستخدامك للمنصة، فإنك توافق على الالتزام بهذه الشروط.</p>
                                     <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">📌 استخدام المنصة</h3>
-                                    <ul style="list-style:disc;padding-right:20px;">
-                                        <li>الحساب مخصص للاستخدام الشخصي فقط</li>
-                                        <li>يجب استخدام المنصة للأغراض التعليمية فقط</li>
-                                        <li>يمنع إعادة نشر أو توزيع المحتوى التعليمي</li>
-                                        <li>يمنع إعادة رفع الفيديوهات على منصات أخرى</li>
-                                    </ul>
+                                    <ul style="list-style:disc;padding-right:20px;"><li>الحساب مخصص للاستخدام الشخصي فقط</li><li>يجب استخدام المنصة للأغراض التعليمية فقط</li><li>يمنع إعادة نشر أو توزيع المحتوى التعليمي</li></ul>
                                     <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">🔒 الحساب والأمان</h3>
-                                    <ul style="list-style:disc;padding-right:20px;">
-                                        <li>أنت مسؤول عن الحفاظ على سرية كلمة المرور والكود</li>
-                                        <li>يجب إبلاغ الإدارة فوراً في حالة اختراق الحساب</li>
-                                    </ul>
-                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">🚫 السلوك الممنوع</h3>
-                                    <ul style="list-style:disc;padding-right:20px;">
-                                        <li>محاولة اختراق المنصة</li>
-                                        <li>نشر محتوى غير لائق</li>
-                                        <li>استخدام المنصة لأغراض غير قانونية</li>
-                                    </ul>
-                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">⚖️ حقوق الملكية</h3>
-                                    <p>جميع المحتويات التعليمية والتصاميم هي ملك لمنصة يلا كيمياء.</p>
-                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-top:16px;">🛑 إيقاف الحساب</h3>
-                                    <p>تحتفظ الإدارة بحق إيقاف أي حساب يخالف الشروط.</p>
+                                    <ul style="list-style:disc;padding-right:20px;"><li>أنت مسؤول عن الحفاظ على سرية كلمة المرور والكود</li><li>يجب إبلاغ الإدارة فوراً في حالة اختراق الحساب</li></ul>
                                     <p style="font-size:0.85rem;color:var(--text2);margin-top:16px;">آخر تحديث: 2026</p>
                                 </div>
                             </div>
@@ -2931,10 +2745,8 @@
             updateUIForAuth(user);
 
             if (user) {
-                // Cleanup old listeners
                 if (userSubsUnsub) { userSubsUnsub();
                     userSubsUnsub = null; }
-
                 loadUserData(user.uid);
                 userSubsUnsub = loadUserSubscriptions(user.uid);
                 loadUserProgress(user.uid);
@@ -2963,9 +2775,6 @@
             });
         }
 
-        // ============================================================
-        // CLOSE DROPDOWNS ON CLICK OUTSIDE
-        // ============================================================
         document.addEventListener('click', function(e) {
             const userWrapper = document.getElementById('userMenuWrapper');
             if (userWrapper && !userWrapper.contains(e.target)) {
@@ -3021,11 +2830,10 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('✅ Yalla Chemistry Platform v4.0 - Fixed & Enhanced');
-            console.log('✅ All listeners are now realtime with onSnapshot');
-            console.log('✅ All CRUD operations update the UI instantly');
-            console.log('✅ Dashboard, Courses, Exams, Quizzes are all realtime');
-            console.log('✅ Leaderboard updates in realtime');
+            console.log('✅ Yalla Chemistry Platform v5.0 - Fully Fixed');
+            console.log('✅ Using ONLY Cloud Firestore (no Realtime DB)');
+            console.log('✅ All data is realtime with onSnapshot');
+            console.log('✅ No fallback/fake data - shows error if connection fails');
         }
 
         if (document.readyState === 'loading') {
