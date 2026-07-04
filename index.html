@@ -573,6 +573,13 @@
             flex-shrink: 0;
             background: var(--primary);
             color: #fff;
+            object-fit: cover;
+        }
+        .leaderboard-item .avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
         }
         .leaderboard-item .info { flex: 1; }
         .leaderboard-item .info .name { font-weight: 700; color: var(--text); font-size: 0.95rem; }
@@ -751,6 +758,13 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            overflow: hidden;
+            object-fit: cover;
+        }
+        .user-menu-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .user-menu-btn:hover { transform: scale(1.05); }
 
@@ -771,6 +785,48 @@
         .menu-item:hover { background: var(--bg); }
         .menu-item.danger { color: var(--danger); }
         .menu-item.danger:hover { background: rgba(239,68,68,0.08); }
+
+        /* ===== Profile Avatar ===== */
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== Analysis Card ===== */
+        .analysis-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: var(--transition);
+        }
+        .analysis-card:hover { box-shadow: var(--shadow); }
+        .analysis-level {
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-family: 'Lalezar', cursive;
+        }
+        .analysis-level.excellent { color: #22C55E; }
+        .analysis-level.good { color: #22C55E; }
+        .analysis-level.average { color: #FFA726; }
+        .analysis-level.needs-improvement { color: #EF4444; }
     </style>
 </head>
 <body>
@@ -831,9 +887,12 @@
                 <li class="user-only" style="display:none;position:relative;" id="userMenuWrapper">
                     <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatar">U</button>
                     <div id="userMenu" style="display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 20px 60px rgba(0,0,0,0.15);overflow:hidden;z-index:200;">
-                        <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
-                            <p style="font-weight:700;font-size:0.9rem;color:var(--text);" id="userNameDisplay">مستخدم</p>
-                            <p style="font-size:0.75rem;color:var(--text2);"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</p>
+                        <div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+                            <div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem;flex-shrink:0;" id="menuAvatar">U</div>
+                            <div>
+                                <p style="font-weight:700;font-size:0.9rem;color:var(--text);" id="userNameDisplay">مستخدم</p>
+                                <p style="font-size:0.75rem;color:var(--text2);"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</p>
+                            </div>
                         </div>
                         <button class="menu-item" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
                         <button class="menu-item" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
@@ -1145,6 +1204,7 @@
                 "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
                 "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
                 "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js",
                 "firebase/analytics": "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js"
             }
         }
@@ -1182,6 +1242,13 @@
             runTransaction,
             limit
         } from "firebase/firestore";
+        import {
+            getStorage,
+            ref,
+            uploadBytes,
+            getDownloadURL,
+            deleteObject
+        } from "firebase/storage";
 
         // ============================================================
         // FIREBASE CONFIG
@@ -1201,8 +1268,9 @@
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
-        console.log('✅ Yalla Chemistry - Firebase initialized');
+        console.log('✅ Yalla Chemistry - Firebase initialized with Storage');
 
         // ============================================================
         // APP STATE
@@ -1263,6 +1331,20 @@
                 else el.textContent = target;
             }
             update();
+        }
+
+        // ============================================================
+        // GENERATE UNIQUE STUDENT CODE
+        // ============================================================
+        function generateStudentCode(name, phone) {
+            const namePrefix = (name || 'STU').substring(0, 2).toUpperCase();
+            const phoneSuffix = (phone || '').slice(-2) || '00';
+            const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let random = '';
+            for (let i = 0; i < 4; i++) {
+                random += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+            }
+            return namePrefix + phoneSuffix + random;
         }
 
         // ============================================================
@@ -1371,20 +1453,17 @@
             }
         }
 
-        async function generateUniqueStudentCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        async function generateUniqueStudentCodeWithCheck(name, phone) {
+            let code = generateStudentCode(name, phone);
             let attempts = 0;
-            while (attempts < 10) {
-                let code = '';
-                for (let i = 0; i < 8; i++) {
-                    code += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
+            while (attempts < 20) {
                 const q = query(collection(db, 'users'), where('code', '==', code));
                 const snapshot = await getDocs(q);
                 if (snapshot.empty) return code;
+                code = generateStudentCode(name, phone + attempts.toString());
                 attempts++;
             }
-            return 'STU' + Date.now().toString(36).toUpperCase();
+            return 'STU' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
         }
 
         async function loadUserData(uid) {
@@ -1395,23 +1474,62 @@
                     const atoms = userData.atoms || 0;
                     document.getElementById('atomsCount').textContent = atoms;
                     document.getElementById('userAtomsCount').textContent = atoms;
-                    document.getElementById('userNameDisplay').textContent = userData.name || 'مستخدم';
-                    document.getElementById('userAvatar').textContent = (userData.name || 'U')[0].toUpperCase();
+
+                    const displayName = userData.name || 'مستخدم';
+                    document.getElementById('userNameDisplay').textContent = displayName;
+
+                    // Update avatar
+                    const avatarEl = document.getElementById('userAvatar');
+                    const menuAvatar = document.getElementById('menuAvatar');
+                    if (userData.photoURL) {
+                        avatarEl.innerHTML = `<img src="${userData.photoURL}" alt="${displayName}">`;
+                        if (menuAvatar) menuAvatar.innerHTML = `<img src="${userData.photoURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    } else {
+                        avatarEl.textContent = (displayName || 'U')[0].toUpperCase();
+                        if (menuAvatar) {
+                            menuAvatar.innerHTML = '';
+                            menuAvatar.textContent = (displayName || 'U')[0].toUpperCase();
+                            menuAvatar.style.display = 'flex';
+                            menuAvatar.style.alignItems = 'center';
+                            menuAvatar.style.justifyContent = 'center';
+                            menuAvatar.style.background = 'var(--primary)';
+                            menuAvatar.style.color = '#fff';
+                        }
+                    }
+
                     await loadUserProgress(uid);
                 } else {
+                    const name = auth.currentUser?.displayName || 'مستخدم';
+                    const email = auth.currentUser?.email || '';
+                    const phone = auth.currentUser?.phoneNumber || '';
+                    const code = await generateUniqueStudentCodeWithCheck(name, phone);
+
                     const newUser = {
-                        name: 'مستخدم',
-                        email: auth.currentUser?.email || '',
+                        name: name,
+                        email: email,
+                        phone: phone,
                         grade: '',
                         atoms: 0,
-                        code: await generateUniqueStudentCode(),
+                        points: 0,
+                        code: code,
+                        photoURL: '',
                         createdAt: Timestamp.now(),
-                        active: true
+                        active: true,
+                        lastActivity: Timestamp.now()
                     };
                     await setDoc(doc(db, 'users', uid), newUser);
                     userData = newUser;
-                    document.getElementById('userNameDisplay').textContent = 'مستخدم';
-                    document.getElementById('userAvatar').textContent = 'U';
+                    document.getElementById('userNameDisplay').textContent = name;
+                    document.getElementById('userAvatar').textContent = (name || 'U')[0].toUpperCase();
+                    const menuAvatar = document.getElementById('menuAvatar');
+                    if (menuAvatar) {
+                        menuAvatar.textContent = (name || 'U')[0].toUpperCase();
+                        menuAvatar.style.display = 'flex';
+                        menuAvatar.style.alignItems = 'center';
+                        menuAvatar.style.justifyContent = 'center';
+                        menuAvatar.style.background = 'var(--primary)';
+                        menuAvatar.style.color = '#fff';
+                    }
                 }
             } catch (err) {
                 console.error('Error loading user data:', err);
@@ -1448,6 +1566,51 @@
 
         function isUserSubscribed(courseId) {
             return userSubscriptions.some(sub => sub.courseId === courseId && sub.status === 'active');
+        }
+
+        // ============================================================
+        // PROFILE PICTURE UPLOAD
+        // ============================================================
+        async function uploadProfilePicture(file) {
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول أولاً', true);
+                return;
+            }
+
+            try {
+                const storageRef = ref(storage, `profile_pictures/${currentUser.uid}`);
+                await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(storageRef);
+
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    photoURL: downloadURL
+                });
+
+                if (userData) userData.photoURL = downloadURL;
+
+                // Update UI
+                const avatarEl = document.getElementById('userAvatar');
+                const menuAvatar = document.getElementById('menuAvatar');
+                const displayName = userData?.name || 'مستخدم';
+
+                if (avatarEl) {
+                    avatarEl.innerHTML = `<img src="${downloadURL}" alt="${displayName}">`;
+                }
+                if (menuAvatar) {
+                    menuAvatar.innerHTML = `<img src="${downloadURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                }
+
+                // Update dashboard if open
+                const dashboardAvatar = document.getElementById('dashboardAvatar');
+                if (dashboardAvatar) {
+                    dashboardAvatar.innerHTML = `<img src="${downloadURL}" alt="${displayName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                }
+
+                showToast('✅ تم تحديث الصورة الشخصية بنجاح', false);
+            } catch (error) {
+                console.error('Error uploading profile picture:', error);
+                showToast('حدث خطأ أثناء رفع الصورة', true);
+            }
         }
 
         // ============================================================
@@ -2543,12 +2706,19 @@
                         id: docSnap.id,
                         name: data.name || 'مستخدم',
                         atoms: data.atoms || 0,
+                        points: data.points || 0,
+                        photoURL: data.photoURL || '',
+                        code: data.code || '',
                         coursesCount: data.coursesCount || 0,
                         examsPassed: data.examsPassed || 0,
                         quizzesPassed: data.quizzesPassed || 0
                     });
                 });
-                users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
+                // Sort by atoms (desc), then points (desc)
+                users.sort((a, b) => {
+                    if (b.atoms !== a.atoms) return (b.atoms || 0) - (a.atoms || 0);
+                    return (b.points || 0) - (a.points || 0);
+                });
                 const topUsers = users.slice(0, 10);
 
                 container.innerHTML = topUsers.length === 0 ? `
@@ -2564,10 +2734,13 @@
                         medal = '🥇'; } else if (idx === 1) { rankClass = 'silver';
                         medal = '🥈'; } else if (idx === 2) { rankClass = 'bronze';
                         medal = '🥉'; }
+                    const avatarHtml = user.photoURL ?
+                        `<img src="${user.photoURL}" alt="${escapeHtml(user.name)}">` :
+                        (user.name || 'U')[0].toUpperCase();
                     return `
                                 <div class="leaderboard-item">
                                     <div class="rank ${rankClass}">${medal || (idx + 1)}</div>
-                                    <div class="avatar">${(user.name || 'U')[0].toUpperCase()}</div>
+                                    <div class="avatar">${avatarHtml}</div>
                                     <div class="info">
                                         <div class="name">${escapeHtml(user.name)}</div>
                                         <div class="stats">📚 ${user.coursesCount || 0} كورس • 📝 ${user.examsPassed || 0} امتحان • 🧪 ${user.quizzesPassed || 0} كويز</div>
@@ -2603,10 +2776,15 @@
                             users.push({
                                 id: docSnap.id,
                                 name: data.name || 'مستخدم',
-                                atoms: data.atoms || 0
+                                atoms: data.atoms || 0,
+                                points: data.points || 0,
+                                photoURL: data.photoURL || ''
                             });
                         });
-                        users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
+                        users.sort((a, b) => {
+                            if (b.atoms !== a.atoms) return (b.atoms || 0) - (a.atoms || 0);
+                            return (b.points || 0) - (a.points || 0);
+                        });
                         renderLeaderboard(users);
                     })
                     .catch((error) => {
@@ -2635,30 +2813,27 @@
             }
 
             const topUsers = users.slice(0, 3);
-            const medals = [
-                { order: 'order-1 md:order-2', border: 'border-2 border-[#FFD60A]', glow: 'leaderboard-gold',
-                    t: 'md:-translate-y-4', badge: '🥇 الأول', bg: 'bg-[#FFD60A] text-[#081B2C]',
-                    pts: 'text-[#FFA726]', s: 'w-24 h-24', bc: 'border-[#FFD60A]', crown: '🥇' },
-                { order: 'order-2 md:order-1', border: 'border', glow: 'leaderboard-silver', t: 'md:translate-y-6',
-                    badge: '🥈 الثاني', bg: 'bg-gray-100 text-gray-700', pts: 'text-[#0B4F8C]', s: 'w-20 h-20',
-                    bc: 'border-gray-300', crown: '🥈' },
-                { order: 'order-3 md:order-3', border: 'border', glow: 'leaderboard-ice', t: 'md:translate-y-6',
-                    badge: '🥉 الثالث', bg: 'bg-[#EAF6FF] text-[#0B4F8C]', pts: 'text-[#4CC9F0]', s: 'w-20 h-20',
-                    bc: 'border-[#4CC9F0]', crown: '🥉' }
-            ];
+            const medals = ['🥇', '🥈', '🥉'];
+            const bgColors = ['#FFD60A', '#94A3B8', '#CD7F32'];
+            const textColors = ['#081B2C', '#fff', '#fff'];
 
-            grid.innerHTML = topUsers.map((user, i) => `
-                        <div class="card" style="text-align:center;padding:20px;border-color:var(--border);">
-                            <div style="position:relative;display:inline-block;margin-bottom:12px;">
-                                <div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.5rem;font-weight:700;border:4px solid ${i === 0 ? '#FFD60A' : i === 1 ? 'var(--border)' : 'var(--border)'};">${(user.name || 'U')[0].toUpperCase()}</div>
-                                <span style="position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};">${medals[i].crown}</span>
+            grid.innerHTML = topUsers.map((user, i) => {
+                const avatarHtml = user.photoURL ?
+                    `<img src="${user.photoURL}" alt="${escapeHtml(user.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
+                    (user.name || 'U')[0].toUpperCase();
+                return `
+                            <div class="card" style="text-align:center;padding:20px;border-color:var(--border);">
+                                <div style="position:relative;display:inline-block;margin-bottom:12px;">
+                                    <div style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;background:var(--bg);color:var(--primary);font-size:1.5rem;font-weight:700;border:4px solid ${bgColors[i]};overflow:hidden;">${avatarHtml}</div>
+                                    <span style="position:absolute;top:-8px;right:-8px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;background:${bgColors[i]};color:${textColors[i]};">${medals[i]}</span>
+                                </div>
+                                <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);">${escapeHtml(user.name) || 'مستخدم'}</h3>
+                                <p style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);">${(user.atoms || 0).toLocaleString()}</p>
+                                <p style="font-size:0.75rem;color:var(--text2);">⚛️ ذرة</p>
+                                <p style="font-size:0.7rem;color:var(--text2);">🏅 ${user.points || 0} نقطة</p>
                             </div>
-                            <span style="display:inline-block;font-weight:700;padding:2px 12px;border-radius:50px;font-size:0.7rem;background:${i === 0 ? '#FFD60A' : i === 1 ? '#94A3B8' : '#CD7F32'};color:${i === 0 ? '#081B2C' : '#fff'};margin-bottom:6px;">${medals[i].badge}</span>
-                            <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);">${escapeHtml(user.name) || 'مستخدم'}</h3>
-                            <p style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);">${(user.atoms || 0).toLocaleString()}</p>
-                            <p style="font-size:0.75rem;color:var(--text2);">⚛️ ذرة</p>
-                        </div>
-                    `).join('');
+                        `;
+            }).join('');
         }
 
         // ============================================================
@@ -2675,30 +2850,129 @@
 
             const name = userData?.name || 'طالب';
             const email = userData?.email || '';
+            const phone = userData?.phone || 'غير مسجل';
             const atoms = userData?.atoms || 0;
+            const points = userData?.points || 0;
             const code = userData?.code || '';
             const grade = userData?.grade || 'لم يحدد';
+            const photoURL = userData?.photoURL || '';
 
+            // Calculate stats
             let watchedCount = 0;
             let quizCount = 0;
             let assignmentCount = 0;
             let examCount = 0;
             let totalScore = 0;
             let scoresCount = 0;
+            let lastActivity = null;
+            let lastWatched = null;
+            let lastExam = null;
 
             Object.values(userCourseProgress).forEach(progress => {
-                if (progress.watched) watchedCount++;
-                if (progress.quizCompleted) { quizCount++;
+                if (progress.watched) {
+                    watchedCount++;
+                    if (progress.completedAt && (!lastWatched || progress.completedAt > lastWatched)) {
+                        lastWatched = progress.completedAt;
+                    }
+                }
+                if (progress.quizCompleted) {
+                    quizCount++;
                     totalScore += progress.quizScore || 0;
-                    scoresCount++; }
+                    scoresCount++;
+                }
                 if (progress.assignmentCompleted) assignmentCount++;
-                if (progress.examCompleted) { examCount++;
+                if (progress.examCompleted) {
+                    examCount++;
+                    if (progress.completedAt && (!lastExam || progress.completedAt > lastExam)) {
+                        lastExam = progress.completedAt;
+                    }
                     totalScore += progress.examScore || 0;
-                    scoresCount++; }
+                    scoresCount++;
+                }
             });
 
             const avgScore = scoresCount > 0 ? Math.round(totalScore / scoresCount) : 0;
             const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
+            const totalLessons = allCourses.reduce((acc, c) => acc + (c.lessonsCount || 0), 0);
+            const progressPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
+
+            // Update last activity from userData
+            if (userData?.lastActivity) {
+                lastActivity = userData.lastActivity;
+            }
+
+            // AI Analysis
+            let levelText = '';
+            let levelClass = '';
+            let levelScore = 0;
+            let analysisNotes = [];
+
+            if (watchedCount > 0 || examCount > 0 || quizCount > 0) {
+                const watchScore = Math.min((watchedCount / (totalLessons || 1)) * 100, 100);
+                const examScore = examCount > 0 ? Math.min((examCount / (allCourses.length || 1)) * 100, 100) : 0;
+                const quizScore = quizCount > 0 ? Math.min((quizCount / (allCourses.length || 1)) * 100, 100) : 0;
+                const avgScoreWeighted = avgScore || 0;
+
+                levelScore = Math.round((watchScore * 0.35) + (examScore * 0.25) + (quizScore * 0.20) + (avgScoreWeighted *
+                0.20));
+
+                if (levelScore >= 85) {
+                    levelText = 'ممتاز جداً';
+                    levelClass = 'excellent';
+                    analysisNotes = ['🎯 مستواك في تقدم مستمر', '🏆 أنت من أفضل الطلاب نشاطاً', '📚 استمر في هذا الأداء الرائع'];
+                } else if (levelScore >= 70) {
+                    levelText = 'جيد جداً';
+                    levelClass = 'good';
+                    analysisNotes = ['📈 مستواك جيد جداً', '💪 حاول إنهاء باقي الحصص', '📝 ركز على حل الامتحانات'];
+                } else if (levelScore >= 55) {
+                    levelText = 'جيد';
+                    levelClass = 'average';
+                    analysisNotes = ['📖 تحتاج إلى مشاهدة المزيد من الفيديوهات', '✍️ حاول حل الواجبات بانتظام', '🎯 ركز على الامتحانات'];
+                } else {
+                    levelText = 'يحتاج إلى تحسين';
+                    levelClass = 'needs-improvement';
+                    analysisNotes = ['📚 ابدأ من الأساسيات', '🎥 شاهد الفيديوهات أولاً', '📝 حل الامتحانات خطوة بخطوة'];
+                }
+
+                if (watchedCount === 0) {
+                    analysisNotes.push('🎬 لم تشاهد أي فيديو حتى الآن');
+                }
+                if (examCount === 0) {
+                    analysisNotes.push('📝 لم تحل أي امتحان حتى الآن');
+                }
+                if (progressPercent >= 80) {
+                    analysisNotes.push('🌟 أنت من أكثر الطلاب التزاماً');
+                }
+                if (subscribedCourses.length === 0) {
+                    analysisNotes.push('📚 اشترك في كورس لبدء رحلتك التعليمية');
+                }
+            } else {
+                levelText = 'لم تبدأ بعد';
+                levelClass = 'needs-improvement';
+                levelScore = 0;
+                analysisNotes = ['🚀 ابدأ رحلتك التعليمية الآن', '🎥 شاهد أول فيديو', '📝 حل أول امتحان'];
+            }
+
+            // Get rank
+            let rank = '-';
+            getDocs(collection(db, 'users')).then(snapshot => {
+                const users = [];
+                snapshot.forEach(docSnap => {
+                    users.push({ id: docSnap.id, atoms: docSnap.data().atoms || 0, points: docSnap.data()
+                            .points || 0 });
+                });
+                users.sort((a, b) => {
+                    if (b.atoms !== a.atoms) return (b.atoms || 0) - (a.atoms || 0);
+                    return (b.points || 0) - (a.points || 0);
+                });
+                const userRank = users.findIndex(u => u.id === currentUser.uid);
+                if (userRank !== -1) rank = (userRank + 1).toString();
+                document.getElementById('dashboardRank')?.textContent = rank;
+            }).catch(() => { document.getElementById('dashboardRank')?.textContent = '-'; });
+
+            const avatarHtml = photoURL ?
+                `<img src="${photoURL}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
+                (name || 'U')[0].toUpperCase();
 
             main.innerHTML = `
                         <div style="max-width:1280px;margin:0 auto;padding:20px;">
@@ -2711,12 +2985,20 @@
 
                             <div class="card" style="padding:20px;margin-bottom:16px;">
                                 <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-                                    <div style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;background:var(--primary);color:#fff;">${(name || 'U')[0].toUpperCase()}</div>
+                                    <div class="profile-avatar" id="dashboardAvatar">${avatarHtml}</div>
                                     <div style="text-align:center;">
                                         <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);">${escapeHtml(name)}</h3>
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-envelope"></i> ${escapeHtml(email)}</p>
+                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-phone"></i> ${escapeHtml(phone)}</p>
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-graduation-cap"></i> ${grade}</p>
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-book"></i> ${subscribedCourses.length} كورس مشترك</p>
+                                        <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-trophy"></i> الترتيب: #<span id="dashboardRank">${rank}</span></p>
+                                    </div>
+                                    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+                                        <button class="btn-primary btn-sm" onclick="document.getElementById('profilePicInput').click()">
+                                            <i class="fas fa-camera"></i> تغيير الصورة
+                                        </button>
+                                        <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="APP.uploadProfilePicture(this.files[0])">
                                     </div>
                                 </div>
                             </div>
@@ -2724,9 +3006,28 @@
                             <div class="card" style="padding:16px;margin-bottom:16px;">
                                 <h4 style="font-weight:700;color:var(--primary);margin-bottom:6px;">🔑 كود الطالب الخاص</h4>
                                 <div class="profile-code">${escapeHtml(code)}</div>
-                                <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="navigator.clipboard.writeText('${escapeHtml(code)}').then(()=>APP.toast('✅ تم نسخ الكود', false))">
+                                <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="APP.copyStudentCode('${escapeHtml(code)}')">
                                     <i class="fas fa-copy"></i> نسخ الكود
                                 </button>
+                            </div>
+
+                            <!-- AI Analysis -->
+                            <div class="analysis-card" style="margin-bottom:16px;">
+                                <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:8px;">🤖 تحليل مستواك</h3>
+                                <div style="display:flex;flex-direction:column;gap:8px;">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+                                        <span style="font-weight:600;color:var(--text);">مستوى الطالب:</span>
+                                        <span class="analysis-level ${levelClass}">${levelText} (${levelScore}%)</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="fill" style="width:${levelScore}%;"></div>
+                                    </div>
+                                    <div style="display:flex;flex-direction:column;gap:4px;margin-top:4px;">
+                                        ${analysisNotes.map(note => `
+                                            <p style="font-size:0.9rem;color:var(--text2);margin:0;">${note}</p>
+                                        `).join('')}
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="grid-dashboard" style="margin-bottom:16px;">
@@ -2739,7 +3040,16 @@
                             <div class="grid-dashboard" style="margin-bottom:16px;">
                                 <div class="stat-card"><div class="number">${avgScore}%</div><div class="label">⭐ متوسط الدرجات</div></div>
                                 <div class="stat-card"><div class="number">${subscribedCourses.length}</div><div class="label">📚 الكورسات</div></div>
+                                <div class="stat-card"><div class="number">${progressPercent}%</div><div class="label">🎯 نسبة الإنجاز</div></div>
                                 <div class="stat-card"><div class="number">${Object.keys(userCourseProgress).length}</div><div class="label">🔥 الأنشطة</div></div>
+                            </div>
+
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:12px;">
+                                <div class="stat-card"><div class="number">${atoms}</div><div class="label">⚛️ الذرات</div></div>
+                                <div class="stat-card"><div class="number">${points}</div><div class="label">🏅 النقاط</div></div>
+                                ${lastActivity ? `<div class="stat-card"><div class="number" style="font-size:1.2rem;">${formatTime(lastActivity.toDate ? lastActivity.toDate().toISOString() : lastActivity)}</div><div class="label">⏰ آخر نشاط</div></div>` : ''}
+                                ${lastWatched ? `<div class="stat-card"><div class="number" style="font-size:1.2rem;">${formatTime(lastWatched.toDate ? lastWatched.toDate().toISOString() : lastWatched)}</div><div class="label">🎬 آخر حصة</div></div>` : ''}
+                                ${lastExam ? `<div class="stat-card"><div class="number" style="font-size:1.2rem;">${formatTime(lastExam.toDate ? lastExam.toDate().toISOString() : lastExam)}</div><div class="label">📝 آخر امتحان</div></div>` : ''}
                             </div>
 
                             ${subscribedCourses.length > 0 ? `
@@ -2768,6 +3078,25 @@
                         </div>
                     `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyStudentCode(code) {
+            if (!code) {
+                showToast('لا يوجد كود للنسخ', true);
+                return;
+            }
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('✅ تم نسخ كود الطالب بنجاح', false);
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('✅ تم نسخ كود الطالب بنجاح', false);
+            });
         }
 
         // ============================================================
@@ -2934,6 +3263,8 @@
             showDashboard,
             showPrivacy,
             showTerms,
+            uploadProfilePicture,
+            copyStudentCode,
             toast: showToast,
             escapeHtml
         };
@@ -2943,11 +3274,13 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('✅ Yalla Chemistry Platform v3.0 - Fully Restructured');
-            console.log('✅ All images preserved');
-            console.log('✅ All Firebase config preserved');
-            console.log('✅ Dark/Light mode working');
-            console.log('✅ Guest/User separation working');
+            console.log('✅ Yalla Chemistry Platform v4.0 - Enhanced');
+            console.log('✅ Real student names from Firebase');
+            console.log('✅ Unique student codes (e.g., AH1234X)');
+            console.log('✅ Profile picture upload with Firebase Storage');
+            console.log('✅ AI Student Analysis with real data');
+            console.log('✅ All stats from Firebase');
+            console.log('✅ Leaderboard sorted by atoms + points');
         }
 
         if (document.readyState === 'loading') {
