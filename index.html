@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
     <meta name="theme-color" content="#0B4F8C">
-    <link rel="icon" href="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/لوجو_زوز_qyvlkb">
+    <link rel="icon" href="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/%D9%84%D9%88%D8%AC%D9%88_%D8%B2%D9%88%D8%B2_qyvlkb">
     <title>يلا كيمياء | المنصة التعليمية المتكاملة</title>
 
     <!-- Preconnect -->
@@ -806,7 +806,7 @@
             object-fit: cover;
         }
 
-        /* ===== Performance Analysis ===== */
+        /* ===== Performance Card ===== */
         .performance-card {
             padding: 16px 20px;
             border-radius: var(--radius);
@@ -1224,7 +1224,9 @@
             getAuth,
             onAuthStateChanged,
             signOut,
-            updateProfile
+            updateProfile,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword
         } from "firebase/auth";
         import {
             getFirestore,
@@ -1289,6 +1291,7 @@
         let courseUnsubscribers = [];
         let leaderboardUnsub = null;
         let userProfileImageUrl = null;
+        let userDocUnsubscribe = null;
 
         // ============================================================
         // UTILITY FUNCTIONS
@@ -1310,7 +1313,7 @@
 
         function formatTime(isoString) {
             try {
-                const date = new Date(isoString);
+                const date = isoString instanceof Timestamp ? isoString.toDate() : new Date(isoString);
                 const now = new Date();
                 const diff = now - date;
                 if (diff < 60000) return 'الآن';
@@ -1343,24 +1346,20 @@
         // ============================================================
         async function generateUniqueStudentCode(name, phone) {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            // Get first 2 letters of name
             const namePrefix = name ? name.substring(0, 2).toUpperCase() : 'ST';
-            // Get last 2 digits of phone if available
             const phoneSuffix = phone && phone.length >= 2 ? phone.slice(-2) : '00';
             let attempts = 0;
-            while (attempts < 20) {
+            while (attempts < 30) {
                 let randomPart = '';
                 for (let i = 0; i < 4; i++) {
                     randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
                 const code = namePrefix + phoneSuffix + randomPart;
-                // Check if code exists
                 const q = query(collection(db, 'users'), where('code', '==', code));
                 const snapshot = await getDocs(q);
                 if (snapshot.empty) return code;
                 attempts++;
             }
-            // Fallback: use timestamp
             return 'STU' + Date.now().toString(36).toUpperCase().slice(0, 8);
         }
 
@@ -1429,17 +1428,15 @@
         // ============================================================
         function updateProfileImageDisplay(url) {
             userProfileImageUrl = url;
-            // Update navbar avatar
             const avatarBtn = document.getElementById('userAvatar');
             if (avatarBtn) {
                 if (url) {
                     avatarBtn.innerHTML = `<img src="${url}" alt="صورة شخصية">`;
                 } else {
                     const name = userData?.name || 'مستخدم';
-                    avatarBtn.innerHTML = name[0].toUpperCase();
+                    avatarBtn.textContent = name[0].toUpperCase();
                 }
             }
-            // Update menu avatar
             const menuContainer = document.getElementById('menuAvatarContainer');
             const menuText = document.getElementById('menuAvatarText');
             const menuImg = document.getElementById('menuAvatarImg');
@@ -1455,12 +1452,14 @@
                     menuText.textContent = name[0].toUpperCase();
                 }
             }
-            // Update any profile avatars on dashboard
             document.querySelectorAll('.profile-avatar-img').forEach(el => {
                 if (url) {
                     el.src = url;
                     el.style.display = 'block';
-                    el.parentElement.querySelector('.profile-avatar-text')?.style.setProperty('display', 'none');
+                    if (el.parentElement) {
+                        const textEl = el.parentElement.querySelector('.profile-avatar-text');
+                        if (textEl) textEl.style.display = 'none';
+                    }
                 }
             });
         }
@@ -1486,7 +1485,6 @@
                 await uploadBytes(storageRef, file);
                 const downloadUrl = await getDownloadURL(storageRef);
 
-                // Update user document
                 await updateDoc(doc(db, 'users', currentUser.uid), {
                     profileImage: downloadUrl,
                     updatedAt: Timestamp.now()
@@ -1499,7 +1497,7 @@
                 showToast('✅ تم تحديث الصورة الشخصية بنجاح', false);
             } catch (error) {
                 console.error('Error uploading profile image:', error);
-                showToast('حدث خطأ أثناء رفع الصورة', true);
+                showToast('حدث خطأ أثناء رفع الصورة: ' + error.message, true);
             }
         }
 
@@ -1512,6 +1510,8 @@
                 courseUnsubscribers = [];
                 if (leaderboardUnsub) { leaderboardUnsub();
                     leaderboardUnsub = null; }
+                if (userDocUnsubscribe) { userDocUnsubscribe();
+                    userDocUnsubscribe = null; }
                 await signOut(auth);
                 showToast('تم تسجيل الخروج', false);
                 updateUIForAuth(null);
@@ -1532,10 +1532,13 @@
                 userElements.forEach(el => el.style.display = 'block');
                 const heroBtns = document.getElementById('heroButtons');
                 if (heroBtns) {
-                    heroBtns.querySelector('.guest-only').style.display = 'none';
-                    heroBtns.querySelector('.user-only').style.display = 'flex';
+                    const guestHero = heroBtns.querySelector('.guest-only');
+                    const userHero = heroBtns.querySelector('.user-only');
+                    if (guestHero) guestHero.style.display = 'none';
+                    if (userHero) userHero.style.display = 'flex';
                 }
-                document.getElementById('atomsBadge').style.display = 'block';
+                const badge = document.getElementById('atomsBadge');
+                if (badge) badge.style.display = 'block';
                 const cta = document.getElementById('ctaSection');
                 if (cta) {
                     cta.classList.add('guest-only');
@@ -1547,10 +1550,13 @@
                 userElements.forEach(el => el.style.display = 'none');
                 const heroBtns = document.getElementById('heroButtons');
                 if (heroBtns) {
-                    heroBtns.querySelector('.guest-only').style.display = 'flex';
-                    heroBtns.querySelector('.user-only').style.display = 'none';
+                    const guestHero = heroBtns.querySelector('.guest-only');
+                    const userHero = heroBtns.querySelector('.user-only');
+                    if (guestHero) guestHero.style.display = 'flex';
+                    if (userHero) userHero.style.display = 'none';
                 }
-                document.getElementById('atomsBadge').style.display = 'none';
+                const badge = document.getElementById('atomsBadge');
+                if (badge) badge.style.display = 'none';
                 const cta = document.getElementById('ctaSection');
                 if (cta) {
                     cta.classList.remove('guest-only');
@@ -1561,99 +1567,84 @@
             }
         }
 
-        async function loadUserData(uid) {
+        async function ensureUserData(uid, name, email, phone) {
             try {
-                const userDoc = await getDoc(doc(db, 'users', uid));
-                if (userDoc.exists()) {
-                    userData = userDoc.data();
-                    const atoms = userData.atoms || 0;
-                    document.getElementById('atomsCount').textContent = atoms;
-                    document.getElementById('userAtomsCount').textContent = atoms;
-                    // Show real name
-                    const displayName = userData.name || 'مستخدم';
-                    document.getElementById('userNameDisplay').textContent = displayName;
-                    const avatarBtn = document.getElementById('userAvatar');
-                    if (avatarBtn) {
-                        if (userData.profileImage) {
-                            avatarBtn.innerHTML = `<img src="${userData.profileImage}" alt="صورة شخصية">`;
-                            userProfileImageUrl = userData.profileImage;
-                        } else {
-                            avatarBtn.textContent = displayName[0].toUpperCase();
-                        }
+                const userRef = doc(db, 'users', uid);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    // Update missing fields if needed
+                    let needsUpdate = false;
+                    if (!data.code) {
+                        data.code = await generateUniqueStudentCode(data.name || name, data.phone || phone);
+                        needsUpdate = true;
                     }
-                    // Update menu avatar
-                    const menuContainer = document.getElementById('menuAvatarContainer');
-                    const menuText = document.getElementById('menuAvatarText');
-                    const menuImg = document.getElementById('menuAvatarImg');
-                    if (menuContainer && menuText && menuImg) {
-                        if (userData.profileImage) {
-                            menuText.style.display = 'none';
-                            menuImg.style.display = 'block';
-                            menuImg.src = userData.profileImage;
-                        } else {
-                            menuText.style.display = 'block';
-                            menuImg.style.display = 'none';
-                            menuText.textContent = displayName[0].toUpperCase();
-                        }
+                    if (needsUpdate) {
+                        await updateDoc(userRef, {
+                            code: data.code,
+                            updatedAt: Timestamp.now()
+                        });
                     }
-                    await loadUserProgress(uid);
+                    return data;
                 } else {
-                    // Create new user with code
-                    const name = auth.currentUser?.displayName || 'مستخدم';
-                    const email = auth.currentUser?.email || '';
-                    const phone = auth.currentUser?.phoneNumber || '';
+                    // Create new user
                     const code = await generateUniqueStudentCode(name, phone);
                     const newUser = {
-                        name: name,
-                        email: email,
-                        phone: phone,
+                        name: name || 'مستخدم',
+                        email: email || '',
+                        phone: phone || '',
                         grade: '',
                         atoms: 0,
                         code: code,
+                        profileImage: '',
                         createdAt: Timestamp.now(),
-                        active: true
+                        updatedAt: Timestamp.now(),
+                        active: true,
+                        coursesCount: 0,
+                        examsPassed: 0,
+                        quizzesPassed: 0
                     };
-                    await setDoc(doc(db, 'users', uid), newUser);
-                    userData = newUser;
-                    document.getElementById('userNameDisplay').textContent = name;
-                    const avatarBtn = document.getElementById('userAvatar');
-                    if (avatarBtn) avatarBtn.textContent = name[0].toUpperCase();
+                    await setDoc(userRef, newUser);
+                    return newUser;
                 }
             } catch (err) {
-                console.error('Error loading user data:', err);
+                console.error('Error ensuring user data:', err);
+                throw err;
             }
         }
 
-        async function loadUserProgress(uid) {
-            try {
-                const progressRef = collection(db, 'users', uid, 'progress');
-                const snapshot = await getDocs(progressRef);
-                userCourseProgress = {};
-                snapshot.forEach(docSnap => {
-                    userCourseProgress[docSnap.id] = docSnap.data();
-                });
-            } catch (err) {
-                console.error('Error loading progress:', err);
-                userCourseProgress = {};
+        function setupUserListener(uid) {
+            if (userDocUnsubscribe) {
+                userDocUnsubscribe();
+                userDocUnsubscribe = null;
             }
-        }
 
-        async function loadUserSubscriptions(uid) {
-            try {
-                const q = query(collection(db, 'courseSubscriptions'), where('userId', '==', uid));
-                const snapshot = await getDocs(q);
-                userSubscriptions = [];
-                snapshot.forEach(docSnap => {
-                    userSubscriptions.push({ id: docSnap.id, ...docSnap.data() });
-                });
-            } catch (err) {
-                console.error('Error loading subscriptions:', err);
-                userSubscriptions = [];
-            }
-        }
+            const userRef = doc(db, 'users', uid);
+            userDocUnsubscribe = onSnapshot(userRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    userData = snapshot.data();
+                    const atoms = userData.atoms || 0;
+                    document.getElementById('atomsCount').textContent = atoms;
+                    document.getElementById('userAtomsCount').textContent = atoms;
 
-        function isUserSubscribed(courseId) {
-            return userSubscriptions.some(sub => sub.courseId === courseId && sub.status === 'active');
+                    const displayName = userData.name || 'مستخدم';
+                    document.getElementById('userNameDisplay').textContent = displayName;
+
+                    if (userData.profileImage) {
+                        updateProfileImageDisplay(userData.profileImage);
+                    } else {
+                        const avatarBtn = document.getElementById('userAvatar');
+                        if (avatarBtn) avatarBtn.textContent = displayName[0].toUpperCase();
+                        const menuText = document.getElementById('menuAvatarText');
+                        if (menuText) menuText.textContent = displayName[0].toUpperCase();
+                        const menuImg = document.getElementById('menuAvatarImg');
+                        if (menuImg) menuImg.style.display = 'none';
+                    }
+                }
+            }, (error) => {
+                console.error('Error listening to user document:', error);
+            });
         }
 
         // ============================================================
@@ -2320,7 +2311,6 @@
                 if (btn) { btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
 
-                // Save exam result
                 const progressRef = doc(db, 'users', currentUser.uid, 'progress', id);
                 const progressSnap = await getDoc(progressRef);
                 const alreadyCompleted = progressSnap.exists() && progressSnap.data().completed;
@@ -2905,6 +2895,7 @@
             const code = userData?.code || '';
             const grade = userData?.grade || 'لم يحدد';
             const profileImage = userData?.profileImage || null;
+            const createdAt = userData?.createdAt;
 
             let watchedCount = 0;
             let quizCompletedCount = 0;
@@ -2928,7 +2919,6 @@
                 if (progress.completedAt) {
                     const date = progress.completedAt.toDate ? progress.completedAt.toDate() : new Date(progress.completedAt);
                     if (!lastActivity || date > lastActivity) lastActivity = date;
-                    // Track last lesson/exam
                     if (id.startsWith('lesson_')) {
                         if (!lastLesson || date > lastLesson) lastLesson = { id, date };
                     }
@@ -2939,34 +2929,6 @@
             const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
             const totalLessons = subscribedCourses.reduce((sum, c) => sum + (c.lessonsCount || 0), 0);
             const completionPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
-
-            // Performance analysis
-            let performanceLevel = 'جيد';
-            let levelClass = 'good';
-            let performanceMessage = 'أنت في طريقك الصحيح، استمر في التعلم!';
-            let performanceAdvice = 'حاول مشاهدة المزيد من الفيديوهات وحل المزيد من الكويزات لتحسين مستواك.';
-
-            if (completionPercent >= 80 && avgScore >= 85 && atoms >= 200) {
-                performanceLevel = 'ممتاز جدًا';
-                levelClass = 'excellent';
-                performanceMessage = '🎉 أداءك رائع! أنت من أفضل الطلاب على المنصة.';
-                performanceAdvice = 'استمر في التميز وساعد زملائك في التعلم.';
-            } else if (completionPercent >= 60 && avgScore >= 70 && atoms >= 100) {
-                performanceLevel = 'جيد جدًا';
-                levelClass = 'good';
-                performanceMessage = '👏 أداءك ممتاز، أنت على الطريق الصحيح.';
-                performanceAdvice = 'ركز على حل المزيد من الامتحانات لتعزيز مستواك.';
-            } else if (completionPercent >= 30 && avgScore >= 50) {
-                performanceLevel = 'جيد';
-                levelClass = 'fair';
-                performanceMessage = '📚 بداية جيدة، استمر في التعلم.';
-                performanceAdvice = 'احرص على مشاهدة جميع الفيديوهات وحل الواجبات.';
-            } else {
-                performanceLevel = 'يحتاج إلى تحسين';
-                levelClass = 'need-improve';
-                performanceMessage = '💪 لا تستسلم! كلنا بدأنا من الصفر.';
-                performanceAdvice = 'ابدأ بمشاهدة الفيديوهات من البداية وحل الكويزات البسيطة.';
-            }
 
             const avatarHtml = profileImage ?
                 `<img src="${profileImage}" alt="${escapeHtml(name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` :
@@ -2992,6 +2954,7 @@
                                         ${phone ? `<p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-phone"></i> ${escapeHtml(phone)}</p>` : ''}
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-graduation-cap"></i> ${escapeHtml(grade)}</p>
                                         <p style="font-size:0.85rem;color:var(--text2);"><i class="fas fa-book"></i> ${subscribedCourses.length} كورس مشترك</p>
+                                        ${createdAt ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-calendar-alt"></i> تاريخ الإنشاء: ${formatTime(createdAt)}</p>` : ''}
                                         ${lastActivity ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-clock"></i> آخر نشاط: ${formatTime(lastActivity.toISOString())}</p>` : ''}
                                         ${lastLesson ? `<p style="font-size:0.8rem;color:var(--text2);"><i class="fas fa-play"></i> آخر حصة: ${formatTime(lastLesson.date.toISOString())}</p>` : ''}
                                     </div>
@@ -3058,27 +3021,34 @@
         }
 
         function copyStudentCode(code) {
-            if (navigator.clipboard) {
+            if (!code) {
+                showToast('لا يوجد كود طالب للنسخ', true);
+                return;
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(code).then(() => {
                     showToast('✅ تم نسخ كود الطالب بنجاح', false);
                 }).catch(() => {
-                    // Fallback
-                    const textarea = document.createElement('textarea');
-                    textarea.value = code;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    showToast('✅ تم نسخ كود الطالب بنجاح', false);
+                    fallbackCopy(code);
                 });
             } else {
+                fallbackCopy(code);
+            }
+        }
+
+        function fallbackCopy(code) {
+            try {
                 const textarea = document.createElement('textarea');
                 textarea.value = code;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
                 document.body.appendChild(textarea);
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 showToast('✅ تم نسخ كود الطالب بنجاح', false);
+            } catch (e) {
+                showToast('❌ فشل نسخ الكود، يرجى المحاولة يدوياً', true);
             }
         }
 
@@ -3121,7 +3091,6 @@
             const totalLessons = subscribedCourses.reduce((sum, c) => sum + (c.lessonsCount || 0), 0);
             const completionPercent = totalLessons > 0 ? Math.round((watchedCount / totalLessons) * 100) : 0;
 
-            // Performance analysis
             let performanceLevel = 'جيد';
             let levelClass = 'good';
             let performanceMessage = 'أنت في طريقك الصحيح، استمر في التعلم!';
@@ -3309,20 +3278,79 @@
         }
 
         // ============================================================
+        // LOAD USER SUBSCRIPTIONS
+        // ============================================================
+        async function loadUserSubscriptions(uid) {
+            try {
+                const q = query(collection(db, 'courseSubscriptions'), where('userId', '==', uid));
+                const snapshot = await getDocs(q);
+                userSubscriptions = [];
+                snapshot.forEach(docSnap => {
+                    userSubscriptions.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                renderCourses(allCourses);
+            } catch (err) {
+                console.error('Error loading subscriptions:', err);
+                userSubscriptions = [];
+            }
+        }
+
+        function isUserSubscribed(courseId) {
+            return userSubscriptions.some(sub => sub.courseId === courseId && sub.status === 'active');
+        }
+
+        // ============================================================
         // AUTH STATE OBSERVER
         // ============================================================
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             updateUIForAuth(user);
 
             if (user) {
-                loadUserData(user.uid);
-                loadUserSubscriptions(user.uid);
-                loadCourses();
-                loadLeaderboard();
-                loadGeneralExams();
-                loadGeneralQuizzes();
+                try {
+                    // Ensure user data exists and get it
+                    const name = user.displayName || user.email?.split('@')[0] || 'مستخدم';
+                    const email = user.email || '';
+                    const phone = user.phoneNumber || '';
+                    const userDataFromDb = await ensureUserData(user.uid, name, email, phone);
+                    userData = userDataFromDb;
+
+                    // Setup real-time listener for user data
+                    setupUserListener(user.uid);
+
+                    // Load subscriptions and progress
+                    await loadUserSubscriptions(user.uid);
+                    await loadUserProgress(user.uid);
+
+                    // Update UI with user data
+                    const atoms = userData.atoms || 0;
+                    document.getElementById('atomsCount').textContent = atoms;
+                    document.getElementById('userAtomsCount').textContent = atoms;
+                    document.getElementById('userNameDisplay').textContent = userData.name || 'مستخدم';
+
+                    if (userData.profileImage) {
+                        updateProfileImageDisplay(userData.profileImage);
+                    } else {
+                        const avatarBtn = document.getElementById('userAvatar');
+                        if (avatarBtn) avatarBtn.textContent = (userData.name || 'U')[0].toUpperCase();
+                    }
+
+                    // Load courses, leaderboard, exams, quizzes
+                    loadCourses();
+                    loadLeaderboard();
+                    loadGeneralExams();
+                    loadGeneralQuizzes();
+                } catch (error) {
+                    console.error('Error setting up user data:', error);
+                    showToast('حدث خطأ في تحميل بيانات المستخدم', true);
+                }
             } else {
+                if (userDocUnsubscribe) {
+                    userDocUnsubscribe();
+                    userDocUnsubscribe = null;
+                }
+                userData = null;
+                userSubscriptions = [];
                 loadCourses();
                 loadLeaderboard();
                 loadGeneralExams();
@@ -3404,10 +3432,11 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('✅ Yalla Chemistry Platform v3.1 - Performance Analysis Added');
-            console.log('✅ Profile Image Upload Added');
-            console.log('✅ Student Code Generation Added');
-            console.log('✅ Real Data Dashboard Added');
+            console.log('✅ Yalla Chemistry Platform v3.2 - Fixed User Data Display');
+            console.log('✅ Student Code Generation Fixed');
+            console.log('✅ Profile Image Upload Fixed');
+            console.log('✅ Real-time User Data Listener Active');
+            console.log('✅ Copy Code Button Fixed');
             console.log('✅ All Firebase config preserved');
             console.log('✅ Dark/Light mode working');
             console.log('✅ Guest/User separation working');
