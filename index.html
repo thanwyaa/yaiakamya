@@ -12,6 +12,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- jsPDF for certificates and student cards -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         /* ===== CSS Variables ===== */
@@ -547,6 +551,12 @@
             background: var(--bg);
             color: var(--text);
             transition: var(--transition);
+            overflow: hidden;
+        }
+        .podium-item .podium-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* المركز الأول - ذهبي */
@@ -554,8 +564,6 @@
             border-color: #FFD60A;
             box-shadow: 0 0 30px rgba(255, 214, 10, 0.4), 0 0 60px rgba(255, 214, 10, 0.2);
             animation: glowGold 2s ease-in-out infinite;
-            background: linear-gradient(135deg, #FFD60A, #F59E0B);
-            color: #081B2C;
         }
         .podium-item.gold .podium-base { background: #FFD60A; height: 12px; width: 80px; border-radius: 4px; margin-top: 8px; }
         .podium-item.gold .podium-name { color: #D4A800; }
@@ -570,8 +578,6 @@
         .podium-item.silver .podium-avatar {
             border-color: #C0C0C0;
             box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
-            background: linear-gradient(135deg, #E8E8E8, #C0C0C0);
-            color: #333;
         }
         .podium-item.silver .podium-base { background: #C0C0C0; height: 10px; width: 70px; border-radius: 4px; margin-top: 8px; }
 
@@ -579,8 +585,6 @@
         .podium-item.bronze .podium-avatar {
             border-color: #CD7F32;
             box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
-            background: linear-gradient(135deg, #E8A87C, #CD7F32);
-            color: #fff;
         }
         .podium-item.bronze .podium-base { background: #CD7F32; height: 8px; width: 60px; border-radius: 4px; margin-top: 8px; }
 
@@ -618,11 +622,9 @@
             font-weight: 800;
             font-size: 0.8rem;
             flex-shrink: 0;
+            background: var(--border);
+            color: var(--text2);
         }
-        .leaderboard-item .rank.gold { background: #FFD60A; color: #081B2C; }
-        .leaderboard-item .rank.silver { background: #94A3B8; color: #fff; }
-        .leaderboard-item .rank.bronze { background: #CD7F32; color: #fff; }
-        .leaderboard-item .rank.normal { background: var(--border); color: var(--text2); }
         .leaderboard-item .avatar {
             width: 36px;
             height: 36px;
@@ -635,6 +637,12 @@
             flex-shrink: 0;
             background: var(--primary);
             color: #fff;
+            overflow: hidden;
+        }
+        .leaderboard-item .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .leaderboard-item .info { flex: 1; }
         .leaderboard-item .info .name { font-weight: 700; color: var(--text); font-size: 0.95rem; }
@@ -802,8 +810,13 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            overflow: hidden;
         }
-        .user-menu-btn:hover { transform: scale(1.05); }
+        .user-menu-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .menu-item {
             display: flex;
@@ -836,9 +849,6 @@
         .error-bank-item .question { font-weight: 700; color: var(--text); }
         .error-bank-item .answer { color: var(--success); font-weight: 600; }
         .error-bank-item .user-answer { color: var(--danger); font-weight: 600; }
-        .error-bank-item .status { font-size: 0.8rem; padding: 2px 12px; border-radius: 20px; }
-        .error-bank-item .status.solved { background: var(--success-light); color: var(--success-dark); }
-        .error-bank-item .status.unsolved { background: var(--danger-light); color: var(--danger-dark); }
 
         /* ===== Certificate ===== */
         .certificate-preview {
@@ -865,6 +875,180 @@
         .certificate-preview .name { font-size: 1.8rem; font-weight: 700; color: var(--text); }
         .certificate-preview .details { color: var(--text2); margin: 8px 0; font-size: 0.9rem; }
         .certificate-preview .qr-code { width: 80px; height: 80px; margin: 12px auto; background: var(--bg); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+
+        /* ===== Student Card ===== */
+        .student-card-preview {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            max-width: 450px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .student-card-preview .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 4rem;
+            font-family: 'Lalezar', cursive;
+            color: rgba(11, 79, 140, 0.06);
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: 10px;
+        }
+        .student-card-preview .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .student-card-preview .card-header .logo {
+            font-family: 'Lalezar', cursive;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        .student-card-preview .card-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary);
+            color: #fff;
+            margin: 0 auto 12px;
+            overflow: hidden;
+        }
+        .student-card-preview .card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .student-card-preview .card-info {
+            text-align: center;
+        }
+        .student-card-preview .card-info .name { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+        .student-card-preview .card-info .code { font-size: 1.1rem; font-weight: 700; color: var(--primary); letter-spacing: 2px; }
+        .student-card-preview .card-info .detail { font-size: 0.85rem; color: var(--text2); margin: 2px 0; }
+        .student-card-preview .card-footer {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 2px dashed var(--border);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ===== FAQ New Questions ===== */
+        .faq-item .faq-question .faq-icon { margin-left: 10px; }
+
+        /* ===== Course Page ===== */
+        .course-page-hero {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            color: #fff;
+            margin-bottom: 24px;
+        }
+        .course-page-hero h1 { font-family: 'Lalezar', cursive; font-size: 2.5rem; }
+        .course-page-hero p { opacity: 0.9; font-size: 1.1rem; }
+        .course-page-hero .stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .course-page-hero .stats span { display: flex; align-items: center; gap: 6px; }
+
+        .course-lesson-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .course-lesson-item:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+        .course-lesson-item .lesson-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            background: var(--bg);
+            color: var(--text2);
+            flex-shrink: 0;
+        }
+        .course-lesson-item .lesson-info { flex: 1; }
+        .course-lesson-item .lesson-info .title { font-weight: 700; color: var(--text); }
+        .course-lesson-item .lesson-info .meta { font-size: 0.8rem; color: var(--text2); }
+        .course-lesson-item .lesson-status {
+            font-size: 0.8rem;
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+        .course-lesson-item .lesson-status.completed { background: var(--success-light); color: var(--success-dark); }
+        .course-lesson-item .lesson-status.in-progress { background: var(--warning-light); color: var(--warning-dark); }
+        .course-lesson-item .lesson-status.locked { background: var(--danger-light); color: var(--danger-dark); }
+
+        /* ===== Achievement Badges ===== */
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .achievement-item {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: var(--transition);
+        }
+        .achievement-item.unlocked {
+            border-color: var(--gold);
+            background: rgba(255, 214, 10, 0.05);
+        }
+        .achievement-item .icon { font-size: 2.5rem; margin-bottom: 4px; }
+        .achievement-item .name { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+        .achievement-item .desc { font-size: 0.7rem; color: var(--text2); }
+
+        /* ===== Study Streak ===== */
+        .streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: #fff;
+        }
+
+        /* ===== Motivational Messages ===== */
+        .motivational-message {
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            background: var(--card);
+            border: 1px solid var(--border);
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary);
+        }
+        .motivational-message .emoji { font-size: 1.5rem; margin-left: 8px; }
     </style>
 </head>
 <body>
@@ -929,9 +1113,10 @@
                         <button class="menu-item" onclick="APP.showExams()"><i class="fas fa-file-alt"></i> الامتحانات</button>
                         <button class="menu-item" onclick="APP.showQuizzes()"><i class="fas fa-puzzle-piece"></i> الكويزات</button>
                         <button class="menu-item" onclick="APP.showLeaderboard()"><i class="fas fa-trophy"></i> المتصدرون</button>
-                        <!-- NEW: Error Bank & Certificate -->
-                        <button class="menu-item" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> راجع أخطاءك</button>
-                        <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهادة الإنجاز</button>
+                        <button class="menu-item" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
+                        <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهادتي</button>
+                        <button class="menu-item" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
+                        <button class="menu-item" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
                         <button class="menu-item danger" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
                     </div>
                 </li>
@@ -1099,17 +1284,12 @@
             </div>
         </section>
 
-        <!-- ============================================================
-        LEADERBOARD SECTION - محسّن
-        ============================================================ -->
+        <!-- ===== LEADERBOARD ===== -->
         <section id="leaderboardSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">🏆 المتصدرين</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:12px;">أفضل الطلاب في منصة يلا كيمياء</p>
-            <div style="max-width:500px;margin:0 auto 16px;border-radius:var(--radius-lg);overflow:hidden;">
-                <img src="https://r2.image-upload.app/tyImg/1t2HoqVM.png" alt="المتصدرين" style="width:100%;height:auto;display:block;" loading="lazy" onerror="this.style.display='none'">
-            </div>
-            <div id="leaderboardGrid" style="display:grid;grid-template-columns:1fr;gap:16px;">
-                <div class="card skeleton" style="height:260px;"></div>
+            <div id="leaderboardContainer">
+                <div class="card skeleton" style="height:400px;"></div>
             </div>
             <div style="text-align:center;margin-top:16px;" class="guest-only">
                 <a href="login.html" class="btn-primary">🚀 انضم وكن من المتصدرين</a>
@@ -1125,6 +1305,12 @@
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">قم بإدخال:<br>• البريد الإلكتروني<br>• كلمة المرور<br><br>ثم اضغط على تسجيل الدخول.</div></div>
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🎯 هل المنصة مناسبة للمبتدئين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.</div></div>
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔄 هل يتم إضافة محتوى جديد باستمرار؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، يتم إضافة حصص وكورسات وامتحانات جديدة بشكل دوري.</div></div>
+                <!-- NEW FAQ ITEMS -->
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🏆 ما هو ترتيب المتصدرين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يتم ترتيب المتصدرين تلقائيًا حسب عدد الذرات التي جمعها كل طالب، ويتم تحديث الترتيب باستمرار مع أي تغيير في رصيد الذرات.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>⚛️ ما هي الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">الذرات هي نظام المكافآت داخل منصة يلا كيمياء، يحصل عليها الطالب من خلال حل الامتحانات والكويزات وإكمال الحصص والكورسات، وتُستخدم في ترتيب المتصدرين وتحفيز الطلاب على الاستمرار.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🎯 كيف يمكنني الحصول على الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يمكنك جمع الذرات عن طريق:<br>• إكمال الكورسات بالكامل<br>• إنهاء جميع الحصص<br>• دخول الامتحانات<br>• حل الكويزات<br>• تسليم الواجبات<br>• الالتزام بالدراسة والمتابعة المستمرة مع المستر<br><br>كلما زاد نشاطك داخل المنصة، زاد عدد الذرات التي تحصل عليها.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>❌ هل يمكن أن أخسر الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">لا، الذرات يتم اكتسابها فقط كمكافآت على الإنجاز، ولا يتم خصمها إلا إذا قررت إدارة المنصة ذلك في حالات خاصة.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>💎 هل الذرات لها فائدة؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، كلما جمعت ذرات أكثر:<br>• يرتفع ترتيبك في المتصدرين<br>• تحصل على شارات وإنجازات<br>• تزيد فرص ظهورك ضمن أفضل الطلاب</div></div>
             </div>
         </section>
 
@@ -1187,6 +1373,7 @@
     ============================================================ -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <script>
@@ -1206,9 +1393,10 @@
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('✅ Firebase initialized - Using Realtime Database');
+        console.log('✅ Firebase initialized - Using Realtime Database + Storage');
 
         // ============================================================
         // APP STATE
@@ -1219,13 +1407,9 @@
         let userSubscriptions = [];
         let userCourseProgress = {};
         let allLessons = [];
-        let allAssignments = [];
         let allExams = [];
         let allQuizzes = [];
-        let allNotifications = [];
         let allUsers = [];
-        let allActivityLog = [];
-        let leaderboardData = [];
 
         // ============================================================
         // UTILITY FUNCTIONS
@@ -1266,6 +1450,48 @@
         function logError(context, error) {
             console.error(`❌ ${context}:`, error);
             return error.message;
+        }
+
+        // ============================================================
+        // STUDENT CODE GENERATION
+        // ============================================================
+        async function generateStudentCode(email, phone) {
+            // الصيغة: YK-XXX-XXXX
+            // XXX: مشتق من البريد أو الهاتف
+            // XXXX: أرقام عشوائية + جزء من الوقت
+            
+            const prefix = 'YK';
+            let middle = '';
+            
+            // استخراج جزء من البريد الإلكتروني
+            if (email) {
+                const parts = email.split('@')[0];
+                const chars = parts.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                middle = chars.substring(0, 3);
+                while (middle.length < 3) middle += 'X';
+            } else if (phone) {
+                middle = phone.substring(0, 3);
+                while (middle.length < 3) middle += 'X';
+            } else {
+                middle = 'STU';
+            }
+            
+            // الجزء العشوائي مع الوقت
+            const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+            const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const suffix = timestamp + random.slice(-2);
+            
+            const code = `${prefix}-${middle}-${suffix}`;
+            
+            // التحقق من عدم التكرار
+            const snapshot = await database.ref('users').orderByChild('code').equalTo(code).once('value');
+            if (snapshot.exists()) {
+                // في حالة التكرار، نضيف أرقام عشوائية إضافية
+                const newSuffix = timestamp + Math.random().toString(36).substring(2, 6).toUpperCase();
+                return `${prefix}-${middle}-${newSuffix}`;
+            }
+            
+            return code;
         }
 
         // ============================================================
@@ -1366,54 +1592,68 @@
         }
 
         // ============================================================
-        // LOAD USER DATA FROM REALTIME DATABASE
+        // LOAD USER DATA
         // ============================================================
         function loadUserData(uid) {
-            database.ref('users/' + uid).once('value').then((snapshot) => {
+            database.ref('users/' + uid).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userData = snapshot.val();
                     const atoms = userData.atoms || 0;
                     document.getElementById('atomsCount').textContent = atoms;
                     document.getElementById('userAtomsCount').textContent = atoms;
                     document.getElementById('userNameDisplay').textContent = userData.name || 'مستخدم';
-                    document.getElementById('userAvatar').textContent = (userData.name || 'U')[0].toUpperCase();
+                    const avatar = userData.photoURL || '';
+                    if (avatar) {
+                        document.getElementById('userAvatar').innerHTML = `<img src="${avatar}" alt="صورة">`;
+                    } else {
+                        document.getElementById('userAvatar').textContent = (userData.name || 'U')[0].toUpperCase();
+                    }
                     console.log('✅ User data loaded from Realtime DB');
                 } else {
-                    // Create new user
-                    const newUser = {
-                        name: 'مستخدم',
-                        email: auth.currentUser?.email || '',
-                        grade: '',
-                        studyType: 'عام',
-                        phone: '',
-                        parentPhone: '',
-                        code: 'STU' + Date.now().toString(36).toUpperCase(),
-                        atoms: 0,
-                        points: 0,
-                        progress: 0,
-                        createdAt: new Date().toISOString(),
-                        active: true,
-                        coursesCount: 0
-                    };
-                    database.ref('users/' + uid).set(newUser).then(() => {
-                        userData = newUser;
-                        console.log('✅ New user created in Realtime DB');
-                    });
+                    // Create new user with unique code
+                    createNewUser(uid);
                 }
-            }).catch((error) => {
-                logError('loadUserData', error);
-                showToast('فشل تحميل بيانات المستخدم', true);
+            });
+        }
+
+        async function createNewUser(uid) {
+            const email = auth.currentUser?.email || '';
+            const phone = '';
+            const code = await generateStudentCode(email, phone);
+            
+            const newUser = {
+                name: 'مستخدم',
+                email: email,
+                grade: '',
+                studyType: 'عام',
+                phone: '',
+                parentPhone: '',
+                code: code,
+                atoms: 0,
+                progress: 0,
+                photoURL: '',
+                createdAt: new Date().toISOString(),
+                active: true,
+                coursesCount: 0,
+                lastActive: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                loginCount: 1,
+                streak: 0
+            };
+            database.ref('users/' + uid).set(newUser).then(() => {
+                userData = newUser;
+                console.log('✅ New user created with code:', code);
             });
         }
 
         // ============================================================
-        // LOAD COURSES FROM REALTIME DATABASE
+        // LOAD COURSES
         // ============================================================
         function loadCourses() {
             const grid = document.getElementById('coursesGrid');
             if (!grid) return;
 
-            database.ref('courses').once('value').then((snapshot) => {
+            database.ref('courses').on('value', (snapshot) => {
                 allCourses = [];
                 snapshot.forEach((child) => {
                     const data = child.val();
@@ -1424,14 +1664,9 @@
                         lessonsCount: data.lessonsCount || data.lessons || 0
                     });
                 });
-                // ترتيب حسب order
                 allCourses.sort((a, b) => (a.order || 0) - (b.order || 0));
                 renderCourses(allCourses);
                 console.log('✅ Courses loaded from Realtime DB:', allCourses.length);
-            }).catch((error) => {
-                logError('loadCourses', error);
-                showToast('فشل تحميل الكورسات: ' + error.message, true);
-                renderCourses([]);
             });
         }
 
@@ -1455,7 +1690,7 @@
                 const isLocked = !currentUser || (!subscribed && c.isFree === false);
 
                 return `
-                            <div class="card" style="cursor:pointer;position:relative;" onclick="APP.openCourse('${c.id}')">
+                            <div class="card" style="cursor:pointer;position:relative;" onclick="APP.openCoursePage('${c.id}')">
                                 <div style="position:relative;overflow:hidden;">
                                     <img src="${c.image || 'https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'}" 
                                          alt="${escapeHtml(c.title) || 'كورس'}" 
@@ -1474,7 +1709,7 @@
                                     <h3 style="font-weight:700;font-size:1rem;color:var(--text);margin-bottom:4px;">${escapeHtml(c.title) || 'كورس'}</h3>
                                     <p style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(c.description) || ''}</p>
                                     <div style="display:flex;flex-wrap:wrap;gap:4px 10px;font-size:0.7rem;color:var(--text2);margin-bottom:8px;border-top:1px solid var(--border);padding-top:6px;">
-                                        <span>🎯 ${c.grade === 'first' ? 'أولى ثانوي' : c.grade === 'second' ? 'ثانية ثانوي' : c.grade === 'third' ? 'ثالثة ثانوي' : c.grade || 'كل الصفوف'}</span>
+                                        <span>🎯 ${c.grade || 'كل الصفوف'}</span>
                                         <span>📚 ${c.lessonsCount || 0} حصة</span>
                                         <span>👥 ${c.studentsCount || 0} طالب</span>
                                     </div>
@@ -1503,225 +1738,14 @@
         }
 
         // ============================================================
-        // LOAD LESSONS FROM REALTIME DATABASE
-        // ============================================================
-        function loadLessons() {
-            database.ref('lessons').once('value').then((snapshot) => {
-                allLessons = [];
-                snapshot.forEach((child) => {
-                    const data = child.val();
-                    allLessons.push({ id: child.key, ...data });
-                });
-                console.log('✅ Lessons loaded from Realtime DB:', allLessons.length);
-            }).catch((error) => {
-                logError('loadLessons', error);
-                allLessons = [];
-            });
-        }
-
-        // ============================================================
-        // LOAD ASSIGNMENTS FROM REALTIME DATABASE
-        // ============================================================
-        function loadAssignments() {
-            database.ref('assignments').once('value').then((snapshot) => {
-                allAssignments = [];
-                snapshot.forEach((child) => {
-                    const data = child.val();
-                    allAssignments.push({ id: child.key, ...data });
-                });
-                console.log('✅ Assignments loaded from Realtime DB:', allAssignments.length);
-            }).catch((error) => {
-                logError('loadAssignments', error);
-                allAssignments = [];
-            });
-        }
-
-        // ============================================================
-        // LOAD EXAMS FROM REALTIME DATABASE
-        // ============================================================
-        function loadExams() {
-            database.ref('exams').once('value').then((snapshot) => {
-                allExams = [];
-                snapshot.forEach((child) => {
-                    const data = child.val();
-                    allExams.push({ id: child.key, ...data });
-                });
-                console.log('✅ Exams loaded from Realtime DB:', allExams.length);
-            }).catch((error) => {
-                logError('loadExams', error);
-                allExams = [];
-            });
-        }
-
-        // ============================================================
-        // LOAD QUIZZES FROM REALTIME DATABASE
-        // ============================================================
-        function loadQuizzes() {
-            database.ref('quizzes').once('value').then((snapshot) => {
-                allQuizzes = [];
-                snapshot.forEach((child) => {
-                    const data = child.val();
-                    allQuizzes.push({ id: child.key, ...data });
-                });
-                console.log('✅ Quizzes loaded from Realtime DB:', allQuizzes.length);
-            }).catch((error) => {
-                logError('loadQuizzes', error);
-                allQuizzes = [];
-            });
-        }
-
-        // ============================================================
-        // LOAD NOTIFICATIONS FROM REALTIME DATABASE
-        // ============================================================
-        function loadNotifications() {
-            database.ref('notifications').once('value').then((snapshot) => {
-                allNotifications = [];
-                snapshot.forEach((child) => {
-                    const data = child.val();
-                    allNotifications.push({ id: child.key, ...data });
-                });
-                console.log('✅ Notifications loaded from Realtime DB:', allNotifications.length);
-            }).catch((error) => {
-                logError('loadNotifications', error);
-                allNotifications = [];
-            });
-        }
-
-        // ============================================================
-        // LOAD USERS FOR LEADERBOARD
-        // ============================================================
-        function loadLeaderboard() {
-            database.ref('users').once('value').then((snapshot) => {
-                const users = [];
-                snapshot.forEach((child) => {
-                    const data = child.val();
-                    users.push({
-                        id: child.key,
-                        name: data.name || 'مستخدم',
-                        atoms: data.atoms || 0,
-                        points: data.points || 0,
-                        progress: data.progress || 0,
-                        coursesCount: data.coursesCount || 0,
-                        examsPassed: data.examsPassed || 0,
-                        quizzesPassed: data.quizzesPassed || 0
-                    });
-                });
-                users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
-                renderLeaderboard(users);
-                renderLeaderboardFull(users);
-                console.log('✅ Leaderboard loaded from Realtime DB:', users.length);
-            }).catch((error) => {
-                logError('loadLeaderboard', error);
-                renderLeaderboard([]);
-            });
-        }
-
-        function renderLeaderboard(users) {
-            const grid = document.getElementById('leaderboardGrid');
-            if (!grid) return;
-
-            if (!users || users.length === 0) {
-                grid.innerHTML = `
-                            <div class="empty-state" style="grid-column:1/-1;padding:20px;">
-                                <div class="icon">🏆</div>
-                                <h3>لا يوجد متصدرين حالياً</h3>
-                            </div>
-                        `;
-                return;
-            }
-
-            const top3 = users.slice(0, 3);
-            const rest = users.slice(3);
-
-            // بناء المنصة
-            let podiumHtml = `<div class="leaderboard-podium">`;
-            const podiumData = [
-                { index: 1, user: top3[1], class: 'silver', rank: '🥈' },
-                { index: 0, user: top3[0], class: 'gold', rank: '👑' },
-                { index: 2, user: top3[2], class: 'bronze', rank: '🥉' }
-            ];
-
-            podiumData.forEach(p => {
-                if (!p.user) return;
-                podiumHtml += `
-                            <div class="podium-item ${p.class}">
-                                ${p.class === 'gold' ? '<div class="crown">👑</div>' : ''}
-                                <div class="podium-rank">${p.rank}</div>
-                                <div class="podium-avatar">${(p.user.name || 'U')[0].toUpperCase()}</div>
-                                <div class="podium-name">${escapeHtml(p.user.name)}</div>
-                                <div class="podium-atoms">⚛️ ${p.user.atoms || 0}</div>
-                                <div class="podium-base"></div>
-                            </div>
-                        `;
-            });
-            podiumHtml += `</div>`;
-
-            // بناء القائمة
-            let listHtml = `<div style="background:var(--card);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;">`;
-            rest.forEach((user, idx) => {
-                const rank = idx + 4;
-                listHtml += `
-                            <div class="leaderboard-item">
-                                <div class="rank normal">#${rank}</div>
-                                <div class="avatar">${(user.name || 'U')[0].toUpperCase()}</div>
-                                <div class="info">
-                                    <div class="name">${escapeHtml(user.name)}</div>
-                                    <div class="stats">📚 ${user.coursesCount || 0} كورس</div>
-                                </div>
-                                <div class="points">⚛️ ${user.atoms || 0}</div>
-                            </div>
-                        `;
-            });
-            listHtml += `</div>`;
-
-            grid.innerHTML = podiumHtml + listHtml;
-        }
-
-        function renderLeaderboardFull(users) {
-            const container = document.getElementById('leaderboardFullList');
-            if (!container) return;
-
-            if (!users || users.length === 0) {
-                container.innerHTML = `
-                            <div class="empty-state">
-                                <div class="icon">🏆</div>
-                                <h3>لا يوجد متصدرين حالياً</h3>
-                            </div>
-                        `;
-                return;
-            }
-
-            const topUsers = users.slice(0, 10);
-            container.innerHTML = topUsers.map((user, idx) => {
-                let rankClass = 'normal';
-                let medal = '';
-                if (idx === 0) { rankClass = 'gold';
-                    medal = '🥇'; } else if (idx === 1) { rankClass = 'silver';
-                    medal = '🥈'; } else if (idx === 2) { rankClass = 'bronze';
-                    medal = '🥉'; }
-                return `
-                            <div class="leaderboard-item">
-                                <div class="rank ${rankClass}">${medal || (idx + 1)}</div>
-                                <div class="avatar">${(user.name || 'U')[0].toUpperCase()}</div>
-                                <div class="info">
-                                    <div class="name">${escapeHtml(user.name)}</div>
-                                    <div class="stats">📚 ${user.coursesCount || 0} كورس • 📝 ${user.examsPassed || 0} امتحان • 🧪 ${user.quizzesPassed || 0} كويز</div>
-                                </div>
-                                <div class="points">⚛️ ${(user.atoms || 0).toLocaleString()}</div>
-                            </div>
-                        `;
-            }).join('');
-        }
-
-        // ============================================================
-        // SUBSCRIBE TO COURSE
+        // SUBSCRIPTIONS
         // ============================================================
         function isUserSubscribed(courseId) {
             return userSubscriptions.some(sub => sub.courseId === courseId && sub.status === 'active');
         }
 
         function loadUserSubscriptions(uid) {
-            database.ref('courseSubscriptions').orderByChild('userId').equalTo(uid).once('value').then((snapshot) => {
+            database.ref('courseSubscriptions').orderByChild('userId').equalTo(uid).on('value', (snapshot) => {
                 userSubscriptions = [];
                 snapshot.forEach((child) => {
                     const data = child.val();
@@ -1729,9 +1753,6 @@
                 });
                 renderCourses(allCourses);
                 console.log('✅ Subscriptions loaded:', userSubscriptions.length);
-            }).catch((error) => {
-                logError('loadUserSubscriptions', error);
-                userSubscriptions = [];
             });
         }
 
@@ -1755,7 +1776,6 @@
                     subscribedAt: new Date().toISOString()
                 });
 
-                // تحديث عدد الطلاب في الكورس
                 const course = allCourses.find(c => c.id === courseId);
                 if (course) {
                     const currentCount = course.studentsCount || 0;
@@ -1768,22 +1788,21 @@
                 loadCourses();
             } catch (err) {
                 console.error('Error subscribing:', err);
-                showToast('حدث خطأ أثناء الاشتراك: ' + err.message, true);
+                showToast('حدث خطأ أثناء الاشتراك', true);
             }
         }
 
         // ============================================================
-        // OPEN COURSE
+        // COURSE PAGE - صفحة كورس مستقلة
         // ============================================================
-        async function openCourse(courseId) {
+        async function openCoursePage(courseId) {
             if (!currentUser) {
                 showLoginOverlay();
                 return;
             }
 
-            const overlay = document.getElementById('courseOverlay');
-            const modal = document.getElementById('courseModal');
-            if (!overlay || !modal) return;
+            const main = document.getElementById('mainContent');
+            if (!main) return;
 
             const course = allCourses.find(c => c.id === courseId);
             if (!course) {
@@ -1792,29 +1811,20 @@
             }
 
             if (!isUserSubscribed(courseId) && course.isFree === false) {
-                modal.innerHTML = `
-                            <div style="text-align:center;padding:20px 0;">
-                                <div style="font-size:3.5rem;margin-bottom:12px;">🔒</div>
-                                <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);">هذا الكورس مدفوع</h3>
-                                <p style="color:var(--text2);margin-bottom:16px;">يرجى الاشتراك أولاً للوصول إلى المحتوى</p>
-                                <button class="btn-primary" onclick="APP.subscribeToCourse('${courseId}')">📝 اشترك الآن</button>
-                                <button class="btn-outline" style="margin-top:10px;" onclick="APP.closeCourseModal()">إلغاء</button>
-                            </div>
-                        `;
-                overlay.classList.add('open');
+                showToast('هذا الكورس مدفوع، اشترك أولاً', 'warning');
                 return;
             }
 
-            modal.innerHTML = `
-                        <div style="text-align:center;padding:30px 0;">
+            // عرض صفحة التحميل
+            main.innerHTML = `
+                        <div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;">
                             <div class="spinner" style="margin:0 auto;"></div>
                             <p style="margin-top:12px;color:var(--text2);font-weight:600;">جارٍ تجهيز المحتوى...</p>
                         </div>
                     `;
-            overlay.classList.add('open');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
             try {
-                // جلب الحصص من Realtime Database
                 const lessonsSnapshot = await database.ref('lessons').orderByChild('courseId').equalTo(courseId).once('value');
                 const lessons = [];
                 lessonsSnapshot.forEach((child) => {
@@ -1824,138 +1834,99 @@
                 lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
 
                 let completedCount = 0;
-                lessons.forEach(v => {
-                    if (userCourseProgress[v.id]?.watched) completedCount++;
+                let totalAtoms = 0;
+                lessons.forEach(l => {
+                    if (userCourseProgress[l.id]?.watched) completedCount++;
+                    totalAtoms += (l.atomsReward || 5);
                 });
                 const progressPercent = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
 
-                let lessonsHtml = '';
-                if (lessons.length === 0) {
-                    lessonsHtml = `
-                                <div class="empty-state" style="padding:20px;">
-                                    <div class="icon">📚</div>
-                                    <h3>لا توجد حصص متاحة حالياً</h3>
-                                    <p>سيتم إضافة الحصص قريباً</p>
+                // رسالة تحفيزية
+                let motivationalMessage = '';
+                if (progressPercent === 100) motivationalMessage = '🎉 مبروك! أكملت الكورس بالكامل! أنت رائع!';
+                else if (progressPercent >= 75) motivationalMessage = '🔥 اقتربت من إنهاء الكورس! بقيت لك ' + (lessons.length - completedCount) + ' حصص فقط!';
+                else if (progressPercent >= 50) motivationalMessage = '💪 أحسنت! أكملت نصف الكورس، استمر!';
+                else if (progressPercent >= 25) motivationalMessage = '🌟 أحسنت! أكملت 25% من الكورس، استمر في التقدم!';
+                else if (completedCount > 0) motivationalMessage = '📚 بداية ممتازة! أكملت ' + completedCount + ' حصص حتى الآن!';
+                else motivationalMessage = '🚀 ابدأ رحلتك في هذا الكورس اليوم!';
+
+                let lessonsHtml = lessons.map((lesson, idx) => {
+                    const isCompleted = userCourseProgress[lesson.id]?.watched || false;
+                    const isLocked = idx > 0 && !userCourseProgress[lessons[idx-1]?.id]?.watched;
+                    const statusClass = isCompleted ? 'completed' : isLocked ? 'locked' : 'in-progress';
+                    const statusText = isCompleted ? '✅ مكتملة' : isLocked ? '🔒 مقفولة' : '⏳ قيد التقدم';
+
+                    return `
+                                <div class="course-lesson-item" onclick="APP.openLessonPage('${lesson.id}')">
+                                    <div class="lesson-num">${idx + 1}</div>
+                                    <div class="lesson-info">
+                                        <div class="title">${escapeHtml(lesson.title)}</div>
+                                        <div class="meta">⏰ ${escapeHtml(lesson.duration || '--')} • ⭐ ${lesson.atomsReward || 5} ذرة</div>
+                                    </div>
+                                    <div class="lesson-status ${statusClass}">${statusText}</div>
+                                    <i class="fas fa-chevron-left" style="color:var(--text2);"></i>
                                 </div>
                             `;
-                } else {
-                    lessonsHtml = `
-                                <div style="margin-bottom:12px;">
-                                    <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:4px;">
-                                        <span style="color:var(--text2);font-weight:600;">نسبة الإتمام</span>
+                }).join('');
+
+                main.innerHTML = `
+                            <div style="max-width:1280px;margin:0 auto;padding:20px;">
+                                <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+
+                                <!-- Banner -->
+                                <div class="course-page-hero" style="margin-top:12px;">
+                                    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+                                        ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:120px;height:120px;border-radius:var(--radius);object-fit:cover;border:3px solid rgba(255,255,255,0.3);">` : ''}
+                                        <div style="flex:1;">
+                                            <h1>${escapeHtml(course.title)}</h1>
+                                            <p>${escapeHtml(course.description) || ''}</p>
+                                            <div class="stats">
+                                                <span><i class="fas fa-video"></i> ${lessons.length} حصة</span>
+                                                <span><i class="fas fa-atom"></i> ${totalAtoms} ذرة ممكنة</span>
+                                                <span><i class="fas fa-user-graduate"></i> ${course.studentsCount || 0} طالب</span>
+                                                <span><i class="fas fa-clock"></i> ${Math.round(lessons.reduce((s, l) => s + parseInt(l.duration || '0'), 0) / 60)} ساعة</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Motivational Message -->
+                                <div class="motivational-message">
+                                    <span class="emoji">${motivationalMessage.split(' ')[0]}</span>
+                                    ${motivationalMessage}
+                                </div>
+
+                                <!-- Progress -->
+                                <div style="margin-bottom:16px;">
+                                    <div style="display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:4px;">
+                                        <span style="color:var(--text2);">نسبة الإكمال</span>
                                         <span style="color:var(--primary);font-weight:700;">${progressPercent}%</span>
                                     </div>
                                     <div class="progress-bar"><div class="fill" style="width:${progressPercent}%;"></div></div>
                                 </div>
-                                <div style="display:flex;flex-direction:column;gap:8px;">
-                                    ${lessons.map((lesson, idx) => {
-                                        const isCompleted = userCourseProgress[lesson.id]?.watched || false;
-                                        const isLocked = idx > 0 && !userCourseProgress[lessons[idx-1]?.id]?.watched;
 
-                                        return `
-                                            <div class="lesson-accordion ${isCompleted ? 'open' : ''}" id="lesson_${lesson.id}">
-                                                <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
-                                                    <div style="display:flex;align-items:center;gap:8px;flex:1;">
-                                                        <span class="lesson-num">${idx + 1}</span>
-                                                        <span style="flex:1;">${escapeHtml(lesson.title)}</span>
-                                                        ${isCompleted ? '<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✅ تم</span>' : ''}
-                                                        ${isLocked ? '<span style="font-size:0.7rem;color:var(--danger);font-weight:600;">🔒 مقفولة</span>' : ''}
-                                                    </div>
-                                                    <i class="fas fa-chevron-down"></i>
-                                                </div>
-                                                <div class="accordion-content">
-                                                    ${!isLocked ? `
-                                                        ${lesson.videoUrl ? `
-                                                            <div class="lesson-item" onclick="APP.openLectureVideo('${lesson.id}')">
-                                                                <div class="item-icon video"><i class="fas fa-play"></i></div>
-                                                                <div class="item-text">
-                                                                    <div class="title">مشاهدة الفيديو</div>
-                                                                    <div class="sub">${isCompleted ? '✅ تم المشاهدة' : '▶️ اضغط للمشاهدة'}</div>
-                                                                </div>
-                                                                <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
-                                                            </div>
-                                                        ` : ''}
-                                                        ${lesson.hasExam ? `
-                                                            <div class="lesson-item" onclick="APP.openLessonExam('${lesson.id}')">
-                                                                <div class="item-icon exam"><i class="fas fa-file-alt"></i></div>
-                                                                <div class="item-text">
-                                                                    <div class="title">📝 امتحان الحصة</div>
-                                                                    <div class="sub">${lesson.examTitle || 'امتحان'}</div>
-                                                                </div>
-                                                                <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
-                                                            </div>
-                                                        ` : ''}
-                                                        ${lesson.hasQuiz ? `
-                                                            <div class="lesson-item" onclick="APP.openLessonQuiz('${lesson.id}')">
-                                                                <div class="item-icon quiz"><i class="fas fa-puzzle-piece"></i></div>
-                                                                <div class="item-text">
-                                                                    <div class="title">🧪 كويز الحصة</div>
-                                                                    <div class="sub">${lesson.quizTitle || 'كويز'}</div>
-                                                                </div>
-                                                                <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
-                                                            </div>
-                                                        ` : ''}
-                                                        ${lesson.hasAssignment ? `
-                                                            <div class="lesson-item" onclick="APP.openLessonAssignment('${lesson.id}')">
-                                                                <div class="item-icon assignment"><i class="fas fa-tasks"></i></div>
-                                                                <div class="item-text">
-                                                                    <div class="title">📚 الواجب</div>
-                                                                    <div class="sub">${lesson.assignmentTitle || 'واجب'}</div>
-                                                                </div>
-                                                                <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.8rem;"></i>
-                                                            </div>
-                                                        ` : ''}
-                                                        ${!lesson.videoUrl && !lesson.hasExam && !lesson.hasQuiz && !lesson.hasAssignment ? `
-                                                            <div style="text-align:center;padding:12px;color:var(--text2);font-size:0.85rem;">
-                                                                لا يوجد محتوى لهذه الحصة
-                                                            </div>
-                                                        ` : ''}
-                                                    ` : `
-                                                        <div style="text-align:center;padding:12px;color:var(--text2);font-size:0.85rem;">
-                                                            🔒 يجب إكمال الحصة السابقة أولاً
-                                                        </div>
-                                                    `}
-                                                </div>
-                                            </div>
-                                        `;
-                                    }).join('')}
-                                </div>
-                            `;
-                }
-
-                modal.innerHTML = `
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                                <div>
-                                    <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">${escapeHtml(course.title)}</h2>
-                                    <p style="font-size:0.8rem;color:var(--text2);">⭐ ${course.rating || 0} • 👥 ${course.studentsCount || 0} طالب • 📚 ${lessons.length} حصة</p>
-                                </div>
-                                <button style="width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);color:var(--text);cursor:pointer;font-size:1rem;" onclick="APP.closeCourseModal()">✕</button>
+                                <!-- Lessons List -->
+                                <h3 style="font-weight:700;font-size:1.2rem;color:var(--primary);margin-bottom:12px;">📚 قائمة الحصص</h3>
+                                ${lessonsHtml || '<div class="empty-state"><div class="icon">📚</div><h3>لا توجد حصص</h3></div>'}
                             </div>
-                            <p style="color:var(--text2);margin-bottom:12px;font-size:0.95rem;">${escapeHtml(course.description) || ''}</p>
-                            <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:10px;">📚 الحصص (${lessons.length})</h3>
-                            ${lessonsHtml}
                         `;
             } catch (error) {
-                logError('openCourse', error);
-                modal.innerHTML = `
-                            <div style="text-align:center;padding:20px;">
+                logError('openCoursePage', error);
+                main.innerHTML = `
+                            <div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;">
                                 <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
-                                <h3 style="font-weight:700;color:var(--text);">حدث خطأ في تحميل المحتوى</h3>
+                                <h3 style="font-weight:700;color:var(--text);">حدث خطأ في تحميل الكورس</h3>
                                 <p style="color:var(--text2);">${error.message}</p>
-                                <button class="btn-primary" style="margin-top:12px;" onclick="APP.closeCourseModal()">إغلاق</button>
+                                <button class="btn-primary" style="margin-top:12px;" onclick="APP.showHome()">🏠 العودة</button>
                             </div>
                         `;
             }
         }
 
-        function closeCourseModal() {
-            document.getElementById('courseOverlay').classList.remove('open');
-        }
-
         // ============================================================
-        // OPEN LECTURE VIDEO
+        // LESSON PAGE - صفحة حصة مستقلة
         // ============================================================
-        async function openLectureVideo(lessonId) {
+        async function openLessonPage(lessonId) {
             if (!currentUser) {
                 showLoginOverlay();
                 return;
@@ -1967,45 +1938,30 @@
             try {
                 const snapshot = await database.ref('lessons/' + lessonId).once('value');
                 if (!snapshot.exists()) {
-                    showToast('الفيديو غير موجود', true);
-                    showHome();
+                    showToast('الحصة غير موجودة', true);
                     return;
                 }
                 const lesson = snapshot.val();
 
-                if (currentUser) {
-                    try {
-                        const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + lessonId);
-                        await progressRef.set({
-                            watched: true,
-                            watchPercent: 100,
-                            completedAt: new Date().toISOString()
-                        });
-
-                        const progressSnap = await progressRef.once('value');
-                        if (!progressSnap.exists() || !progressSnap.val().atomsEarned) {
-                            const userRef = database.ref('users/' + currentUser.uid);
-                            const userSnap = await userRef.once('value');
-                            if (userSnap.exists()) {
-                                const currentAtoms = userSnap.val().atoms || 0;
-                                await userRef.update({ atoms: currentAtoms + 5 });
-                                await progressRef.update({ atomsEarned: true });
-
-                                const atomsEl = document.getElementById('atomsCount');
-                                const userAtomsEl = document.getElementById('userAtomsCount');
-                                if (atomsEl) {
-                                    const current = parseInt(atomsEl.textContent) || 0;
-                                    animateAtoms('atomsCount', current + 5);
-                                }
-                                if (userAtomsEl) {
-                                    const current = parseInt(userAtomsEl.textContent) || 0;
-                                    userAtomsEl.textContent = current + 5;
-                                }
-                            }
-                        }
-                    } catch (err) {
-                        console.error('Error updating progress:', err);
+                // تحديث التقدم
+                if (!userCourseProgress[lessonId]?.watched) {
+                    await database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
+                        watched: true,
+                        watchPercent: 100,
+                        completedAt: new Date().toISOString(),
+                        lastPosition: 0
+                    });
+                    const atomsReward = lesson.atomsReward || 5;
+                    const userRef = database.ref('users/' + currentUser.uid);
+                    const userSnap = await userRef.once('value');
+                    if (userSnap.exists()) {
+                        const currentAtoms = userSnap.val().atoms || 0;
+                        await userRef.update({ atoms: currentAtoms + atomsReward });
+                        animateAtoms('atomsCount', currentAtoms + atomsReward);
+                        animateAtoms('userAtomsCount', currentAtoms + atomsReward);
+                        showToast(`🎉 +${atomsReward} ذرة!`, false);
                     }
+                    loadUserProgress(currentUser.uid);
                 }
 
                 const videoIdYt = extractYouTubeId(lesson.videoUrl || '');
@@ -2024,25 +1980,82 @@
                             </div>
                         `;
 
+                // حفظ آخر موضع مشاهدة
+                const lastPosition = userCourseProgress[lessonId]?.lastPosition || 0;
+
                 main.innerHTML = `
                             <div style="max-width:900px;margin:0 auto;padding:20px;">
-                                <button class="btn-outline btn-sm" onclick="APP.showHome()">
-                                    <i class="fas fa-arrow-right"></i> العودة
-                                </button>
+                                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+                                    <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                                    <div style="display:flex;gap:8px;">
+                                        ${lesson.id ? `<button class="btn-outline btn-sm" onclick="APP.navigateLesson('${lesson.id}', 'prev')"><i class="fas fa-chevron-right"></i> السابق</button>` : ''}
+                                        ${lesson.id ? `<button class="btn-outline btn-sm" onclick="APP.navigateLesson('${lesson.id}', 'next')">التالي <i class="fas fa-chevron-left"></i></button>` : ''}
+                                    </div>
+                                </div>
+
                                 <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">${escapeHtml(lesson.title)}</h1>
-                                <p style="color:var(--text2);margin-bottom:12px;">⏰ ${escapeHtml(lesson.duration) || '--'}</p>
+                                <p style="color:var(--text2);margin-bottom:12px;">⏰ ${escapeHtml(lesson.duration) || '--'} • ⭐ ${lesson.atomsReward || 5} ذرة</p>
+                                ${lastPosition > 0 ? `<p style="color:var(--warning);font-weight:600;margin-bottom:8px;">⏱️ تابعت ${Math.floor(lastPosition / 60)} دقيقة</p>` : ''}
+
                                 ${videoHtml}
-                                <div style="text-align:center;">
-                                    <button class="btn-primary" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
+
+                                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
+                                    ${lesson.videoUrl ? `<button class="btn-primary" onclick="APP.openLessonPage('${lessonId}')"><i class="fas fa-play"></i> مشاهدة مرة أخرى</button>` : ''}
+                                    ${lesson.pdfUrl ? `<button class="btn-primary" style="background:var(--warning);" onclick="window.open('${lesson.pdfUrl}','_blank')"><i class="fas fa-file-pdf"></i> تحميل PDF</button>` : ''}
+                                    ${lesson.hasAssignment ? `<button class="btn-outline" onclick="APP.openLessonAssignment('${lessonId}')"><i class="fas fa-tasks"></i> الواجب</button>` : ''}
+                                    ${lesson.hasQuiz ? `<button class="btn-outline" onclick="APP.openLessonQuiz('${lessonId}')"><i class="fas fa-puzzle-piece"></i> الكويز</button>` : ''}
+                                    ${lesson.hasExam ? `<button class="btn-outline" onclick="APP.openLessonExam('${lessonId}')"><i class="fas fa-file-alt"></i> الامتحان</button>` : ''}
+                                </div>
+
+                                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+                                    <button class="btn-outline btn-sm" onclick="APP.showHome()">🏠 الرئيسية</button>
                                 </div>
                             </div>
                         `;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch (error) {
-                logError('openLectureVideo', error);
-                showToast('حدث خطأ في تحميل الفيديو', true);
+                logError('openLessonPage', error);
+                showToast('حدث خطأ في تحميل الحصة', true);
                 showHome();
             }
+        }
+
+        // ============================================================
+        // LESSON NAVIGATION - التالي والسابق
+        // ============================================================
+        async function navigateLesson(lessonId, direction) {
+            // جلب جميع حصص الكورس
+            const lessonSnapshot = await database.ref('lessons/' + lessonId).once('value');
+            if (!lessonSnapshot.exists()) return;
+            const currentLesson = lessonSnapshot.val();
+            const courseId = currentLesson.courseId;
+            if (!courseId) return;
+
+            const courseLessons = [];
+            const snap = await database.ref('lessons').orderByChild('courseId').equalTo(courseId).once('value');
+            snap.forEach((child) => {
+                const data = child.val();
+                courseLessons.push({ id: child.key, ...data });
+            });
+            courseLessons.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+            const currentIndex = courseLessons.findIndex(l => l.id === lessonId);
+            if (currentIndex === -1) return;
+
+            let targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+            if (targetIndex < 0 || targetIndex >= courseLessons.length) {
+                showToast(direction === 'next' ? 'هذه آخر حصة' : 'هذه أول حصة', 'warning');
+                return;
+            }
+
+            const targetLesson = courseLessons[targetIndex];
+            if (direction === 'next' && !userCourseProgress[lessonId]?.watched) {
+                showToast('⚠️ أكمل الحصة الحالية أولاً', 'warning');
+                return;
+            }
+
+            openLessonPage(targetLesson.id);
         }
 
         function extractYouTubeId(url) {
@@ -2067,7 +2080,7 @@
                     return;
                 }
                 const exam = { id: lessonId, ...snapshot.val() };
-                showExamUI(exam, 'lessonExam');
+                showExamUI(exam);
             } catch (err) {
                 logError('openLessonExam', err);
                 showToast('حدث خطأ في تحميل الامتحان', true);
@@ -2083,7 +2096,7 @@
                     return;
                 }
                 const quiz = { id: lessonId, ...snapshot.val() };
-                showQuizUI(quiz, 'lessonQuiz');
+                showQuizUI(quiz);
             } catch (err) {
                 logError('openLessonQuiz', err);
                 showToast('حدث خطأ في تحميل الكويز', true);
@@ -2121,7 +2134,7 @@
             }
         }
 
-        function showExamUI(exam, type) {
+        function showExamUI(exam) {
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -2144,8 +2157,9 @@
                             <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
                             <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📝 ${escapeHtml(exam.title)}</h2>
                             <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
+                            <p style="color:var(--gold);font-weight:700;margin-bottom:8px;">⭐ ${exam.atomsReward || 10} ذرة عند النجاح</p>
                             <div id="examContainer">${questionsHtml}</div>
-                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitExam('${exam.id}', ${exam.atomsReward || 30})">
+                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitExam('${exam.id}', ${exam.atomsReward || 10})">
                                 <i class="fas fa-check"></i> إرسال الإجابات
                             </button>
                         </div>
@@ -2154,7 +2168,7 @@
             examAnswers[exam.id] = {};
         }
 
-        function showQuizUI(quiz, type) {
+        function showQuizUI(quiz) {
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -2177,8 +2191,9 @@
                             <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
                             <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">🧪 ${escapeHtml(quiz.title)}</h2>
                             <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
+                            <p style="color:var(--gold);font-weight:700;margin-bottom:8px;">⭐ ${quiz.atomsReward || 5} ذرة عند النجاح</p>
                             <div id="quizContainer">${questionsHtml}</div>
-                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitQuiz('${quiz.id}', ${quiz.atomsReward || 20})">
+                            <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="APP.submitQuiz('${quiz.id}', ${quiz.atomsReward || 5})">
                                 <i class="fas fa-check"></i> إرسال الإجابات
                             </button>
                         </div>
@@ -2213,7 +2228,7 @@
             });
         }
 
-        async function submitExam(id, atomsReward) {
+        async function submitExam(id, maxAtoms) {
             if (!currentUser) { showLoginOverlay(); return; }
             const answers = examAnswers[id] || {};
             if (Object.keys(answers).length === 0) {
@@ -2229,7 +2244,6 @@
 
                 let correct = 0;
                 let total = Math.min(Object.keys(answers).length, questions.length);
-                // حفظ الأخطاء
                 let wrongQuestions = [];
                 for (let i = 0; i < total; i++) {
                     if (answers[i] && answers[i].selected === questions[i].correctAnswer) {
@@ -2243,6 +2257,8 @@
                     }
                 }
                 const score = Math.round((correct / total) * 100);
+                const earnedAtoms = Math.round((score / 100) * maxAtoms);
+
                 const container = document.getElementById('examContainer');
                 if (container) {
                     const divs = container.querySelectorAll('.card');
@@ -2261,7 +2277,7 @@
                 if (btn) { btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-check"></i> تم التصحيح'; }
 
-                // حفظ الأخطاء في بنك الأخطاء
+                // حفظ الأخطاء
                 if (wrongQuestions.length > 0) {
                     const errorRef = database.ref('users/' + currentUser.uid + '/errorBank');
                     const existingErrors = await errorRef.once('value');
@@ -2276,48 +2292,29 @@
                     await errorRef.set(errors);
                 }
 
-                if (score >= 60) {
-                    const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + id);
-                    const progressSnap = await progressRef.once('value');
-                    if (!progressSnap.exists() || !progressSnap.val()?.atomsAwarded) {
-                        const userRef = database.ref('users/' + currentUser.uid);
-                        const userSnap = await userRef.once('value');
-                        if (userSnap.exists()) {
-                            const currentAtoms = userSnap.val().atoms || 0;
-                            // حساب الذرات حسب النسبة
-                            const earnedAtoms = Math.round((score / 100) * atomsReward);
-                            await userRef.update({ atoms: currentAtoms + earnedAtoms });
-                            await progressRef.set({
-                                completed: true,
-                                score: score,
-                                atomsAwarded: true,
-                                completedAt: new Date().toISOString()
-                            });
-                            const atomsEl = document.getElementById('atomsCount');
-                            const userAtomsEl = document.getElementById('userAtomsCount');
-                            if (atomsEl) {
-                                const current = parseInt(atomsEl.textContent) || 0;
-                                animateAtoms('atomsCount', current + earnedAtoms);
-                            }
-                            if (userAtomsEl) {
-                                const current = parseInt(userAtomsEl.textContent) || 0;
-                                userAtomsEl.textContent = current + earnedAtoms;
-                            }
-                            showToast(`🎉 مبروك! حصلت على ${earnedAtoms} ذرة! (النتيجة: ${score}%)`, false);
-                        }
-                    } else {
-                        showToast(`📝 لقد قمت بالفعل بأداء هذا الامتحان (النتيجة: ${score}%)`, false);
+                if (earnedAtoms > 0) {
+                    const userRef = database.ref('users/' + currentUser.uid);
+                    const userSnap = await userRef.once('value');
+                    if (userSnap.exists()) {
+                        const currentAtoms = userSnap.val().atoms || 0;
+                        await userRef.update({ atoms: currentAtoms + earnedAtoms });
+                        animateAtoms('atomsCount', currentAtoms + earnedAtoms);
+                        animateAtoms('userAtomsCount', currentAtoms + earnedAtoms);
+                        showToast(`🎉 +${earnedAtoms} ذرة! (النتيجة: ${score}%)`, false);
                     }
                 } else {
-                    showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
+                    showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, 'warning');
                 }
+
+                checkAchievements(currentUser.uid);
+
             } catch (err) {
                 logError('submitExam', err);
                 showToast('حدث خطأ أثناء تصحيح الامتحان', true);
             }
         }
 
-        async function submitQuiz(id, atomsReward) {
+        async function submitQuiz(id, maxAtoms) {
             if (!currentUser) { showLoginOverlay(); return; }
             const answers = quizAnswers[id] || {};
             if (Object.keys(answers).length === 0) {
@@ -2346,6 +2343,8 @@
                     }
                 }
                 const score = Math.round((correct / total) * 100);
+                const earnedAtoms = Math.round((score / 100) * maxAtoms);
+
                 const container = document.getElementById('quizContainer');
                 if (container) {
                     const divs = container.querySelectorAll('.card');
@@ -2378,40 +2377,22 @@
                     await errorRef.set(errors);
                 }
 
-                if (score >= 60) {
-                    const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + id);
-                    const progressSnap = await progressRef.once('value');
-                    if (!progressSnap.exists() || !progressSnap.val()?.atomsAwarded) {
-                        const userRef = database.ref('users/' + currentUser.uid);
-                        const userSnap = await userRef.once('value');
-                        if (userSnap.exists()) {
-                            const currentAtoms = userSnap.val().atoms || 0;
-                            const earnedAtoms = Math.round((score / 100) * atomsReward);
-                            await userRef.update({ atoms: currentAtoms + earnedAtoms });
-                            await progressRef.set({
-                                completed: true,
-                                score: score,
-                                atomsAwarded: true,
-                                completedAt: new Date().toISOString()
-                            });
-                            const atomsEl = document.getElementById('atomsCount');
-                            const userAtomsEl = document.getElementById('userAtomsCount');
-                            if (atomsEl) {
-                                const current = parseInt(atomsEl.textContent) || 0;
-                                animateAtoms('atomsCount', current + earnedAtoms);
-                            }
-                            if (userAtomsEl) {
-                                const current = parseInt(userAtomsEl.textContent) || 0;
-                                userAtomsEl.textContent = current + earnedAtoms;
-                            }
-                            showToast(`🎉 مبروك! حصلت على ${earnedAtoms} ذرة! (النتيجة: ${score}%)`, false);
-                        }
-                    } else {
-                        showToast(`📝 لقد قمت بالفعل بحل هذا الكويز (النتيجة: ${score}%)`, false);
+                if (earnedAtoms > 0) {
+                    const userRef = database.ref('users/' + currentUser.uid);
+                    const userSnap = await userRef.once('value');
+                    if (userSnap.exists()) {
+                        const currentAtoms = userSnap.val().atoms || 0;
+                        await userRef.update({ atoms: currentAtoms + earnedAtoms });
+                        animateAtoms('atomsCount', currentAtoms + earnedAtoms);
+                        animateAtoms('userAtomsCount', currentAtoms + earnedAtoms);
+                        showToast(`🎉 +${earnedAtoms} ذرة! (النتيجة: ${score}%)`, false);
                     }
                 } else {
-                    showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, true);
+                    showToast(`النتيجة: ${score}% - حاول مرة أخرى للحصول على الذرات`, 'warning');
                 }
+
+                checkAchievements(currentUser.uid);
+
             } catch (err) {
                 logError('submitQuiz', err);
                 showToast('حدث خطأ أثناء تصحيح الكويز', true);
@@ -2442,7 +2423,7 @@
                                         <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(exam.description) || ''}</p>
                                         <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
                                             <span>📝 ${exam.questions?.length || 0} سؤال</span>
-                                            <span>⭐ ${exam.atomsReward || 30} ذرة</span>
+                                            <span>⭐ ${exam.atomsReward || 10} ذرة</span>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -2473,7 +2454,7 @@
                                         <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(quiz.description) || ''}</p>
                                         <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
                                             <span>🧪 ${quiz.questions?.length || 0} سؤال</span>
-                                            <span>⭐ ${quiz.atomsReward || 20} ذرة</span>
+                                            <span>⭐ ${quiz.atomsReward || 5} ذرة</span>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -2484,8 +2465,97 @@
         }
 
         // ============================================================
-        // LEADERBOARD PAGE
+        // LEADERBOARD
         // ============================================================
+        function loadLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            if (!container) return;
+
+            database.ref('users').on('value', (snapshot) => {
+                const users = [];
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    users.push({
+                        id: child.key,
+                        name: data.name || 'مستخدم',
+                        atoms: data.atoms || 0,
+                        photoURL: data.photoURL || '',
+                        coursesCount: data.coursesCount || 0
+                    });
+                });
+                users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
+                renderLeaderboard(users);
+            });
+        }
+
+        function renderLeaderboard(users) {
+            const container = document.getElementById('leaderboardContainer');
+            if (!container) return;
+
+            if (!users || users.length === 0) {
+                container.innerHTML = `
+                            <div class="empty-state">
+                                <div class="icon">🏆</div>
+                                <h3>لا يوجد متصدرين حالياً</h3>
+                            </div>
+                        `;
+                return;
+            }
+
+            const top5 = users.slice(0, 5);
+            const top3 = top5.slice(0, 3);
+            const rest = top5.slice(3);
+
+            // بناء المنصة (المراكز الثلاثة الأولى فقط)
+            let podiumHtml = `<div class="leaderboard-podium">`;
+            const podiumData = [
+                { index: 1, user: top3[1], class: 'silver', rank: '🥈' },
+                { index: 0, user: top3[0], class: 'gold', rank: '👑' },
+                { index: 2, user: top3[2], class: 'bronze', rank: '🥉' }
+            ];
+
+            podiumData.forEach(p => {
+                if (!p.user) return;
+                const avatarHtml = p.user.photoURL ? 
+                    `<img src="${p.user.photoURL}" alt="${escapeHtml(p.user.name)}">` : 
+                    (p.user.name || 'U')[0].toUpperCase();
+                podiumHtml += `
+                            <div class="podium-item ${p.class}">
+                                ${p.class === 'gold' ? '<div class="crown">👑</div>' : ''}
+                                <div class="podium-rank">${p.rank}</div>
+                                <div class="podium-avatar">${avatarHtml}</div>
+                                <div class="podium-name">${escapeHtml(p.user.name)}</div>
+                                <div class="podium-atoms">⚛️ ${p.user.atoms || 0}</div>
+                                <div class="podium-base"></div>
+                            </div>
+                        `;
+            });
+            podiumHtml += `</div>`;
+
+            // المراكز 4 و 5
+            let listHtml = `<div style="background:var(--card);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;margin-top:8px;">`;
+            rest.forEach((user, idx) => {
+                const rank = idx + 4;
+                const avatarHtml = user.photoURL ? 
+                    `<img src="${user.photoURL}" alt="${escapeHtml(user.name)}">` : 
+                    (user.name || 'U')[0].toUpperCase();
+                listHtml += `
+                            <div class="leaderboard-item">
+                                <div class="rank">#${rank}</div>
+                                <div class="avatar">${avatarHtml}</div>
+                                <div class="info">
+                                    <div class="name">${escapeHtml(user.name)}</div>
+                                    <div class="stats">📚 ${user.coursesCount || 0} كورس</div>
+                                </div>
+                                <div class="points">⚛️ ${user.atoms || 0}</div>
+                            </div>
+                        `;
+            });
+            listHtml += `</div>`;
+
+            container.innerHTML = podiumHtml + listHtml;
+        }
+
         function showLeaderboard() {
             const main = document.getElementById('mainContent');
             if (!main) return;
@@ -2493,8 +2563,8 @@
                         <div style="max-width:1280px;margin:0 auto;padding:20px;">
                             <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
                             <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">🏆 المتصدرين</h1>
-                            <p style="color:var(--text2);margin-bottom:16px;">أفضل 10 طلاب على المنصة</p>
-                            <div id="leaderboardFullList"></div>
+                            <p style="color:var(--text2);margin-bottom:16px;">أفضل 5 طلاب على المنصة</p>
+                            <div id="leaderboardContainer"></div>
                         </div>
                     `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2502,7 +2572,7 @@
         }
 
         // ============================================================
-        // ERROR BANK - بنك الأخطاء (جديد)
+        // ERROR BANK
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -2541,7 +2611,6 @@
                                                 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
                                                     <span class="user-answer">❌ إجابتك: ${escapeHtml(e.userAnswer)}</span>
                                                     <span class="answer">✅ الإجابة الصحيحة: ${escapeHtml(e.correctAnswer)}</span>
-                                                    <span class="status ${e.solved ? 'solved' : 'unsolved'}">${e.solved ? '✅ تم الحل' : '⏳ لم يحل بعد'}</span>
                                                 </div>
                                             </div>
                                         `).join('')}
@@ -2557,7 +2626,7 @@
         }
 
         // ============================================================
-        // CERTIFICATE - شهادة الإنجاز (جديد)
+        // CERTIFICATE
         // ============================================================
         function showCertificate() {
             if (!currentUser) {
@@ -2575,7 +2644,6 @@
             const atoms = userData?.atoms || 0;
             const progress = userData?.progress || 0;
 
-            // احصل على الكورس المكتمل (أول كورس)
             let completedCourse = null;
             for (const c of allCourses) {
                 const lessons = allLessons.filter(l => l.courseId === c.id);
@@ -2619,12 +2687,153 @@
 
         function downloadCertificate() {
             showToast('📄 جاري إنشاء الشهادة...', 'info');
-            // استخدام window.print لحفظ كـ PDF
             window.print();
         }
 
         // ============================================================
-        // DASHBOARD - حسابي مع تحليل المستوى (مُحسّن)
+        // STUDENT CARD - بطاقة الطالب
+        // ============================================================
+        function showStudentCard() {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+
+            const name = userData?.name || 'طالب';
+            const email = userData?.email || auth.currentUser?.email || '';
+            const code = userData?.code || '';
+            const grade = userData?.grade || 'لم يحدد';
+            const studyType = userData?.studyType || 'عام';
+            const phone = userData?.phone || 'لم يحدد';
+            const parentPhone = userData?.parentPhone || 'لم يحدد';
+            const photoURL = userData?.photoURL || '';
+            const createdAt = userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString('ar') : 'غير معروف';
+
+            const avatarHtml = photoURL ? 
+                `<img src="${photoURL}" alt="${escapeHtml(name)}">` : 
+                (name || 'U')[0].toUpperCase();
+
+            main.innerHTML = `
+                        <div style="max-width:500px;margin:0 auto;padding:20px;">
+                            <button class="btn-outline btn-sm" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
+                            <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">🪪 بطاقة الطالب</h1>
+                            <p style="color:var(--text2);margin-bottom:16px;">بطاقة تعريفية تحوي بياناتك الشخصية</p>
+
+                            <div class="student-card-preview" id="studentCardPreview">
+                                <div class="watermark">YALLA CHEMISTRY</div>
+                                <div class="card-header">
+                                    <div class="logo">يلا كيمياء</div>
+                                    <div style="margin-right:auto;font-size:0.7rem;color:var(--text2);">بطاقة طالب</div>
+                                </div>
+                                <div class="card-avatar">${avatarHtml}</div>
+                                <div class="card-info">
+                                    <div class="name">${escapeHtml(name)}</div>
+                                    <div class="code">🔑 ${escapeHtml(code)}</div>
+                                    <div class="detail">📧 ${escapeHtml(email)}</div>
+                                    <div class="detail">📱 ${escapeHtml(phone)}</div>
+                                    <div class="detail">👨‍👩‍👦 ${escapeHtml(parentPhone)}</div>
+                                    <div class="detail">🎓 ${escapeHtml(grade)} • ${escapeHtml(studyType)}</div>
+                                    <div class="detail">📅 تاريخ الإنشاء: ${createdAt}</div>
+                                </div>
+                                <div class="card-footer">
+                                    يرجى عدم مشاركة هذه البطاقة أو بياناتها مع أي شخص حفاظًا على خصوصية حسابك.
+                                </div>
+                            </div>
+
+                            <div style="text-align:center;margin-top:16px;">
+                                <button class="btn-primary" onclick="APP.downloadStudentCard()"><i class="fas fa-download"></i> تحميل البطاقة PDF</button>
+                            </div>
+                        </div>
+                    `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function downloadStudentCard() {
+            showToast('📄 جاري إنشاء البطاقة...', 'info');
+            // استخدام html2canvas لتحويل العنصر إلى صورة ثم PDF
+            const element = document.getElementById('studentCardPreview');
+            if (!element) return;
+            
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('بطاقة_الطالب_' + (userData?.code || 'student') + '.pdf');
+                showToast('✅ تم تحميل البطاقة بنجاح', false);
+            }).catch(err => {
+                console.error('Error generating card:', err);
+                showToast('حدث خطأ في إنشاء البطاقة', true);
+            });
+        }
+
+        // ============================================================
+        // ACHIEVEMENTS
+        // ============================================================
+        function showAchievements() {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+
+            const achievements = getAchievements(currentUser.uid);
+
+            main.innerHTML = `
+                        <div style="max-width:800px;margin:0 auto;padding:20px;">
+                            <button class="btn-outline btn-sm" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
+                            <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">🏅 إنجازاتي</h1>
+                            <p style="color:var(--text2);margin-bottom:16px;">الإنجازات التي حصلت عليها في رحلتك التعليمية</p>
+                            <div class="achievement-grid">
+                                ${achievements.map(a => `
+                                    <div class="achievement-item ${a.unlocked ? 'unlocked' : ''}">
+                                        <div class="icon">${a.icon}</div>
+                                        <div class="name">${a.name}</div>
+                                        <div class="desc">${a.desc}</div>
+                                        ${a.unlocked ? '<span style="font-size:0.7rem;color:var(--gold);">✅ تم الفتح</span>' : '<span style="font-size:0.7rem;color:var(--text-muted);">🔒 مغلق</span>'}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getAchievements(uid) {
+            const atoms = userData?.atoms || 0;
+            const completedLessons = Object.values(userCourseProgress).filter(p => p.watched).length;
+            const examsCompleted = Object.values(userCourseProgress).filter(p => p.completed && p.type === 'exam').length;
+            
+            return [
+                { id: 'first_exam', icon: '📝', name: 'أول امتحان', desc: 'حل أول امتحان', unlocked: examsCompleted > 0 },
+                { id: 'first_100_atoms', icon: '🌟', name: '100 ذرة', desc: 'اجمع 100 ذرة', unlocked: atoms >= 100 },
+                { id: 'first_500_atoms', icon: '⭐', name: '500 ذرة', desc: 'اجمع 500 ذرة', unlocked: atoms >= 500 },
+                { id: 'first_1000_atoms', icon: '💎', name: '1000 ذرة', desc: 'اجمع 1000 ذرة', unlocked: atoms >= 1000 },
+                { id: 'complete_course', icon: '🎓', name: 'أول كورس', desc: 'أنهي أول كورس', unlocked: false },
+                { id: 'complete_5_lessons', icon: '📚', name: '5 حصص', desc: 'أنهي 5 حصص', unlocked: completedLessons >= 5 },
+                { id: 'complete_20_lessons', icon: '📚', name: '20 حصة', desc: 'أنهي 20 حصة', unlocked: completedLessons >= 20 },
+                { id: 'study_7_days', icon: '🔥', name: '7 أيام دراسة', desc: 'ادرس 7 أيام متتالية', unlocked: false },
+                { id: 'perfect_exam', icon: '💯', name: 'امتحان ممتاز', desc: 'احصل على 100% في امتحان', unlocked: false }
+            ];
+        }
+
+        function checkAchievements(uid) {
+            // سيتم استدعاؤها بعد كل إنجاز
+        }
+
+        // ============================================================
+        // PROFILE - حسابي مع جميع البيانات
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -2644,24 +2853,29 @@
             const parentPhone = userData?.parentPhone || 'لم يحدد';
             const atoms = userData?.atoms || 0;
             const progress = userData?.progress || 0;
+            const photoURL = userData?.photoURL || '';
+            const createdAt = userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString('ar') : 'غير معروف';
+            const lastActive = userData?.lastActive ? new Date(userData.lastActive).toLocaleDateString('ar') : 'غير معروف';
+            const loginCount = userData?.loginCount || 0;
+            const streak = userData?.streak || 0;
 
             let watchedCount = 0;
             let quizCount = 0;
             let assignmentCount = 0;
             let examCount = 0;
 
-            Object.values(userCourseProgress).forEach(progress => {
-                if (progress.watched) watchedCount++;
-                if (progress.completed) {
-                    if (progress.type === 'quiz') quizCount++;
-                    if (progress.type === 'assignment') assignmentCount++;
-                    if (progress.type === 'exam') examCount++;
+            Object.values(userCourseProgress).forEach(p => {
+                if (p.watched) watchedCount++;
+                if (p.completed) {
+                    if (p.type === 'quiz') quizCount++;
+                    if (p.type === 'assignment') assignmentCount++;
+                    if (p.type === 'exam') examCount++;
                 }
             });
 
             const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
 
-            // ===== تحليل مستوى الطالب =====
+            // تحليل المستوى
             let level = 'مبتدئ 🌱';
             let levelColor = '#22C55E';
             if (progress > 70) { level = 'متقدم 🚀';
@@ -2670,162 +2884,214 @@
 
             const strengths = [];
             const weaknesses = [];
-            let errorSubjects = [];
 
-            if (atoms > 100) strengths.push('⚛️ لديك ذرات عالية - استمر في التحديات!');
-            if (progress > 70) strengths.push('📈 نسبة إنجاز ممتازة - أنت في الطريق الصحيح');
-            if (Object.keys(userCourseProgress).length > 10) strengths.push('📚 عدد حصص كبير - استمر في التعلم');
+            if (atoms > 100) strengths.push('⚛️ لديك ذرات عالية');
+            if (progress > 70) strengths.push('📈 نسبة إنجاز ممتازة');
+            if (watchedCount > 10) strengths.push('📚 عدد حصص كبير');
 
-            if (atoms < 50) weaknesses.push('⚛️ حاول جمع المزيد من الذرات من خلال الامتحانات والكويزات');
-            if (progress < 40) weaknesses.push('📈 حاول زيادة نسبة الإنجاز بإكمال الحصص');
-            if (Object.keys(userCourseProgress).length < 5) weaknesses.push('📚 حاول مشاهدة المزيد من الحصص');
+            if (atoms < 50) weaknesses.push('⚛️ حاول جمع المزيد من الذرات');
+            if (progress < 40) weaknesses.push('📈 حاول زيادة نسبة الإنجاز');
+            if (watchedCount < 5) weaknesses.push('📚 حاول مشاهدة المزيد من الحصص');
 
             if (strengths.length === 0) strengths.push('🌟 ابدأ رحلتك واكتشف نقاط قوتك!');
             if (weaknesses.length === 0) weaknesses.push('🌟 أنت في طريق ممتاز، استمر!');
 
-            // جلب الأخطاء للتحليل
-            database.ref('users/' + currentUser.uid + '/errorBank').once('value').then((snapshot) => {
-                if (snapshot.exists()) {
-                    const errors = snapshot.val();
-                    if (Array.isArray(errors) && errors.length > 0) {
-                        errorSubjects = errors.map(e => e.question?.substring(0, 30) || 'سؤال');
-                    }
-                }
-                renderDashboard();
-            }).catch(() => {
-                renderDashboard();
-            });
+            const avatarHtml = photoURL ? 
+                `<img src="${photoURL}" alt="صورة" style="width:72px;height:72px;border-radius:50%;object-fit:cover;">` : 
+                (name || 'U')[0].toUpperCase();
 
-            function renderDashboard() {
-                main.innerHTML = `
-                            <div style="max-width:1280px;margin:0 auto;padding:20px;">
-                                <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+            // رسالة تحفيزية
+            let motivationalMsg = '🚀 ابدأ رحلتك اليوم!';
+            if (progress === 100) motivationalMsg = '🎉 مبروك! أكملت كل شيء! أنت بطل!';
+            else if (progress >= 75) motivationalMsg = '🔥 أنت على وشك الإنهاء! استمر!';
+            else if (progress >= 50) motivationalMsg = '💪 أحسنت! أنت في منتصف الطريق!';
+            else if (progress >= 25) motivationalMsg = '🌟 بداية رائعة! استمر في التقدم!';
 
-                                <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0 16px;flex-wrap:wrap;gap:8px;">
-                                    <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);">👤 حسابي</h1>
+            main.innerHTML = `
+                        <div style="max-width:1280px;margin:0 auto;padding:20px;">
+                            <button class="btn-outline btn-sm" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0 16px;flex-wrap:wrap;gap:8px;">
+                                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);">👤 حسابي</h1>
+                                <div style="display:flex;gap:8px;align-items:center;">
                                     <span class="atoms-badge"><i class="fas fa-atom"></i> ${atoms} ذرة</span>
-                                </div>
-
-                                <!-- بطاقة بيانات الطالب -->
-                                <div class="card" style="padding:20px;margin-bottom:16px;">
-                                    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-                                        <div style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;background:var(--primary);color:#fff;">${(name || 'U')[0].toUpperCase()}</div>
-                                        <div style="text-align:center;width:100%;">
-                                            <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);">${escapeHtml(name)}</h3>
-                                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;text-align:right;">
-                                                <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
-                                                    <div style="font-size:0.7rem;color:var(--text2);">كود الطالب</div>
-                                                    <div style="font-weight:700;color:var(--primary);font-size:0.9rem;">${escapeHtml(code) || '--'}</div>
-                                                </div>
-                                                <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
-                                                    <div style="font-size:0.7rem;color:var(--text2);">الصف الدراسي</div>
-                                                    <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(grade)}</div>
-                                                </div>
-                                                <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
-                                                    <div style="font-size:0.7rem;color:var(--text2);">نوع الدراسة</div>
-                                                    <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(studyType)}</div>
-                                                </div>
-                                                <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
-                                                    <div style="font-size:0.7rem;color:var(--text2);">البريد الإلكتروني</div>
-                                                    <div style="font-weight:700;font-size:0.9rem;word-break:break-all;">${escapeHtml(email)}</div>
-                                                </div>
-                                                <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
-                                                    <div style="font-size:0.7rem;color:var(--text2);">رقم الهاتف</div>
-                                                    <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(phone)}</div>
-                                                </div>
-                                                <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
-                                                    <div style="font-size:0.7rem;color:var(--text2);">رقم ولي الأمر</div>
-                                                    <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(parentPhone)}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="grid-dashboard" style="margin-bottom:16px;">
-                                    <div class="stat-card"><div class="number">${watchedCount}</div><div class="label">🎬 فيديوهات</div></div>
-                                    <div class="stat-card"><div class="number">${quizCount}</div><div class="label">🧪 كويزات</div></div>
-                                    <div class="stat-card"><div class="number">${assignmentCount}</div><div class="label">📝 واجبات</div></div>
-                                    <div class="stat-card"><div class="number">${examCount}</div><div class="label">📋 امتحانات</div></div>
-                                </div>
-
-                                <div class="grid-dashboard" style="margin-bottom:16px;">
-                                    <div class="stat-card"><div class="number">${subscribedCourses.length}</div><div class="label">📚 الكورسات</div></div>
-                                    <div class="stat-card"><div class="number">${Object.keys(userCourseProgress).length}</div><div class="label">🔥 الأنشطة</div></div>
-                                    <div class="stat-card"><div class="number">${atoms}</div><div class="label">⚛️ الذرات</div></div>
-                                    <div class="stat-card"><div class="number">${progress}%</div><div class="label">📈 الإنجاز</div></div>
-                                </div>
-
-                                <!-- ===== تحليل المستوى ===== -->
-                                <div style="margin-bottom:16px;background:var(--bg);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);">
-                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:12px;">📊 تحليل مستواك</h3>
-                                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px;">
-                                        <div style="background:var(--card);padding:12px;border-radius:var(--radius);text-align:center;">
-                                            <div style="font-size:2rem;">📈</div>
-                                            <div style="font-size:1.5rem;font-weight:700;color:${levelColor};">${level}</div>
-                                            <div style="font-size:0.8rem;color:var(--text2);">مستواك الحالي</div>
-                                        </div>
-                                        <div style="background:var(--card);padding:12px;border-radius:var(--radius);text-align:center;">
-                                            <div style="font-size:2rem;">🎯</div>
-                                            <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${progress}%</div>
-                                            <div style="font-size:0.8rem;color:var(--text2);">نسبة الإنجاز</div>
-                                        </div>
-                                        <div style="background:var(--card);padding:12px;border-radius:var(--radius);text-align:center;">
-                                            <div style="font-size:2rem;">⚛️</div>
-                                            <div style="font-size:1.5rem;font-weight:700;color:var(--gold);">${atoms}</div>
-                                            <div style="font-size:0.8rem;color:var(--text2);">إجمالي الذرات</div>
-                                        </div>
-                                    </div>
-
-                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                                        <div style="background:var(--card);padding:12px;border-radius:var(--radius);">
-                                            <div style="font-weight:700;color:var(--success);">💪 نقاط القوة</div>
-                                            ${strengths.map(s => `<p style="font-size:0.85rem;color:var(--text);margin:4px 0;">✅ ${s}</p>`).join('')}
-                                        </div>
-                                        <div style="background:var(--card);padding:12px;border-radius:var(--radius);">
-                                            <div style="font-weight:700;color:var(--danger);">📌 نقاط الضعف</div>
-                                            ${weaknesses.map(w => `<p style="font-size:0.85rem;color:var(--text);margin:4px 0;">⚠️ ${w}</p>`).join('')}
-                                            ${errorSubjects.length > 0 ? `<p style="font-size:0.85rem;color:var(--danger);margin:4px 0;">❌ أكثر الدروس خطأ: ${errorSubjects.slice(0, 3).join('، ')}</p>` : ''}
-                                        </div>
-                                    </div>
-
-                                    ${weaknesses.length > 0 ? `
-                                        <div style="background:var(--card);padding:12px;border-radius:var(--radius);margin-top:12px;">
-                                            <div style="font-weight:700;color:var(--primary);">📖 خطة مراجعة مقترحة</div>
-                                            <p style="font-size:0.85rem;color:var(--text);">📚 راجع الحصص التي لم تكتمل • 🧪 حل كويزات وامتحانات للحصول على ذرات • 📝 تابع تقدمك يومياً</p>
-                                        </div>
-                                    ` : ''}
-                                </div>
-
-                                ${subscribedCourses.length > 0 ? `
-                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:8px;">📚 كورساتي</h3>
-                                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;">
-                                        ${subscribedCourses.map(c => `
-                                            <div class="card" style="padding:14px;cursor:pointer;" onclick="APP.openCourse('${c.id}')">
-                                                <h4 style="font-weight:700;color:var(--text);font-size:0.9rem;">${escapeHtml(c.title)}</h4>
-                                                <span style="font-size:0.7rem;color:var(--success);">✔ مشترك</span>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                ` : `
-                                    <div class="card" style="padding:20px;text-align:center;margin-bottom:16px;">
-                                        <p style="color:var(--text2);">📚 ليس لديك كورسات مشترك فيها حالياً</p>
-                                        <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="APP.scrollToCourses()">استكشف الكورسات</button>
-                                    </div>
-                                `}
-
-                                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
-                                    <button class="btn-primary" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
-                                    <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showExams()"><i class="fas fa-file-alt"></i> الامتحانات</button>
-                                    <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showQuizzes()"><i class="fas fa-puzzle-piece"></i> الكويزات</button>
-                                    <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showLeaderboard()"><i class="fas fa-trophy"></i> المتصدرين</button>
-                                    <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
-                                    <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهادتي</button>
+                                    ${streak > 0 ? `<span class="streak-badge">🔥 ${streak} يوم</span>` : ''}
                                 </div>
                             </div>
-                        `;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                            <!-- بطاقة الطالب -->
+                            <div class="card" style="padding:20px;margin-bottom:16px;">
+                                <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                                    <div style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;background:var(--primary);color:#fff;overflow:hidden;">${avatarHtml}</div>
+                                    <div style="text-align:center;width:100%;">
+                                        <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);">${escapeHtml(name)}</h3>
+                                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;text-align:right;">
+                                            <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
+                                                <div style="font-size:0.7rem;color:var(--text2);">كود الطالب</div>
+                                                <div style="font-weight:700;color:var(--primary);font-size:0.9rem;">${escapeHtml(code) || '--'}</div>
+                                            </div>
+                                            <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
+                                                <div style="font-size:0.7rem;color:var(--text2);">الصف الدراسي</div>
+                                                <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(grade)}</div>
+                                            </div>
+                                            <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
+                                                <div style="font-size:0.7rem;color:var(--text2);">نوع الدراسة</div>
+                                                <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(studyType)}</div>
+                                            </div>
+                                            <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
+                                                <div style="font-size:0.7rem;color:var(--text2);">البريد الإلكتروني</div>
+                                                <div style="font-weight:700;font-size:0.9rem;word-break:break-all;">${escapeHtml(email)}</div>
+                                            </div>
+                                            <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
+                                                <div style="font-size:0.7rem;color:var(--text2);">رقم الهاتف</div>
+                                                <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(phone)}</div>
+                                            </div>
+                                            <div style="background:var(--bg);padding:8px 12px;border-radius:var(--radius);">
+                                                <div style="font-size:0.7rem;color:var(--text2);">رقم ولي الأمر</div>
+                                                <div style="font-weight:700;font-size:0.9rem;">${escapeHtml(parentPhone)}</div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+                                            <span style="font-size:0.7rem;color:var(--text2);">📅 تاريخ الإنشاء: ${createdAt}</span>
+                                            <span style="font-size:0.7rem;color:var(--text2);">🕐 آخر نشاط: ${lastActive}</span>
+                                            <span style="font-size:0.7rem;color:var(--text2);">🔑 تسجيل الدخول: ${loginCount} مرة</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- رفع الصورة -->
+                            <div style="margin-bottom:16px;">
+                                <button class="btn-outline btn-sm" onclick="APP.uploadProfilePhoto()"><i class="fas fa-camera"></i> تغيير الصورة الشخصية</button>
+                            </div>
+
+                            <!-- الإحصائيات -->
+                            <div class="grid-dashboard" style="margin-bottom:16px;">
+                                <div class="stat-card"><div class="number">${watchedCount}</div><div class="label">🎬 فيديوهات</div></div>
+                                <div class="stat-card"><div class="number">${quizCount}</div><div class="label">🧪 كويزات</div></div>
+                                <div class="stat-card"><div class="number">${assignmentCount}</div><div class="label">📝 واجبات</div></div>
+                                <div class="stat-card"><div class="number">${examCount}</div><div class="label">📋 امتحانات</div></div>
+                            </div>
+
+                            <div class="grid-dashboard" style="margin-bottom:16px;">
+                                <div class="stat-card"><div class="number">${subscribedCourses.length}</div><div class="label">📚 الكورسات</div></div>
+                                <div class="stat-card"><div class="number">${Object.keys(userCourseProgress).length}</div><div class="label">🔥 الأنشطة</div></div>
+                                <div class="stat-card"><div class="number">${atoms}</div><div class="label">⚛️ الذرات</div></div>
+                                <div class="stat-card"><div class="number">${progress}%</div><div class="label">📈 الإنجاز</div></div>
+                            </div>
+
+                            <!-- رسالة تحفيزية -->
+                            <div class="motivational-message" style="margin-bottom:16px;">
+                                <span class="emoji">${motivationalMsg.split(' ')[0]}</span>
+                                ${motivationalMsg}
+                            </div>
+
+                            <!-- تحليل المستوى -->
+                            <div style="margin-bottom:16px;background:var(--bg);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);">
+                                <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:12px;">📊 تحليل مستواك</h3>
+                                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px;">
+                                    <div style="background:var(--card);padding:12px;border-radius:var(--radius);text-align:center;">
+                                        <div style="font-size:2rem;">📈</div>
+                                        <div style="font-size:1.5rem;font-weight:700;color:${levelColor};">${level}</div>
+                                        <div style="font-size:0.8rem;color:var(--text2);">مستواك الحالي</div>
+                                    </div>
+                                    <div style="background:var(--card);padding:12px;border-radius:var(--radius);text-align:center;">
+                                        <div style="font-size:2rem;">🎯</div>
+                                        <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${progress}%</div>
+                                        <div style="font-size:0.8rem;color:var(--text2);">نسبة الإنجاز</div>
+                                    </div>
+                                    <div style="background:var(--card);padding:12px;border-radius:var(--radius);text-align:center;">
+                                        <div style="font-size:2rem;">⚛️</div>
+                                        <div style="font-size:1.5rem;font-weight:700;color:var(--gold);">${atoms}</div>
+                                        <div style="font-size:0.8rem;color:var(--text2);">إجمالي الذرات</div>
+                                    </div>
+                                </div>
+
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                                    <div style="background:var(--card);padding:12px;border-radius:var(--radius);">
+                                        <div style="font-weight:700;color:var(--success);">💪 نقاط القوة</div>
+                                        ${strengths.map(s => `<p style="font-size:0.85rem;color:var(--text);margin:4px 0;">✅ ${s}</p>`).join('')}
+                                    </div>
+                                    <div style="background:var(--card);padding:12px;border-radius:var(--radius);">
+                                        <div style="font-weight:700;color:var(--danger);">📌 نقاط الضعف</div>
+                                        ${weaknesses.map(w => `<p style="font-size:0.85rem;color:var(--text);margin:4px 0;">⚠️ ${w}</p>`).join('')}
+                                    </div>
+                                </div>
+
+                                ${weaknesses.length > 0 ? `
+                                    <div style="background:var(--card);padding:12px;border-radius:var(--radius);margin-top:12px;">
+                                        <div style="font-weight:700;color:var(--primary);">📖 خطة مراجعة مقترحة</div>
+                                        <p style="font-size:0.85rem;color:var(--text);">📚 راجع الحصص التي لم تكتمل • 🧪 حل كويزات وامتحانات للحصول على ذرات • 📝 تابع تقدمك يومياً</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <!-- كورساتي -->
+                            ${subscribedCourses.length > 0 ? `
+                                <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:8px;">📚 كورساتي</h3>
+                                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;">
+                                    ${subscribedCourses.map(c => `
+                                        <div class="card" style="padding:14px;cursor:pointer;" onclick="APP.openCoursePage('${c.id}')">
+                                            <h4 style="font-weight:700;color:var(--text);font-size:0.9rem;">${escapeHtml(c.title)}</h4>
+                                            <span style="font-size:0.7rem;color:var(--success);">✔ مشترك</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <div class="card" style="padding:20px;text-align:center;margin-bottom:16px;">
+                                    <p style="color:var(--text2);">📚 ليس لديك كورسات مشترك فيها حالياً</p>
+                                    <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="APP.scrollToCourses()">استكشف الكورسات</button>
+                                </div>
+                            `}
+
+                            <!-- أزرار سريعة -->
+                            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;">
+                                <button class="btn-primary" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
+                                <button class="btn-primary" style="font-size:0.85rem;padding:8px 16px;background:var(--gold);color:#081B2C;" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
+                                <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهادتي</button>
+                                <button class="btn-outline" style="font-size:0.85rem;padding:8px 16px;" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
+                            </div>
+                        </div>
+                    `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ============================================================
+        // UPLOAD PROFILE PHOTO - رفع الصورة الشخصية
+        // ============================================================
+        function uploadProfilePhoto() {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
             }
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = async (ev) => {
+                    const imageData = ev.target.result;
+                    // حفظ الصورة كـ Base64 في Realtime Database (بديل لـ Storage)
+                    try {
+                        await database.ref('users/' + currentUser.uid + '/photoURL').set(imageData);
+                        userData.photoURL = imageData;
+                        showToast('✅ تم تحديث الصورة الشخصية', false);
+                        // تحديث الواجهة
+                        const avatar = document.getElementById('userAvatar');
+                        if (avatar) avatar.innerHTML = `<img src="${imageData}" alt="صورة">`;
+                        showDashboard();
+                    } catch (err) {
+                        console.error('Error uploading photo:', err);
+                        showToast('حدث خطأ في رفع الصورة', true);
+                    }
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
         }
 
         // ============================================================
@@ -2876,19 +3142,52 @@
         }
 
         // ============================================================
+        // LOAD LESSONS / EXAMS / QUIZZES
+        // ============================================================
+        function loadLessons() {
+            database.ref('lessons').on('value', (snapshot) => {
+                allLessons = [];
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    allLessons.push({ id: child.key, ...data });
+                });
+                console.log('✅ Lessons loaded:', allLessons.length);
+            });
+        }
+
+        function loadExams() {
+            database.ref('exams').on('value', (snapshot) => {
+                allExams = [];
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    allExams.push({ id: child.key, ...data });
+                });
+                console.log('✅ Exams loaded:', allExams.length);
+            });
+        }
+
+        function loadQuizzes() {
+            database.ref('quizzes').on('value', (snapshot) => {
+                allQuizzes = [];
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    allQuizzes.push({ id: child.key, ...data });
+                });
+                console.log('✅ Quizzes loaded:', allQuizzes.length);
+            });
+        }
+
+        // ============================================================
         // LOAD USER PROGRESS
         // ============================================================
         function loadUserProgress(uid) {
-            database.ref('users/' + uid + '/progress').once('value').then((snapshot) => {
+            database.ref('users/' + uid + '/progress').on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userCourseProgress = snapshot.val();
                 } else {
                     userCourseProgress = {};
                 }
                 console.log('✅ User progress loaded');
-            }).catch((error) => {
-                logError('loadUserProgress', error);
-                userCourseProgress = {};
             });
         }
 
@@ -2905,18 +3204,14 @@
                 loadUserProgress(user.uid);
                 loadCourses();
                 loadLessons();
-                loadAssignments();
                 loadExams();
                 loadQuizzes();
-                loadNotifications();
                 loadLeaderboard();
             } else {
                 loadCourses();
                 loadLessons();
-                loadAssignments();
                 loadExams();
                 loadQuizzes();
-                loadNotifications();
                 loadLeaderboard();
             }
         });
@@ -2956,9 +3251,9 @@
             logout,
             filterCourses,
             subscribeToCourse,
-            openCourse,
-            closeCourseModal,
-            openLectureVideo,
+            openCoursePage,
+            openLessonPage,
+            navigateLesson,
             openLessonExam,
             openLessonQuiz,
             openLessonAssignment,
@@ -2973,6 +3268,10 @@
             showErrorBank,
             showCertificate,
             downloadCertificate,
+            showStudentCard,
+            downloadStudentCard,
+            showAchievements,
+            uploadProfilePhoto,
             showPrivacy,
             showTerms,
             toast: showToast,
@@ -2984,11 +3283,13 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v8.0 - محسّن مع مميزات جديدة');
-            console.log('✅ المتصدرين: تصميم ذهبي/فضي/برونزي');
-            console.log('✅ بنك الأخطاء: حفظ الأسئلة الخاطئة');
-            console.log('✅ شهادة الإنجاز: PDF مع QR Code');
-            console.log('✅ تحليل المستوى: نقاط القوة والضعف');
+            console.log('🚀 Yalla Chemistry Platform v9.0 - النسخة النهائية');
+            console.log('✅ كود الطالب: YK-XXX-XXXX (فريد ولا يتكرر)');
+            console.log('✅ رفع الصورة الشخصية: Base64 في Realtime DB');
+            console.log('✅ بطاقة الطالب: PDF مع جميع البيانات');
+            console.log('✅ المتصدرين: أفضل 5 فقط مع تاج ذهبي/فضي/برونزي');
+            console.log('✅ صفحة الكورس: صفحة مستقلة مع Banner وحصص');
+            console.log('✅ صفحة الحصة: صفحة مستقلة مع حفظ التقدم');
             console.log('✅ جميع الوظائف السابقة محفوظة');
         }
 
