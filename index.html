@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -59,6 +58,7 @@
             color: var(--text);
             transition: var(--transition);
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .font-lalezar { font-family: 'Lalezar', cursive; }
 
@@ -75,7 +75,7 @@
             top: 0;
             z-index: 100;
             transition: var(--transition);
-            padding: 8px 0;
+            padding: 6px 0;
         }
         [data-theme="dark"] .navbar {
             background: rgba(15, 23, 42, 0.9);
@@ -86,46 +86,46 @@
         .nav-container {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 0 16px;
+            padding: 0 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
         }
 
         /* ===== LOGO ===== */
         .nav-logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             text-decoration: none;
             flex-shrink: 0;
         }
         .nav-logo img {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(76, 201, 240, 0.3);
         }
         .nav-logo span {
             font-family: 'Lalezar', cursive;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--primary);
         }
 
-        /* ===== NAV LINKS - مبسطة ===== */
+        /* ===== NAV LINKS ===== */
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             list-style: none;
         }
         .nav-links a, .nav-links button {
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: var(--transition);
             cursor: pointer;
             border: none;
@@ -141,14 +141,14 @@
         .nav-links .btn-primary-nav {
             background: var(--primary);
             color: #fff !important;
-            padding: 5px 16px;
+            padding: 4px 14px;
         }
         .nav-links .btn-primary-nav:hover {
             background: var(--primary2);
             transform: translateY(-1px);
         }
 
-        /* ===== USER MENU BUTTON - محسّن ===== */
+        /* ===== USER MENU - محسّن جداً ===== */
         .user-menu-wrapper {
             position: relative;
             display: flex;
@@ -159,7 +159,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 10px 4px 6px;
+            padding: 4px 12px 4px 8px;
             border-radius: 50px;
             border: 2px solid var(--primary);
             background: var(--primary);
@@ -173,16 +173,17 @@
         .user-menu-btn:hover {
             background: var(--primary2);
             border-color: var(--primary2);
+            transform: translateY(-1px);
         }
         .user-menu-btn .avatar {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             overflow: hidden;
             background: rgba(255,255,255,0.2);
         }
@@ -199,9 +200,10 @@
         .user-menu-btn .label { 
             display: inline-block;
             color: #fff;
+            font-size: 0.8rem;
         }
 
-        /* ===== USER DROPDOWN - محسّن ===== */
+        /* ===== USER DROPDOWN ===== */
         .user-dropdown {
             display: none;
             position: absolute;
@@ -219,7 +221,7 @@
         .user-dropdown.open { display: block; }
         
         .user-dropdown .dropdown-header {
-            padding: 10px 16px;
+            padding: 10px 14px;
             border-bottom: 1px solid var(--border);
         }
         .user-dropdown .dropdown-header .name {
@@ -228,7 +230,7 @@
             color: var(--text);
         }
         .user-dropdown .dropdown-header .sub {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text2);
         }
         
@@ -236,7 +238,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 16px;
+            padding: 8px 14px;
             width: 100%;
             border: none;
             background: none;
@@ -248,7 +250,7 @@
             text-align: right;
         }
         .user-dropdown .menu-item:hover { background: var(--bg); }
-        .user-dropdown .menu-item i { width: 18px; text-align: center; font-size: 0.9rem; color: var(--text2); }
+        .user-dropdown .menu-item i { width: 18px; text-align: center; font-size: 0.85rem; color: var(--text2); }
         .user-dropdown .menu-item.danger { color: var(--danger); }
         .user-dropdown .menu-item.danger:hover { background: rgba(239,68,68,0.08); }
         .user-dropdown .menu-divider {
@@ -257,11 +259,11 @@
             margin: 4px 12px;
         }
 
-        /* ===== Theme Toggle ===== */
+        /* ===== THEME TOGGLE ===== */
         .theme-toggle {
-            width: 36px;
-            height: 20px;
-            border-radius: 20px;
+            width: 32px;
+            height: 18px;
+            border-radius: 18px;
             background: var(--border);
             border: none;
             cursor: pointer;
@@ -274,15 +276,15 @@
             position: absolute;
             top: 2px;
             right: 2px;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: #fff;
             box-shadow: 0 1px 3px rgba(0,0,0,.2);
             transition: var(--transition);
         }
         [data-theme="dark"] .theme-toggle { background: var(--primary); }
-        [data-theme="dark"] .theme-toggle::after { transform: translateX(-16px); }
+        [data-theme="dark"] .theme-toggle::after { transform: translateX(-14px); }
 
         /* ===== BUTTONS ===== */
         .btn-primary {
@@ -333,13 +335,14 @@
 
         .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
 
-        /* ===== CARDS ===== */
+        /* ===== CARDS - محسّن ===== */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             transition: var(--transition);
             overflow: hidden;
+            height: 100%;
         }
         .card:hover { 
             box-shadow: var(--shadow); 
@@ -348,13 +351,14 @@
         }
         .card-img {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
             transition: transform 0.5s;
             aspect-ratio: 16/9;
+            background: var(--bg);
         }
-        @media (max-width: 768px) { .card-img { height: 160px; } }
-        @media (max-width: 480px) { .card-img { height: 140px; } }
+        @media (max-width: 768px) { .card-img { height: 180px; } }
+        @media (max-width: 480px) { .card-img { height: 160px; } }
         .card:hover .card-img { transform: scale(1.03); }
         .card-body { padding: 16px 18px; }
 
@@ -593,28 +597,76 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .nav-links a, .nav-links button { font-size: 0.7rem; padding: 4px 8px; }
+        @media (max-width: 992px) {
+            .nav-links a, .nav-links button { font-size: 0.7rem; padding: 3px 8px; }
             .nav-logo span { font-size: 1rem; }
-            .nav-logo img { width: 30px; height: 30px; }
+            .nav-logo img { width: 28px; height: 28px; }
+            .user-menu-btn .label { display: none; }
+            .user-menu-btn { padding: 3px 8px 3px 6px; }
+            .user-menu-btn .avatar { width: 24px; height: 24px; font-size: 0.6rem; }
             .btn-primary, .btn-outline { padding: 8px 18px; font-size: 0.85rem; width: 100%; justify-content: center; }
             .course-modal { padding: 16px; }
             .login-box { padding: 24px 16px; }
             .lesson-accordion .accordion-header { font-size: 0.85rem; padding: 12px 14px; }
-            .user-menu-btn .label { display: none; }
-            .user-menu-btn { padding: 4px 6px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container { padding: 0 8px; gap: 4px; }
+            .nav-links { gap: 2px; }
+            .nav-links a, .nav-links button { font-size: 0.65rem; padding: 2px 6px; }
+            .nav-logo span { font-size: 0.9rem; }
+            .nav-logo img { width: 24px; height: 24px; }
+            .theme-toggle { width: 28px; height: 16px; }
+            .theme-toggle::after { width: 12px; height: 12px; }
+            .btn-primary, .btn-outline { padding: 6px 14px; font-size: 0.8rem; }
+            .card-img { height: 160px; }
+            .grid-courses { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .grid-dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .stat-card .number { font-size: 1.3rem; }
+            .motivational-message { font-size: 0.85rem; padding: 8px 12px; }
+            .course-page-hero { padding: 20px; }
+            .course-page-hero h1 { font-size: 1.5rem; }
+            .leaderboard-podium { gap: 10px; padding: 10px 0; }
+            .podium-item .podium-avatar { width: 50px; height: 50px; font-size: 1.2rem; }
+            .podium-item .podium-rank { font-size: 1.8rem; }
+            .podium-item .podium-base { width: 50px; height: 8px; }
         }
 
         @media (max-width: 480px) {
-            .nav-container { padding: 0 10px; gap: 4px; }
-            .nav-links { gap: 2px; }
-            .nav-links a, .nav-links button { font-size: 0.65rem; padding: 3px 6px; }
-            .nav-logo span { font-size: 0.9rem; }
-            .nav-logo img { width: 26px; height: 26px; }
-            .theme-toggle { width: 30px; height: 18px; }
-            .theme-toggle::after { width: 14px; height: 14px; }
-            .user-menu-btn .avatar { width: 24px; height: 24px; font-size: 0.7rem; }
+            .nav-container { padding: 0 4px; gap: 2px; }
+            .nav-links a, .nav-links button { font-size: 0.55rem; padding: 2px 4px; }
+            .nav-logo span { font-size: 0.8rem; }
+            .nav-logo img { width: 20px; height: 20px; }
+            .theme-toggle { width: 24px; height: 14px; }
+            .theme-toggle::after { width: 10px; height: 10px; }
+            .user-menu-btn .avatar { width: 20px; height: 20px; font-size: 0.5rem; }
             .user-menu-btn { padding: 2px 4px; }
+            .btn-primary, .btn-outline { padding: 5px 12px; font-size: 0.7rem; }
+            .grid-courses { grid-template-columns: 1fr; }
+            .grid-dashboard { grid-template-columns: 1fr 1fr; }
+            .card-img { height: 140px; }
+            .stat-card { padding: 10px; }
+            .stat-card .number { font-size: 1.1rem; }
+            .profile-code { font-size: 0.9rem; padding: 8px; }
+            .course-page-hero .stats { gap: 10px; font-size: 0.8rem; }
+            .course-page-hero h1 { font-size: 1.2rem; }
+            .motivational-message { font-size: 0.75rem; }
+            .leaderboard-podium { gap: 6px; }
+            .podium-item .podium-avatar { width: 40px; height: 40px; font-size: 1rem; }
+            .podium-item .podium-rank { font-size: 1.5rem; }
+            .podium-item .podium-base { width: 40px; height: 6px; }
+            .user-dropdown { min-width: 180px; right: -10px; }
+        }
+
+        @media (max-width: 375px) {
+            .grid-courses { grid-template-columns: 1fr; }
+            .grid-dashboard { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .stat-card .number { font-size: 1rem; }
+            .stat-card .label { font-size: 0.6rem; }
+            .btn-primary, .btn-outline { font-size: 0.65rem; padding: 4px 10px; }
+            .card-img { height: 120px; }
+            .nav-logo span { font-size: 0.7rem; }
+            .nav-logo img { width: 18px; height: 18px; }
         }
 
         .empty-state {
@@ -678,7 +730,6 @@
             object-fit: cover;
         }
 
-        /* المركز الأول - ذهبي */
         .podium-item.gold .podium-avatar {
             border-color: #FFD60A;
             box-shadow: 0 0 30px rgba(255, 214, 10, 0.4), 0 0 60px rgba(255, 214, 10, 0.2);
@@ -693,14 +744,12 @@
             50% { box-shadow: 0 0 50px rgba(255, 214, 10, 0.6), 0 0 80px rgba(255, 214, 10, 0.3); }
         }
 
-        /* المركز الثاني - فضي */
         .podium-item.silver .podium-avatar {
             border-color: #C0C0C0;
             box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
         }
         .podium-item.silver .podium-base { background: #C0C0C0; height: 10px; width: 70px; border-radius: 4px; margin-top: 8px; }
 
-        /* المركز الثالث - برونزي */
         .podium-item.bronze .podium-avatar {
             border-color: #CD7F32;
             box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
@@ -897,9 +946,15 @@
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
         }
+
+        @media (max-width: 768px) {
+            .grid-courses { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+            .grid-dashboard { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+        }
+
         @media (max-width: 480px) {
-            .grid-courses { grid-template-columns: 1fr; }
-            .grid-dashboard { grid-template-columns: repeat(2, 1fr); }
+            .grid-courses { grid-template-columns: 1fr; gap: 12px; }
+            .grid-dashboard { grid-template-columns: 1fr 1fr; gap: 8px; }
         }
 
         .profile-code {
@@ -1190,11 +1245,31 @@
             margin-top: 16px;
         }
 
-        /* ===== PRINT STYLES ===== */
         @media print {
             .navbar, .back-top, .btn, .no-print { display: none !important; }
             .ai-report-container { box-shadow: none !important; border: 1px solid #ddd !important; }
             body { background: #fff !important; }
+        }
+
+        /* ===== PDF DOWNLOAD BUTTON ===== */
+        .pdf-download-btn {
+            background: var(--danger);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pdf-download-btn:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -1236,27 +1311,24 @@
             </a>
 
             <ul class="nav-links" id="navLinks">
-                <!-- Guest Links -->
                 <li class="guest-only"><a href="#" onclick="APP.showHome()">الرئيسية</a></li>
                 <li class="guest-only"><a href="#" onclick="APP.scrollToCourses()">الكورسات</a></li>
                 <li class="guest-only"><a href="login.html" class="btn-primary-nav">تسجيل الدخول</a></li>
 
-                <!-- User Links - مبسطة -->
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.scrollToCourses()">كورساتي</a></li>
-                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showExams()">امتحانات</a></li>
-                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showQuizzes()">كويزات</a></li>
+                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showExams()">الامتحانات</a></li>
+                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showQuizzes()">الكويزات</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showLeaderboard()">المتصدرون</a></li>
             </ul>
 
             <div style="display:flex;align-items:center;gap:6px;">
                 <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر"></button>
                 
-                <!-- Atoms Badge -->
                 <span class="user-only atoms-badge" style="display:none;font-size:0.7rem;padding:2px 10px;" id="atomsBadge">
                     <i class="fas fa-atom"></i> <span id="atomsCount">0</span>
                 </span>
 
-                <!-- User Menu - محسّن -->
+                <!-- USER MENU - محسّن -->
                 <div class="user-only user-menu-wrapper" style="display:none;" id="userMenuWrapper">
                     <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatarBtn">
                         <span class="avatar" id="userAvatar">U</span>
@@ -1551,7 +1623,7 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('✅ Yalla Chemistry v10.0 - Fully Enhanced');
+        console.log('✅ Yalla Chemistry v11.0 - Fully Enhanced');
 
         // ============================================================
         // APP STATE
@@ -1609,7 +1681,7 @@
         }
 
         // ============================================================
-        // STUDENT CODE GENERATION - محسّن
+        // STUDENT CODE GENERATION
         // ============================================================
         async function generateStudentCode(email, phone) {
             const prefix = 'YK';
@@ -1633,13 +1705,11 @@
             
             let code = `${prefix}-${middle}-${suffix}`;
             
-            // التحقق من عدم التكرار مع إعادة المحاولة
             let attempts = 0;
             while (attempts < 5) {
                 const snapshot = await database.ref('users').orderByChild('code').equalTo(code).once('value');
                 if (!snapshot.exists()) return code;
                 
-                // إعادة إنشاء كود جديد
                 const newTimestamp = Date.now().toString(36).toUpperCase().slice(-4);
                 const newRandom = Math.random().toString(36).substring(2, 6).toUpperCase();
                 code = `${prefix}-${middle}-${newTimestamp + newRandom.slice(-2)}`;
@@ -1832,6 +1902,9 @@
             });
         }
 
+        // ============================================================
+        // FIXED: RENDER COURSES - بدون إظهار عدد الطلاب
+        // ============================================================
         function renderCourses(courses) {
             const grid = document.getElementById('coursesGrid');
             if (!grid) return;
@@ -1873,7 +1946,6 @@
                                     <div style="display:flex;flex-wrap:wrap;gap:4px 10px;font-size:0.7rem;color:var(--text2);margin-bottom:8px;border-top:1px solid var(--border);padding-top:6px;">
                                         <span>🎯 ${c.grade || 'كل الصفوف'}</span>
                                         <span>📚 ${c.lessonsCount || 0} حصة</span>
-                                        <span>👥 ${c.studentsCount || 0} طالب</span>
                                     </div>
                                     ${currentUser ? `
                                         <button class="${subscribed ? 'btn-primary' : 'btn-outline'}" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.subscribeToCourse('${c.id}')" ${subscribed ? 'disabled' : ''}>
@@ -1919,7 +1991,7 @@
         }
 
         // ============================================================
-        // FIXED: SUBSCRIBE TO COURSE - مع تسجيل الأخطاء
+        // FIXED: SUBSCRIBE TO COURSE
         // ============================================================
         async function subscribeToCourse(courseId) {
             console.log('🔄 Starting subscription process...');
@@ -1962,7 +2034,6 @@
                 await newRef.set(subscriptionData);
                 console.log('✅ Subscription saved successfully, key:', newRef.key);
 
-                // تحديث عدد الطلاب في الكورس
                 const course = allCourses.find(c => c.id === courseId);
                 if (course) {
                     const currentCount = course.studentsCount || 0;
@@ -1971,7 +2042,6 @@
                     course.studentsCount = currentCount + 1;
                 }
 
-                // تحديث الاشتراكات المحلية
                 userSubscriptions.push({
                     id: newRef.key,
                     userId: currentUser.uid,
@@ -1983,7 +2053,6 @@
                 showToast('🎉 تم الاشتراك في الكورس بنجاح!', 'success');
                 console.log('✅ Subscription process completed successfully');
                 
-                // تحديث الواجهة
                 renderCourses(allCourses);
                 
             } catch (err) {
@@ -2085,7 +2154,6 @@
                                             <div class="stats">
                                                 <span><i class="fas fa-video"></i> ${lessons.length} حصة</span>
                                                 <span><i class="fas fa-atom"></i> ${totalAtoms} ذرة ممكنة</span>
-                                                <span><i class="fas fa-user-graduate"></i> ${course.studentsCount || 0} طالب</span>
                                                 <span><i class="fas fa-clock"></i> ${Math.round(lessons.reduce((s, l) => s + parseInt(l.duration || '0'), 0) / 60)} ساعة</span>
                                             </div>
                                         </div>
@@ -2123,7 +2191,7 @@
         }
 
         // ============================================================
-        // LESSON PAGE - صفحة حصة مستقلة مع ترتيب ديناميكي
+        // LESSON PAGE - صفحة حصة محسّنة
         // ============================================================
         async function openLessonPage(lessonId) {
             if (!currentUser) {
@@ -2165,36 +2233,40 @@
                 }
 
                 const videoIdYt = extractYouTubeId(lesson.videoUrl || '');
-                const videoHtml = videoIdYt ? `
-                            <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);background:#000;margin-bottom:16px;">
-                                <iframe src="https://www.youtube.com/embed/${videoIdYt}" 
-                                        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
-                                        allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" 
-                                        allowfullscreen>
-                                </iframe>
-                            </div>
-                        ` : '';
-
-                const lastPosition = userCourseProgress[lessonId]?.lastPosition || 0;
-
-                // ===== ترتيب ديناميكي للعناصر =====
+                
+                // ===== بناء المحتوى الديناميكي =====
                 let contentItems = [];
 
                 // 1. فيديو
-                if (lesson.videoUrl) {
+                if (lesson.videoUrl && videoIdYt) {
                     contentItems.push({
-                        icon: 'video',
-                        title: '🎥 مشاهدة الفيديو',
-                        html: videoHtml
+                        type: 'video',
+                        html: `
+                            <div class="card" style="padding:0;overflow:hidden;">
+                                <div style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
+                                    <iframe src="https://www.youtube.com/embed/${videoIdYt}" 
+                                            style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+                                            allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" 
+                                            allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        `
                     });
                 }
 
                 // 2. PDF
                 if (lesson.pdfUrl) {
                     contentItems.push({
-                        icon: 'pdf',
-                        title: '📄 الملزمة',
-                        html: `<button class="btn-primary" style="background:var(--warning);width:100%;" onclick="window.open('${lesson.pdfUrl}','_blank')"><i class="fas fa-file-pdf"></i> تحميل PDF</button>`
+                        type: 'pdf',
+                        html: `
+                            <div class="card" style="padding:16px;">
+                                <h4 style="font-weight:700;margin-bottom:8px;">📄 الملزمة</h4>
+                                <button class="btn-primary" style="background:var(--warning);width:100%;" onclick="window.open('${lesson.pdfUrl}','_blank')">
+                                    <i class="fas fa-file-pdf"></i> 📘 فتح الملزمة
+                                </button>
+                            </div>
+                        `
                     });
                 }
 
@@ -2202,60 +2274,106 @@
                 if (lesson.hasQuiz) {
                     const quizData = await database.ref('quizzes/' + lessonId).once('value');
                     const quiz = quizData.val();
-                    contentItems.push({
-                        icon: 'quiz',
-                        title: '📝 الكويز',
-                        html: `<button class="btn-primary" style="width:100%;" onclick="APP.openLessonQuiz('${lessonId}')"><i class="fas fa-puzzle-piece"></i> ${quiz?.title || 'كويز الحصة'}</button>`
-                    });
+                    if (quiz) {
+                        contentItems.push({
+                            type: 'quiz',
+                            html: `
+                                <div class="card" style="padding:16px;">
+                                    <h4 style="font-weight:700;margin-bottom:8px;">📝 الكويز</h4>
+                                    <button class="btn-primary" style="width:100%;" onclick="APP.openLessonQuiz('${lessonId}')">
+                                        <i class="fas fa-puzzle-piece"></i> ${escapeHtml(quiz.title || 'كويز الحصة')}
+                                    </button>
+                                </div>
+                            `
+                        });
+                    }
                 }
 
                 // 4. Exam
                 if (lesson.hasExam) {
                     const examData = await database.ref('exams/' + lessonId).once('value');
                     const exam = examData.val();
-                    contentItems.push({
-                        icon: 'exam',
-                        title: '🎯 الامتحان الشامل',
-                        html: `<button class="btn-primary" style="background:var(--gold);color:#081B2C;width:100%;" onclick="APP.openLessonExam('${lessonId}')"><i class="fas fa-file-alt"></i> ${exam?.title || 'امتحان الحصة'}</button>`
-                    });
+                    if (exam) {
+                        contentItems.push({
+                            type: 'exam',
+                            html: `
+                                <div class="card" style="padding:16px;">
+                                    <h4 style="font-weight:700;margin-bottom:8px;">🎯 الامتحان الشامل</h4>
+                                    <button class="btn-primary" style="background:var(--gold);color:#081B2C;width:100%;" onclick="APP.openLessonExam('${lessonId}')">
+                                        <i class="fas fa-file-alt"></i> ${escapeHtml(exam.title || 'امتحان الحصة')}
+                                    </button>
+                                </div>
+                            `
+                        });
+                    }
                 }
 
                 // 5. Assignment
                 if (lesson.hasAssignment) {
                     const assignData = await database.ref('assignments/' + lessonId).once('value');
                     const assign = assignData.val();
-                    contentItems.push({
-                        icon: 'assignment',
-                        title: '📚 الواجب',
-                        html: `<button class="btn-primary" style="background:#8B5CF6;width:100%;" onclick="APP.openLessonAssignment('${lessonId}')"><i class="fas fa-tasks"></i> ${assign?.title || 'واجب الحصة'}</button>`
-                    });
+                    if (assign) {
+                        contentItems.push({
+                            type: 'assignment',
+                            html: `
+                                <div class="card" style="padding:16px;">
+                                    <h4 style="font-weight:700;margin-bottom:8px;">📚 الواجب</h4>
+                                    <button class="btn-primary" style="background:#8B5CF6;width:100%;" onclick="APP.openLessonAssignment('${lessonId}')">
+                                        <i class="fas fa-tasks"></i> ${escapeHtml(assign.title || 'واجب الحصة')}
+                                    </button>
+                                </div>
+                            `
+                        });
+                    }
                 }
 
-                // بناء HTML للعناصر
+                const lastPosition = userCourseProgress[lessonId]?.lastPosition || 0;
+
+                // الحصول على اسم الكورس
+                const course = allCourses.find(c => c.id === lesson.courseId);
+                const courseName = course ? course.title : 'الكورس';
+
+                // بناء HTML المحتوى
                 let contentHtml = contentItems.length > 0 ? `
-                            <div style="display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px;">
-                                ${contentItems.map(item => `
-                                    <div class="card" style="padding:16px;">
-                                        <h4 style="font-weight:700;margin-bottom:8px;">${item.title}</h4>
-                                        ${item.html}
-                                    </div>
-                                `).join('')}
+                            <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:16px;">
+                                ${contentItems.map(item => item.html).join('')}
                             </div>
-                        ` : '<div class="empty-state"><div class="icon">📚</div><h3>لا يوجد محتوى لهذه الحصة</h3></div>';
+                        ` : `
+                            <div class="empty-state">
+                                <div class="icon">📚</div>
+                                <h3>لا يوجد محتوى لهذه الحصة</h3>
+                                <p>سيتم إضافة المحتوى قريباً</p>
+                            </div>
+                        `;
 
                 main.innerHTML = `
-                            <div style="max-width:900px;margin:0 auto;padding:20px;">
-                                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
-                                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                            <div style="max-width:900px;margin:0 auto;padding:16px;">
+                                <!-- Breadcrumb -->
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:0.85rem;color:var(--text2);flex-wrap:wrap;">
+                                    <button class="btn-outline btn-sm no-print" onclick="APP.openCoursePage('${lesson.courseId}')" style="padding:4px 12px;">
+                                        <i class="fas fa-arrow-right"></i> ${escapeHtml(courseName)}
+                                    </button>
+                                    <span style="color:var(--border);">/</span>
+                                    <span style="font-weight:600;color:var(--text);">${escapeHtml(lesson.title)}</span>
+                                </div>
+
+                                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+                                    <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text);">${escapeHtml(lesson.title)}</h1>
                                     <div style="display:flex;gap:8px;">
                                         ${lesson.id ? `<button class="btn-outline btn-sm no-print" onclick="APP.navigateLesson('${lesson.id}', 'prev')"><i class="fas fa-chevron-right"></i> السابق</button>` : ''}
                                         ${lesson.id ? `<button class="btn-outline btn-sm no-print" onclick="APP.navigateLesson('${lesson.id}', 'next')">التالي <i class="fas fa-chevron-left"></i></button>` : ''}
                                     </div>
                                 </div>
+                                
+                                <p style="color:var(--text2);margin-bottom:12px;font-size:0.9rem;">
+                                    <i class="fas fa-clock"></i> ${escapeHtml(lesson.duration) || '--'} • 
+                                    <i class="fas fa-atom" style="color:var(--gold);"></i> ${lesson.atomsReward || 5} ذرة
+                                    ${lastPosition > 0 ? ` • <span style="color:var(--warning);">⏱️ تابعت ${Math.floor(lastPosition / 60)} دقيقة</span>` : ''}
+                                </p>
 
-                                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">${escapeHtml(lesson.title)}</h1>
-                                <p style="color:var(--text2);margin-bottom:12px;">⏰ ${escapeHtml(lesson.duration) || '--'} • ⭐ ${lesson.atomsReward || 5} ذرة</p>
-                                ${lastPosition > 0 ? `<p style="color:var(--warning);font-weight:600;margin-bottom:8px;">⏱️ تابعت ${Math.floor(lastPosition / 60)} دقيقة</p>` : ''}
+                                <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text2);">
+                                    <span style="font-weight:700;color:var(--text);">📚 شرح الدرس</span>
+                                </div>
 
                                 ${contentHtml}
 
@@ -2658,7 +2776,7 @@
             main.innerHTML = `
                         <div style="max-width:1280px;margin:0 auto;padding:20px;">
                             <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                            <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">📝 الامتحانات</h1>
+                            <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">📝 الامتحانات الشاملة</h1>
                             <p style="color:var(--text2);margin-bottom:12px;">جميع الامتحانات المتاحة على المنصة</p>
                             <div id="examsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
                                 ${allExams.length === 0 ? `
@@ -2747,7 +2865,7 @@
             if (!users || users.length === 0) {
                 container.innerHTML = `
                             <div class="empty-state">
-                                <div class="icon">🏆</div>
+                                <div class>icon">🏆</div>
                                 <h3>لا يوجد متصدرين حالياً</h3>
                             </div>
                         `;
@@ -3082,7 +3200,7 @@
         }
 
         // ============================================================
-        // AI INSIGHTS - تحليل المستوى بالذكاء الاصطناعي (محسّن)
+        // AI INSIGHTS - متكامل مع تقرير
         // ============================================================
         function showAIInsights() {
             if (!currentUser) {
@@ -3101,7 +3219,6 @@
             const quizzesCompleted = Object.values(userCourseProgress).filter(p => p.completed && p.type === 'quiz').length;
             const errorsCount = Object.values(userCourseProgress).filter(p => p.error).length;
             
-            // حساب الترتيب
             const allUsersData = [];
             database.ref('users').once('value', (snapshot) => {
                 snapshot.forEach(child => {
@@ -3117,7 +3234,6 @@
             });
 
             function renderAIReport(rank) {
-                // تحليل المستوى
                 let level = progress > 70 ? 'متقدم 🚀' : progress > 40 ? 'متوسط 📈' : 'مبتدئ 🌱';
                 let levelScore = progress;
                 
@@ -3137,19 +3253,16 @@
                 if (strengths.length === 0) strengths.push('🌟 ابدأ رحلتك واكتشف نقاط قوتك!');
                 if (weaknesses.length === 0) weaknesses.push('🌟 أنت في طريق ممتاز، استمر!');
 
-                // توقع المستوى القادم
                 const predictedScore = Math.min(100, progress + Math.floor(Math.random() * 15) + 5);
-                
-                // الدروس التي يجب مراجعتها
                 const lessonsToReview = allLessons.filter(l => !userCourseProgress[l.id]?.watched).slice(0, 3);
 
                 main.innerHTML = `
-                            <div style="max-width:900px;margin:0 auto;padding:20px;">
+                            <div style="max-width:900px;margin:0 auto;padding:16px;">
                                 <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
                                 
                                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0;">
                                     <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);">🤖 تحليل مستواك بالذكاء الاصطناعي</h1>
-                                    <button class="btn-primary no-print" onclick="printAIReport()"><i class="fas fa-print"></i> 🖨️ طباعة التقرير</button>
+                                    <button class="pdf-download-btn no-print" onclick="printAIReport()"><i class="fas fa-print"></i> 🖨️ طباعة التقرير</button>
                                 </div>
                                 <p style="color:var(--text2);margin-bottom:16px;">تحليل ذكي لأدائك وتوصيات مخصصة</p>
 
@@ -3160,7 +3273,6 @@
                                         <div style="font-size:0.8rem;color:var(--text2);">تاريخ التحليل: ${new Date().toLocaleDateString('ar')} • ${new Date().toLocaleTimeString('ar')}</div>
                                     </div>
 
-                                    <!-- البيانات الأساسية -->
                                     <div class="report-section">
                                         <h4>📋 البيانات الأساسية</h4>
                                         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">
@@ -3171,7 +3283,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- الإحصائيات -->
                                     <div class="report-section">
                                         <h4>📊 الإحصائيات</h4>
                                         <div class="grid-2">
@@ -3185,7 +3296,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- نقاط القوة والضعف -->
                                     <div class="report-section">
                                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                                             <div>
@@ -3199,7 +3309,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- خطة المراجعة -->
                                     <div class="report-section">
                                         <h4>📖 خطة مراجعة مقترحة</h4>
                                         <p style="font-size:0.9rem;color:var(--text);">📚 راجع الحصص التي لم تكتمل • 🧪 حل كويزات وامتحانات للحصول على ذرات • 📝 تابع تقدمك يومياً</p>
@@ -3212,7 +3321,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- توقع الأداء القادم -->
                                     <div class="report-section">
                                         <h4>🎯 توقع الأداء القادم</h4>
                                         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -3356,7 +3464,7 @@
             else if (progress >= 25) motivationalMsg = '🌟 بداية رائعة! استمر في التقدم!';
 
             main.innerHTML = `
-                        <div style="max-width:1280px;margin:0 auto;padding:20px;">
+                        <div style="max-width:1280px;margin:0 auto;padding:16px;">
                             <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
 
                             <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0 16px;flex-wrap:wrap;gap:8px;">
@@ -3688,7 +3796,7 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v10.0 - Ultimate Edition');
+            console.log('🚀 Yalla Chemistry Platform v11.0 - Ultimate Edition');
             console.log('✅ كود الطالب: YK-XXX-XXXX (فريد ولا يتكرر)');
             console.log('✅ رفع الصورة الشخصية: Base64 في Realtime DB');
             console.log('✅ بطاقة الطالب: PDF مع QR Code');
@@ -3697,6 +3805,8 @@
             console.log('✅ صفحة الحصة: صفحة مستقلة مع ترتيب ديناميكي');
             console.log('✅ الذكاء الاصطناعي: تحليل متقدم مع تقرير قابل للطباعة');
             console.log('✅ جميع الوظائف السابقة محفوظة');
+            console.log('✅ Responsive محسّن لجميع المقاسات');
+            console.log('✅ تم إزالة عدد الطلاب من واجهة الطالب');
         }
 
         if (document.readyState === 'loading') {
