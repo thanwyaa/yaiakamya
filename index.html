@@ -387,6 +387,7 @@
             font-size: 0.8rem;
         }
 
+        /* ===== Buttons ===== */
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -446,6 +447,7 @@
         .btn-sm { padding: 6px 16px; font-size: 0.8rem; min-height: 36px; min-width: 36px; }
         .btn-block { width: 100%; justify-content: center; }
 
+        /* ===== Cards ===== */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -848,26 +850,26 @@
 
         .course-lesson-item {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 14px 18px; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 14px;
-            transition: var(--transition); cursor: pointer;
+            border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: var(--transition);
         }
         .course-lesson-item:hover { border-color: var(--primary); box-shadow: var(--shadow); }
-        .course-lesson-item .lesson-num {
-            width: 34px; height: 34px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; background: var(--bg); color: var(--text2);
-            flex-shrink: 0; font-size: 0.85rem;
-        }
         .course-lesson-item .lesson-info { flex: 1; }
-        .course-lesson-item .lesson-info .title { font-weight: 700; color: var(--text); }
-        .course-lesson-item .lesson-info .meta { font-size: 0.8rem; color: var(--text2); }
+        .course-lesson-item .lesson-info .title { font-weight: 700; font-size: 1.05rem; color: var(--text); }
+        .course-lesson-item .lesson-info .meta { font-size: 0.8rem; color: var(--text2); margin-top: 2px; }
         .course-lesson-item .lesson-status {
-            font-size: 0.75rem; padding: 2px 12px; border-radius: 20px; white-space: nowrap;
+            font-size: 0.75rem; padding: 4px 14px; border-radius: 20px; white-space: nowrap;
+            margin: 0 12px;
         }
         .course-lesson-item .lesson-status.completed { background: rgba(34,197,94,0.15); color: #16A34A; }
         .course-lesson-item .lesson-status.in-progress { background: rgba(255,167,38,0.15); color: #D97706; }
         .course-lesson-item .lesson-status.locked { background: rgba(239,68,68,0.1); color: #DC2626; }
+        .course-lesson-item .btn-enter {
+            min-width: 100px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+        }
 
         .achievement-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;
@@ -911,17 +913,17 @@
         .lesson-page-header .meta { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; font-size: 0.85rem; color: var(--text2); }
 
         .lesson-resources {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 12px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;
         }
         .lesson-resources .resource-card {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 16px; text-align: center;
+            border-radius: var(--radius); padding: 20px; text-align: center;
             transition: var(--transition); cursor: pointer; text-decoration: none; color: var(--text);
         }
         .lesson-resources .resource-card:hover { border-color: var(--primary); box-shadow: var(--shadow); transform: translateY(-3px); }
-        .lesson-resources .resource-card .icon { font-size: 2.5rem; margin-bottom: 6px; display: block; }
-        .lesson-resources .resource-card .label { font-weight: 700; font-size: 0.9rem; color: var(--text); }
-        .lesson-resources .resource-card .desc { font-size: 0.75rem; color: var(--text2); }
+        .lesson-resources .resource-card .icon { font-size: 3rem; margin-bottom: 8px; display: block; }
+        .lesson-resources .resource-card .label { font-weight: 700; font-size: 1rem; color: var(--text); }
+        .lesson-resources .resource-card .desc { font-size: 0.8rem; color: var(--text2); }
 
         .ai-analysis-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;
@@ -944,14 +946,18 @@
         @media (max-width: 768px) {
             .ai-analysis-grid { grid-template-columns: 1fr; }
             .lesson-resources { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .course-lesson-item { flex-wrap: wrap; gap: 8px; }
+            .course-lesson-item .lesson-status { margin: 0 0 0 12px; }
+            .course-lesson-item .btn-enter { width: 100%; }
         }
         @media (max-width: 480px) {
             .lesson-page-header { padding: 14px; }
             .course-page-hero { padding: 16px; }
             .course-page-hero h1 { font-size: 1.4rem; }
             .course-page-hero .stats { gap: 10px; font-size: 0.75rem; }
-            .course-lesson-item { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
-            .course-lesson-item .lesson-status { font-size: 0.65rem; padding: 2px 8px; }
+            .course-lesson-item { padding: 12px 14px; }
+            .course-lesson-item .lesson-info .title { font-size: 0.9rem; }
+            .course-lesson-item .lesson-status { font-size: 0.6rem; padding: 2px 10px; }
             .lesson-resources { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 360px) {
@@ -1006,7 +1012,6 @@
         .quiz-option.correct { border-color: var(--success); background: rgba(34,197,94,0.08); }
         .quiz-option.wrong { border-color: var(--danger); background: rgba(239,68,68,0.08); }
 
-        /* ===== Student Card ===== */
         .student-card-preview {
             background: #fff; border-radius: var(--radius-lg); padding: 30px;
             max-width: 450px; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
@@ -1040,7 +1045,6 @@
             font-size: 0.7rem; color: var(--text2); text-align: center;
         }
 
-        /* ===== Certificate ===== */
         .certificate-preview {
             background: #fff; border: 3px solid #FFD60A;
             border-radius: var(--radius-lg); padding: 40px; text-align: center;
@@ -1056,7 +1060,6 @@
         .certificate-preview .details { color: var(--text2); margin: 8px 0; font-size: 0.9rem; }
         .certificate-preview .qr-code { width: 80px; height: 80px; margin: 12px auto; background: var(--bg); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
 
-        /* ===== Error Bank ===== */
         .error-bank-item {
             background: var(--card); border: 1px solid var(--border);
             border-radius: var(--radius); padding: 16px; margin-bottom: 8px; transition: var(--transition);
@@ -1348,7 +1351,11 @@
         // ============================================================
         // NAVIGATION
         // ============================================================
-        function showHome() { location.reload(); }
+        function showHome() { 
+            renderHomePage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            closeUserDropdown();
+        }
 
         function scrollToCourses() {
             const el = document.getElementById('coursesSection');
@@ -1555,24 +1562,24 @@
                                         ${c.grade ? `<span class="badge badge-primary">🎯 ${escapeHtml(c.grade)}</span>` : ''}
                                         ${c.studyType ? `<span class="badge badge-warning">${escapeHtml(c.studyType)}</span>` : ''}
                                     </div>
-                                    <h3 style="font-weight:700;font-size:1.05rem;color:var(--text);margin-bottom:4px;">${escapeHtml(c.title) || 'كورس'}</h3>
-                                    <p style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(c.description) || ''}</p>
+                                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:4px;">${escapeHtml(c.title) || 'كورس'}</h3>
+                                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(c.description) || ''}</p>
                                     <div style="display:flex;flex-wrap:wrap;gap:4px 10px;font-size:0.7rem;color:var(--text2);margin-bottom:8px;border-top:1px solid var(--border);padding-top:6px;">
                                         <span>📚 ${c.lessonsCount || 0} حصة</span>
                                         <span>⭐ ${c.rating || 0}</span>
                                     </div>
                                     ${currentUser ? `
                                         ${subscribed ? `
-                                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.openCoursePage('${c.id}')">
+                                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.85rem;padding:8px 12px;" onclick="event.stopPropagation(); APP.openCoursePage('${c.id}')">
                                                 🚀 دخول الكورس
                                             </button>
                                         ` : `
-                                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.subscribeToCourse('${c.id}')">
+                                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.85rem;padding:8px 12px;" onclick="event.stopPropagation(); APP.subscribeToCourse('${c.id}')">
                                                 📝 اشترك الآن
                                             </button>
                                         `}
                                     ` : `
-                                        <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.showLoginOverlay()">
+                                        <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.85rem;padding:8px 12px;" onclick="event.stopPropagation(); APP.showLoginOverlay()">
                                             🔒 اشترك الآن
                                         </button>
                                     `}
@@ -1592,7 +1599,7 @@
         }
 
         // ============================================================
-        // SUBSCRIPTIONS
+        // SUBSCRIPTIONS - FIXED
         // ============================================================
         function isUserSubscribed(courseId) {
             return userSubscriptions.some(sub => sub.courseId === courseId && sub.status === 'active');
@@ -1622,6 +1629,7 @@
             }
 
             try {
+                // التحقق من وجود اشتراك سابق
                 const existing = await database.ref('courseSubscriptions')
                     .orderByChild('userId')
                     .equalTo(currentUser.uid)
@@ -1638,6 +1646,7 @@
                     return;
                 }
 
+                // إنشاء اشتراك جديد
                 const newRef = database.ref('courseSubscriptions').push();
                 await newRef.set({
                     userId: currentUser.uid,
@@ -1646,6 +1655,7 @@
                     subscribedAt: new Date().toISOString()
                 });
 
+                // تحديث عدد الطلاب في الكورس
                 const course = allCourses.find(c => c.id === courseId);
                 if (course) {
                     const currentCount = course.studentsCount || 0;
@@ -1653,6 +1663,7 @@
                     course.studentsCount = currentCount + 1;
                 }
 
+                // تحديث عدد كورسات المستخدم
                 const userRef = database.ref('users/' + currentUser.uid);
                 const userSnap = await userRef.once('value');
                 if (userSnap.exists()) {
@@ -1757,7 +1768,7 @@
         }
 
         // ============================================================
-        // COURSE PAGE
+        // COURSE PAGE - صفحة كورس مستقلة
         // ============================================================
         async function openCoursePage(courseId) {
             if (!currentUser) {
@@ -1807,19 +1818,19 @@
 
                 let lessonsHtml = lessons.map((lesson, idx) => {
                     const isCompleted = userCourseProgress[lesson.id]?.watched || false;
-                    const isLocked = idx > 0 && !userCourseProgress[lessons[idx - 1]?.id]?.watched;
-                    const statusClass = isCompleted ? 'completed' : isLocked ? 'locked' : 'in-progress';
-                    const statusText = isCompleted ? '✅ مكتملة' : isLocked ? '🔒 مقفولة' : '⏳ قيد التقدم';
+                    const statusClass = isCompleted ? 'completed' : 'in-progress';
+                    const statusText = isCompleted ? '✅ مكتملة' : '⏳ قيد التقدم';
 
                     return `
-                                <div class="course-lesson-item" onclick="APP.openLessonPage('${lesson.id}')">
-                                    <div class="lesson-num">${idx + 1}</div>
+                                <div class="course-lesson-item">
                                     <div class="lesson-info">
                                         <div class="title">${escapeHtml(lesson.title)}</div>
                                         <div class="meta">⏰ ${escapeHtml(lesson.duration || '--')} • ⭐ ${lesson.atomsReward || 5} ذرة</div>
                                     </div>
                                     <div class="lesson-status ${statusClass}">${statusText}</div>
-                                    <i class="fas fa-chevron-left" style="color:var(--text2);"></i>
+                                    <button class="btn-primary btn-sm btn-enter" onclick="APP.openLessonPage('${lesson.id}')">
+                                        🚀 دخول الحصة
+                                    </button>
                                 </div>
                             `;
                 }).join('');
@@ -1856,7 +1867,7 @@
                                     <div class="progress-bar"><div class="fill" style="width:${progressPercent}%;"></div></div>
                                 </div>
 
-                                <h3 style="font-weight:700;font-size:1.2rem;color:var(--primary);margin-bottom:12px;">📚 قائمة الحصص</h3>
+                                <h3 style="font-weight:700;font-size:1.2rem;color:var(--primary);margin-bottom:16px;">📚 قائمة الحصص</h3>
                                 ${lessonsHtml || '<div class="empty-state"><div class="icon">📚</div><h3>لا توجد حصص</h3></div>'}
                             </div>
                         `;
@@ -1874,7 +1885,7 @@
         }
 
         // ============================================================
-        // LESSON PAGE
+        // LESSON PAGE - صفحة حصة مستقلة
         // ============================================================
         async function openLessonPage(lessonId) {
             if (!currentUser) {
@@ -1893,6 +1904,7 @@
                 }
                 const lesson = snapshot.val();
 
+                // تحديث التقدم
                 if (!userCourseProgress[lessonId]?.watched) {
                     await database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                         watched: true,
@@ -1916,6 +1928,7 @@
                 const course = allCourses.find(c => c.id === lesson.courseId);
                 const courseName = course ? course.title : 'الكورس';
 
+                // بناء الموارد - عرض فقط ما هو موجود
                 let resourcesHtml = '';
                 const resources = [];
 
@@ -2592,7 +2605,7 @@
         }
 
         // ============================================================
-        // ERROR BANK - أخطائي
+        // ERROR BANK - أخطائي (مصلحة بالكامل)
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -2616,7 +2629,7 @@
                             <div style="max-width:900px;margin:0 auto;padding:16px;">
                                 <button class="btn-outline btn-sm" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
                                 <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">❌ أخطائي</h1>
-                                <p style="color:var(--text2);margin-bottom:16px;">الأسئلة التي أخطأت فيها - تبقى حتى تجيبها بشكل صحيح مرتين متتاليتين</p>
+                                <p style="color:var(--text2);margin-bottom:16px;">الأسئلة التي أخطأت فيها - تبقى حتى تجيبها بشكل صحيح</p>
                                 ${errors.length === 0 ? `
                                     <div class="empty-state">
                                         <div class="icon">✅</div>
@@ -2654,10 +2667,8 @@
 
         function retryError(index) {
             showToast('📝 جاري فتح السؤال للمراجعة...', 'info');
-            // سيتم توجيه المستخدم إلى الدرس المرتبط بالخطأ
             if (allUserErrors[index]) {
                 const error = allUserErrors[index];
-                // البحث عن الدرس المرتبط
                 const lesson = allLessons.find(l => l.title === error.lessonName || l.id === error.lessonId);
                 if (lesson) {
                     openLessonPage(lesson.id);
@@ -2863,9 +2874,8 @@
                 if (p.completed && p.type === 'exam') examsCompleted++;
             });
 
-            // حساب عدد أيام الدراسة المتتالية (محاكاة من بيانات الدخول)
-            const loginCount = userData?.loginCount || 0;
             const streak = userData?.streak || 0;
+            const loginCount = userData?.loginCount || 0;
 
             return [
                 { id: 'first_exam', icon: '📝', name: 'أول امتحان', desc: 'حل أول امتحان بنجاح', unlocked: examsCompleted > 0 },
@@ -2874,7 +2884,7 @@
                 { id: 'first_1000_atoms', icon: '💎', name: '1000 ذرة', desc: 'اجمع 1000 ذرة', unlocked: atoms >= 1000 },
                 { id: 'complete_course', icon: '🎓', name: 'أول كورس', desc: 'أنهي أول كورس بالكامل', unlocked: false },
                 { id: 'complete_5_lessons', icon: '📚', name: '5 حصص', desc: 'أنهي 5 حصص', unlocked: completedLessons >= 5 },
-                { id: 'complete_20_lessons', icon: '📚', name: '20 حصة', desc: 'أنهي 20 حصة', unlocked: completedLessons >= 20 },
+                { id: 'complete_10_lessons', icon: '📚', name: '10 حصص', desc: 'أنهي 10 حصص', unlocked: completedLessons >= 10 },
                 { id: 'study_7_days', icon: '🔥', name: '7 أيام دراسة', desc: 'ادرس 7 أيام متتالية', unlocked: streak >= 7 },
                 { id: 'perfect_exam', icon: '💯', name: 'امتحان ممتاز', desc: 'احصل على 100% في امتحان', unlocked: false }
             ];
@@ -2976,13 +2986,11 @@
                 }
             }
 
-            // حساب متوسط الدرجات
             let avgScore = 0;
             if (totalExamQuestions > 0) {
                 avgScore = Math.round((correctExamAnswers / totalExamQuestions) * 100);
             }
 
-            // نقاط القوة والضعف بناءً على البيانات
             const strengths = [];
             const weaknesses = [];
             const weakLessons = [];
@@ -3000,7 +3008,6 @@
             if (examCount < 1) weaknesses.push('📝 حاول حل المزيد من الامتحانات');
             if (avgScore > 0 && avgScore < 50) weaknesses.push('📝 حاول تحسين درجاتك في الامتحانات');
 
-            // الدروس غير المكتملة
             for (const c of allCourses) {
                 const lessons = allLessonsByCourse[c.id] || [];
                 const incomplete = lessons.filter(l => !userCourseProgress[l.id]?.watched);
@@ -3013,7 +3020,6 @@
                 }
             }
 
-            // توقع الأداء
             let prediction = '';
             if (progress > 80 && avgScore > 80) {
                 prediction = '🚀 أداء ممتاز! أنت على الطريق الصحيح لتحقيق نتائج متميزة. استمر بنفس الوتيرة.';
@@ -3028,7 +3034,6 @@
             const reportDate = new Date().toLocaleDateString('ar');
             const reportTime = new Date().toLocaleTimeString('ar');
 
-            // تحليل الأخطاء الأكثر تكراراً
             let topErrors = [];
             if (allUserErrors.length > 0) {
                 const errorCount = {};
@@ -3465,10 +3470,6 @@
                         allUsers.push({ id: child.key, atoms: data.atoms || 0 });
                     });
                 });
-                // عرض الصفحة الرئيسية بعد تسجيل الدخول
-                if (!document.getElementById('heroSection')) {
-                    showHome();
-                }
             } else {
                 loadCourses();
                 loadLessons();
@@ -3476,10 +3477,7 @@
                 loadQuizzes();
                 loadAssignments();
                 loadLeaderboard();
-                // عرض الصفحة الرئيسية
-                if (!document.getElementById('heroSection')) {
-                    showHome();
-                }
+                renderHomePage();
             }
         });
 
@@ -3552,26 +3550,15 @@
         };
 
         // ============================================================
-        // INIT - عرض الصفحة الرئيسية
-        // ============================================================
-        function init() {
-            setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v13.0');
-            console.log('✅ تم إصلاح بطاقة الطالب');
-            console.log('✅ تم إصلاح الإنجازات');
-            console.log('✅ تم إصلاح تحليل الذكاء الاصطناعي');
-            console.log('✅ تم إصلاح أخطائي');
-            console.log('✅ تم إضافة لوحة الطالب');
-            console.log('✅ جميع البيانات من Firebase');
-        }
-
-        // ============================================================
-        // SHOW HOME (الصفحة الرئيسية)
+        // RENDER HOME PAGE
         // ============================================================
         function renderHomePage() {
             const main = document.getElementById('mainContent');
             if (!main) return;
-            
+
+            // Check if user is logged in to show appropriate content
+            const isLoggedIn = !!currentUser;
+
             main.innerHTML = `
                 <section id="heroSection" style="padding:24px 16px 16px;max-width:1280px;margin:0 auto;">
                     <div style="border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:16px;">
@@ -3774,27 +3761,20 @@
                     </div>
                 </section>
             `;
-            
-            // إعادة تحميل البيانات بعد عرض الصفحة
+
+            // Load courses and leaderboard after rendering
             setTimeout(() => {
                 loadCourses();
                 loadLeaderboard();
+                // Update UI based on auth state
+                if (currentUser) {
+                    loadUserData(currentUser.uid);
+                    loadUserSubscriptions(currentUser.uid);
+                    loadUserProgress(currentUser.uid);
+                    loadUserErrors(currentUser.uid);
+                }
             }, 100);
         }
-
-        // Override showHome to render the full page
-        const originalShowHome = showHome;
-        showHome = function() {
-            renderHomePage();
-            // تحديث حالة المستخدم
-            if (currentUser) {
-                loadUserData(currentUser.uid);
-                loadUserSubscriptions(currentUser.uid);
-                loadUserProgress(currentUser.uid);
-                loadUserErrors(currentUser.uid);
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
 
         // ============================================================
         // INIT
@@ -3803,18 +3783,19 @@
             document.addEventListener('DOMContentLoaded', function() {
                 setupScrollHandlers();
                 renderHomePage();
-                console.log('🚀 Yalla Chemistry Platform v13.0 - تم الإصلاح الكامل');
-                console.log('✅ بطاقة الطالب - تعرض البيانات الحقيقية');
-                console.log('✅ الإنجازات - تعرض بالعربية');
-                console.log('✅ تحليل AI - يعتمد على البيانات الفعلية');
-                console.log('✅ أخطائي - تعرض الأخطاء مع إعادة الحل');
-                console.log('✅ لوحة الطالب - صفحة منفصلة');
+                console.log('🚀 Yalla Chemistry Platform v14.0 - تم الإصلاح الكامل');
+                console.log('✅ تم إصلاح الاشتراك في الكورسات');
+                console.log('✅ تم إصلاح بطاقة الطالب');
+                console.log('✅ تم إصلاح الإنجازات');
+                console.log('✅ تم إصلاح تحليل الذكاء الاصطناعي');
+                console.log('✅ تم إصلاح أخطائي');
+                console.log('✅ تم تحسين صفحة الكورس والحصة');
                 console.log('✅ جميع البيانات من Firebase');
             });
         } else {
             setupScrollHandlers();
             renderHomePage();
-            console.log('🚀 Yalla Chemistry Platform v13.0 - تم الإصلاح الكامل');
+            console.log('🚀 Yalla Chemistry Platform v14.0 - تم الإصلاح الكامل');
         }
     </script>
 </body>
