@@ -1421,7 +1421,7 @@
             body { background: #fff !important; }
         }
 
-        /* ===== EXAM SECURITY MODAL ===== */
+        /* ===== EXAM SECURITY MODAL - FIXED ===== */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1629,11 +1629,11 @@
         </div>
     </div>
 
-    <!-- ===== EXAM SECURITY MODAL ===== -->
+    <!-- ===== EXAM SECURITY MODAL - FIXED ===== -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
-            <h2>قبل بدء الامتحان</h2>
+            <h2 id="examPledgeTitle">قبل بدء الامتحان</h2>
             
             <div class="hadith">
                 "قال رسول الله ﷺ: من غشنا فليس منا."
@@ -1990,7 +1990,7 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('✅ Yalla Chemistry v17.0 - Exam/Quiz FIXED');
+        console.log('✅ Yalla Chemistry v18.0 - Exam Security FIXED');
 
         // ============================================================
         // APP STATE
@@ -2005,14 +2005,22 @@
         let allQuizzes = [];
         let allUsers = [];
         let errorBank = [];
-        let examAttempts = {};
-        let currentExamId = null;
         let examTimer = null;
         let examStartTime = null;
         let isExamActive = false;
         let examSubmitted = false;
         let notifications = [];
         let notificationFilter = 'all';
+
+        // ============================================================
+        // EXAM STATE - FIXED
+        // ============================================================
+        let examAnswers = {};
+        let quizAnswers = {};
+        let currentExamId = null;
+        let currentExamData = null;
+        let currentQuizData = null;
+        let pendingExamCallback = null;
 
         // ============================================================
         // UTILITY FUNCTIONS
@@ -3049,57 +3057,84 @@
         // ============================================================
         // LESSON EXAM / QUIZ / ASSIGNMENT - FIXED
         // ============================================================
-        let examAnswers = {};
-        let quizAnswers = {};
-
+        
         // ============================================================
         // EXAM SECURITY MODAL - FIXED
         // ============================================================
         function openExamSecurityModal(examId, callback, type = 'exam') {
+            console.log('🔓 Opening exam security modal for:', examId, 'type:', type);
+            
             const modal = document.getElementById('examSecurityModal');
-            modal.classList.add('open');
-            document.getElementById('examPledge').checked = false;
-            document.getElementById('startExamBtn').disabled = true;
+            const titleEl = document.getElementById('examPledgeTitle');
             
             // تحديث النص حسب النوع
-            const titleEl = modal.querySelector('h2');
             if (titleEl) {
                 titleEl.textContent = type === 'quiz' ? 'قبل بدء الكويز' : 'قبل بدء الامتحان';
             }
             
+            // إعادة تعيين الحالة
+            document.getElementById('examPledge').checked = false;
+            document.getElementById('startExamBtn').disabled = true;
+            
+            // تعيين الـ callback
+            pendingExamCallback = callback;
+            currentExamId = examId;
+            
+            // حدث التغيير في checkbox
             document.getElementById('examPledge').onchange = function() {
                 document.getElementById('startExamBtn').disabled = !this.checked;
             };
             
-            window._examCallback = callback;
-            window._currentExamId = examId;
-            window._examType = type;
+            // عرض المودال
+            modal.classList.add('open');
+            console.log('✅ Exam security modal opened');
         }
 
         function closeExamSecurityModal() {
+            console.log('🔒 Closing exam security modal');
             document.getElementById('examSecurityModal').classList.remove('open');
             document.getElementById('examPledge').checked = false;
             document.getElementById('startExamBtn').disabled = true;
-            window._examCallback = null;
+            // لا نمسح الـ callback هنا
         }
 
         function startExamAfterPledge() {
-            if (document.getElementById('examPledge').checked && window._examCallback) {
+            console.log('🚀 startExamAfterPledge called');
+            console.log('📋 examPledge checked:', document.getElementById('examPledge').checked);
+            console.log('📋 pendingExamCallback:', !!pendingExamCallback);
+            
+            if (document.getElementById('examPledge').checked && pendingExamCallback) {
                 // حفظ الموافقة
-                if (currentUser && window._currentExamId) {
-                    database.ref(`users/${currentUser.uid}/examPledges/${window._currentExamId}`).set({
+                if (currentUser && currentExamId) {
+                    database.ref(`users/${currentUser.uid}/examPledges/${currentExamId}`).set({
                         agreed: true,
-                        agreedAt: new Date().toISOString(),
-                        type: window._examType || 'exam'
+                        agreedAt: new Date().toISOString()
                     }).catch(err => console.error('Error saving pledge:', err));
                 }
-                // إغلاق شاشة التعهد وبدء الامتحان
-                closeExamSecurityModal();
-                const callback = window._examCallback;
-                window._examCallback = null;
-                callback();
+                
+                // حفظ الـ callback قبل إغلاق المودال
+                const callback = pendingExamCallback;
+                
+                // إغلاق المودال - لا نمسح الـ callback هنا
+                document.getElementById('examSecurityModal').classList.remove('open');
+                document.getElementById('examPledge').checked = false;
+                document.getElementById('startExamBtn').disabled = true;
+                
+                // مسح الـ callback بعد أخذ نسخة منه
+                pendingExamCallback = null;
+                
+                console.log('✅ Calling exam callback');
+                // تنفيذ الـ callback
+                if (typeof callback === 'function') {
+                    callback();
+                } else {
+                    console.error('❌ Callback is not a function:', callback);
+                }
             } else {
-                showToast('⚠️ يجب الموافقة على التعهد أولاً', 'warning');
+                console.log('❌ Cannot start exam: pledge not checked or no callback');
+                if (!document.getElementById('examPledge').checked) {
+                    showToast('⚠️ يجب الموافقة على التعهد أولاً', 'warning');
+                }
             }
         }
 
@@ -3111,6 +3146,8 @@
                 showLoginOverlay(); 
                 return; 
             }
+            
+            console.log('📝 Opening exam for lesson:', lessonId);
             
             const progressKey = 'exam_' + lessonId;
             
@@ -3125,9 +3162,8 @@
             }
             
             try {
-                console.log('🔍 Searching for exam with lessonId:', lessonId);
-                
                 // البحث عن الامتحان باستخدام lessonId كحقل
+                console.log('🔍 Searching for exam with lessonId:', lessonId);
                 const snapshot = await database.ref('exams')
                     .orderByChild('lessonId')
                     .equalTo(lessonId)
@@ -3155,6 +3191,7 @@
                 
                 // عرض نافذة التعهد
                 openExamSecurityModal(lessonId, function() {
+                    console.log('🎯 Starting exam after pledge');
                     showExamUI(exam, true);
                 }, 'exam');
                 
@@ -3170,6 +3207,8 @@
                 return; 
             }
             
+            console.log('🧪 Opening quiz for lesson:', lessonId);
+            
             const progressKey = 'quiz_' + lessonId;
             
             if (userCourseProgress[progressKey]?.completed) {
@@ -3183,8 +3222,6 @@
             
             try {
                 console.log('🔍 Searching for quiz with lessonId:', lessonId);
-                
-                // البحث عن الكويز باستخدام lessonId كحقل
                 const snapshot = await database.ref('quizzes')
                     .orderByChild('lessonId')
                     .equalTo(lessonId)
@@ -3196,7 +3233,6 @@
                     return;
                 }
                 
-                // استخراج الكويز
                 let quiz = null;
                 snapshot.forEach(child => {
                     quiz = { id: child.key, ...child.val() };
@@ -3211,6 +3247,7 @@
                 currentQuizData = quiz;
                 
                 openExamSecurityModal(lessonId, function() {
+                    console.log('🎯 Starting quiz after pledge');
                     showQuizUI(quiz, true);
                 }, 'quiz');
                 
@@ -3224,6 +3261,7 @@
         // SHOW EXAM UI - FIXED with Timer
         // ============================================================
         function showExamUI(exam, isSecure = false) {
+            console.log('📝 Showing exam UI');
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -3260,7 +3298,6 @@
                         }
                     }
                     
-                    // ===== انتهاء الوقت - تسليم تلقائي =====
                     if (timeLeft <= 0 && !examSubmitted) {
                         clearInterval(examTimer);
                         examTimer = null;
@@ -3382,6 +3419,7 @@
         // SHOW QUIZ UI - FIXED
         // ============================================================
         function showQuizUI(quiz, isSecure = false) {
+            console.log('🧪 Showing quiz UI');
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -3398,7 +3436,6 @@
             examSubmitted = false;
             let currentQuestion = 0;
 
-            // Timer for quiz
             if (quiz.duration && quiz.duration > 0) {
                 let timeLeft = quiz.duration * 60;
                 if (examTimer) clearInterval(examTimer);
@@ -5079,9 +5116,9 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v17.0 - Exam/Quiz FIXED');
-            console.log('✅ تم إصلاح مشكلة البحث عن الكويزات والامتحانات باستخدام orderByChild');
-            console.log('✅ تم إصلاح نافذة التعهد');
+            console.log('🚀 Yalla Chemistry Platform v18.0 - Exam Security FIXED');
+            console.log('✅ تم إصلاح مشكلة startExamAfterPledge - حفظ callback قبل الإغلاق');
+            console.log('✅ تم إصلاح البحث عن الكويزات والامتحانات باستخدام orderByChild');
             console.log('✅ تم إضافة المؤقت مع الإغلاق التلقائي');
             console.log('✅ تم إضافة منع إعادة الحل');
             console.log('✅ تم الحفاظ على جميع الوظائف الحالية');
