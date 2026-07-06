@@ -1421,7 +1421,7 @@
             body { background: #fff !important; }
         }
 
-        /* ===== EXAM SECURITY MODAL - FIXED ===== */
+        /* ===== EXAM SECURITY MODAL ===== */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1629,11 +1629,11 @@
         </div>
     </div>
 
-    <!-- ===== EXAM SECURITY MODAL - FIXED ===== -->
+    <!-- ===== EXAM SECURITY MODAL ===== -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
-            <h2>قبل البدء</h2>
+            <h2>قبل بدء الامتحان</h2>
             
             <div class="hadith">
                 "قال رسول الله ﷺ: من غشنا فليس منا."
@@ -1646,12 +1646,12 @@
             
             <div class="checkbox-group" onclick="document.getElementById('examPledge').click()">
                 <input type="checkbox" id="examPledge">
-                <label for="examPledge">✅ أتعهد بالالتزام</label>
+                <label for="examPledge">✅ أتعهد بحل الامتحان بنفسي دون غش</label>
             </div>
             
             <div class="btn-group">
                 <button class="btn btn-primary" id="startExamBtn" disabled onclick="APP.startExamAfterPledge()">
-                    <i class="fas fa-check"></i> بدء الامتحان
+                    <i class="fas fa-check"></i> أوافق على التعهد
                 </button>
                 <button class="btn btn-secondary" onclick="APP.closeExamSecurityModal()">إلغاء</button>
             </div>
@@ -1990,7 +1990,7 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('✅ Yalla Chemistry v16.0 - Exam/Quiz Fix Edition');
+        console.log('✅ Yalla Chemistry v17.0 - Exam/Quiz FIXED');
 
         // ============================================================
         // APP STATE
@@ -2013,10 +2013,6 @@
         let examSubmitted = false;
         let notifications = [];
         let notificationFilter = 'all';
-        let videoWatchTimers = {};
-        let videoWatchTimes = {};
-        let currentExamData = null;
-        let currentQuizData = null;
 
         // ============================================================
         // UTILITY FUNCTIONS
@@ -3121,7 +3117,6 @@
             // التحقق من الحل السابق
             if (userCourseProgress[progressKey]?.completed) {
                 const score = userCourseProgress[progressKey]?.score || 0;
-                // عرض النتيجة السابقة
                 showExamResults(lessonId, score, userCourseProgress[progressKey]?.correctAnswers || 0, 
                     userCourseProgress[progressKey]?.wrongAnswers || 0, 
                     userCourseProgress[progressKey]?.results || [], 
@@ -3130,14 +3125,31 @@
             }
             
             try {
-                console.log('🔍 Fetching exam for lesson:', lessonId);
-                const snapshot = await database.ref('exams/' + lessonId).once('value');
+                console.log('🔍 Searching for exam with lessonId:', lessonId);
+                
+                // البحث عن الامتحان باستخدام lessonId كحقل
+                const snapshot = await database.ref('exams')
+                    .orderByChild('lessonId')
+                    .equalTo(lessonId)
+                    .once('value');
+                
                 if (!snapshot.exists()) {
-                    console.log('❌ No exam found for lesson:', lessonId);
+                    console.log('❌ No exam found for lessonId:', lessonId);
                     showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning');
                     return;
                 }
-                const exam = { id: lessonId, ...snapshot.val() };
+                
+                // استخراج الامتحان
+                let exam = null;
+                snapshot.forEach(child => {
+                    exam = { id: child.key, ...child.val() };
+                });
+                
+                if (!exam) {
+                    showToast('⚠️ حدث خطأ في تحميل الامتحان', 'error');
+                    return;
+                }
+                
                 console.log('✅ Exam loaded:', exam);
                 currentExamData = exam;
                 
@@ -3170,14 +3182,31 @@
             }
             
             try {
-                console.log('🔍 Fetching quiz for lesson:', lessonId);
-                const snapshot = await database.ref('quizzes/' + lessonId).once('value');
+                console.log('🔍 Searching for quiz with lessonId:', lessonId);
+                
+                // البحث عن الكويز باستخدام lessonId كحقل
+                const snapshot = await database.ref('quizzes')
+                    .orderByChild('lessonId')
+                    .equalTo(lessonId)
+                    .once('value');
+                
                 if (!snapshot.exists()) {
-                    console.log('❌ No quiz found for lesson:', lessonId);
+                    console.log('❌ No quiz found for lessonId:', lessonId);
                     showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning');
                     return;
                 }
-                const quiz = { id: lessonId, ...snapshot.val() };
+                
+                // استخراج الكويز
+                let quiz = null;
+                snapshot.forEach(child => {
+                    quiz = { id: child.key, ...child.val() };
+                });
+                
+                if (!quiz) {
+                    showToast('⚠️ حدث خطأ في تحميل الكويز', 'error');
+                    return;
+                }
+                
                 console.log('✅ Quiz loaded:', quiz);
                 currentQuizData = quiz;
                 
@@ -3222,7 +3251,6 @@
                     const timerEl = document.getElementById('examTimer');
                     if (timerEl) timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
                     
-                    // تغيير اللون عند قرب انتهاء الوقت
                     if (timerEl) {
                         timerEl.className = 'exam-timer';
                         if (timeLeft < 30) {
@@ -3513,14 +3541,13 @@
         }
 
         // ============================================================
-        // SUBMIT EXAM - FIXED with auto-submit
+        // SUBMIT EXAM - FIXED
         // ============================================================
         async function submitExam(id, maxAtoms, autoSubmit = false) {
             if (!currentUser) { showLoginOverlay(); return; }
             
             const progressKey = 'exam_' + id;
             
-            // منع التكرار
             if (userCourseProgress[progressKey]?.completed) {
                 showToast('📝 لقد قمت بالفعل بحل هذا الامتحان', 'info');
                 return;
@@ -3537,7 +3564,6 @@
                 return;
             }
 
-            // إيقاف المؤقت
             if (examTimer) {
                 clearInterval(examTimer);
                 examTimer = null;
@@ -3581,7 +3607,6 @@
                 const score = Math.round((correct / total) * 100);
                 const earnedAtoms = Math.round((score / 100) * maxAtoms);
 
-                // حفظ النتيجة
                 const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
                 await progressRef.set({
                     completed: true,
@@ -3598,7 +3623,6 @@
                     title: data.title || 'امتحان'
                 });
 
-                // إضافة الذرات
                 if (earnedAtoms > 0) {
                     const userRef = database.ref('users/' + currentUser.uid);
                     const userSnap = await userRef.once('value');
@@ -3611,7 +3635,6 @@
                     }
                 }
 
-                // حفظ الأخطاء في Error Bank
                 if (wrongQuestions.length > 0) {
                     const errorRef = database.ref('users/' + currentUser.uid + '/errorBank');
                     const existingErrors = await errorRef.once('value');
@@ -3628,7 +3651,6 @@
                                 sourceId: id
                             });
                         } else {
-                            // زيادة عدد المحاولات
                             const idx = errors.findIndex(e => e.question === wq.question);
                             if (idx !== -1) {
                                 errors[idx].attempts = (errors[idx].attempts || 1) + 1;
@@ -3640,7 +3662,6 @@
 
                 checkAchievements(currentUser.uid);
 
-                // عرض النتائج
                 showExamResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
 
             } catch (err) {
@@ -3904,10 +3925,6 @@
                 showToast('حدث خطأ في تحميل الواجب', 'error');
             }
         }
-
-        // ============================================================
-        // SHOW EXAMS / QUIZZES - تم إزالة الروابط لكن النظام يعمل
-        // ============================================================
 
         // ============================================================
         // LEADERBOARD
@@ -5062,13 +5079,11 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v16.0 - Exam/Quiz Fix Edition');
-            console.log('✅ تم إصلاح مشكلة التعهد قبل الامتحانات والكويزات');
-            console.log('✅ تم إصلاح مشكلة ربط الامتحانات والكويزات بالحصص');
-            console.log('✅ تم إصلاح مشكلة تحميل الأسئلة');
+            console.log('🚀 Yalla Chemistry Platform v17.0 - Exam/Quiz FIXED');
+            console.log('✅ تم إصلاح مشكلة البحث عن الكويزات والامتحانات باستخدام orderByChild');
+            console.log('✅ تم إصلاح نافذة التعهد');
             console.log('✅ تم إضافة المؤقت مع الإغلاق التلقائي');
-            console.log('✅ تم إضافة منع إعادة الحل مع عرض المراجعة فقط');
-            console.log('✅ تم إضافة حفظ الأخطاء في Error Bank');
+            console.log('✅ تم إضافة منع إعادة الحل');
             console.log('✅ تم الحفاظ على جميع الوظائف الحالية');
         }
 
