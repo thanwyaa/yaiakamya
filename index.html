@@ -247,6 +247,8 @@
             top: 0;
             background: var(--card);
             z-index: 1;
+            flex-wrap: wrap;
+            gap: 6px;
         }
         .notification-dropdown .dropdown-header .filter-btns {
             display: flex;
@@ -1435,50 +1437,79 @@
         .exam-security-modal .security-box {
             background: var(--card);
             border-radius: var(--radius-lg);
-            padding: 32px;
-            max-width: 500px;
+            padding: 40px 32px;
+            max-width: 560px;
             width: 100%;
             text-align: center;
             border: 1px solid var(--border);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .exam-security-modal .security-box .icon {
             font-size: 3.5rem;
             margin-bottom: 12px;
+            color: var(--warning);
         }
-        .exam-security-modal .security-box h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
+        .exam-security-modal .security-box h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
             margin-bottom: 8px;
         }
-        .exam-security-modal .security-box p {
-            color: var(--text2);
+        .exam-security-modal .security-box .pledge-text {
+            color: var(--text);
             font-size: 0.95rem;
             line-height: 1.8;
             margin-bottom: 12px;
+            text-align: right;
         }
         .exam-security-modal .security-box .hadith {
             background: var(--bg);
-            padding: 12px;
+            padding: 16px;
             border-radius: var(--radius);
             font-style: italic;
             color: var(--primary);
             margin-bottom: 12px;
+            font-size: 1rem;
+            border-right: 4px solid var(--primary);
+        }
+        .exam-security-modal .security-box .verse {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: var(--radius);
+            color: var(--text2);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
         }
         .exam-security-modal .security-box .checkbox-group {
             display: flex;
             align-items: center;
             gap: 10px;
             justify-content: center;
-            margin-bottom: 16px;
+            margin: 16px 0;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
         }
         .exam-security-modal .security-box .checkbox-group input {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
+            accent-color: var(--primary);
         }
         .exam-security-modal .security-box .checkbox-group label {
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        .exam-security-modal .security-box .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
         }
 
         /* ===== EXAM TIMER ===== */
@@ -1567,21 +1598,33 @@
     <!-- ===== EXAM SECURITY MODAL ===== -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
-            <div class="icon">⚠️</div>
-            <h3>تنبيه هام</h3>
-            <p>يمنع الغش في الامتحانات.</p>
+            <div class="icon">📜</div>
+            <h2>تعهد الطالب</h2>
+            
             <div class="hadith">
                 "قال رسول الله ﷺ: من غشنا فليس منا."
             </div>
-            <p>أتعهد بحل الامتحان بنفسي دون أي مساعدة خارجية.</p>
+            
+            <div class="verse">
+                ﴿وَقُلِ اعْمَلُوا فَسَيَرَى اللَّهُ عَمَلَكُمْ﴾
+            </div>
+            
+            <div class="pledge-text">
+                تذكّر أن الأمانة العلمية من أسباب النجاح، وأن الغش قد يمنحك درجة مؤقتة لكنه لن يمنحك علمًا حقيقيًا.<br><br>
+                التزم بحل الامتحان بنفسك، واجعل هدفك التعلم وليس مجرد الحصول على الدرجة.
+            </div>
+            
             <div class="checkbox-group">
                 <input type="checkbox" id="examPledge">
-                <label for="examPledge">☐ أتعهد بحل الامتحان بنفسي</label>
+                <label for="examPledge">☑️ أتعهد بحل الامتحان أو الكويز بنفسي دون غش أو مساعدة خارجية.</label>
             </div>
-            <button class="btn-primary" id="startExamBtn" disabled onclick="APP.startExamAfterPledge()">
-                <i class="fas fa-play"></i> بدء الامتحان
-            </button>
-            <button class="btn-outline" style="margin-top:8px;" onclick="APP.closeExamSecurityModal()">إلغاء</button>
+            
+            <div class="btn-group">
+                <button class="btn-primary" id="startExamBtn" disabled onclick="APP.startExamAfterPledge()">
+                    <i class="fas fa-check"></i> ✅ أوافق على التعهد
+                </button>
+                <button class="btn-outline" onclick="APP.closeExamSecurityModal()">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -1753,7 +1796,7 @@
                         <a href="login.html" class="btn-primary">خليني أفهم 🧠</a>
                     </div>
                     <div class="user-only" style="display:none;">
-                        <button class="btn-primary" onclick="APP.showQuizzes()">🧪 جرب كويز سريع</button>
+                        <button class="btn-primary" onclick="APP.scrollToCourses()">📚 استكشف الكورسات</button>
                     </div>
                 </div>
             </div>
@@ -1773,28 +1816,6 @@
                         <span style="padding:4px 14px;border-radius:50px;font-weight:600;font-size:0.8rem;background:var(--bg);color:var(--primary);">📚 محتوى منظم</span>
                         <span style="padding:4px 14px;border-radius:50px;font-weight:600;font-size:0.8rem;background:var(--bg);color:var(--primary);">🚀 متابعة مستمرة</span>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== FUN CARDS ===== -->
-        <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
-            <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:16px;">🎉 جرب واختبر نفسك</h2>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-                <div class="card" style="padding:24px;text-align:center;cursor:pointer;" onclick="APP.showQuizzes()">
-                    <div style="font-size:3rem;margin-bottom:8px;">🧪</div>
-                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:4px;">كويز سريع</h3>
-                    <p style="font-size:0.85rem;color:var(--text2);">اختبر معلوماتك في 5 دقايق</p>
-                </div>
-                <div class="card" style="padding:24px;text-align:center;cursor:pointer;" onclick="APP.showExams()">
-                    <div style="font-size:3rem;margin-bottom:8px;">🎯</div>
-                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:4px;">شوف مستواك</h3>
-                    <p style="font-size:0.85rem;color:var(--text2);">اعرف نقاط قوتك وضعفك</p>
-                </div>
-                <div class="card" style="padding:24px;text-align:center;cursor:pointer;" onclick="APP.showLeaderboard()">
-                    <div style="font-size:3rem;margin-bottom:8px;">🔥</div>
-                    <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:4px;">تحدي 5 دقايق</h3>
-                    <p style="font-size:0.85rem;color:var(--text2);">منافسة سريعة ضد الوقت</p>
                 </div>
             </div>
         </section>
@@ -1939,7 +1960,7 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('✅ Yalla Chemistry v14.0 - Ultimate Secure Edition');
+        console.log('✅ Yalla Chemistry v15.0 - Ultimate Secure Edition');
 
         // ============================================================
         // APP STATE
@@ -2021,13 +2042,11 @@
             for (let i = 0; i < 6; i++) {
                 code += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            // تنسيق احترافي: YK-XX-XXXX
             const formatted = `YK-${code.substring(0,2)}-${code.substring(2)}`;
             
-            // التحقق من عدم التكرار
             const snapshot = await database.ref('users').orderByChild('code').equalTo(formatted).once('value');
             if (snapshot.exists()) {
-                return generateStudentCode(); // إعادة المحاولة
+                return generateStudentCode();
             }
             return formatted;
         }
@@ -2345,7 +2364,6 @@
                 if (snapshot.exists()) {
                     userData = snapshot.val();
                     
-                    // تحديث الواجهة فوراً
                     const atoms = userData.atoms || 0;
                     document.getElementById('atomsCount').textContent = atoms;
                     document.getElementById('userAtomsCount').textContent = atoms;
@@ -2418,7 +2436,6 @@
                 updateUIForAuth(currentUser);
             }
             
-            // إشعار ترحيبي
             await addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
         }
 
@@ -2599,7 +2616,6 @@
                 showToast('🎉 تم الاشتراك في الكورس بنجاح!', 'success');
                 renderCourses(allCourses);
                 
-                // إشعار
                 await addNotification(currentUser.uid, '📚 تم الاشتراك في كورس جديد!', `لقد اشتركت في كورس "${courseData?.title || courseId}" بنجاح.`, '📚');
                 
             } catch (err) {
@@ -2727,7 +2743,7 @@
                             type: 'assignment',
                             icon: 'assignment',
                             iconClass: 'assignment',
-                            title: '📝 حل الواجب',
+                            title: '📝 واجب الحصة',
                             action: `APP.openLessonAssignment('${lesson.id}')`
                         });
                     }
@@ -2737,7 +2753,7 @@
                             type: 'quiz',
                             icon: 'quiz',
                             iconClass: 'quiz',
-                            title: '❓ حل كويز الحصة',
+                            title: '❓ كويز الحصة',
                             action: `APP.openLessonQuiz('${lesson.id}')`
                         });
                     }
@@ -2858,7 +2874,6 @@
                 const course = allCourses.find(c => c.id === lesson.courseId);
                 const courseName = course ? course.title : 'الكورس';
 
-                // بدء عداد المشاهدة
                 let watchStartTime = Date.now();
                 let watchDuration = 0;
                 let isWatching = true;
@@ -2870,20 +2885,17 @@
                     }
                 };
 
-                // تحديث كل 10 ثواني
                 const timer = setInterval(() => {
                     if (isWatching) {
                         updateWatchTime();
                     }
                 }, 10000);
 
-                // مراقبة الخروج
                 const handleExit = () => {
                     clearInterval(timer);
                     isWatching = false;
                     updateWatchTime();
                     
-                    // إذا شاهد أكثر من 15 دقيقة (900 ثانية)
                     if (watchDuration >= 900 && !userCourseProgress[lessonId]?.watched) {
                         completeLessonWatch(lessonId, lesson);
                     }
@@ -2939,7 +2951,6 @@
 
         async function completeLessonWatch(lessonId, lesson) {
             try {
-                // التحقق من عدم التكرار
                 if (userCourseProgress[lessonId]?.watched) return;
 
                 const atomsReward = lesson.atomsReward || 5;
@@ -2948,17 +2959,15 @@
                 if (userSnap.exists()) {
                     const currentAtoms = userSnap.val().atoms || 0;
                     
-                    // حفظ التقدم
                     await database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                         watched: true,
                         watchPercent: 100,
                         completedAt: new Date().toISOString(),
                         lastPosition: 0,
                         type: 'lesson',
-                        watchDuration: 900 // 15 دقيقة
+                        watchDuration: 900
                     });
                     
-                    // تحديث الذرات
                     await userRef.update({ 
                         atoms: currentAtoms + atomsReward,
                         videosWatched: (userSnap.val().videosWatched || 0) + 1,
@@ -2969,7 +2978,6 @@
                     animateAtoms('userAtomsCount', currentAtoms + atomsReward);
                     showToast(`🎉 +${atomsReward} ذرة! (أكملت مشاهدة ${lesson.title})`, 'success');
                     
-                    // إشعار
                     await addNotification(currentUser.uid, '🎥 تم إكمال مشاهدة حصة!', `أكملت مشاهدة "${lesson.title}" وحصلت على ${atomsReward} ذرة.`, '🎥');
                     
                     loadUserProgress(currentUser.uid);
@@ -2984,7 +2992,6 @@
             const lessons = allLessons.filter(l => l.courseId === courseId);
             const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
             if (lessons.length > 0 && completed.length === lessons.length) {
-                // تم إكمال الكورس
                 const course = allCourses.find(c => c.id === courseId);
                 if (course) {
                     await addNotification(currentUser.uid, '🎓 تم إكمال كورس كامل!', `مبروك! لقد أكملت كورس "${course.title}" بالكامل!`, '🎓');
@@ -3006,10 +3013,11 @@
         let quizAnswers = {};
 
         // ============================================================
-        // EXAM SECURITY
+        // EXAM SECURITY - شاشة التعهد المحسنة
         // ============================================================
         function openExamSecurityModal(examId, callback) {
-            document.getElementById('examSecurityModal').classList.add('open');
+            const modal = document.getElementById('examSecurityModal');
+            modal.classList.add('open');
             document.getElementById('examPledge').checked = false;
             document.getElementById('startExamBtn').disabled = true;
             
@@ -3030,8 +3038,18 @@
 
         function startExamAfterPledge() {
             if (document.getElementById('examPledge').checked && window._examCallback) {
+                // حفظ الموافقة
+                if (currentUser && window._currentExamId) {
+                    database.ref(`users/${currentUser.uid}/examPledges/${window._currentExamId}`).set({
+                        agreed: true,
+                        agreedAt: new Date().toISOString()
+                    }).catch(err => console.error('Error saving pledge:', err));
+                }
+                // إغلاق شاشة التعهد وبدء الامتحان
                 closeExamSecurityModal();
-                window._examCallback();
+                const callback = window._examCallback;
+                window._examCallback = null;
+                callback();
             }
         }
 
@@ -3404,7 +3422,7 @@
         }
 
         // ============================================================
-        // SUBMIT EXAM - مع عرض النتائج المفصلة
+        // SUBMIT EXAM
         // ============================================================
         async function submitExam(id, maxAtoms, autoSubmit = false) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3465,7 +3483,6 @@
                 const score = Math.round((correct / total) * 100);
                 const earnedAtoms = Math.round((score / 100) * maxAtoms);
 
-                // حفظ النتيجة
                 const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
                 await progressRef.set({
                     completed: true,
@@ -3481,7 +3498,6 @@
                     timeSpent: Math.floor((Date.now() - examStartTime) / 1000)
                 });
 
-                // إضافة الذرات
                 if (earnedAtoms > 0) {
                     const userRef = database.ref('users/' + currentUser.uid);
                     const userSnap = await userRef.once('value');
@@ -3493,7 +3509,6 @@
                     }
                 }
 
-                // حفظ الأخطاء
                 if (wrongQuestions.length > 0) {
                     const errorRef = database.ref('users/' + currentUser.uid + '/errorBank');
                     const existingErrors = await errorRef.once('value');
@@ -3514,7 +3529,6 @@
 
                 checkAchievements(currentUser.uid);
 
-                // عرض صفحة النتائج
                 showExamResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
 
             } catch (err) {
@@ -3570,7 +3584,7 @@
         }
 
         // ============================================================
-        // SUBMIT QUIZ - مع عرض النتائج
+        // SUBMIT QUIZ
         // ============================================================
         async function submitQuiz(id, maxAtoms) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3731,81 +3745,10 @@
         }
 
         // ============================================================
-        // SHOW EXAMS / QUIZZES - (محذوف من القائمة لكن النظام يعمل)
+        // SHOW EXAMS / QUIZZES - تم إزالة الروابط لكن النظام يعمل
         // ============================================================
-        function showExams() {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `
-                        <div style="max-width:1280px;margin:0 auto;padding:20px;">
-                            <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                            <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">📝 الامتحانات الشاملة</h1>
-                            <p style="color:var(--text2);margin-bottom:12px;">جميع الامتحانات المتاحة على المنصة</p>
-                            <div id="examsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
-                                ${allExams.length === 0 ? `
-                                    <div class="empty-state" style="grid-column:1/-1;">
-                                        <div class="icon">📝</div>
-                                        <h3>لا توجد امتحانات حالياً</h3>
-                                        <p>سيتم إضافة الامتحانات قريباً</p>
-                                    </div>
-                                ` : allExams.map(exam => {
-                                    const progressKey = 'exam_' + exam.id;
-                                    const completed = userCourseProgress[progressKey]?.completed;
-                                    const score = userCourseProgress[progressKey]?.score || 0;
-                                    return `
-                                        <div class="card" style="cursor:pointer;padding:16px;" onclick="APP.openLessonExam('${exam.id}')">
-                                            <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;">${escapeHtml(exam.title)}</h3>
-                                            <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(exam.description) || ''}</p>
-                                            <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
-                                                <span>📝 ${exam.questions?.length || 0} سؤال</span>
-                                                <span>⭐ ${exam.atomsReward || 10} ذرة</span>
-                                                ${completed ? `<span style="color:var(--success);">✅ تم الحل (${score}%)</span>` : ''}
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function showQuizzes() {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `
-                        <div style="max-width:1280px;margin:0 auto;padding:20px;">
-                            <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                            <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">🧪 الكويزات</h1>
-                            <p style="color:var(--text2);margin-bottom:12px;">جميع الكويزات المتاحة على المنصة</p>
-                            <div id="quizzesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
-                                ${allQuizzes.length === 0 ? `
-                                    <div class="empty-state" style="grid-column:1/-1;">
-                                        <div class="icon">🧪</div>
-                                        <h3>لا توجد كويزات حالياً</h3>
-                                        <p>سيتم إضافة الكويزات قريباً</p>
-                                    </div>
-                                ` : allQuizzes.map(quiz => {
-                                    const progressKey = 'quiz_' + quiz.id;
-                                    const completed = userCourseProgress[progressKey]?.completed;
-                                    const score = userCourseProgress[progressKey]?.score || 0;
-                                    return `
-                                        <div class="card" style="cursor:pointer;padding:16px;" onclick="APP.openLessonQuiz('${quiz.id}')">
-                                            <h3 style="font-weight:700;color:var(--text);font-size:0.95rem;">${escapeHtml(quiz.title)}</h3>
-                                            <p style="font-size:0.8rem;color:var(--text2);margin:4px 0;">${escapeHtml(quiz.description) || ''}</p>
-                                            <div style="display:flex;gap:6px;font-size:0.7rem;color:var(--text2);">
-                                                <span>🧪 ${quiz.questions?.length || 0} سؤال</span>
-                                                <span>⭐ ${quiz.atomsReward || 5} ذرة</span>
-                                                ${completed ? `<span style="color:var(--success);">✅ تم الحل (${score}%)</span>` : ''}
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        // تم إزالة showExams و showQuizzes من القائمة الرئيسية
+        // لكن النظام يعمل عند استدعائه من داخل الحصص
 
         // ============================================================
         // LEADERBOARD
@@ -4203,12 +4146,10 @@
             ];
         }
 
-        function checkAchievements(uid) {
-            // سيتم استدعاؤها بعد كل إنجاز
-        }
+        function checkAchievements(uid) {}
 
         // ============================================================
-        // AI INSIGHTS - تحليل احترافي
+        // AI INSIGHTS
         // ============================================================
         function showAIInsights() {
             if (!currentUser) {
@@ -4308,7 +4249,6 @@
                         chartData.push(Math.floor(progress * (0.3 + (i / 6) * 0.7)));
                     }
 
-                    // حساب متوسط الدراسة اليومي
                     const daysSince = userData?.createdAt ? Math.max(1, Math.floor((Date.now() - new Date(userData.createdAt).getTime()) / (1000 * 60 * 60 * 24))) : 1;
                     const dailyAverage = Math.round((studyTime / daysSince) * 10) / 10;
 
@@ -4552,7 +4492,7 @@
         }
 
         // ============================================================
-        // DASHBOARD - لوحة الطالب الاحترافية
+        // DASHBOARD
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -4618,7 +4558,6 @@
                     `<img src="${photoURL}" alt="صورة" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : 
                     (name || 'U')[0].toUpperCase();
 
-                // إحصائيات للبطاقات الدائرية
                 const stats = [
                     { label: 'نسبة الإنجاز', value: progress, type: 'percent', color: '#0B4F8C' },
                     { label: 'الكورسات', value: subscribedCourses.length, type: 'number', color: '#22C55E' },
@@ -4634,7 +4573,6 @@
                             <div style="max-width:1280px;margin:0 auto;padding:16px;">
                                 <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
 
-                                <!-- Profile Card -->
                                 <div class="card" style="padding:24px;margin:12px 0 20px;background:linear-gradient(135deg, var(--primary), var(--primary2));color:#fff;border:none;">
                                     <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
                                         <div style="width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:700;background:rgba(255,255,255,0.2);color:#fff;overflow:hidden;border:3px solid rgba(255,255,255,0.3);">${avatarHtml}</div>
@@ -4651,7 +4589,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Stats Circles -->
                                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:20px;">
                                     ${stats.map(stat => `
                                         <div class="stat-circle-card">
@@ -4691,7 +4628,6 @@
                         `;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
-                // تشغيل عداد متحرك
                 setTimeout(() => {
                     document.querySelectorAll('.stat-circle-card .number').forEach(el => {
                         const target = parseInt(el.textContent);
@@ -4937,8 +4873,6 @@
             submitExam,
             submitQuiz,
             exitExam,
-            showExams,
-            showQuizzes,
             showLeaderboard,
             showDashboard,
             showErrorBank,
@@ -4955,12 +4889,10 @@
             showTerms,
             toast: showToast,
             escapeHtml,
-            // Notifications
             toggleNotifications,
             filterNotifications,
             markNotificationRead,
             markAllNotificationsRead,
-            // Exam Security
             openExamSecurityModal,
             closeExamSecurityModal,
             startExamAfterPledge
@@ -4971,15 +4903,13 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v14.0 - Ultimate Secure Edition');
-            console.log('✅ كود الطالب: YK-XX-XXXX (فريد ولا يتكرر)');
-            console.log('✅ نظام الإشعارات: جرس مع Badge وفلتر');
-            console.log('✅ لوحة الطالب: Dashboard احترافية مع بطاقات دائرية');
-            console.log('✅ تحليل الذكاء الاصطناعي: تقرير مفصل مبني على البيانات');
-            console.log('✅ الامتحانات: نتائج مفصلة مع مراجعة الأسئلة');
-            console.log('✅ الفيديوهات: عداد مشاهدة 15 دقيقة للحصول على الذرات');
-            console.log('✅ جميع الوظائف السابقة محفوظة');
-            console.log('✅ Responsive محسّن لجميع المقاسات');
+            console.log('🚀 Yalla Chemistry Platform v15.0 - Ultimate Secure Edition');
+            console.log('✅ تم إزالة قسم الكويزات والامتحانات من الصفحة الرئيسية');
+            console.log('✅ الوصول للكويزات والامتحانات حصرياً من داخل الحصص');
+            console.log('✅ شاشة تعهد محسّنة مع حديث نبوي وآية قرآنية');
+            console.log('✅ زر الموافقة يعمل فوراً ويبدأ الامتحان');
+            console.log('✅ جميع الأزرار تعمل بشكل صحيح');
+            console.log('✅ تم الحفاظ على جميع الوظائف الحالية');
         }
 
         if (document.readyState === 'loading') {
