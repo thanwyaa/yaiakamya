@@ -1421,7 +1421,7 @@
             body { background: #fff !important; }
         }
 
-        /* ===== EXAM SECURITY MODAL - FIXED ===== */
+        /* ===== EXAM SECURITY MODAL ===== */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1629,7 +1629,7 @@
         </div>
     </div>
 
-    <!-- ===== EXAM SECURITY MODAL - FIXED ===== -->
+    <!-- ===== EXAM SECURITY MODAL ===== -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
@@ -1965,10 +1965,10 @@
     <!-- ============================================================
     FIREBASE SDK
     ============================================================ -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
     <script>
         // ============================================================
@@ -1990,7 +1990,7 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('✅ Yalla Chemistry v18.0 - Exam Security FIXED');
+        console.log('✅ Yalla Chemistry v19.0 - ALL ISSUES FIXED');
 
         // ============================================================
         // APP STATE
@@ -2003,18 +2003,12 @@
         let allLessons = [];
         let allExams = [];
         let allQuizzes = [];
-        let allUsers = [];
-        let errorBank = [];
+        let notifications = [];
+        let notificationFilter = 'all';
         let examTimer = null;
         let examStartTime = null;
         let isExamActive = false;
         let examSubmitted = false;
-        let notifications = [];
-        let notificationFilter = 'all';
-
-        // ============================================================
-        // EXAM STATE - FIXED
-        // ============================================================
         let examAnswers = {};
         let quizAnswers = {};
         let currentExamId = null;
@@ -2079,6 +2073,16 @@
             if (hours < 24) return hours + ' س';
             const days = Math.floor(hours / 24);
             return days + ' ي';
+        }
+
+        // دالة تنسيق رقم الهاتف - #P-07
+        function formatPhoneNumber(phone) {
+            if (!phone || phone === 'لم يحدد' || phone === '') return 'لم يحدد';
+            const cleaned = phone.replace(/\D/g, '');
+            if (cleaned.length === 11) {
+                return cleaned.substring(0, 4) + ' ' + cleaned.substring(4, 8) + ' ' + cleaned.substring(8);
+            }
+            return phone;
         }
 
         // ============================================================
@@ -2317,8 +2321,6 @@
             const guestElements = document.querySelectorAll('.guest-only');
             const userElements = document.querySelectorAll('.user-only');
 
-            console.log('🔄 Updating UI for auth state:', user ? 'Logged in' : 'Logged out');
-
             if (user) {
                 guestElements.forEach(el => {
                     el.style.display = 'none';
@@ -2363,8 +2365,6 @@
                         avatarEl.textContent = (userData.name || 'U')[0].toUpperCase();
                     }
                 }
-                
-                console.log('✅ UI updated - User logged in');
             } else {
                 guestElements.forEach(el => {
                     el.style.display = 'block';
@@ -2398,7 +2398,6 @@
                 userData = null;
                 closeUserMenu();
                 closeNotifications();
-                console.log('✅ UI updated - User logged out');
             }
         }
 
@@ -2406,8 +2405,6 @@
         // LOAD USER DATA
         // ============================================================
         function loadUserData(uid) {
-            console.log('📥 Loading user data for:', uid);
-            
             database.ref('users/' + uid).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userData = snapshot.val();
@@ -2431,10 +2428,7 @@
                     if (currentUser) {
                         updateUIForAuth(currentUser);
                     }
-                    
-                    console.log('✅ User data loaded and UI updated');
                 } else {
-                    console.log('🆕 Creating new user...');
                     createNewUser(uid);
                 }
             });
@@ -2467,12 +2461,12 @@
                 studyTime: 0,
                 videosWatched: 0,
                 lessonsCompleted: 0,
-                rank: '--'
+                rank: '--',
+                perfectExams: 0
             };
             
             await database.ref('users/' + uid).set(newUser);
             userData = newUser;
-            console.log('✅ New user created with code:', code);
             
             document.getElementById('userNameDisplay').textContent = 'مستخدم';
             document.getElementById('userAvatar').textContent = 'U';
@@ -2507,12 +2501,11 @@
                 });
                 allCourses.sort((a, b) => (a.order || 0) - (b.order || 0));
                 renderCourses(allCourses);
-                console.log('✅ Courses loaded:', allCourses.length);
             });
         }
 
         // ============================================================
-        // RENDER COURSES
+        // RENDER COURSES - مع زر "متابعة" بدلاً من "أنت مشترك" (#P-06)
         // ============================================================
         function renderCourses(courses) {
             const grid = document.getElementById('coursesGrid');
@@ -2562,8 +2555,8 @@
                                     </div>
                                     ${currentUser ? `
                                         ${subscribed ? `
-                                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:var(--success);" disabled>
-                                                ✅ أنت مشترك بالفعل
+                                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:var(--primary2);" onclick="event.stopPropagation(); APP.openCoursePage('${c.id}')">
+                                                📖 متابعة
                                             </button>
                                         ` : `
                                             <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.subscribeToCourse('${c.id}')">
@@ -2605,7 +2598,6 @@
                     userSubscriptions.push({ id: child.key, ...data });
                 });
                 renderCourses(allCourses);
-                console.log('✅ Subscriptions loaded:', userSubscriptions.length);
             });
         }
 
@@ -2613,8 +2605,6 @@
         // SUBSCRIBE TO COURSE
         // ============================================================
         async function subscribeToCourse(courseId) {
-            console.log('🔄 Starting subscription process...');
-            
             if (!currentUser) {
                 showLoginOverlay();
                 return;
@@ -2673,7 +2663,7 @@
         }
 
         // ============================================================
-        // CHECK COURSE ACCESS
+        // CHECK COURSE ACCESS - إصلاح #P-09 (الكورسات المجانية بدون اشتراك)
         // ============================================================
         async function checkCourseAccess(courseId) {
             if (!currentUser) {
@@ -2687,14 +2677,12 @@
                 return false;
             }
 
+            // إذا كان الكورس مجانياً، نسمح بالدخول مباشرة
             if (course.isFree !== false) {
-                if (!isUserSubscribed(courseId)) {
-                    showToast('📝 يرجى الاشتراك في الكورس أولاً', 'warning');
-                    return false;
-                }
                 return true;
             }
 
+            // إذا كان الكورس مدفوعاً، نتحقق من الاشتراك
             if (isUserSubscribed(courseId)) {
                 return true;
             }
@@ -3016,10 +3004,25 @@
                         watchDuration: 900
                     });
                     
+                    // تحديث streak (أيام الدراسة المتتالية) - #P-10
+                    const lastStudyDate = userSnap.val().lastStudyDate;
+                    const today = new Date().toDateString();
+                    let streak = userSnap.val().streak || 0;
+                    
+                    if (lastStudyDate === today) {
+                        // درس اليوم بالفعل
+                    } else if (lastStudyDate === new Date(Date.now() - 86400000).toDateString()) {
+                        streak++;
+                    } else {
+                        streak = 1;
+                    }
+                    
                     await userRef.update({ 
                         atoms: currentAtoms + atomsReward,
                         videosWatched: (userSnap.val().videosWatched || 0) + 1,
-                        lessonsCompleted: (userSnap.val().lessonsCompleted || 0) + 1
+                        lessonsCompleted: (userSnap.val().lessonsCompleted || 0) + 1,
+                        streak: streak,
+                        lastStudyDate: today
                     });
                     
                     animateAtoms('atomsCount', currentAtoms + atomsReward);
@@ -3055,55 +3058,53 @@
         }
 
         // ============================================================
-        // LESSON EXAM / QUIZ / ASSIGNMENT - FIXED
+        // LESSON EXAM / QUIZ / ASSIGNMENT
         // ============================================================
         
         // ============================================================
-        // EXAM SECURITY MODAL - FIXED
+        // EXAM SECURITY MODAL - #P-08
         // ============================================================
         function openExamSecurityModal(examId, callback, type = 'exam') {
-            console.log('🔓 Opening exam security modal for:', examId, 'type:', type);
-            
             const modal = document.getElementById('examSecurityModal');
             const titleEl = document.getElementById('examPledgeTitle');
             
-            // تحديث النص حسب النوع
             if (titleEl) {
                 titleEl.textContent = type === 'quiz' ? 'قبل بدء الكويز' : 'قبل بدء الامتحان';
             }
             
-            // إعادة تعيين الحالة
             document.getElementById('examPledge').checked = false;
             document.getElementById('startExamBtn').disabled = true;
             
-            // تعيين الـ callback
             pendingExamCallback = callback;
             currentExamId = examId;
             
-            // حدث التغيير في checkbox
             document.getElementById('examPledge').onchange = function() {
                 document.getElementById('startExamBtn').disabled = !this.checked;
             };
             
-            // عرض المودال
             modal.classList.add('open');
-            console.log('✅ Exam security modal opened');
         }
 
         function closeExamSecurityModal() {
-            console.log('🔒 Closing exam security modal');
             document.getElementById('examSecurityModal').classList.remove('open');
             document.getElementById('examPledge').checked = false;
             document.getElementById('startExamBtn').disabled = true;
-            // لا نمسح الـ callback هنا
+            // لا نمسح الـ callback هنا - #P-08
         }
 
         function startExamAfterPledge() {
-            console.log('🚀 startExamAfterPledge called');
-            console.log('📋 examPledge checked:', document.getElementById('examPledge').checked);
-            console.log('📋 pendingExamCallback:', !!pendingExamCallback);
-            
             if (document.getElementById('examPledge').checked && pendingExamCallback) {
+                // حفظ مرجع الكال باك
+                const callback = pendingExamCallback;
+                
+                // مسح المتغير العام فوراً لمنع التنفيذ المتكرر
+                pendingExamCallback = null;
+                
+                // إغلاق المودال
+                document.getElementById('examSecurityModal').classList.remove('open');
+                document.getElementById('examPledge').checked = false;
+                document.getElementById('startExamBtn').disabled = true;
+                
                 // حفظ الموافقة
                 if (currentUser && currentExamId) {
                     database.ref(`users/${currentUser.uid}/examPledges/${currentExamId}`).set({
@@ -3112,34 +3113,20 @@
                     }).catch(err => console.error('Error saving pledge:', err));
                 }
                 
-                // حفظ الـ callback قبل إغلاق المودال
-                const callback = pendingExamCallback;
-                
-                // إغلاق المودال - لا نمسح الـ callback هنا
-                document.getElementById('examSecurityModal').classList.remove('open');
-                document.getElementById('examPledge').checked = false;
-                document.getElementById('startExamBtn').disabled = true;
-                
-                // مسح الـ callback بعد أخذ نسخة منه
-                pendingExamCallback = null;
-                
-                console.log('✅ Calling exam callback');
-                // تنفيذ الـ callback
+                // تنفيذ الكال باك
                 if (typeof callback === 'function') {
                     callback();
                 } else {
                     console.error('❌ Callback is not a function:', callback);
+                    showToast('حدث خطأ داخلي، يرجى المحاولة مرة أخرى.', 'error');
                 }
             } else {
-                console.log('❌ Cannot start exam: pledge not checked or no callback');
-                if (!document.getElementById('examPledge').checked) {
-                    showToast('⚠️ يجب الموافقة على التعهد أولاً', 'warning');
-                }
+                showToast('⚠️ يجب الموافقة على التعهد أولاً', 'warning');
             }
         }
 
         // ============================================================
-        // OPEN LESSON EXAM - FIXED
+        // OPEN LESSON EXAM
         // ============================================================
         async function openLessonExam(lessonId) {
             if (!currentUser) { 
@@ -3147,11 +3134,8 @@
                 return; 
             }
             
-            console.log('📝 Opening exam for lesson:', lessonId);
-            
             const progressKey = 'exam_' + lessonId;
             
-            // التحقق من الحل السابق
             if (userCourseProgress[progressKey]?.completed) {
                 const score = userCourseProgress[progressKey]?.score || 0;
                 showExamResults(lessonId, score, userCourseProgress[progressKey]?.correctAnswers || 0, 
@@ -3162,20 +3146,16 @@
             }
             
             try {
-                // البحث عن الامتحان باستخدام lessonId كحقل
-                console.log('🔍 Searching for exam with lessonId:', lessonId);
                 const snapshot = await database.ref('exams')
                     .orderByChild('lessonId')
                     .equalTo(lessonId)
                     .once('value');
                 
                 if (!snapshot.exists()) {
-                    console.log('❌ No exam found for lessonId:', lessonId);
                     showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning');
                     return;
                 }
                 
-                // استخراج الامتحان
                 let exam = null;
                 snapshot.forEach(child => {
                     exam = { id: child.key, ...child.val() };
@@ -3186,12 +3166,9 @@
                     return;
                 }
                 
-                console.log('✅ Exam loaded:', exam);
                 currentExamData = exam;
                 
-                // عرض نافذة التعهد
                 openExamSecurityModal(lessonId, function() {
-                    console.log('🎯 Starting exam after pledge');
                     showExamUI(exam, true);
                 }, 'exam');
                 
@@ -3207,8 +3184,6 @@
                 return; 
             }
             
-            console.log('🧪 Opening quiz for lesson:', lessonId);
-            
             const progressKey = 'quiz_' + lessonId;
             
             if (userCourseProgress[progressKey]?.completed) {
@@ -3221,14 +3196,12 @@
             }
             
             try {
-                console.log('🔍 Searching for quiz with lessonId:', lessonId);
                 const snapshot = await database.ref('quizzes')
                     .orderByChild('lessonId')
                     .equalTo(lessonId)
                     .once('value');
                 
                 if (!snapshot.exists()) {
-                    console.log('❌ No quiz found for lessonId:', lessonId);
                     showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning');
                     return;
                 }
@@ -3243,11 +3216,9 @@
                     return;
                 }
                 
-                console.log('✅ Quiz loaded:', quiz);
                 currentQuizData = quiz;
                 
                 openExamSecurityModal(lessonId, function() {
-                    console.log('🎯 Starting quiz after pledge');
                     showQuizUI(quiz, true);
                 }, 'quiz');
                 
@@ -3258,10 +3229,9 @@
         }
 
         // ============================================================
-        // SHOW EXAM UI - FIXED with Timer
+        // SHOW EXAM UI
         // ============================================================
         function showExamUI(exam, isSecure = false) {
-            console.log('📝 Showing exam UI');
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -3278,7 +3248,6 @@
             examSubmitted = false;
             let currentQuestion = 0;
 
-            // ===== TIMER - يبدأ فوراً =====
             if (exam.duration && exam.duration > 0) {
                 let timeLeft = exam.duration * 60;
                 if (examTimer) clearInterval(examTimer);
@@ -3416,10 +3385,9 @@
         }
 
         // ============================================================
-        // SHOW QUIZ UI - FIXED
+        // SHOW QUIZ UI
         // ============================================================
         function showQuizUI(quiz, isSecure = false) {
-            console.log('🧪 Showing quiz UI');
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -3578,7 +3546,7 @@
         }
 
         // ============================================================
-        // SUBMIT EXAM - FIXED
+        // SUBMIT EXAM - مع إصلاح #P-04 (إخفاء الإجابات الصحيحة للأسئلة الصحيحة)
         // ============================================================
         async function submitExam(id, maxAtoms, autoSubmit = false) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3644,6 +3612,7 @@
                 const score = Math.round((correct / total) * 100);
                 const earnedAtoms = Math.round((score / 100) * maxAtoms);
 
+                // حفظ النتيجة - بدون تخزين الإجابات الكاملة (#P-04)
                 const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
                 await progressRef.set({
                     completed: true,
@@ -3651,14 +3620,23 @@
                     atomsAwarded: earnedAtoms > 0,
                     completedAt: new Date().toISOString(),
                     type: 'exam',
-                    answers: answers,
+                    // لا نرسل answers كاملة
                     totalQuestions: total,
                     correctAnswers: correct,
                     wrongAnswers: wrongQuestions.length,
-                    results: results,
                     timeSpent: Math.floor((Date.now() - examStartTime) / 1000),
                     title: data.title || 'امتحان'
                 });
+
+                // تسجيل الامتحان الممتاز (#P-10)
+                if (score === 100) {
+                    const userRef = database.ref('users/' + currentUser.uid);
+                    const userSnap = await userRef.once('value');
+                    if (userSnap.exists()) {
+                        const perfectExams = userSnap.val().perfectExams || 0;
+                        await userRef.update({ perfectExams: perfectExams + 1 });
+                    }
+                }
 
                 if (earnedAtoms > 0) {
                     const userRef = database.ref('users/' + currentUser.uid);
@@ -3699,6 +3677,7 @@
 
                 checkAchievements(currentUser.uid);
 
+                // عرض النتائج مع إخفاء الإجابات الصحيحة للأسئلة الصحيحة (#P-04)
                 showExamResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
 
             } catch (err) {
@@ -3709,6 +3688,9 @@
             }
         }
 
+        // ============================================================
+        // SHOW EXAM RESULTS - مع إخفاء الإجابات الصحيحة للأسئلة الصحيحة (#P-04)
+        // ============================================================
         function showExamResults(examId, score, correct, wrong, results, atomsEarned, isReview = false) {
             const main = document.getElementById('mainContent');
             if (!main) return;
@@ -3743,7 +3725,7 @@
                                         <span>إجابتك: <span class="${r.isCorrect ? 'correct-ans' : 'user-ans'}">${escapeHtml(r.userAnswer)}</span></span>
                                         ${!r.isCorrect ? `<span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>` : ''}
                                     </div>
-                                    ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
+                                    ${!r.isCorrect && r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
                                 </div>
                             `).join('')}
 
@@ -3757,7 +3739,7 @@
         }
 
         // ============================================================
-        // SUBMIT QUIZ - FIXED
+        // SUBMIT QUIZ - مع إصلاح #P-04
         // ============================================================
         async function submitQuiz(id, maxAtoms, autoSubmit = false) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3826,11 +3808,9 @@
                     atomsAwarded: earnedAtoms > 0,
                     completedAt: new Date().toISOString(),
                     type: 'quiz',
-                    answers: answers,
                     totalQuestions: total,
                     correctAnswers: correct,
                     wrongAnswers: wrongQuestions.length,
-                    results: results,
                     timeSpent: Math.floor((Date.now() - examStartTime) / 1000),
                     title: data.title || 'كويز'
                 });
@@ -3917,7 +3897,7 @@
                                         <span>إجابتك: <span class="${r.isCorrect ? 'correct-ans' : 'user-ans'}">${escapeHtml(r.userAnswer)}</span></span>
                                         ${!r.isCorrect ? `<span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>` : ''}
                                     </div>
-                                    ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
+                                    ${!r.isCorrect && r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
                                 </div>
                             `).join('')}
 
@@ -4254,8 +4234,8 @@
                                     <div class="name">${escapeHtml(name)}</div>
                                     <div class="code">🔑 ${escapeHtml(code)}</div>
                                     <div class="detail">📧 ${escapeHtml(email)}</div>
-                                    <div class="detail">📱 ${escapeHtml(phone)}</div>
-                                    <div class="detail">👨‍👩‍👦 ${escapeHtml(parentPhone)}</div>
+                                    <div class="detail">📱 ${formatPhoneNumber(phone)}</div>
+                                    <div class="detail">👨‍👩‍👦 ${formatPhoneNumber(parentPhone)}</div>
                                     <div class="detail">🎓 ${escapeHtml(grade)} • ${escapeHtml(studyType)}</div>
                                     <div class="detail">📅 تاريخ الإنشاء: ${createdAt}</div>
                                 </div>
@@ -4297,8 +4277,62 @@
         }
 
         // ============================================================
-        // ACHIEVEMENTS
+        // ACHIEVEMENTS - إصلاح #P-01 و #P-10
         // ============================================================
+        function getAchievements() {
+            // استخدام قيم افتراضية آمنة
+            const safeData = userData || {};
+            const progressData = userCourseProgress || {};
+            const courses = allCourses || [];
+            
+            const atoms = safeData.atoms || 0;
+            const streakDays = safeData.streak || 0;
+            const perfectExams = safeData.perfectExams || 0;
+            
+            const completedLessons = Object.values(progressData).filter(p => p.watched).length;
+            const examsCompleted = Object.values(progressData).filter(p => p.completed && p.type === 'exam').length;
+            const quizzesCompleted = Object.values(progressData).filter(p => p.completed && p.type === 'quiz').length;
+            
+            let coursesCompleted = 0;
+            courses.forEach(c => {
+                const lessons = allLessons.filter(l => l.courseId === c.id);
+                const completed = lessons.filter(l => progressData[l.id]?.watched);
+                if (lessons.length > 0 && completed.length === lessons.length) {
+                    coursesCompleted++;
+                }
+            });
+            
+            const achieved = {
+                first_exam: examsCompleted > 0,
+                first_100_atoms: atoms >= 100,
+                first_500_atoms: atoms >= 500,
+                first_1000_atoms: atoms >= 1000,
+                complete_course: coursesCompleted > 0,
+                complete_5_lessons: completedLessons >= 5,
+                complete_20_lessons: completedLessons >= 20,
+                study_7_days: streakDays >= 7,
+                perfect_exam: perfectExams > 0,
+                quiz_master: quizzesCompleted >= 10,
+                exam_champion: examsCompleted >= 5,
+                lesson_lover: completedLessons >= 50
+            };
+
+            return [
+                { id: 'first_exam', icon: '📝', name: 'أول امتحان', desc: 'حل أول امتحان على المنصة', unlocked: achieved.first_exam },
+                { id: 'first_100_atoms', icon: '🌟', name: '100 ذرة', desc: 'اجمع 100 ذرة', unlocked: achieved.first_100_atoms },
+                { id: 'first_500_atoms', icon: '⭐', name: '500 ذرة', desc: 'اجمع 500 ذرة', unlocked: achieved.first_500_atoms },
+                { id: 'first_1000_atoms', icon: '💎', name: '1000 ذرة', desc: 'اجمع 1000 ذرة', unlocked: achieved.first_1000_atoms },
+                { id: 'complete_course', icon: '🎓', name: 'أول كورس', desc: 'أنهي أول كورس بالكامل', unlocked: achieved.complete_course },
+                { id: 'complete_5_lessons', icon: '📚', name: '5 حصص', desc: 'أنهي 5 حصص', unlocked: achieved.complete_5_lessons },
+                { id: 'complete_20_lessons', icon: '📚', name: '20 حصة', desc: 'أنهي 20 حصة', unlocked: achieved.complete_20_lessons },
+                { id: 'study_7_days', icon: '🔥', name: '7 أيام دراسة', desc: 'ادرس 7 أيام متتالية', unlocked: achieved.study_7_days },
+                { id: 'perfect_exam', icon: '💯', name: 'امتحان ممتاز', desc: 'احصل على 100% في امتحان', unlocked: achieved.perfect_exam },
+                { id: 'quiz_master', icon: '🧪', name: 'سيد الكويزات', desc: 'حل 10 كويزات', unlocked: achieved.quiz_master },
+                { id: 'exam_champion', icon: '🏆', name: 'بطل الامتحانات', desc: 'حل 5 امتحانات', unlocked: achieved.exam_champion },
+                { id: 'lesson_lover', icon: '❤️', name: 'عاشق الحصص', desc: 'شاهد 50 حصة', unlocked: achieved.lesson_lover }
+            ];
+        }
+
         function showAchievements() {
             if (!currentUser) {
                 showLoginOverlay();
@@ -4330,37 +4364,10 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function getAchievements() {
-            const atoms = userData?.atoms || 0;
-            const completedLessons = Object.values(userCourseProgress).filter(p => p.watched).length;
-            const examsCompleted = Object.values(userCourseProgress).filter(p => p.completed && p.type === 'exam').length;
-            const quizzesCompleted = Object.values(userCourseProgress).filter(p => p.completed && p.type === 'quiz').length;
-            const coursesCompleted = allCourses.filter(c => {
-                const lessons = allLessons.filter(l => l.courseId === c.id);
-                const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
-                return lessons.length > 0 && completed.length === lessons.length;
-            }).length;
-            
-            return [
-                { id: 'first_exam', icon: '📝', name: 'أول امتحان', desc: 'حل أول امتحان على المنصة', unlocked: examsCompleted > 0 },
-                { id: 'first_100_atoms', icon: '🌟', name: '100 ذرة', desc: 'اجمع 100 ذرة', unlocked: atoms >= 100 },
-                { id: 'first_500_atoms', icon: '⭐', name: '500 ذرة', desc: 'اجمع 500 ذرة', unlocked: atoms >= 500 },
-                { id: 'first_1000_atoms', icon: '💎', name: '1000 ذرة', desc: 'اجمع 1000 ذرة', unlocked: atoms >= 1000 },
-                { id: 'complete_course', icon: '🎓', name: 'أول كورس', desc: 'أنهي أول كورس بالكامل', unlocked: coursesCompleted > 0 },
-                { id: 'complete_5_lessons', icon: '📚', name: '5 حصص', desc: 'أنهي 5 حصص', unlocked: completedLessons >= 5 },
-                { id: 'complete_20_lessons', icon: '📚', name: '20 حصة', desc: 'أنهي 20 حصة', unlocked: completedLessons >= 20 },
-                { id: 'study_7_days', icon: '🔥', name: '7 أيام دراسة', desc: 'ادرس 7 أيام متتالية', unlocked: false },
-                { id: 'perfect_exam', icon: '💯', name: 'امتحان ممتاز', desc: 'احصل على 100% في امتحان', unlocked: false },
-                { id: 'quiz_master', icon: '🧪', name: 'سيد الكويزات', desc: 'حل 10 كويزات', unlocked: quizzesCompleted >= 10 },
-                { id: 'exam_champion', icon: '🏆', name: 'بطل الامتحانات', desc: 'حل 5 امتحانات', unlocked: examsCompleted >= 5 },
-                { id: 'lesson_lover', icon: '❤️', name: 'عاشق الحصص', desc: 'شاهد 50 حصة', unlocked: completedLessons >= 50 }
-            ];
-        }
-
         function checkAchievements(uid) {}
 
         // ============================================================
-        // AI INSIGHTS
+        // AI INSIGHTS - إصلاح #P-02
         // ============================================================
         function showAIInsights() {
             if (!currentUser) {
@@ -4371,14 +4378,23 @@
             const main = document.getElementById('mainContent');
             if (!main) return;
 
-            const atoms = userData?.atoms || 0;
-            const progress = userData?.progress || 0;
-            const completedLessons = Object.values(userCourseProgress).filter(p => p.watched).length;
-            const totalLessons = allLessons.length;
-            const examsCompleted = Object.values(userCourseProgress).filter(p => p.completed && p.type === 'exam').length;
-            const quizzesCompleted = Object.values(userCourseProgress).filter(p => p.completed && p.type === 'quiz').length;
-            const studyTime = userData?.studyTime || 0;
-            
+            // استخدام قيم افتراضية آمنة
+            const safeUserData = userData || {};
+            const safeProgress = userCourseProgress || {};
+            const safeLessons = allLessons || [];
+
+            const atoms = safeUserData.atoms || 0;
+            const progress = safeUserData.progress || 0;
+            const completedLessons = Object.values(safeProgress).filter(p => p.watched).length;
+            const totalLessons = safeLessons.length;
+            const examsCompleted = Object.values(safeProgress).filter(p => p.completed && p.type === 'exam').length;
+            const quizzesCompleted = Object.values(safeProgress).filter(p => p.completed && p.type === 'quiz').length;
+            const studyTime = safeUserData.studyTime || 0;
+            const name = safeUserData.name || 'طالب';
+            const code = safeUserData.code || '---';
+            const grade = safeUserData.grade || 'لم يحدد';
+            const studyType = safeUserData.studyType || 'عام';
+
             let errorCount = 0;
             let topErrorSubjects = [];
             database.ref('users/' + currentUser.uid + '/errorBank').once('value', (snapshot) => {
@@ -4453,14 +4469,14 @@
                     if (weaknesses.length === 0) weaknesses.push('🌟 أنت في طريق ممتاز، استمر!');
 
                     const predictedScore = Math.min(100, progress + Math.floor(Math.random() * 15) + 5);
-                    const lessonsToReview = allLessons.filter(l => !userCourseProgress[l.id]?.watched).slice(0, 3);
+                    const lessonsToReview = safeLessons.filter(l => !safeProgress[l.id]?.watched).slice(0, 3);
 
                     const chartData = [];
                     for (let i = 0; i < 6; i++) {
                         chartData.push(Math.floor(progress * (0.3 + (i / 6) * 0.7)));
                     }
 
-                    const daysSince = userData?.createdAt ? Math.max(1, Math.floor((Date.now() - new Date(userData.createdAt).getTime()) / (1000 * 60 * 60 * 24))) : 1;
+                    const daysSince = safeUserData.createdAt ? Math.max(1, Math.floor((Date.now() - new Date(safeUserData.createdAt).getTime()) / (1000 * 60 * 60 * 24))) : 1;
                     const dailyAverage = Math.round((studyTime / daysSince) * 10) / 10;
 
                     main.innerHTML = `
@@ -4483,10 +4499,10 @@
                                         <div class="report-section">
                                             <h4>📋 البيانات الأساسية</h4>
                                             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">
-                                                <div class="stat-item"><div class="label">الاسم</div><div class="value">${escapeHtml(userData?.name || 'طالب')}</div></div>
-                                                <div class="stat-item"><div class="label">كود الطالب</div><div class="value">${escapeHtml(userData?.code || '---')}</div></div>
-                                                <div class="stat-item"><div class="label">الصف</div><div class="value">${escapeHtml(userData?.grade || 'لم يحدد')}</div></div>
-                                                <div class="stat-item"><div class="label">نوع الدراسة</div><div class="value">${escapeHtml(userData?.studyType || 'عام')}</div></div>
+                                                <div class="stat-item"><div class="label">الاسم</div><div class="value">${escapeHtml(name)}</div></div>
+                                                <div class="stat-item"><div class="label">كود الطالب</div><div class="value">${escapeHtml(code)}</div></div>
+                                                <div class="stat-item"><div class="label">الصف</div><div class="value">${escapeHtml(grade)}</div></div>
+                                                <div class="stat-item"><div class="label">نوع الدراسة</div><div class="value">${escapeHtml(studyType)}</div></div>
                                             </div>
                                         </div>
 
@@ -4703,7 +4719,7 @@
         }
 
         // ============================================================
-        // DASHBOARD - Student Dashboard
+        // DASHBOARD - إصلاح #P-03
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -4714,30 +4730,31 @@
             const main = document.getElementById('mainContent');
             if (!main) return;
 
-            const name = userData?.name || 'طالب';
-            const email = userData?.email || auth.currentUser?.email || '';
-            const code = userData?.code || '---';
-            const grade = userData?.grade || 'لم يحدد';
-            const studyType = userData?.studyType || 'عام';
-            const phone = userData?.phone || 'لم يحدد';
-            const parentPhone = userData?.parentPhone || 'لم يحدد';
-            const atoms = userData?.atoms || 0;
-            const progress = userData?.progress || 0;
-            const photoURL = userData?.photoURL || '';
-            const createdAt = userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString('ar') : 'غير معروف';
-            const lastActive = userData?.lastActive ? new Date(userData.lastActive).toLocaleDateString('ar') : 'غير معروف';
-            const loginCount = userData?.loginCount || 0;
-            const streak = userData?.streak || 0;
-            const studyTime = userData?.studyTime || 0;
-            const videosWatched = userData?.videosWatched || 0;
-            const lessonsCompleted = userData?.lessonsCompleted || 0;
+            // استخدام قيم افتراضية آمنة
+            const safeUserData = userData || {};
+            const safeProgress = userCourseProgress || {};
+            const safeCourses = allCourses || [];
 
-            let watchedCount = 0;
-            let quizCount = 0;
-            let assignmentCount = 0;
-            let examCount = 0;
+            const name = safeUserData.name || 'طالب';
+            const email = safeUserData.email || auth.currentUser?.email || '';
+            const code = safeUserData.code || '---';
+            const grade = safeUserData.grade || 'لم يحدد';
+            const studyType = safeUserData.studyType || 'عام';
+            const phone = safeUserData.phone || 'لم يحدد';
+            const parentPhone = safeUserData.parentPhone || 'لم يحدد';
+            const atoms = safeUserData.atoms || 0;
+            const progress = safeUserData.progress || 0;
+            const photoURL = safeUserData.photoURL || '';
+            const createdAt = safeUserData.createdAt ? new Date(safeUserData.createdAt).toLocaleDateString('ar') : 'غير معروف';
+            const lastActive = safeUserData.lastActive ? new Date(safeUserData.lastActive).toLocaleDateString('ar') : 'غير معروف';
+            const loginCount = safeUserData.loginCount || 0;
+            const streak = safeUserData.streak || 0;
+            const studyTime = safeUserData.studyTime || 0;
+            const videosWatched = safeUserData.videosWatched || 0;
+            const lessonsCompleted = safeUserData.lessonsCompleted || 0;
 
-            Object.values(userCourseProgress).forEach(p => {
+            let watchedCount = 0, quizCount = 0, assignmentCount = 0, examCount = 0;
+            Object.values(safeProgress).forEach(p => {
                 if (p.watched) watchedCount++;
                 if (p.completed) {
                     if (p.type === 'quiz') quizCount++;
@@ -4746,7 +4763,7 @@
                 }
             });
 
-            const subscribedCourses = allCourses.filter(c => isUserSubscribed(c.id));
+            const subscribedCourses = safeCourses.filter(c => isUserSubscribed(c.id));
 
             let rank = '--';
             database.ref('users').once('value', (snapshot) => {
@@ -4760,7 +4777,7 @@
                 users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
                 const userRank = users.findIndex(u => u.uid === currentUser.uid) + 1;
                 rank = userRank > 0 ? '#' + userRank : '--';
-                userData.rank = rank;
+                safeUserData.rank = rank;
                 renderDashboard(rank);
             });
 
@@ -4860,7 +4877,7 @@
         }
 
         // ============================================================
-        // UPLOAD PROFILE PHOTO
+        // UPLOAD PROFILE PHOTO - إصلاح #P-05 (استخدام Firebase Storage)
         // ============================================================
         function uploadProfilePhoto() {
             if (!currentUser) {
@@ -4875,22 +4892,28 @@
                 const file = e.target.files[0];
                 if (!file) return;
 
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    const imageData = ev.target.result;
-                    try {
-                        await database.ref('users/' + currentUser.uid + '/photoURL').set(imageData);
-                        userData.photoURL = imageData;
-                        showToast('✅ تم تحديث الصورة الشخصية', 'success');
-                        const avatar = document.getElementById('userAvatar');
-                        if (avatar) avatar.innerHTML = `<img src="${imageData}" alt="صورة">`;
-                        showDashboard();
-                    } catch (err) {
-                        console.error('Error uploading photo:', err);
-                        showToast('حدث خطأ في رفع الصورة', 'error');
-                    }
-                };
-                reader.readAsDataURL(file);
+                showToast('⏳ جاري رفع الصورة...', 'info');
+
+                try {
+                    const storageRef = storage.ref();
+                    const imageRef = storageRef.child(`profile_photos/${currentUser.uid}/${file.name}`);
+
+                    const snapshot = await imageRef.put(file);
+                    const downloadURL = await snapshot.ref.getDownloadURL();
+
+                    await database.ref('users/' + currentUser.uid + '/photoURL').set(downloadURL);
+                    
+                    userData.photoURL = downloadURL;
+                    showToast('✅ تم تحديث الصورة الشخصية بنجاح', 'success');
+
+                    const avatar = document.getElementById('userAvatar');
+                    if (avatar) avatar.innerHTML = `<img src="${downloadURL}" alt="صورة" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                    showDashboard();
+
+                } catch (err) {
+                    console.error('Error uploading photo:', err);
+                    showToast('❌ حدث خطأ في رفع الصورة: ' + err.message, 'error');
+                }
             };
             input.click();
         }
@@ -4952,7 +4975,6 @@
                     const data = child.val();
                     allLessons.push({ id: child.key, ...data });
                 });
-                console.log('✅ Lessons loaded:', allLessons.length);
             });
         }
 
@@ -4963,7 +4985,6 @@
                     const data = child.val();
                     allExams.push({ id: child.key, ...data });
                 });
-                console.log('✅ Exams loaded:', allExams.length);
             });
         }
 
@@ -4974,7 +4995,6 @@
                     const data = child.val();
                     allQuizzes.push({ id: child.key, ...data });
                 });
-                console.log('✅ Quizzes loaded:', allQuizzes.length);
             });
         }
 
@@ -4988,7 +5008,6 @@
                 } else {
                     userCourseProgress = {};
                 }
-                console.log('✅ User progress loaded');
             });
         }
 
@@ -4996,7 +5015,6 @@
         // AUTH STATE OBSERVER
         // ============================================================
         auth.onAuthStateChanged((user) => {
-            console.log('🔥 Auth state changed:', user ? 'User logged in' : 'User logged out');
             currentUser = user;
             updateUIForAuth(user);
 
@@ -5108,7 +5126,8 @@
             closeExamSecurityModal,
             startExamAfterPledge,
             showExamResults,
-            showQuizResults
+            showQuizResults,
+            formatPhoneNumber
         };
 
         // ============================================================
@@ -5116,12 +5135,17 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v18.0 - Exam Security FIXED');
-            console.log('✅ تم إصلاح مشكلة startExamAfterPledge - حفظ callback قبل الإغلاق');
-            console.log('✅ تم إصلاح البحث عن الكويزات والامتحانات باستخدام orderByChild');
-            console.log('✅ تم إضافة المؤقت مع الإغلاق التلقائي');
-            console.log('✅ تم إضافة منع إعادة الحل');
-            console.log('✅ تم الحفاظ على جميع الوظائف الحالية');
+            console.log('🚀 Yalla Chemistry Platform v19.0 - ALL ISSUES FIXED');
+            console.log('✅ #P-01: getAchievements - استخدام قيم افتراضية آمنة');
+            console.log('✅ #P-02: showAIInsights - استخدام قيم افتراضية آمنة');
+            console.log('✅ #P-03: renderDashboard - استخدام قيم افتراضية آمنة');
+            console.log('✅ #P-04: submitExam/Quiz - إخفاء الإجابات الصحيحة للأسئلة الصحيحة');
+            console.log('✅ #P-05: uploadProfilePhoto - استخدام Firebase Storage بدلاً من Base64');
+            console.log('✅ #P-06: renderCourses - تغيير زر "أنت مشترك" إلى "متابعة"');
+            console.log('✅ #P-07: formatPhoneNumber - تنسيق أرقام الهواتف');
+            console.log('✅ #P-08: startExamAfterPledge - حفظ callback قبل الإغلاق');
+            console.log('✅ #P-09: checkCourseAccess - الكورسات المجانية بدون اشتراك');
+            console.log('✅ #P-10: getAchievements - ربط الإنجازات ببيانات حقيقية (streak, perfectExams)');
         }
 
         if (document.readyState === 'loading') {
