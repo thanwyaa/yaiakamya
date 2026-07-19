@@ -203,7 +203,7 @@
             50% { transform: scale(1.3); opacity: 0.7; }
         }
 
-        /* ===== NOTIFICATION BELL - FIXED ===== */
+        /* ===== NOTIFICATION BELL - FIXED (Full display) ===== */
         .notification-wrapper {
             position: relative;
             display: inline-flex;
@@ -301,12 +301,12 @@
             color: var(--primary);
         }
         .notification-dropdown .notification-item {
-            padding: 12px 18px;
+            padding: 14px 20px;
             border-bottom: 1px solid var(--border);
             transition: var(--transition);
             cursor: pointer;
             display: flex;
-            gap: 14px;
+            gap: 16px;
             align-items: flex-start;
         }
         .notification-dropdown .notification-item:hover {
@@ -319,22 +319,29 @@
         }
         .notification-dropdown .notification-item .content {
             flex: 1;
+            min-width: 0;
         }
         .notification-dropdown .notification-item .content .title {
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--text);
+            display: block;
+            word-wrap: break-word;
         }
         .notification-dropdown .notification-item .content .desc {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--text2);
-            margin: 4px 0;
-            line-height: 1.6;
+            margin: 6px 0;
+            line-height: 1.8;
+            display: block;
+            word-wrap: break-word;
+            white-space: normal;
         }
         .notification-dropdown .notification-item .content .time {
             font-size: 0.7rem;
             color: var(--text2);
             opacity: 0.7;
+            display: block;
         }
         .notification-dropdown .notification-item.unread {
             border-right: 3px solid var(--primary);
@@ -1488,7 +1495,7 @@
             body { background: #fff !important; }
         }
 
-        /* ===== EXAM SECURITY MODAL - FIXED ===== */
+        /* ===== EXAM SECURITY MODAL - FIXED (Big buttons) ===== */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1546,10 +1553,10 @@
         .exam-security-modal .security-box .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             justify-content: center;
-            margin: 16px 0;
-            padding: 18px 24px;
+            margin: 20px 0;
+            padding: 20px 28px;
             background: var(--bg);
             border-radius: var(--radius);
             border: 2px solid var(--border);
@@ -1560,35 +1567,36 @@
             border-color: var(--primary);
         }
         .exam-security-modal .security-box .checkbox-group input {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             cursor: pointer;
             accent-color: var(--primary);
+            flex-shrink: 0;
         }
         .exam-security-modal .security-box .checkbox-group label {
             font-weight: 700;
             cursor: pointer;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             color: var(--text);
         }
         .exam-security-modal .security-box .btn-group {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 8px;
+            margin-top: 16px;
         }
         .exam-security-modal .security-box .btn-group .btn {
-            padding: 14px 40px;
+            padding: 16px 48px;
             border-radius: 50px;
             border: none;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: var(--transition);
             font-family: 'Cairo', sans-serif;
-            min-width: 160px;
-            min-height: 56px;
+            min-width: 180px;
+            min-height: 64px;
         }
         .exam-security-modal .security-box .btn-group .btn-primary {
             background: var(--primary);
@@ -2189,7 +2197,7 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('🚀 Yalla Chemistry v22.0 - ALL 15 ISSUES FIXED!');
+        console.log('🚀 Yalla Chemistry v23.0 - ALL 15 ISSUES FIXED!');
 
         // ============================================================
         // APP STATE
@@ -3851,7 +3859,7 @@
             const options = divs[qIdx].querySelectorAll('.quiz-option');
             
             options.forEach((el) => {
-                el.classList.remove('selected');
+                el.classList.remove('selected', 'correct', 'wrong');
             });
             
             if (examAnswers[id][qIdx]) {
@@ -3876,7 +3884,7 @@
             const options = divs[qIdx].querySelectorAll('.quiz-option');
             
             options.forEach((el) => {
-                el.classList.remove('selected');
+                el.classList.remove('selected', 'correct', 'wrong');
             });
             
             if (quizAnswers[id][qIdx]) {
@@ -4041,24 +4049,32 @@
             
             let message = '';
             let emoji = '';
+            let gradeColor = '';
+            
             if (score === 100) {
                 message = '🎉 ممتاز جداً! درجة كاملة! أنت عبقري!';
                 emoji = '🏆';
+                gradeColor = 'var(--gold)';
             } else if (score >= 85) {
-                message = '⭐ ممتاز! أداء رائع جداً!';
+                message = '⭐ ممتاز! أداء رائع جداً! استمر بهذا المستوى!';
                 emoji = '🌟';
+                gradeColor = 'var(--success)';
             } else if (score >= 70) {
-                message = '💪 جيد جداً! استمر في التحسين!';
+                message = '💪 جيد جداً! أنت في الطريق الصحيح!';
                 emoji = '💪';
+                gradeColor = 'var(--primary)';
             } else if (score >= 60) {
-                message = '✅ جيد! تحتاج إلى مراجعة بعض النقاط.';
+                message = '✅ جيد! تحتاج إلى مراجعة بعض النقاط البسيطة.';
                 emoji = '📖';
+                gradeColor = 'var(--warning)';
             } else if (score >= 40) {
-                message = '📚 يحتاج إلى مراجعة! راجع الدرس جيداً.';
+                message = '📚 يحتاج إلى مراجعة! راجع الدرس جيداً وحاول مرة أخرى.';
                 emoji = '📚';
+                gradeColor = 'var(--danger)';
             } else {
-                message = '🔴 ضعيف! تحتاج إلى مراجعة شاملة للدرس.';
+                message = '🔴 ضعيف! تحتاج إلى مراجعة شاملة للدرس من البداية.';
                 emoji = '🔴';
+                gradeColor = 'var(--danger)';
             }
 
             const wrongResults = results.filter(r => !r.isCorrect);
@@ -4070,43 +4086,46 @@
                         <i class="fas fa-arrow-right"></i> العودة للرئيسية
                     </button>
                     
-                    <div class="card" style="padding:24px;margin-top:12px;text-align:center;">
+                    <div class="card" style="padding:28px;margin-top:12px;text-align:center;border:3px solid ${gradeColor};">
                         <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
-                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${passed ? 'var(--success)' : 'var(--danger)'};">
+                        <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:${gradeColor};">
                             ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
                         </h2>
-                        <p style="font-size:1.1rem;color:var(--text);margin-top:8px;font-weight:600;">${message}</p>
+                        <p style="font-size:1.2rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
                         
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px;">
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">${score}%</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">الدرجة</div>
+                        <!-- ✅ عرض عدد الصح والغلط -->
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin-top:20px;">
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--primary);">${score}%</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">الدرجة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--success);">${correct}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">✅ صحيح</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--success);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--success);">${correct}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">✅ إجابة صحيحة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--danger);">${wrong}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">❌ خاطئ</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--danger);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--danger);">${wrong}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">❌ إجابة خاطئة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">⏱ الوقت</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">⏱ الوقت المستغرق</div>
                             </div>
                             ${atomsEarned > 0 ? `
-                                <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                    <div style="font-size:1.8rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
-                                    <div style="font-size:0.8rem;color:var(--text2);">⚛️ ذرات</div>
+                                <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--gold);">
+                                    <div style="font-size:2rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
+                                    <div style="font-size:0.85rem;color:var(--text2);">⚛️ ذرات مكتسبة</div>
                                 </div>
                             ` : ''}
                         </div>
                     </div>
 
                     ${wrongResults.length > 0 ? `
-                        <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);margin:16px 0;">📋 الأسئلة الخاطئة (${wrongResults.length})</h3>
+                        <h3 style="font-weight:700;font-size:1.2rem;color:var(--danger);margin:20px 0 12px;">
+                            ❌ الأسئلة الخاطئة (${wrongResults.length})
+                        </h3>
                         ${wrongResults.map((r, idx) => `
-                            <div class="exam-result-card">
+                            <div class="exam-result-card" style="border-right:4px solid var(--danger);">
                                 <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
                                 <div class="answer-row">
                                     <span class="wrong-icon">❌</span>
@@ -4120,12 +4139,12 @@
                     ` : ''}
 
                     ${correctResults.length > 0 ? `
-                        <div style="text-align:center;padding:12px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:8px;">
+                        <div style="text-align:center;padding:14px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:12px;font-weight:700;">
                             ✅ ${correctResults.length} سؤال صحيح - ممتاز!
                         </div>
                     ` : ''}
 
-                    <div style="text-align:center;margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                         <button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
                         ${!isReview ? `<button class="btn-outline no-print" onclick="APP.scrollToCourses()">📚 العودة للكورسات</button>` : ''}
                     </div>
@@ -4273,24 +4292,32 @@
             
             let message = '';
             let emoji = '';
+            let gradeColor = '';
+            
             if (score === 100) {
                 message = '🎉 ممتاز جداً! درجة كاملة!';
                 emoji = '🏆';
+                gradeColor = 'var(--gold)';
             } else if (score >= 85) {
                 message = '⭐ ممتاز! أداء رائع!';
                 emoji = '🌟';
+                gradeColor = 'var(--success)';
             } else if (score >= 70) {
                 message = '💪 جيد جداً! استمر!';
                 emoji = '💪';
+                gradeColor = 'var(--primary)';
             } else if (score >= 60) {
                 message = '✅ جيد! راجع بعض النقاط.';
                 emoji = '📖';
+                gradeColor = 'var(--warning)';
             } else if (score >= 40) {
                 message = '📚 يحتاج إلى مراجعة!';
                 emoji = '📚';
+                gradeColor = 'var(--danger)';
             } else {
                 message = '🔴 ضعيف! راجع الدرس جيداً.';
                 emoji = '🔴';
+                gradeColor = 'var(--danger)';
             }
 
             const wrongResults = results.filter(r => !r.isCorrect);
@@ -4302,43 +4329,45 @@
                         <i class="fas fa-arrow-right"></i> العودة للرئيسية
                     </button>
                     
-                    <div class="card" style="padding:24px;margin-top:12px;text-align:center;">
+                    <div class="card" style="padding:28px;margin-top:12px;text-align:center;border:3px solid ${gradeColor};">
                         <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
-                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${passed ? 'var(--success)' : 'var(--danger)'};">
+                        <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:${gradeColor};">
                             ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
                         </h2>
-                        <p style="font-size:1.1rem;color:var(--text);margin-top:8px;font-weight:600;">${message}</p>
+                        <p style="font-size:1.2rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
                         
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px;">
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">${score}%</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">الدرجة</div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin-top:20px;">
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--primary);">${score}%</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">الدرجة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--success);">${correct}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">✅ صحيح</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--success);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--success);">${correct}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">✅ إجابة صحيحة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--danger);">${wrong}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">❌ خاطئ</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--danger);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--danger);">${wrong}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">❌ إجابة خاطئة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.8rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">⏱ الوقت</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">⏱ الوقت المستغرق</div>
                             </div>
                             ${atomsEarned > 0 ? `
-                                <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                    <div style="font-size:1.8rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
-                                    <div style="font-size:0.8rem;color:var(--text2);">⚛️ ذرات</div>
+                                <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--gold);">
+                                    <div style="font-size:2rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
+                                    <div style="font-size:0.85rem;color:var(--text2);">⚛️ ذرات مكتسبة</div>
                                 </div>
                             ` : ''}
                         </div>
                     </div>
 
                     ${wrongResults.length > 0 ? `
-                        <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);margin:16px 0;">📋 الأسئلة الخاطئة (${wrongResults.length})</h3>
+                        <h3 style="font-weight:700;font-size:1.2rem;color:var(--danger);margin:20px 0 12px;">
+                            ❌ الأسئلة الخاطئة (${wrongResults.length})
+                        </h3>
                         ${wrongResults.map((r, idx) => `
-                            <div class="exam-result-card">
+                            <div class="exam-result-card" style="border-right:4px solid var(--danger);">
                                 <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
                                 <div class="answer-row">
                                     <span class="wrong-icon">❌</span>
@@ -4352,12 +4381,12 @@
                     ` : ''}
 
                     ${correctResults.length > 0 ? `
-                        <div style="text-align:center;padding:12px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:8px;">
+                        <div style="text-align:center;padding:14px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:12px;font-weight:700;">
                             ✅ ${correctResults.length} سؤال صحيح - ممتاز!
                         </div>
                     ` : ''}
 
-                    <div style="text-align:center;margin-top:16px;">
+                    <div style="text-align:center;margin-top:20px;">
                         <button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
                     </div>
                 </div>
@@ -4554,17 +4583,17 @@
                             ❌ بنك الأخطاء
                         </h1>
                         
-                        <div style="background:var(--bg);padding:16px;border-radius:var(--radius);margin-bottom:16px;text-align:center;">
-                            <p style="font-size:1.2rem;font-weight:700;">
+                        <div style="background:var(--bg);padding:20px;border-radius:var(--radius);margin-bottom:16px;text-align:center;">
+                            <p style="font-size:1.3rem;font-weight:700;">
                                 عدد الأسئلة الخاطئة: 
-                                <span style="color:var(--danger);font-size:1.8rem;">${totalErrors}</span>
+                                <span style="color:var(--danger);font-size:2.2rem;">${totalErrors}</span>
                             </p>
                             ${errors.length > totalErrors ? `
-                                <p style="font-size:0.9rem;color:var(--success);">
+                                <p style="font-size:0.95rem;color:var(--success);">
                                     ✅ تم حل ${errors.length - totalErrors} سؤال بشكل صحيح
                                 </p>
                             ` : ''}
-                            <p style="font-size:0.8rem;color:var(--text2);margin-top:4px;">
+                            <p style="font-size:0.85rem;color:var(--text2);margin-top:6px;">
                                 📌 الأسئلة تبقى في بنك الأخطاء حتى تجيبها بشكل صحيح
                             </p>
                         </div>
@@ -5391,8 +5420,6 @@
             const code = safeUserData.code || '---';
             const grade = safeUserData.grade || 'لم يحدد';
             const studyType = safeUserData.studyType || 'عام';
-            const phone = safeUserData.phone || 'لم يحدد';
-            const parentPhone = safeUserData.parentPhone || 'لم يحدد';
             const atoms = safeUserData.atoms || 0;
             const progress = safeUserData.progress || 0;
             const photoURL = safeUserData.photoURL || '';
@@ -5431,22 +5458,22 @@
                         </button>
 
                         <!-- Profile Card -->
-                        <div class="card" style="padding:24px;margin:12px 0 20px;background:linear-gradient(135deg, var(--primary), var(--primary2));color:#fff;border:none;">
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-                                <div style="width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;background:rgba(255,255,255,0.2);color:#fff;overflow:hidden;border:3px solid rgba(255,255,255,0.3);cursor:pointer;" 
+                        <div class="card" style="padding:28px;margin:12px 0 20px;background:linear-gradient(135deg, var(--primary), var(--primary2));color:#fff;border:none;border-radius:var(--radius-lg);">
+                            <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+                                <div style="width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;font-weight:700;background:rgba(255,255,255,0.2);color:#fff;overflow:hidden;border:4px solid rgba(255,255,255,0.4);cursor:pointer;transition:var(--transition);" 
                                      onclick="APP.uploadProfilePhoto()" title="اضغط لتغيير الصورة">
                                     ${avatarHtml}
                                 </div>
-                                <h2 style="font-family:'Lalezar',cursive;font-size:2rem;margin:0;">${escapeHtml(name)}</h2>
-                                <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:0.9rem;opacity:0.9;">
-                                    <span>🔑 ${escapeHtml(code)}</span>
-                                    <span>🎓 ${escapeHtml(grade)}</span>
-                                    <span>📚 ${escapeHtml(studyType)}</span>
+                                <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;margin:0;">${escapeHtml(name)}</h2>
+                                <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;font-size:0.95rem;opacity:0.95;">
+                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🔑 ${escapeHtml(code)}</span>
+                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🎓 ${escapeHtml(grade)}</span>
+                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">📚 ${escapeHtml(studyType)}</span>
                                 </div>
-                                <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
-                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">⚛️ ${atoms} ذرة</span>
-                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🏆 ${rank}</span>
-                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🔥 ${streak} يوم</span>
+                                <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-top:6px;">
+                                    <span style="background:rgba(255,255,255,0.2);padding:6px 20px;border-radius:20px;font-weight:700;">⚛️ ${atoms} ذرة</span>
+                                    <span style="background:rgba(255,255,255,0.2);padding:6px 20px;border-radius:20px;font-weight:700;">🏆 ${rank}</span>
+                                    <span style="background:rgba(255,255,255,0.2);padding:6px 20px;border-radius:20px;font-weight:700;">🔥 ${streak} يوم</span>
                                 </div>
                             </div>
                         </div>
@@ -5488,7 +5515,7 @@
                             <h3 style="font-weight:700;font-size:1.1rem;color:var(--primary);margin-bottom:8px;">📚 كورساتي</h3>
                             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;">
                                 ${subscribedCourses.map(c => `
-                                    <div class="card" style="padding:14px;cursor:pointer;" onclick="APP.openCoursePage('${c.id}')">
+                                    <div class="card" style="padding:14px;cursor:pointer;border-radius:var(--radius);" onclick="APP.openCoursePage('${c.id}')">
                                         <h4 style="font-weight:700;color:var(--text);font-size:0.9rem;">${escapeHtml(c.title)}</h4>
                                         <span style="font-size:0.7rem;color:var(--success);">✔ مشترك</span>
                                     </div>
@@ -5736,7 +5763,7 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v22.0 - ALL 15 ISSUES FIXED!');
+            console.log('🚀 Yalla Chemistry Platform v23.0 - ALL 15 ISSUES FIXED!');
             console.log('✅ 1. Notifications - Full display fixed');
             console.log('✅ 2. Quiz pledge - Bigger buttons');
             console.log('✅ 3. Single answer selection');
