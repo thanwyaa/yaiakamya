@@ -1199,19 +1199,47 @@
             letter-spacing: 2px;
         }
 
-        /* ===== ERROR BANK ===== */
+        /* ===== ERROR BANK - IMPROVED ===== */
         .error-bank-item {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 8px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 16px 20px !important;
+            margin-bottom: 10px !important;
+            border-radius: var(--radius) !important;
+            border-right: 4px solid var(--danger) !important;
+            background: var(--card) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
         }
-        .error-bank-item:hover { border-color: var(--danger); }
-        .error-bank-item .question { font-weight: 700; color: var(--text); }
-        .error-bank-item .answer { color: var(--success); font-weight: 600; }
-        .error-bank-item .user-answer { color: var(--danger); font-weight: 600; }
+
+        .error-bank-item:hover {
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12);
+            transform: translateX(-4px);
+        }
+
+        .error-bank-item .question {
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            color: var(--text);
+        }
+
+        .error-bank-item .user-answer {
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            color: var(--danger);
+        }
+
+        .error-bank-item .answer {
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            color: var(--success);
+        }
+
+        .error-bank-item .attempts-badge {
+            font-size: 0.7rem !important;
+            background: var(--bg);
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: var(--warning);
+        }
 
         /* ===== CERTIFICATE ===== */
         .certificate-preview {
@@ -4211,34 +4239,7 @@
             const container = document.getElementById('leaderboardContainer');
             if (!container) return;
 
-            // استخدام Cloud Function للحصول على الترتيب بأمان
-            // ملاحظة: هذا افتراض أن لديك Cloud Function منشورة
-            // إذا لم تكن متوفرة، استخدم القراءة المباشرة كحل مؤقت مع قواعد الأمان
-            try {
-                const getLeaderboardFn = firebase.functions().httpsCallable('getLeaderboard');
-                getLeaderboardFn().then(result => {
-                    const data = result.data;
-                    renderLeaderboard(data.users);
-                    
-                    if (currentUser && userData) {
-                        userData.rank = data.userRank;
-                    }
-                }).catch(err => {
-                    console.error('Error loading leaderboard via Cloud Function:', err);
-                    // Fallback: استخدام القراءة المباشرة (مع قواعد الأمان)
-                    fallbackLoadLeaderboard();
-                });
-            } catch (e) {
-                // Fallback: استخدام القراءة المباشرة
-                fallbackLoadLeaderboard();
-            }
-        }
-
-        function fallbackLoadLeaderboard() {
-            const container = document.getElementById('leaderboardContainer');
-            if (!container) return;
-
-            // هذه القراءة محمية بقواعد الأمان - المستخدم يرى فقط البيانات العامة
+            // استخدام limitToLast لتقليل كمية البيانات
             database.ref('users').orderByChild('atoms').limitToLast(10).on('value', (snapshot) => {
                 const users = [];
                 snapshot.forEach((child) => {
@@ -4254,19 +4255,17 @@
                 users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
                 
                 if (currentUser && userData) {
-                    // حساب الترتيب الحقيقي بأمان من الخادم
-                    database.ref('users').once('value', (snapshot) => {
-                        let rank = 1;
-                        snapshot.forEach((child) => {
-                            if (child.val().atoms > (userData.atoms || 0)) {
-                                rank++;
-                            }
-                        });
+                    // حساب ترتيب المستخدم الحالي بأمان
+                    database.ref('users').orderByChild('atoms').startAt(userData.atoms + 1).once('value', (snapshot) => {
+                        const rank = snapshot.numChildren() + 1;
                         userData.rank = '#' + rank;
+                        renderLeaderboard(users);
+                    }).catch(() => {
+                        renderLeaderboard(users);
                     });
+                } else {
+                    renderLeaderboard(users);
                 }
-                
-                renderLeaderboard(users);
             });
         }
 
@@ -4357,7 +4356,7 @@
         }
 
         // ============================================================
-        // ERROR BANK - IMPROVED
+        // ERROR BANK - IMPROVED (ONLY SHOWS ERROR COUNT)
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -4378,6 +4377,7 @@
                 }
 
                 const unresolvedErrors = errors.filter(e => !e.solved);
+                const totalErrors = unresolvedErrors.length;
 
                 main.innerHTML = `
                     <div style="max-width:800px;margin:0 auto;padding:20px;">
@@ -4388,39 +4388,30 @@
                         <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">
                             ❌ بنك الأخطاء
                         </h1>
-                        <p style="color:var(--text2);margin-bottom:16px;">
-                            عدد الأسئلة الخاطئة: <strong style="color:var(--danger);font-size:1.2rem;">${unresolvedErrors.length}</strong>
-                            ${errors.length > unresolvedErrors.length ? `(تم حل ${errors.length - unresolvedErrors.length} سؤال بشكل صحيح ✅)` : ''}
-                        </p>
+                        
+                        <div style="background:var(--bg);padding:16px;border-radius:var(--radius);margin-bottom:16px;text-align:center;">
+                            <p style="font-size:1.2rem;font-weight:700;">
+                                عدد الأسئلة الخاطئة: 
+                                <span style="color:var(--danger);font-size:1.8rem;">${totalErrors}</span>
+                            </p>
+                            ${errors.length > totalErrors ? `
+                                <p style="font-size:0.9rem;color:var(--success);">
+                                    ✅ تم حل ${errors.length - totalErrors} سؤال بشكل صحيح
+                                </p>
+                            ` : ''}
+                        </div>
 
-                        ${unresolvedErrors.length === 0 ? `
+                        ${totalErrors === 0 ? `
                             <div class="empty-state">
                                 <div class="icon">🎉</div>
                                 <h3>ممتاز! لا توجد أخطاء</h3>
                                 <p>كل إجاباتك صحيحة، استمر بهذا الأداء الرائع!</p>
                             </div>
                         ` : `
-                            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-                                ${unresolvedErrors.map((e, idx) => `
-                                    <div class="error-bank-item" id="error_${idx}">
-                                        <div class="question">${idx + 1}. ${escapeHtml(e.question)}</div>
-                                        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
-                                            <span class="user-answer">❌ إجابتك: ${escapeHtml(e.userAnswer)}</span>
-                                            <span class="answer">✅ الإجابة الصحيحة: ${escapeHtml(e.correctAnswer)}</span>
-                                            <span style="font-size:0.7rem;color:var(--warning);">🔄 محاولات: ${e.attempts || 1}</span>
-                                            <button class="btn-sm" style="background:var(--success);color:#fff;border:none;padding:2px 12px;border-radius:20px;font-size:0.7rem;cursor:pointer;" 
-                                                    onclick="APP.markErrorSolved('${idx}')">
-                                                ✅ تم الحل
-                                            </button>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding:16px;background:var(--bg);border-radius:var(--radius);">
+                            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding:16px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
                                 <h4 style="width:100%;font-weight:700;color:var(--primary);margin-bottom:4px;">📝 إنشاء امتحان من الأخطاء</h4>
                                 <p style="width:100%;font-size:0.85rem;color:var(--text2);margin-bottom:8px;">
-                                    اختر عدد الأسئلة التي تريد حلها:
+                                    اختر عدد الأسئلة التي تريد حلها من أصل ${totalErrors} سؤال خاطئ:
                                 </p>
                                 <button class="btn-primary btn-sm" onclick="APP.createExamFromErrors(5)">
                                     <i class="fas fa-file-alt"></i> 5 أسئلة
@@ -4432,8 +4423,35 @@
                                     <i class="fas fa-file-alt"></i> 20 سؤال
                                 </button>
                                 <button class="btn-primary btn-sm" style="background:var(--gold);color:#081B2C;" onclick="APP.createExamFromErrors('all')">
-                                    <i class="fas fa-file-alt"></i> جميع الأسئلة (${unresolvedErrors.length})
+                                    <i class="fas fa-file-alt"></i> جميع الأسئلة (${totalErrors})
                                 </button>
+                            </div>
+
+                            <div style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">
+                                📌 الأسئلة الخاطئة (${totalErrors}):
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto;padding-left:4px;">
+                                ${unresolvedErrors.map((e, idx) => `
+                                    <div class="error-bank-item" style="padding:12px 16px;border-right:4px solid var(--danger);">
+                                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
+                                            <span style="font-weight:700;color:var(--text);font-size:0.95rem;">
+                                                ${idx + 1}. ${escapeHtml(e.question)}
+                                            </span>
+                                            <span style="font-size:0.7rem;color:var(--warning);background:var(--bg);padding:2px 10px;border-radius:20px;">
+                                                🔄 ${e.attempts || 1} محاولات
+                                            </span>
+                                        </div>
+                                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;font-size:0.8rem;">
+                                            <span class="user-answer" style="color:var(--danger);font-weight:600;">
+                                                ❌ ${escapeHtml(e.userAnswer)}
+                                            </span>
+                                            <span style="color:var(--text2);">→</span>
+                                            <span class="answer" style="color:var(--success);font-weight:600;">
+                                                ✅ ${escapeHtml(e.correctAnswer)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                `).join('')}
                             </div>
                         `}
                     </div>
@@ -4457,13 +4475,15 @@
                         errors[index].solved = true;
                         errors[index].solvedAt = new Date().toISOString();
                         await errorRef.set(errors);
-                        showToast('✅ تم إزالة السؤال من بنك الأخطاء', 'success');
+                        showToast(`✅ تم إزالة السؤال من بنك الأخطاء`, 'success');
                         showErrorBank();
+                    } else {
+                        showToast('⚠️ السؤال غير موجود', 'warning');
                     }
                 }
             } catch (err) {
                 console.error('Error marking error solved:', err);
-                showToast('حدث خطأ', 'error');
+                showToast('حدث خطأ: ' + err.message, 'error');
             }
         }
 
@@ -4503,25 +4523,31 @@
                     return;
                 }
 
+                const examQuestions = selectedErrors.map(e => {
+                    const options = generateOptions(e.correctAnswer, e.userAnswer);
+                    return {
+                        question: e.question,
+                        options: options,
+                        correctAnswer: options.indexOf(e.correctAnswer),
+                        explanation: `إجابتك السابقة: ${e.userAnswer} | الإجابة الصحيحة: ${e.correctAnswer}`
+                    };
+                });
+
                 const exam = {
                     id: 'error_exam_' + Date.now(),
                     title: `📝 امتحان الأخطاء (${selectedErrors.length} سؤال)`,
-                    description: 'أسئلة من بنك الأخطاء الخاص بك',
-                    questions: selectedErrors.map(e => ({
-                        question: e.question,
-                        options: generateOptions(e.correctAnswer, e.userAnswer),
-                        correctAnswer: 0,
-                        explanation: `إجابتك السابقة: ${e.userAnswer} | الإجابة الصحيحة: ${e.correctAnswer}`
-                    })),
+                    description: 'أسئلة من بنك الأخطاء الخاص بك - راجع إجاباتك السابقة',
+                    questions: examQuestions,
                     atomsReward: selectedErrors.length * 2,
                     duration: Math.ceil(selectedErrors.length * 1.5)
                 };
 
                 showExamUI(exam, true);
+                showToast(`✅ تم إنشاء امتحان من ${selectedErrors.length} سؤال خاطئ`, 'success');
 
             } catch (err) {
                 console.error('Error creating exam from errors:', err);
-                showToast('حدث خطأ في إنشاء الامتحان', 'error');
+                showToast('حدث خطأ في إنشاء الامتحان: ' + err.message, 'error');
             }
         }
 
@@ -4532,11 +4558,22 @@
                 options.push(wrongAnswer);
             }
             
-            const fakeOptions = ['لا أعلم', 'خيار آخر', 'ربما'];
+            const fakeOptions = [
+                'تفاعل كيميائي',
+                'مركب عضوي',
+                'عنصر فلزي',
+                'محلول قاعدي',
+                'غاز خامل',
+                'أيون موجب',
+                'رابطة تساهمية',
+                'تفاعل عكسي'
+            ];
+            
+            const shuffledFakes = fakeOptions.sort(() => 0.5 - Math.random());
             let count = 0;
-            while (options.length < 4 && count < fakeOptions.length) {
-                if (!options.includes(fakeOptions[count]) && fakeOptions[count] !== correctAnswer) {
-                    options.push(fakeOptions[count]);
+            while (options.length < 4 && count < shuffledFakes.length) {
+                if (!options.includes(shuffledFakes[count]) && shuffledFakes[count] !== correctAnswer && shuffledFakes[count] !== wrongAnswer) {
+                    options.push(shuffledFakes[count]);
                 }
                 count++;
             }
@@ -4916,18 +4953,13 @@
                     recommendations.push('🎉 ممتاز! أنت في الطريق الصحيح، استمر بنفس المستوى');
                 }
                 
-                // حساب الترتيب بأمان
                 let rank = '--';
-                database.ref('users').once('value', (snapshot) => {
-                    let rankNum = 1;
-                    const currentAtoms = userData?.atoms || 0;
-                    snapshot.forEach(child => {
-                        if (child.val().atoms > currentAtoms) {
-                            rankNum++;
-                        }
-                    });
+                database.ref('users').orderByChild('atoms').startAt((userData?.atoms || 0) + 1).once('value', (snapshot) => {
+                    const rankNum = snapshot.numChildren() + 1;
                     rank = '#' + rankNum;
                     renderCompleteRealAnalysis(rank);
+                }).catch(() => {
+                    renderCompleteRealAnalysis('--');
                 });
                 
                 function renderCompleteRealAnalysis(rank) {
@@ -5147,19 +5179,14 @@
 
             const subscribedCourses = safeCourses.filter(c => isUserSubscribed(c.id));
 
-            // حساب الترتيب بأمان
             let rank = '--';
-            database.ref('users').once('value', (snapshot) => {
-                let rankNum = 1;
-                const currentAtoms = userData?.atoms || 0;
-                snapshot.forEach(child => {
-                    if (child.val().atoms > currentAtoms) {
-                        rankNum++;
-                    }
-                });
+            database.ref('users').orderByChild('atoms').startAt((userData?.atoms || 0) + 1).once('value', (snapshot) => {
+                const rankNum = snapshot.numChildren() + 1;
                 rank = '#' + rankNum;
                 safeUserData.rank = rank;
                 renderDashboard(rank);
+            }).catch(() => {
+                renderDashboard('--');
             });
 
             function renderDashboard(rank) {
@@ -5525,6 +5552,8 @@
             console.log('✅ New URL: https://yaiakamya.vercel.app/');
             console.log('✅ All 18 issues fixed!');
             console.log('✅ Security: Database read protection implemented');
+            console.log('✅ Error Bank: Only shows error count');
+            console.log('✅ Leaderboard: Secure reading with limitToLast');
         }
 
         if (document.readyState === 'loading') {
