@@ -203,7 +203,7 @@
             50% { transform: scale(1.3); opacity: 0.7; }
         }
 
-        /* ===== NOTIFICATION BELL ===== */
+        /* ===== NOTIFICATION BELL - FIXED ===== */
         .notification-wrapper {
             position: relative;
             display: inline-flex;
@@ -246,10 +246,11 @@
             display: none;
             position: absolute;
             top: calc(100% + 8px);
+            left: 0;
             right: 0;
-            min-width: 340px;
-            max-width: 400px;
-            max-height: 420px;
+            min-width: 380px;
+            max-width: 420px;
+            max-height: 450px;
             overflow-y: auto;
             background: var(--card);
             border: 1px solid var(--border);
@@ -300,12 +301,12 @@
             color: var(--primary);
         }
         .notification-dropdown .notification-item {
-            padding: 10px 16px;
+            padding: 12px 18px;
             border-bottom: 1px solid var(--border);
             transition: var(--transition);
             cursor: pointer;
             display: flex;
-            gap: 12px;
+            gap: 14px;
             align-items: flex-start;
         }
         .notification-dropdown .notification-item:hover {
@@ -321,16 +322,17 @@
         }
         .notification-dropdown .notification-item .content .title {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: var(--text);
         }
         .notification-dropdown .notification-item .content .desc {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             color: var(--text2);
-            margin: 2px 0;
+            margin: 4px 0;
+            line-height: 1.6;
         }
         .notification-dropdown .notification-item .content .time {
-            font-size: 0.6rem;
+            font-size: 0.7rem;
             color: var(--text2);
             opacity: 0.7;
         }
@@ -1486,7 +1488,7 @@
             body { background: #fff !important; }
         }
 
-        /* ===== EXAM SECURITY MODAL ===== */
+        /* ===== EXAM SECURITY MODAL - FIXED ===== */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1544,10 +1546,10 @@
         .exam-security-modal .security-box .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             justify-content: center;
             margin: 16px 0;
-            padding: 14px 20px;
+            padding: 18px 24px;
             background: var(--bg);
             border-radius: var(--radius);
             border: 2px solid var(--border);
@@ -1558,15 +1560,15 @@
             border-color: var(--primary);
         }
         .exam-security-modal .security-box .checkbox-group input {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
             accent-color: var(--primary);
         }
         .exam-security-modal .security-box .checkbox-group label {
             font-weight: 700;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             color: var(--text);
         }
         .exam-security-modal .security-box .btn-group {
@@ -1577,15 +1579,16 @@
             margin-top: 8px;
         }
         .exam-security-modal .security-box .btn-group .btn {
-            padding: 10px 32px;
+            padding: 14px 40px;
             border-radius: 50px;
             border: none;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition);
             font-family: 'Cairo', sans-serif;
-            min-width: 120px;
+            min-width: 160px;
+            min-height: 56px;
         }
         .exam-security-modal .security-box .btn-group .btn-primary {
             background: var(--primary);
@@ -1843,17 +1846,16 @@
                 <!-- Guest Links -->
                 <li class="guest-only"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
                 <li class="guest-only"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
-                <li class="guest-only"><a href="#" onclick="APP.showLeaderboard()">🏆 المتصدرون</a></li>
+                <li class="guest-only"><a href="#" onclick="APP.showLeaderboard()">🏆 المتصدرين</a></li>
                 <li class="guest-only"><a href="login.html" class="btn-primary-nav">تسجيل الدخول</a></li>
 
                 <!-- User Links -->
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
-                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showLeaderboard()">🏆 المتصدرون</a></li>
+                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showLeaderboard()">🏆 المتصدرين</a></li>
                 <li class="user-only" style="display:none;">
                     <button class="nav-dashboard-btn" onclick="APP.showDashboard()">
-                        👨‍🎓 لوحة الطالب
-                        <span class="badge-pulse"></span>
+                        👨‍🎓 حسابي
                     </button>
                 </li>
             </ul>
@@ -1901,6 +1903,7 @@
                         </div>
                         <button class="menu-item" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
                         <button class="menu-item" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
+                        <button class="menu-item" onclick="APP.showLeaderboard()"><i class="fas fa-trophy"></i> المتصدرين</button>
                         <button class="menu-item" onclick="APP.showAIInsights()"><i class="fas fa-robot"></i> تحليل المستوى</button>
                         <button class="menu-item" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
                         <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهاداتي</button>
@@ -1950,12 +1953,12 @@
                 </div>
                 <div style="text-align:center;">
                     <i class="fab fa-telegram-plane" style="font-size:2rem;color:var(--accent);display:block;margin-bottom:4px;"></i>
-                    <span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">2,200</span>
+                    <span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">2,300</span>
                     <span style="font-size:0.8rem;color:var(--text2);">📢 عضو</span>
                 </div>
                 <div style="text-align:center;">
                     <i class="fab fa-whatsapp" style="font-size:2rem;color:var(--accent);display:block;margin-bottom:4px;"></i>
-                    <span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">600</span>
+                    <span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">1,000</span>
                     <span style="font-size:0.8rem;color:var(--text2);">🟢 عضو</span>
                 </div>
             </div>
@@ -2105,10 +2108,23 @@
         <!-- ===== SOCIAL ===== -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:16px;">انضم لمجتمعنا 🚀</h2>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-                <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card"><i class="fab fa-telegram-plane" style="color:#229ED9;"></i><span>تيليجرام</span></a>
-                <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w/621" target="_blank" rel="noopener" class="social-card"><i class="fab fa-whatsapp" style="color:#25D366;"></i><span>واتساب</span></a>
-                <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" rel="noopener" class="social-card"><i class="fab fa-youtube" style="color:#FF0000;"></i><span>يوتيوب</span></a>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+                <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card">
+                    <i class="fab fa-telegram-plane" style="color:#229ED9;"></i>
+                    <span>تيليجرام</span>
+                </a>
+                <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w/621" target="_blank" rel="noopener" class="social-card">
+                    <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+                    <span>واتساب</span>
+                </a>
+                <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" rel="noopener" class="social-card">
+                    <i class="fab fa-youtube" style="color:#FF0000;"></i>
+                    <span>يوتيوب</span>
+                </a>
+                <a href="https://www.tiktok.com/@mr.ziad.mabrok" target="_blank" rel="noopener" class="social-card">
+                    <i class="fab fa-tiktok" style="color:#000000;"></i>
+                    <span>تيك توك</span>
+                </a>
             </div>
         </section>
 
@@ -2173,7 +2189,7 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
-        console.log('✅ Yalla Chemistry v20.0 - ALL CRITICAL ISSUES FIXED');
+        console.log('✅ Yalla Chemistry v21.0 - ALL ISSUES FIXED');
 
         // ============================================================
         // APP STATE
@@ -2269,7 +2285,7 @@
         }
 
         // ============================================================
-        // GENERATE STUDENT CODE
+        // GENERATE STUDENT CODE - FIXED
         // ============================================================
         async function generateStudentCode() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -2277,7 +2293,7 @@
             for (let i = 0; i < 6; i++) {
                 code += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            const formatted = `YK-${code.substring(0,2)}-${code.substring(2)}`;
+            const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
             
             const snapshot = await database.ref('users').orderByChild('code').equalTo(formatted).once('value');
             if (snapshot.exists()) {
@@ -2302,7 +2318,7 @@
         if (localStorage.getItem('theme') === 'dark') applyTheme(true);
 
         // ============================================================
-        // SHARE - UPDATED WITH NEW URL
+        // SHARE
         // ============================================================
         function shareOn(platform) {
             const text = encodeURIComponent(SHARE_TEXT);
@@ -3200,7 +3216,7 @@
         }
 
         // ============================================================
-        // COMPLETE LESSON WATCH
+        // COMPLETE LESSON WATCH - FIXED (Real study time)
         // ============================================================
         async function completeLessonWatch(lessonId, lesson) {
             try {
@@ -3211,6 +3227,10 @@
                 const userSnap = await userRef.once('value');
                 if (userSnap.exists()) {
                     const currentAtoms = userSnap.val().atoms || 0;
+                    const duration = lesson.duration || 15;
+                    
+                    let studyTime = userSnap.val().studyTime || 0;
+                    studyTime = Math.round((studyTime + duration / 60) * 10) / 10;
                     
                     await database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                         watched: true,
@@ -3218,7 +3238,7 @@
                         completedAt: new Date().toISOString(),
                         lastPosition: 0,
                         type: 'lesson',
-                        watchDuration: 900
+                        watchDuration: duration * 60
                     });
                     
                     const lastStudyDate = userSnap.val().lastStudyDate;
@@ -3226,7 +3246,7 @@
                     let streak = userSnap.val().streak || 0;
                     
                     if (lastStudyDate === today) {
-                        // درس اليوم بالفعل
+                        // اليوم بالفعل
                     } else if (lastStudyDate === new Date(Date.now() - 86400000).toDateString()) {
                         streak++;
                     } else {
@@ -3238,7 +3258,8 @@
                         videosWatched: (userSnap.val().videosWatched || 0) + 1,
                         lessonsCompleted: (userSnap.val().lessonsCompleted || 0) + 1,
                         streak: streak,
-                        lastStudyDate: today
+                        lastStudyDate: today,
+                        studyTime: studyTime
                     });
                     
                     if (userData) {
@@ -3247,6 +3268,7 @@
                         userData.lessonsCompleted = (userData.lessonsCompleted || 0) + 1;
                         userData.streak = streak;
                         userData.lastStudyDate = today;
+                        userData.studyTime = studyTime;
                     }
                     
                     animateAtoms('atomsCount', currentAtoms + atomsReward);
@@ -3344,7 +3366,7 @@
         }
 
         // ============================================================
-        // OPEN LESSON EXAM
+        // OPEN LESSON EXAM - FIXED (Prevent re-entry)
         // ============================================================
         async function openLessonExam(lessonId) {
             if (!currentUser) { 
@@ -3355,8 +3377,10 @@
             const progressKey = 'exam_' + lessonId;
             
             if (userCourseProgress[progressKey]?.completed) {
+                showToast('📝 لقد قمت بالفعل بحل هذا الامتحان!', 'info');
                 const score = userCourseProgress[progressKey]?.score || 0;
-                showExamResults(lessonId, score, userCourseProgress[progressKey]?.correctAnswers || 0, 
+                showExamResults(lessonId, score, 
+                    userCourseProgress[progressKey]?.correctAnswers || 0, 
                     userCourseProgress[progressKey]?.wrongAnswers || 0, 
                     userCourseProgress[progressKey]?.results || [], 
                     userCourseProgress[progressKey]?.atomsAwarded || 0, true);
@@ -3405,8 +3429,10 @@
             const progressKey = 'quiz_' + lessonId;
             
             if (userCourseProgress[progressKey]?.completed) {
+                showToast('📝 لقد قمت بالفعل بحل هذا الكويز!', 'info');
                 const score = userCourseProgress[progressKey]?.score || 0;
-                showQuizResults(lessonId, score, userCourseProgress[progressKey]?.correctAnswers || 0,
+                showQuizResults(lessonId, score, 
+                    userCourseProgress[progressKey]?.correctAnswers || 0,
                     userCourseProgress[progressKey]?.wrongAnswers || 0,
                     userCourseProgress[progressKey]?.results || [],
                     userCourseProgress[progressKey]?.atomsAwarded || 0, true);
@@ -3485,10 +3511,21 @@
             if (exam.duration && exam.duration > 0) {
                 if (examTimer) clearInterval(examTimer);
                 
+                let timeLeftSaved = timeLeft;
+                const savedTime = localStorage.getItem(`exam_${exam.id}_timeLeft`);
+                if (savedTime) {
+                    const saved = parseInt(savedTime);
+                    if (saved > 0 && saved < timeLeftSaved) {
+                        timeLeftSaved = saved;
+                    }
+                }
+                timeLeft = timeLeftSaved;
+                
                 examTimer = setInterval(() => {
                     timeLeft--;
                     
                     localStorage.setItem(`exam_${exam.id}_timeLeft`, timeLeft);
+                    localStorage.setItem(`exam_${exam.id}_startTime`, Date.now().toString());
                     
                     const mins = Math.floor(timeLeft / 60);
                     const secs = timeLeft % 60;
@@ -3513,14 +3550,6 @@
                         showToast('⏰ انتهى الوقت! تم تسليم الامتحان تلقائياً.', 'warning');
                     }
                 }, 1000);
-                
-                const savedTime = localStorage.getItem(`exam_${exam.id}_timeLeft`);
-                if (savedTime) {
-                    const savedTimeInt = parseInt(savedTime);
-                    if (savedTimeInt > 0 && savedTimeInt < timeLeft) {
-                        timeLeft = savedTimeInt;
-                    }
-                }
             }
 
             const renderQuestion = (index) => {
@@ -3636,7 +3665,7 @@
         }
 
         // ============================================================
-        // SHOW QUIZ UI
+        // SHOW QUIZ UI WITH IMPROVED TIMER
         // ============================================================
         function showQuizUI(quiz, isSecure = false) {
             const main = document.getElementById('mainContent');
@@ -3672,10 +3701,21 @@
             if (quiz.duration && quiz.duration > 0) {
                 if (examTimer) clearInterval(examTimer);
                 
+                let timeLeftSaved = timeLeft;
+                const savedTime = localStorage.getItem(`quiz_${quiz.id}_timeLeft`);
+                if (savedTime) {
+                    const saved = parseInt(savedTime);
+                    if (saved > 0 && saved < timeLeftSaved) {
+                        timeLeftSaved = saved;
+                    }
+                }
+                timeLeft = timeLeftSaved;
+                
                 examTimer = setInterval(() => {
                     timeLeft--;
                     
                     localStorage.setItem(`quiz_${quiz.id}_timeLeft`, timeLeft);
+                    localStorage.setItem(`quiz_${quiz.id}_startTime`, Date.now().toString());
                     
                     const mins = Math.floor(timeLeft / 60);
                     const secs = timeLeft % 60;
@@ -3700,14 +3740,6 @@
                         showToast('⏰ انتهى الوقت! تم تسليم الكويز تلقائياً.', 'warning');
                     }
                 }, 1000);
-                
-                const savedTime = localStorage.getItem(`quiz_${quiz.id}_timeLeft`);
-                if (savedTime) {
-                    const savedTimeInt = parseInt(savedTime);
-                    if (savedTimeInt > 0 && savedTimeInt < timeLeft) {
-                        timeLeft = savedTimeInt;
-                    }
-                }
             }
 
             const renderQuestion = (index) => {
@@ -3798,34 +3830,57 @@
             document.getElementById('submitQuizBtn').style.display = next === cards.length - 1 ? 'inline-flex' : 'none';
         }
 
+        // ============================================================
+        // SELECT ANSWER - ONLY ONE ANSWER (FIXED)
+        // ============================================================
         function selectExamAnswer(id, qIdx, oIdx, correct) {
             if (!isExamActive || examSubmitted) return;
             if (!examAnswers[id]) examAnswers[id] = {};
-            examAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+            
+            if (examAnswers[id][qIdx] && examAnswers[id][qIdx].selected === oIdx) {
+                delete examAnswers[id][qIdx];
+            } else {
+                examAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+            }
+            
             const container = document.getElementById('examContainer');
             if (!container) return;
             const divs = container.querySelectorAll('.question-card');
             if (!divs[qIdx]) return;
             const options = divs[qIdx].querySelectorAll('.quiz-option');
-            options.forEach((el, i) => {
+            
+            options.forEach((el) => {
                 el.classList.remove('selected');
-                el.classList.toggle('selected', i === oIdx);
             });
+            
+            if (examAnswers[id][qIdx]) {
+                options[oIdx].classList.add('selected');
+            }
         }
 
         function selectQuizAnswer(id, qIdx, oIdx, correct) {
             if (!isExamActive || examSubmitted) return;
             if (!quizAnswers[id]) quizAnswers[id] = {};
-            quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+            
+            if (quizAnswers[id][qIdx] && quizAnswers[id][qIdx].selected === oIdx) {
+                delete quizAnswers[id][qIdx];
+            } else {
+                quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+            }
+            
             const container = document.getElementById('quizContainer');
             if (!container) return;
             const divs = container.querySelectorAll('.quiz-question-card');
             if (!divs[qIdx]) return;
             const options = divs[qIdx].querySelectorAll('.quiz-option');
-            options.forEach((el, i) => {
+            
+            options.forEach((el) => {
                 el.classList.remove('selected');
-                el.classList.toggle('selected', i === oIdx);
             });
+            
+            if (quizAnswers[id][qIdx]) {
+                options[oIdx].classList.add('selected');
+            }
         }
 
         // ============================================================
@@ -3973,7 +4028,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM RESULTS
+        // SHOW EXAM RESULTS - FIXED (With motivational messages)
         // ============================================================
         function showExamResults(examId, score, correct, wrong, results, atomsEarned, isReview = false) {
             const main = document.getElementById('mainContent');
@@ -3981,41 +4036,96 @@
 
             const passed = score >= 60;
             const timeSpent = Math.floor((Date.now() - examStartTime) / 60);
+            
+            let message = '';
+            let emoji = '';
+            if (score === 100) {
+                message = '🎉 ممتاز جداً! درجة كاملة! أنت عبقري!';
+                emoji = '🏆';
+            } else if (score >= 85) {
+                message = '⭐ ممتاز! أداء رائع جداً!';
+                emoji = '🌟';
+            } else if (score >= 70) {
+                message = '💪 جيد جداً! استمر في التحسين!';
+                emoji = '💪';
+            } else if (score >= 60) {
+                message = '✅ جيد! تحتاج إلى مراجعة بعض النقاط.';
+                emoji = '📖';
+            } else if (score >= 40) {
+                message = '📚 يحتاج إلى مراجعة! راجع الدرس جيداً.';
+                emoji = '📚';
+            } else {
+                message = '🔴 ضعيف! تحتاج إلى مراجعة شاملة للدرس.';
+                emoji = '🔴';
+            }
+
+            const wrongResults = results.filter(r => !r.isCorrect);
+            const correctResults = results.filter(r => r.isCorrect);
 
             main.innerHTML = `
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
-                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button>
+                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">
+                        <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                    </button>
                     
                     <div class="card" style="padding:24px;margin-top:12px;text-align:center;">
-                        <div style="font-size:3rem;margin-bottom:8px;">${passed ? '🎉' : '💪'}</div>
-                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${passed ? 'var(--success)' : 'var(--warning)'};">${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}</h2>
+                        <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${passed ? 'var(--success)' : 'var(--danger)'};">
+                            ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
+                        </h2>
+                        <p style="font-size:1.1rem;color:var(--text);margin-top:8px;font-weight:600;">${message}</p>
+                        
                         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px;">
-                            <div class="stat-card"><div class="stat-number">${score}%</div><div class="stat-label">الدرجة</div></div>
-                            <div class="stat-card"><div class="stat-number" style="color:var(--success);">${correct}</div><div class="stat-label">✅ صحيح</div></div>
-                            <div class="stat-card"><div class="stat-number" style="color:var(--danger);">${wrong}</div><div class="stat-label">❌ خاطئ</div></div>
-                            <div class="stat-card"><div class="stat-number">${timeSpent} د</div><div class="stat-label">⏱ الوقت</div></div>
-                            ${atomsEarned > 0 ? `<div class="stat-card"><div class="stat-number" style="color:var(--gold);">+${atomsEarned}</div><div class="stat-label">⚛️ ذرات</div></div>` : ''}
-                            ${isReview ? `<div class="stat-card"><div class="stat-number" style="color:var(--primary);">🔒</div><div class="stat-label">مراجعة فقط</div></div>` : ''}
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">${score}%</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">الدرجة</div>
+                            </div>
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--success);">${correct}</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">✅ صحيح</div>
+                            </div>
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--danger);">${wrong}</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">❌ خاطئ</div>
+                            </div>
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">⏱ الوقت</div>
+                            </div>
+                            ${atomsEarned > 0 ? `
+                                <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                    <div style="font-size:1.8rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
+                                    <div style="font-size:0.8rem;color:var(--text2);">⚛️ ذرات</div>
+                                </div>
+                            ` : ''}
                         </div>
-                        ${isReview ? `<p style="margin-top:12px;color:var(--warning);font-weight:600;">📌 هذا الامتحان تم حله مسبقاً، يمكنك فقط مراجعة الإجابات.</p>` : ''}
                     </div>
 
-                    <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);margin:16px 0;">📋 مراجعة الأسئلة</h3>
-                    ${results.map((r, idx) => `
-                        <div class="exam-result-card">
-                            <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
-                            <div class="answer-row">
-                                <span class="${r.isCorrect ? 'correct-icon' : 'wrong-icon'}">${r.isCorrect ? '✅' : '❌'}</span>
-                                <span>إجابتك: <span class="${r.isCorrect ? 'correct-ans' : 'user-ans'}">${escapeHtml(r.userAnswer)}</span></span>
-                                ${!r.isCorrect ? `<span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>` : ''}
+                    ${wrongResults.length > 0 ? `
+                        <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);margin:16px 0;">📋 الأسئلة الخاطئة (${wrongResults.length})</h3>
+                        ${wrongResults.map((r, idx) => `
+                            <div class="exam-result-card">
+                                <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
+                                <div class="answer-row">
+                                    <span class="wrong-icon">❌</span>
+                                    <span>إجابتك: <span class="user-ans">${escapeHtml(r.userAnswer)}</span></span>
+                                    <span>→</span>
+                                    <span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>
+                                </div>
+                                ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
                             </div>
-                            ${!r.isCorrect && r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
-                        </div>
-                    `).join('')}
+                        `).join('')}
+                    ` : ''}
 
-                    <div style="text-align:center;margin-top:16px;">
+                    ${correctResults.length > 0 ? `
+                        <div style="text-align:center;padding:12px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:8px;">
+                            ✅ ${correctResults.length} سؤال صحيح - ممتاز!
+                        </div>
+                    ` : ''}
+
+                    <div style="text-align:center;margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                         <button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
-                        ${!isReview ? `<button class="btn-outline no-print" style="margin-right:8px;" onclick="APP.scrollToCourses()">📚 العودة للكورسات</button>` : ''}
+                        ${!isReview ? `<button class="btn-outline no-print" onclick="APP.scrollToCourses()">📚 العودة للكورسات</button>` : ''}
                     </div>
                 </div>
             `;
@@ -4158,37 +4268,92 @@
 
             const passed = score >= 60;
             const timeSpent = Math.floor((Date.now() - examStartTime) / 60);
+            
+            let message = '';
+            let emoji = '';
+            if (score === 100) {
+                message = '🎉 ممتاز جداً! درجة كاملة!';
+                emoji = '🏆';
+            } else if (score >= 85) {
+                message = '⭐ ممتاز! أداء رائع!';
+                emoji = '🌟';
+            } else if (score >= 70) {
+                message = '💪 جيد جداً! استمر!';
+                emoji = '💪';
+            } else if (score >= 60) {
+                message = '✅ جيد! راجع بعض النقاط.';
+                emoji = '📖';
+            } else if (score >= 40) {
+                message = '📚 يحتاج إلى مراجعة!';
+                emoji = '📚';
+            } else {
+                message = '🔴 ضعيف! راجع الدرس جيداً.';
+                emoji = '🔴';
+            }
+
+            const wrongResults = results.filter(r => !r.isCorrect);
+            const correctResults = results.filter(r => r.isCorrect);
 
             main.innerHTML = `
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
-                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button>
+                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">
+                        <i class="fas fa-arrow-right"></i> العودة للرئيسية
+                    </button>
                     
                     <div class="card" style="padding:24px;margin-top:12px;text-align:center;">
-                        <div style="font-size:3rem;margin-bottom:8px;">${passed ? '🎉' : '💪'}</div>
-                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${passed ? 'var(--success)' : 'var(--warning)'};">${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}</h2>
+                        <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${passed ? 'var(--success)' : 'var(--danger)'};">
+                            ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
+                        </h2>
+                        <p style="font-size:1.1rem;color:var(--text);margin-top:8px;font-weight:600;">${message}</p>
+                        
                         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:16px;">
-                            <div class="stat-card"><div class="stat-number">${score}%</div><div class="stat-label">الدرجة</div></div>
-                            <div class="stat-card"><div class="stat-number" style="color:var(--success);">${correct}</div><div class="stat-label">✅ صحيح</div></div>
-                            <div class="stat-card"><div class="stat-number" style="color:var(--danger);">${wrong}</div><div class="stat-label">❌ خاطئ</div></div>
-                            <div class="stat-card"><div class="stat-number">${timeSpent} د</div><div class="stat-label">⏱ الوقت</div></div>
-                            ${atomsEarned > 0 ? `<div class="stat-card"><div class="stat-number" style="color:var(--gold);">+${atomsEarned}</div><div class="stat-label">⚛️ ذرات</div></div>` : ''}
-                            ${isReview ? `<div class="stat-card"><div class="stat-number" style="color:var(--primary);">🔒</div><div class="stat-label">مراجعة فقط</div></div>` : ''}
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--primary);">${score}%</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">الدرجة</div>
+                            </div>
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--success);">${correct}</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">✅ صحيح</div>
+                            </div>
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--danger);">${wrong}</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">❌ خاطئ</div>
+                            </div>
+                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                <div style="font-size:1.8rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">⏱ الوقت</div>
+                            </div>
+                            ${atomsEarned > 0 ? `
+                                <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                    <div style="font-size:1.8rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
+                                    <div style="font-size:0.8rem;color:var(--text2);">⚛️ ذرات</div>
+                                </div>
+                            ` : ''}
                         </div>
-                        ${isReview ? `<p style="margin-top:12px;color:var(--warning);font-weight:600;">📌 هذا الكويز تم حله مسبقاً، يمكنك فقط مراجعة الإجابات.</p>` : ''}
                     </div>
 
-                    <h3 style="font-weight:700;font-size:1.2rem;color:var(--text);margin:16px 0;">📋 مراجعة الأسئلة</h3>
-                    ${results.map((r, idx) => `
-                        <div class="exam-result-card">
-                            <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
-                            <div class="answer-row">
-                                <span class="${r.isCorrect ? 'correct-icon' : 'wrong-icon'}">${r.isCorrect ? '✅' : '❌'}</span>
-                                <span>إجابتك: <span class="${r.isCorrect ? 'correct-ans' : 'user-ans'}">${escapeHtml(r.userAnswer)}</span></span>
-                                ${!r.isCorrect ? `<span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>` : ''}
+                    ${wrongResults.length > 0 ? `
+                        <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);margin:16px 0;">📋 الأسئلة الخاطئة (${wrongResults.length})</h3>
+                        ${wrongResults.map((r, idx) => `
+                            <div class="exam-result-card">
+                                <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
+                                <div class="answer-row">
+                                    <span class="wrong-icon">❌</span>
+                                    <span>إجابتك: <span class="user-ans">${escapeHtml(r.userAnswer)}</span></span>
+                                    <span>→</span>
+                                    <span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>
+                                </div>
+                                ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
                             </div>
-                            ${!r.isCorrect && r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
+                        `).join('')}
+                    ` : ''}
+
+                    ${correctResults.length > 0 ? `
+                        <div style="text-align:center;padding:12px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:8px;">
+                            ✅ ${correctResults.length} سؤال صحيح - ممتاز!
                         </div>
-                    `).join('')}
+                    ` : ''}
 
                     <div style="text-align:center;margin-top:16px;">
                         <button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
@@ -4233,13 +4398,12 @@
         }
 
         // ============================================================
-        // LEADERBOARD - SECURE VERSION (NO DIRECT DATABASE READ)
+        // LEADERBOARD - SECURE VERSION
         // ============================================================
         function loadLeaderboard() {
             const container = document.getElementById('leaderboardContainer');
             if (!container) return;
 
-            // استخدام limitToLast لتقليل كمية البيانات
             database.ref('users').orderByChild('atoms').limitToLast(10).on('value', (snapshot) => {
                 const users = [];
                 snapshot.forEach((child) => {
@@ -4255,7 +4419,6 @@
                 users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
                 
                 if (currentUser && userData) {
-                    // حساب ترتيب المستخدم الحالي بأمان
                     database.ref('users').orderByChild('atoms').startAt(userData.atoms + 1).once('value', (snapshot) => {
                         const rank = snapshot.numChildren() + 1;
                         userData.rank = '#' + rank;
@@ -4356,7 +4519,7 @@
         }
 
         // ============================================================
-        // ERROR BANK - IMPROVED (ONLY SHOWS ERROR COUNT)
+        // ERROR BANK - FIXED (Only shows error count)
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -4399,6 +4562,9 @@
                                     ✅ تم حل ${errors.length - totalErrors} سؤال بشكل صحيح
                                 </p>
                             ` : ''}
+                            <p style="font-size:0.8rem;color:var(--text2);margin-top:4px;">
+                                📌 الأسئلة تبقى في بنك الأخطاء حتى تجيبها بشكل صحيح
+                            </p>
                         </div>
 
                         ${totalErrors === 0 ? `
@@ -4411,7 +4577,7 @@
                             <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding:16px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
                                 <h4 style="width:100%;font-weight:700;color:var(--primary);margin-bottom:4px;">📝 إنشاء امتحان من الأخطاء</h4>
                                 <p style="width:100%;font-size:0.85rem;color:var(--text2);margin-bottom:8px;">
-                                    اختر عدد الأسئلة التي تريد حلها من أصل ${totalErrors} سؤال خاطئ:
+                                    اختر عدد الأسئلة من أصل ${totalErrors} سؤال خاطئ:
                                 </p>
                                 <button class="btn-primary btn-sm" onclick="APP.createExamFromErrors(5)">
                                     <i class="fas fa-file-alt"></i> 5 أسئلة
@@ -4440,6 +4606,10 @@
                                             <span style="font-size:0.7rem;color:var(--warning);background:var(--bg);padding:2px 10px;border-radius:20px;">
                                                 🔄 ${e.attempts || 1} محاولات
                                             </span>
+                                            <button class="btn-sm" style="background:var(--success);color:#fff;border:none;padding:4px 16px;border-radius:20px;font-size:0.75rem;cursor:pointer;" 
+                                                    onclick="APP.markErrorSolved('${idx}')">
+                                                ✅ تم الحل
+                                            </button>
                                         </div>
                                         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;font-size:0.8rem;">
                                             <span class="user-answer" style="color:var(--danger);font-weight:600;">
@@ -4600,6 +4770,89 @@
                 overlay.classList.remove('open');
                 document.body.style.overflow = '';
             }
+        }
+
+        // ============================================================
+        // UPLOAD PROFILE PHOTO - FIXED (with compression)
+        // ============================================================
+        function uploadProfilePhoto() {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                showToast('⏳ جاري رفع الصورة...', 'info');
+
+                try {
+                    const compressedFile = await compressImage(file, 300, 300);
+                    
+                    const storageRef = storage.ref();
+                    const imageRef = storageRef.child(`profile_photos/${currentUser.uid}/profile.jpg`);
+
+                    const snapshot = await imageRef.put(compressedFile);
+                    const downloadURL = await snapshot.ref.getDownloadURL();
+
+                    await database.ref('users/' + currentUser.uid + '/photoURL').set(downloadURL);
+                    
+                    if (userData) userData.photoURL = downloadURL;
+                    showToast('✅ تم تحديث الصورة الشخصية بنجاح', 'success');
+
+                    const avatar = document.getElementById('userAvatar');
+                    if (avatar) avatar.innerHTML = `<img src="${downloadURL}" alt="صورة" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                    showDashboard();
+
+                } catch (err) {
+                    console.error('Error uploading photo:', err);
+                    showToast('❌ حدث خطأ في رفع الصورة: ' + err.message, 'error');
+                }
+            };
+            input.click();
+        }
+
+        function compressImage(file, maxWidth, maxHeight) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height *= maxWidth / width;
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width *= maxHeight / height;
+                                height = maxHeight;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        canvas.toBlob((blob) => {
+                            resolve(blob);
+                        }, 'image/jpeg', 0.8);
+                    };
+                    img.onerror = reject;
+                };
+                reader.onerror = reject;
+            });
         }
 
         // ============================================================
@@ -4842,7 +5095,7 @@
         function checkAchievements(uid) {}
 
         // ============================================================
-        // AI INSIGHTS - REAL ANALYSIS
+        // AI INSIGHTS - REAL ANALYSIS (FIXED)
         // ============================================================
         function showAIInsights() {
             if (!currentUser) {
@@ -4867,12 +5120,10 @@
             const name = safeUserData.name || 'طالب';
             const code = safeUserData.code || '---';
             const grade = safeUserData.grade || 'لم يحدد';
-            const studyType = safeUserData.studyType || 'عام';
             const streak = safeUserData.streak || 0;
             const perfectExams = safeUserData.perfectExams || 0;
 
             let errorCount = 0;
-            let topErrorSubjects = [];
             let errorQuestions = [];
             
             database.ref('users/' + currentUser.uid + '/errorBank').once('value', (snapshot) => {
@@ -4882,77 +5133,83 @@
                         const unsolvedErrors = data.filter(e => !e.solved);
                         errorCount = unsolvedErrors.length;
                         errorQuestions = unsolvedErrors;
-                        
-                        const subjects = {};
-                        unsolvedErrors.forEach(e => {
-                            const subject = e.question?.substring(0, 40) || 'سؤال';
-                            subjects[subject] = (subjects[subject] || 0) + 1;
-                        });
-                        topErrorSubjects = Object.entries(subjects).sort((a, b) => b[1] - a[1]).slice(0, 5);
                     }
                 }
-                
                 renderRealAnalysis();
             });
 
             function renderRealAnalysis() {
                 const totalAttempts = examsCompleted + quizzesCompleted;
-                const successRate = totalAttempts > 0 ? Math.round(((examsCompleted + quizzesCompleted - errorCount) / (examsCompleted + quizzesCompleted + errorCount)) * 100) : 0;
+                const successRate = totalAttempts > 0 ? Math.round(((examsCompleted + quizzesCompleted) / (examsCompleted + quizzesCompleted + errorCount)) * 100) : 0;
+                const lessonProgress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
                 
                 let level = 'مبتدئ 🌱';
                 let levelColor = 'var(--danger)';
-                if (atoms > 500 && progress > 70 && perfectExams > 2) {
+                let levelDesc = 'أنت في بداية الطريق، استمر في التعلم!';
+                
+                if (atoms > 500 && lessonProgress > 70 && perfectExams > 2) {
                     level = 'متقدم 🚀';
                     levelColor = 'var(--success)';
-                } else if (atoms > 200 && progress > 40 && perfectExams > 0) {
+                    levelDesc = 'مستوى ممتاز! أنت على الطريق الصحيح!';
+                } else if (atoms > 200 && lessonProgress > 40 && perfectExams > 0) {
                     level = 'متوسط 📈';
                     levelColor = 'var(--warning)';
+                    levelDesc = 'أداء جيد، استمر في التحسين!';
+                } else if (atoms > 50 && lessonProgress > 20) {
+                    level = 'مبتدئ متقدم 🌱';
+                    levelColor = '#FFA726';
+                    levelDesc = 'بداية ممتازة، استمر في المذاكرة!';
                 }
                 
                 const strengths = [];
-                if (atoms > 200) strengths.push(`⚛️ لديك ${atoms} ذرة (أعلى من المتوسط)`);
-                if (successRate > 70) strengths.push(`📈 نسبة نجاح ${successRate}% في الامتحانات`);
+                if (atoms > 100) strengths.push(`⚛️ لديك ${atoms} ذرة`);
+                if (successRate > 70) strengths.push(`📈 نسبة نجاح ${successRate}%`);
                 if (completedLessons > 10) strengths.push(`📚 شاهدت ${completedLessons} حصة`);
                 if (examsCompleted > 3) strengths.push(`📝 حللت ${examsCompleted} امتحان`);
                 if (quizzesCompleted > 5) strengths.push(`🧪 حللت ${quizzesCompleted} كويز`);
                 if (streak > 3) strengths.push(`🔥 درست ${streak} يوم متتالي`);
-                if (perfectExams > 0) strengths.push(`💯 حصلت على ${perfectExams} امتحان ممتاز (100%)`);
-                
-                const weaknesses = [];
-                if (atoms < 100) weaknesses.push('⚛️ حاول جمع المزيد من الذرات');
-                if (successRate < 50 && totalAttempts > 0) weaknesses.push(`📈 نسبة نجاح ${successRate}% في الامتحانات (حاول التحسين)`);
-                if (completedLessons < 5) weaknesses.push('📚 شاهد المزيد من الحصص');
-                if (errorCount > 5) weaknesses.push(`❌ لديك ${errorCount} خطأ في بنك الأخطاء`);
-                if (examsCompleted === 0) weaknesses.push('📝 لم تحل أي امتحان بعد');
-                if (quizzesCompleted === 0) weaknesses.push('🧪 لم تحل أي كويز بعد');
-                if (streak === 0) weaknesses.push('🔥 ابدأ بالدراسة اليومية');
+                if (perfectExams > 0) strengths.push(`💯 ${perfectExams} امتحان ممتاز`);
                 
                 if (strengths.length === 0) strengths.push('🌟 ابدأ رحلتك واكتشف نقاط قوتك!');
-                if (weaknesses.length === 0) weaknesses.push('🌟 أنت في طريق ممتاز، استمر!');
                 
+                const weaknesses = [];
                 const recommendations = [];
-                if (errorCount > 0) {
-                    recommendations.push(`🔴 راجع ${errorCount} سؤال خاطئ في بنك الأخطاء`);
+                
+                if (atoms < 50) {
+                    weaknesses.push('⚛️ حاول جمع المزيد من الذرات');
+                    recommendations.push('📝 حل امتحانات وكويزات للحصول على ذرات');
                 }
-                if (completedLessons < totalLessons) {
-                    recommendations.push(`📖 أكمل ${totalLessons - completedLessons} حصة متبقية`);
+                if (successRate < 50 && totalAttempts > 0) {
+                    weaknesses.push(`📈 نسبة نجاح ${successRate}% - حاول التحسين`);
+                    recommendations.push('📖 راجع الدروس جيداً قبل حل الامتحانات');
                 }
-                if (examsCompleted < 3) {
-                    recommendations.push(`📝 حل ${3 - examsCompleted} امتحان إضافي لتحسين مستواك`);
+                if (completedLessons < 5) {
+                    weaknesses.push('📚 شاهد المزيد من الحصص');
+                    recommendations.push('🎥 ابدأ بمشاهدة الحصص المتاحة');
                 }
-                if (quizzesCompleted < 5) {
-                    recommendations.push(`🧪 حل ${5 - quizzesCompleted} كويز إضافي`);
+                if (errorCount > 3) {
+                    weaknesses.push(`❌ لديك ${errorCount} خطأ في بنك الأخطاء`);
+                    recommendations.push('🔴 راجع أخطاءك في بنك الأخطاء');
                 }
-                if (streak < 7) {
-                    recommendations.push(`🔥 حافظ على الدراسة اليومية لمدة ${7 - streak} أيام للحصول على شارة 7 أيام`);
+                if (examsCompleted === 0) {
+                    weaknesses.push('📝 لم تحل أي امتحان بعد');
+                    recommendations.push('📝 حاول حل امتحان لقياس مستواك');
                 }
-                if (perfectExams < 1) {
-                    recommendations.push(`💯 حاول الحصول على 100% في امتحان للحصول على شارة الامتحان الممتاز`);
+                if (quizzesCompleted === 0) {
+                    weaknesses.push('🧪 لم تحل أي كويز بعد');
+                    recommendations.push('🧪 حل الكويزات لتعزيز فهمك');
                 }
-                if (recommendations.length === 0) {
-                    recommendations.push('🎉 ممتاز! أنت في الطريق الصحيح، استمر بنفس المستوى');
+                if (streak === 0) {
+                    weaknesses.push('🔥 لم تبدأ الدراسة اليومية بعد');
+                    recommendations.push('🔥 ابدأ بالدراسة يومياً ولو 15 دقيقة');
+                }
+                if (perfectExams === 0) {
+                    recommendations.push('💯 حاول الحصول على 100% في امتحان');
                 }
                 
+                if (weaknesses.length === 0) weaknesses.push('🌟 أنت في طريق ممتاز، استمر!');
+                if (recommendations.length === 0) recommendations.push('🎉 ممتاز! أنت في الطريق الصحيح، استمر بنفس المستوى');
+
                 let rank = '--';
                 database.ref('users').orderByChild('atoms').startAt((userData?.atoms || 0) + 1).once('value', (snapshot) => {
                     const rankNum = snapshot.numChildren() + 1;
@@ -4961,7 +5218,7 @@
                 }).catch(() => {
                     renderCompleteRealAnalysis('--');
                 });
-                
+
                 function renderCompleteRealAnalysis(rank) {
                     const daysSince = safeUserData.createdAt ? Math.max(1, Math.floor((Date.now() - new Date(safeUserData.createdAt).getTime()) / (1000 * 60 * 60 * 24))) : 1;
                     const dailyAverage = Math.round((studyTime / daysSince) * 10) / 10;
@@ -4974,20 +5231,20 @@
                             
                             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0;">
                                 <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);">
-                                    🤖 تحليل مستواك
+                                    🤖 تحليل مستواك الحقيقي
                                 </h1>
                                 <button class="btn-primary no-print" onclick="APP.printAIReport()">
                                     <i class="fas fa-print"></i> 🖨️ طباعة التقرير
                                 </button>
                             </div>
                             <p style="color:var(--text2);margin-bottom:16px;">
-                                تحليل حقيقي بناءً على أدائك في المنصة
+                                تحليل حقيقي 100% بناءً على أدائك الفعلي في المنصة
                             </p>
 
                             <div id="aiReportContent" class="ai-report-container">
                                 <div class="report-header">
                                     <div class="logo">يلا كيمياء</div>
-                                    <div class="title">📊 تحليل مستواك الحقيقي</div>
+                                    <div class="title">📊 تقرير تحليل المستوى</div>
                                     <div style="font-size:0.8rem;color:var(--text2);">
                                         ${name} • ${code} • ${new Date().toLocaleDateString('ar')}
                                     </div>
@@ -5000,6 +5257,7 @@
                                         <div class="stat-item"><div class="label">الترتيب</div><div class="value" style="font-size:1.5rem;color:var(--gold);">${rank}</div></div>
                                         <div class="stat-item"><div class="label">الذرات</div><div class="value" style="font-size:1.5rem;color:var(--gold-dark);">${atoms}</div></div>
                                     </div>
+                                    <div style="margin-top:8px;text-align:center;font-size:1rem;color:var(--text2);">${levelDesc}</div>
                                 </div>
 
                                 <div class="report-section">
@@ -5011,14 +5269,6 @@
                                         <div>
                                             <h4 style="color:var(--danger);">📌 نقاط الضعف</h4>
                                             ${weaknesses.map(w => `<p style="font-size:0.85rem;margin:4px 0;">⚠️ ${w}</p>`).join('')}
-                                            ${topErrorSubjects.length > 0 ? `
-                                                <div style="margin-top:8px;">
-                                                    <strong style="font-size:0.8rem;color:var(--danger);">❌ أكثر الأسئلة خطأ:</strong>
-                                                    ${topErrorSubjects.map(([q, count]) => `
-                                                        <div style="font-size:0.8rem;padding:2px 8px;background:var(--bg);border-radius:var(--radius);margin:2px 0;">${escapeHtml(q)} (${count} مرة)</div>
-                                                    `).join('')}
-                                                </div>
-                                            ` : ''}
                                         </div>
                                     </div>
                                 </div>
@@ -5031,31 +5281,16 @@
                                         <div class="stat-item"><div class="label">ساعات الدراسة</div><div class="value">${studyTime} س</div></div>
                                         <div class="stat-item"><div class="label">متوسط يومي</div><div class="value">${dailyAverage} س</div></div>
                                         <div class="stat-item"><div class="label">أيام متتالية</div><div class="value">${streak} يوم</div></div>
+                                        <div class="stat-item"><div class="label">نسبة الإنجاز</div><div class="value">${lessonProgress}%</div></div>
                                         <div class="stat-item"><div class="label">امتحانات ممتازة</div><div class="value" style="color:var(--gold);">${perfectExams}</div></div>
                                     </div>
                                 </div>
 
-                                <div class="report-section">
-                                    <h4>📖 توصيات مخصصة لك</h4>
-                                    <ul style="list-style:disc;padding-right:20px;font-size:0.95rem;line-height:2;">
+                                <div class="report-section" style="background:var(--card);border:2px solid var(--primary);">
+                                    <h4 style="color:var(--primary);">📖 توصيات مخصصة لك</h4>
+                                    <ul style="list-style:disc;padding-right:20px;font-size:0.95rem;line-height:2.2;">
                                         ${recommendations.map(r => `<li>${r}</li>`).join('')}
                                     </ul>
-                                </div>
-
-                                <div class="report-section">
-                                    <h4>🎯 توقع أدائك القادم</h4>
-                                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                                        <div style="flex:1;">
-                                            <div style="font-size:0.8rem;color:var(--text2);">متوقع في الامتحان القادم</div>
-                                            <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${Math.min(100, successRate + 10)}%</div>
-                                            <div style="font-size:0.7rem;color:var(--text2);">بناءً على أدائك الحالي</div>
-                                        </div>
-                                        <div style="flex:1;background:var(--bg);padding:8px;border-radius:var(--radius);">
-                                            <div style="font-size:0.8rem;color:var(--text2);">النقاط الموصى بها</div>
-                                            <div style="font-size:1rem;font-weight:700;color:var(--success);">${Math.max(0, 100 - errorCount * 5)}</div>
-                                            <div style="font-size:0.7rem;color:var(--text2);">من أصل 100</div>
-                                        </div>
-                                    </div>
                                 </div>
 
                                 ${errorCount > 0 ? `
@@ -5067,7 +5302,7 @@
                                                 <span style="color:var(--success);">(صحيح: ${escapeHtml(e.correctAnswer)})</span>
                                             </div>
                                         `).join('')}
-                                        ${errorQuestions.length > 5 ? `<p style="font-size:0.8rem;color:var(--text2);">... و ${errorQuestions.length - 5} أسئلة أخرى في بنك الأخطاء</p>` : ''}
+                                        ${errorQuestions.length > 5 ? `<p style="font-size:0.8rem;color:var(--text2);">... و ${errorQuestions.length - 5} أسئلة أخرى</p>` : ''}
                                         <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="APP.showErrorBank()">
                                             📝 اذهب لبنك الأخطاء
                                         </button>
@@ -5134,7 +5369,7 @@
         }
 
         // ============================================================
-        // DASHBOARD
+        // DASHBOARD - FIXED (No Object display, real stats)
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -5159,31 +5394,24 @@
             const atoms = safeUserData.atoms || 0;
             const progress = safeUserData.progress || 0;
             const photoURL = safeUserData.photoURL || '';
-            const createdAt = safeUserData.createdAt ? new Date(safeUserData.createdAt).toLocaleDateString('ar') : 'غير معروف';
-            const lastActive = safeUserData.lastActive ? new Date(safeUserData.lastActive).toLocaleDateString('ar') : 'غير معروف';
-            const loginCount = safeUserData.loginCount || 0;
             const streak = safeUserData.streak || 0;
             const studyTime = safeUserData.studyTime || 0;
-            const videosWatched = safeUserData.videosWatched || 0;
-            const lessonsCompleted = safeUserData.lessonsCompleted || 0;
 
-            let watchedCount = 0, quizCount = 0, assignmentCount = 0, examCount = 0;
+            let watchedCount = 0, quizCount = 0, examCount = 0;
             Object.values(safeProgress).forEach(p => {
                 if (p.watched) watchedCount++;
                 if (p.completed) {
                     if (p.type === 'quiz') quizCount++;
-                    if (p.type === 'assignment') assignmentCount++;
                     if (p.type === 'exam') examCount++;
                 }
             });
 
             const subscribedCourses = safeCourses.filter(c => isUserSubscribed(c.id));
-
+            
             let rank = '--';
             database.ref('users').orderByChild('atoms').startAt((userData?.atoms || 0) + 1).once('value', (snapshot) => {
                 const rankNum = snapshot.numChildren() + 1;
                 rank = '#' + rankNum;
-                safeUserData.rank = rank;
                 renderDashboard(rank);
             }).catch(() => {
                 renderDashboard('--');
@@ -5191,28 +5419,22 @@
 
             function renderDashboard(rank) {
                 const avatarHtml = photoURL ? 
-                    `<img src="${photoURL}" alt="صورة" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : 
+                    `<img src="${photoURL}" alt="صورة" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : 
                     (name || 'U')[0].toUpperCase();
-
-                const stats = [
-                    { label: 'نسبة الإنجاز', value: progress, type: 'percent', color: '#0B4F8C' },
-                    { label: 'الكورسات', value: subscribedCourses.length, type: 'number', color: '#22C55E' },
-                    { label: 'الحصص', value: lessonsCompleted, type: 'number', color: '#F59E0B' },
-                    { label: 'الفيديوهات', value: watchedCount, type: 'number', color: '#EF4444' },
-                    { label: 'ساعات الدراسة', value: studyTime, type: 'number', color: '#8B5CF6' },
-                    { label: 'الكويزات', value: quizCount, type: 'number', color: '#22C55E' },
-                    { label: 'الامتحانات', value: examCount, type: 'number', color: '#F59E0B' },
-                    { label: 'الذرات', value: atoms, type: 'number', color: '#FFD60A' }
-                ];
 
                 main.innerHTML = `
                     <div style="max-width:1280px;margin:0 auto;padding:16px;">
-                        <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                        <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">
+                            <i class="fas fa-arrow-right"></i> العودة
+                        </button>
 
                         <div class="card" style="padding:24px;margin:12px 0 20px;background:linear-gradient(135deg, var(--primary), var(--primary2));color:#fff;border:none;">
                             <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
-                                <div style="width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:700;background:rgba(255,255,255,0.2);color:#fff;overflow:hidden;border:3px solid rgba(255,255,255,0.3);">${avatarHtml}</div>
-                                <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;margin:0;">${escapeHtml(name)}</h2>
+                                <div style="width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;background:rgba(255,255,255,0.2);color:#fff;overflow:hidden;border:3px solid rgba(255,255,255,0.3);cursor:pointer;" 
+                                     onclick="APP.uploadProfilePhoto()" title="اضغط لتغيير الصورة">
+                                    ${avatarHtml}
+                                </div>
+                                <h2 style="font-family:'Lalezar',cursive;font-size:2rem;margin:0;">${escapeHtml(name)}</h2>
                                 <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:0.9rem;opacity:0.9;">
                                     <span>🔑 ${escapeHtml(code)}</span>
                                     <span>🎓 ${escapeHtml(grade)}</span>
@@ -5221,19 +5443,40 @@
                                 <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
                                     <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">⚛️ ${atoms} ذرة</span>
                                     <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🏆 ${rank}</span>
+                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🔥 ${streak} يوم</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:20px;">
-                            ${stats.map(stat => `
-                                <div class="stat-circle-card">
-                                    <div class="circle" style="background:${stat.color};">
-                                        <span class="number">${stat.type === 'percent' ? stat.value + '%' : stat.value}</span>
-                                    </div>
-                                    <div class="label">${stat.label}</div>
-                                </div>
-                            `).join('')}
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:20px;">
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#0B4F8C;"><span class="number">${progress}%</span></div>
+                                <div class="label">نسبة الإنجاز</div>
+                            </div>
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#22C55E;"><span class="number">${subscribedCourses.length}</span></div>
+                                <div class="label">الكورسات</div>
+                            </div>
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#F59E0B;"><span class="number">${watchedCount}</span></div>
+                                <div class="label">الحصص</div>
+                            </div>
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#8B5CF6;"><span class="number">${studyTime}</span></div>
+                                <div class="label">ساعات الدراسة</div>
+                            </div>
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#22C55E;"><span class="number">${quizCount}</span></div>
+                                <div class="label">الكويزات</div>
+                            </div>
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#F59E0B;"><span class="number">${examCount}</span></div>
+                                <div class="label">الامتحانات</div>
+                            </div>
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#FFD60A;color:#081B2C;"><span class="number">${atoms}</span></div>
+                                <div class="label">الذرات</div>
+                            </div>
                         </div>
 
                         ${subscribedCourses.length > 0 ? `
@@ -5259,72 +5502,11 @@
                             <button class="btn-outline btn-sm no-print" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهادتي</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showAIInsights()"><i class="fas fa-robot"></i> تحليل المستوى</button>
-                            <button class="btn-outline btn-sm no-print" onclick="APP.uploadProfilePhoto()"><i class="fas fa-camera"></i> صورة الملف</button>
                         </div>
                     </div>
                 `;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                setTimeout(() => {
-                    document.querySelectorAll('.stat-circle-card .number').forEach(el => {
-                        const target = parseInt(el.textContent);
-                        if (target > 0) {
-                            let current = 0;
-                            const step = Math.ceil(target / 30);
-                            const interval = setInterval(() => {
-                                current += step;
-                                if (current >= target) {
-                                    current = target;
-                                    clearInterval(interval);
-                                }
-                                el.textContent = current + (el.textContent.includes('%') ? '%' : '');
-                            }, 30);
-                        }
-                    });
-                }, 100);
             }
-        }
-
-        // ============================================================
-        // UPLOAD PROFILE PHOTO
-        // ============================================================
-        function uploadProfilePhoto() {
-            if (!currentUser) {
-                showLoginOverlay();
-                return;
-            }
-
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                showToast('⏳ جاري رفع الصورة...', 'info');
-
-                try {
-                    const storageRef = storage.ref();
-                    const imageRef = storageRef.child(`profile_photos/${currentUser.uid}/${file.name}`);
-
-                    const snapshot = await imageRef.put(file);
-                    const downloadURL = await snapshot.ref.getDownloadURL();
-
-                    await database.ref('users/' + currentUser.uid + '/photoURL').set(downloadURL);
-                    
-                    userData.photoURL = downloadURL;
-                    showToast('✅ تم تحديث الصورة الشخصية بنجاح', 'success');
-
-                    const avatar = document.getElementById('userAvatar');
-                    if (avatar) avatar.innerHTML = `<img src="${downloadURL}" alt="صورة" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-                    showDashboard();
-
-                } catch (err) {
-                    console.error('Error uploading photo:', err);
-                    showToast('❌ حدث خطأ في رفع الصورة: ' + err.message, 'error');
-                }
-            };
-            input.click();
         }
 
         // ============================================================
@@ -5548,12 +5730,22 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v20.0 - ALL CRITICAL ISSUES FIXED');
-            console.log('✅ New URL: https://yaiakamya.vercel.app/');
-            console.log('✅ All 18 issues fixed!');
-            console.log('✅ Security: Database read protection implemented');
-            console.log('✅ Error Bank: Only shows error count');
-            console.log('✅ Leaderboard: Secure reading with limitToLast');
+            console.log('🚀 Yalla Chemistry Platform v21.0 - ALL 15 ISSUES FIXED!');
+            console.log('✅ 1. Notifications - Full display fixed');
+            console.log('✅ 2. Quiz pledge - Bigger buttons');
+            console.log('✅ 3. Single answer selection');
+            console.log('✅ 4. Timer - Working correctly');
+            console.log('✅ 5. Exam results - With motivational messages');
+            console.log('✅ 6. Prevent re-entry to exams');
+            console.log('✅ 7. Navbar - Cleaned up');
+            console.log('✅ 8. Dashboard - Redesigned');
+            console.log('✅ 9. Study hours - Real calculation');
+            console.log('✅ 10. Profile photo - Fixed with compression');
+            console.log('✅ 11. AI Insights - Real analysis');
+            console.log('✅ 12. TikTok added');
+            console.log('✅ 13. Error bank - Only shows count');
+            console.log('✅ 14. Code generation - Fixed');
+            console.log('✅ 15. Stats - Updated');
         }
 
         if (document.readyState === 'loading') {
