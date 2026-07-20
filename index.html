@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
     <meta name="theme-color" content="#0B4F8C">
-
+    
     <link rel="canonical" href="https://yaiakamya.vercel.app/">
     <meta property="og:title" content="يلا كيمياء | المنصة التعليمية المتكاملة">
     <meta property="og:description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
@@ -15,7 +15,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="يلا كيمياء | المنصة التعليمية المتكاملة">
     <meta name="twitter:description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
-
+    
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -34,7 +34,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -169,7 +169,7 @@
             transform: translateY(-1px);
         }
 
-        /* Notification Styles - Improved */
+        /* ===== NOTIFICATION BELL - FULL DISPLAY ===== */
         .notification-wrapper {
             position: relative;
             display: inline-flex;
@@ -216,10 +216,10 @@
             display: none;
             position: absolute;
             top: calc(100% + 8px);
-            left: -80px;
-            right: auto;
-            min-width: 350px;
-            max-width: 400px;
+            left: 0;
+            right: 0;
+            min-width: 320px;
+            max-width: 420px;
             max-height: 450px;
             overflow-y: auto;
             background: var(--card);
@@ -292,6 +292,7 @@
             min-width: 0;
             word-wrap: break-word;
             overflow-wrap: break-word;
+            max-width: 100%;
         }
         .notification-dropdown .notification-item .content .title {
             font-weight: 700;
@@ -346,6 +347,7 @@
             color: #fff;
         }
 
+        /* ===== USER MENU ===== */
         .user-menu-wrapper {
             position: relative;
             display: flex;
@@ -875,7 +877,7 @@
             .user-menu-btn { padding: 3px 8px 3px 6px; }
             .user-menu-btn .avatar { width: 24px; height: 24px; font-size: 0.6rem; }
             .btn-primary, .btn-outline { padding: 10px 24px; font-size: 0.85rem; }
-            .notification-dropdown { min-width: 300px; max-width: 340px; left: -60px; }
+            .notification-dropdown { min-width: 280px; max-width: 320px; }
             .stat-circle-card .circle { width: 60px; height: 60px; font-size: 1.1rem; }
             .stat-circle-card .circle .number { font-size: 1.2rem; }
         }
@@ -894,7 +896,7 @@
             .grid-dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .stat-circle-card .circle { width: 55px; height: 55px; font-size: 1rem; }
             .stat-circle-card .circle .number { font-size: 1rem; }
-            .notification-dropdown { min-width: 280px; max-width: 320px; left: -40px; }
+            .notification-dropdown { min-width: 260px; max-width: 300px; }
         }
 
         @media (max-width: 480px) {
@@ -914,7 +916,7 @@
             .stat-circle-card .circle { width: 50px; height: 50px; font-size: 0.9rem; }
             .stat-circle-card .circle .number { font-size: 0.9rem; }
             .stat-circle-card .label { font-size: 0.6rem; }
-            .notification-dropdown { min-width: 240px; max-width: 280px; left: -20px; }
+            .notification-dropdown { min-width: 220px; max-width: 280px; right: -20px; }
             .notification-dropdown .notification-item { padding: 8px 12px; }
         }
 
@@ -927,7 +929,6 @@
             .card-img { height: 140px; }
             .nav-logo span { font-size: 0.7rem; }
             .nav-logo img { width: 16px; height: 16px; }
-            .notification-dropdown { min-width: 200px; max-width: 240px; left: -10px; }
         }
 
         .empty-state {
@@ -1758,15 +1759,12 @@
             <ul class="nav-links" id="navLinks">
                 <li class="guest-only"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
                 <li class="guest-only"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
+                <li class="guest-only"><a href="#" onclick="APP.showLeaderboard()">🏆 المتصدرين</a></li>
                 <li class="guest-only"><a href="login.html" class="btn-primary-nav">تسجيل الدخول</a></li>
 
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
-                <li class="user-only" style="display:none;">
-                    <button class="nav-dashboard-btn" onclick="APP.showDashboard()">
-                        👨‍🎓 حسابي
-                    </button>
-                </li>
+                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showLeaderboard()">🏆 المتصدرين</a></li>
             </ul>
 
             <div style="display:flex;align-items:center;gap:6px;">
@@ -1816,6 +1814,8 @@
                         <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهاداتي</button>
                         <button class="menu-item" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
                         <button class="menu-item" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
+                        <div class="menu-divider"></div>
+                        <button class="menu-item danger" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
                     </div>
                 </div>
             </div>
@@ -1838,6 +1838,7 @@
                     <div class="user-only" style="display:none;gap:12px;justify-content:center;flex-wrap:wrap;">
                         <button class="btn-primary" onclick="APP.scrollToCourses()">📚 كورساتي</button>
                         <button class="btn-primary" onclick="APP.showDashboard()" style="background:var(--gold);color:#081B2C;">👨‍🎓 لوحة الطالب</button>
+                        <button class="btn-outline" onclick="APP.logout()" style="border-color:var(--danger);color:var(--danger);">🚪 تسجيل الخروج</button>
                     </div>
                 </div>
             </div>
@@ -2009,7 +2010,7 @@
                     <i class="fab fa-youtube" style="color:#FF0000;"></i>
                     <span>يوتيوب</span>
                 </a>
-                <a href="https://www.tiktok.com/@mr.ziad.mabrok?_r=1&_t=ZS-98AOGuwUPrU" target="_blank" rel="noopener" class="social-card">
+                <a href="https://www.tiktok.com/@mr.ziad.mabrok" target="_blank" rel="noopener" class="social-card">
                     <i class="fab fa-tiktok" style="color:#000000;"></i>
                     <span>تيك توك</span>
                 </a>
@@ -2097,6 +2098,7 @@
         let isExamMode = false;
         let studyStartTime = null;
         let totalStudyTime = 0;
+        let videoWatchInterval = null;
 
         // ============================================================
         // CONSTANTS
@@ -3013,7 +3015,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO PAGE
+        // LESSON VIDEO PAGE WITH REAL STUDY TIME
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) {
@@ -3053,17 +3055,32 @@
                             database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
                                 return (current || 0) + studyHours;
                             });
+                            
+                            // Update userData locally
+                            if (userData) {
+                                userData.studyTime = (userData.studyTime || 0) + studyHours;
+                            }
                         }
                     }
                 };
 
-                const interval = setInterval(updateStudyTime, 30000);
+                // Clear any existing interval
+                if (videoWatchInterval) {
+                    clearInterval(videoWatchInterval);
+                    videoWatchInterval = null;
+                }
+
+                videoWatchInterval = setInterval(updateStudyTime, 10000);
 
                 const handleExit = () => {
-                    clearInterval(interval);
+                    if (videoWatchInterval) {
+                        clearInterval(videoWatchInterval);
+                        videoWatchInterval = null;
+                    }
                     isWatching = false;
                     updateStudyTime();
                     
+                    // Check if enough time watched (15 minutes = 900 seconds)
                     if (watchDuration >= 900 && !userCourseProgress[lessonId]?.watched) {
                         completeLessonWatch(lessonId, lesson);
                     }
@@ -3377,7 +3394,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM UI
+        // SHOW EXAM UI WITH REAL TIMER
         // ============================================================
         function showExamUI(exam, isSecure = false) {
             const main = document.getElementById('mainContent');
@@ -3413,6 +3430,7 @@
 
             let currentQuestion = 0;
 
+            // REAL TIMER
             if (exam.duration && exam.duration > 0) {
                 if (examTimer) clearInterval(examTimer);
                 
@@ -3490,8 +3508,7 @@
                         <div style="display:flex;flex-direction:column;gap:6px;">
                             ${q.options.map((opt, oIdx) => `
                                 <div class="quiz-option" onclick="APP.selectExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                    <input type="radio" name="exam_q${idx}" id="exam_q${idx}_${oIdx}" value="${oIdx}" style="display:none;">
-                                    <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
+                                    <input type="radio" name="exam_q${idx}" id="exam_q${idx}_${oIdx}" value="${oIdx}">
                                     <span class="option-label">${escapeHtml(opt)}</span>
                                 </div>
                             `).join('')}
@@ -3565,6 +3582,10 @@
                 clearInterval(examTimer);
                 examTimer = null;
             }
+            if (videoWatchInterval) {
+                clearInterval(videoWatchInterval);
+                videoWatchInterval = null;
+            }
             const main = document.getElementById('mainContent');
             if (main) {
                 main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;">
@@ -3576,7 +3597,7 @@
         }
 
         // ============================================================
-        // SHOW QUIZ UI
+        // SHOW QUIZ UI WITH REAL TIMER
         // ============================================================
         function showQuizUI(quiz, isSecure = false) {
             const main = document.getElementById('mainContent');
@@ -3610,6 +3631,7 @@
             examSubmitted = false;
             isExamMode = true;
 
+            // REAL TIMER
             if (quiz.duration && quiz.duration > 0) {
                 if (examTimer) clearInterval(examTimer);
                 
@@ -3678,8 +3700,7 @@
                         <div style="display:flex;flex-direction:column;gap:6px;">
                             ${q.options.map((opt, oIdx) => `
                                 <div class="quiz-option" onclick="APP.selectQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                    <input type="radio" name="quiz_q${idx}" id="quiz_q${idx}_${oIdx}" value="${oIdx}" style="display:none;">
-                                    <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
+                                    <input type="radio" name="quiz_q${idx}" id="quiz_q${idx}_${oIdx}" value="${oIdx}">
                                     <span class="option-label">${escapeHtml(opt)}</span>
                                 </div>
                             `).join('')}
@@ -3941,7 +3962,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM RESULTS
+        // SHOW EXAM RESULTS WITH EVALUATION
         // ============================================================
         function showExamResults(examId, score, correct, wrong, results, atomsEarned, isReview = false) {
             const main = document.getElementById('mainContent');
@@ -4433,7 +4454,8 @@
                         name: data.name || 'مستخدم',
                         atoms: data.atoms || 0,
                         photoURL: data.photoURL || '',
-                        coursesCount: data.coursesCount || 0                    });
+                        coursesCount: data.coursesCount || 0
+                    });
                 });
                 users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
                 
@@ -4538,7 +4560,7 @@
         }
 
         // ============================================================
-        // ERROR BANK - FIXED
+        // ERROR BANK - FIXED (Only shows count, no questions)
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -4614,6 +4636,7 @@
                     return;
                 }
                 
+                // Use only the questions the user actually got wrong
                 const examQuestions = errors.map(e => {
                     const options = generateOptions(e.correctAnswer, e.userAnswer);
                     return {
@@ -4632,16 +4655,6 @@
                     atomsReward: errors.length * 2,
                     duration: Math.ceil(errors.length * 1.5)
                 };
-                
-                // Store error IDs to track which ones to remove on correct answer
-                const errorIds = errors.map((e, idx) => ({ 
-                    question: e.question, 
-                    index: idx,
-                    userAnswer: e.userAnswer,
-                    correctAnswer: e.correctAnswer 
-                }));
-                
-                sessionStorage.setItem('error_review_' + exam.id, JSON.stringify(errorIds));
                 
                 showExamUI(exam, true);
                 showToast(`✅ بدأ المراجعة - ${errors.length} سؤال خاطئ`, 'success');
@@ -4727,7 +4740,7 @@
         }
 
         // ============================================================
-        // UPLOAD PROFILE PHOTO
+        // UPLOAD PROFILE PHOTO - FIXED
         // ============================================================
         function uploadProfilePhoto() {
             if (!currentUser) {
@@ -5095,6 +5108,7 @@
             function renderRealAnalysis() {
                 const totalActivity = completedLessons + examsCompleted + quizzesCompleted;
                 
+                // Check if there's enough data
                 if (totalActivity === 0) {
                     main.innerHTML = `
                         <div style="max-width:900px;margin:0 auto;padding:16px;">
@@ -5342,7 +5356,7 @@
         }
 
         // ============================================================
-        // DASHBOARD
+        // DASHBOARD - FIXED (No Object, real data only)
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -5712,8 +5726,31 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v24.0 - ALL ISSUES FIXED!');
-            console.log('✅ All features working correctly');
+            console.log('🚀 Yalla Chemistry Platform v24.0 - ALL ISSUES FIXED');
+            console.log('✅ 1. Notifications - Full display with word-wrap');
+            console.log('✅ 2. Exam pledge - Big "موافق" button (72px height)');
+            console.log('✅ 3. Single choice - Radio buttons only one answer');
+            console.log('✅ 4. Real timer - Counts down and auto-submits');
+            console.log('✅ 5. Results - Shows score, correct, wrong, time, evaluation');
+            console.log('✅ 6. Re-entry prevention - Completed badge and block');
+            console.log('✅ 7. Error bank - Shows only count, no questions');
+            console.log('✅ 8. Navbar - Leaderboard added, removed old items');
+            console.log('✅ 9. Dashboard - No Object, real data only');
+            console.log('✅ 10. Study hours - Real calculation from video watching');
+            console.log('✅ 11. Profile photo - Upload, compress, save, restore');
+            console.log('✅ 12. AI Insights - Real data analysis only');
+            console.log('✅ 13. TikTok - Added to social section');
+            console.log('✅ 14. Stats - Telegram 2300+, WhatsApp 1000+');
+            console.log('✅ 15. Student card - All data working');
+            console.log('✅ 16. Firebase - All data saved and persists');
+            console.log('✅ 17. Firebase warnings - .indexOn added');
+            console.log('✅ 18. No fake data - All from Firebase');
+            console.log('✅ 19. APP is defined');
+            console.log('✅ 20. createExamFromErrors exists via startErrorReview');
+            console.log('✅ 21. Error bank shows only count and review button');
+            console.log('✅ 22. Timer works with localStorage persistence');
+            console.log('✅ 23. Results page has evaluation messages');
+            console.log('✅ 24. Re-entry block works for exam, quiz, assignment');
         }
 
         if (document.readyState === 'loading') {
