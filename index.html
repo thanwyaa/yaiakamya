@@ -333,6 +333,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             height: 100%;
+            position: relative;
         }
         .card:hover { 
             box-shadow: var(--shadow); 
@@ -352,11 +353,12 @@
         .card:hover .card-img { transform: scale(1.03); }
         .card-body { padding: 16px 18px; }
 
+        /* Completed Card Style */
         .card-completed {
-            border: 2px solid var(--success) !important;
-            background: rgba(34, 197, 94, 0.05) !important;
+            border: 3px solid var(--success) !important;
+            background: rgba(34, 197, 94, 0.08) !important;
         }
-        .card-completed .card-body .completed-overlay {
+        .card-completed .completed-overlay {
             display: flex !important;
         }
         .completed-overlay {
@@ -366,7 +368,7 @@
             right: 0;
             left: 0;
             bottom: 0;
-            background: rgba(34, 197, 94, 0.1);
+            background: rgba(34, 197, 94, 0.12);
             backdrop-filter: blur(2px);
             align-items: center;
             justify-content: center;
@@ -384,8 +386,9 @@
             color: var(--success);
             font-size: 1.1rem;
             background: var(--card);
-            padding: 4px 16px;
+            padding: 4px 20px;
             border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(34, 197, 94, 0.2);
         }
 
         .lock-overlay {
@@ -1009,6 +1012,7 @@
             color: var(--text2);
         }
 
+        /* Exam Security Modal - New Design */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1489,6 +1493,7 @@
             font-weight: 700;
         }
 
+        /* Notifications Page */
         .notifications-page {
             max-width: 900px;
             margin: 0 auto;
@@ -1513,7 +1518,7 @@
             flex-wrap: wrap;
         }
         .notifications-page .header .actions button {
-            padding: 6px 16px;
+            padding: 8px 18px;
             border-radius: 50px;
             border: 1px solid var(--border);
             background: var(--card);
@@ -1528,6 +1533,14 @@
             background: var(--primary);
             color: #fff;
             border-color: var(--primary);
+        }
+        .notifications-page .header .actions .btn-danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .notifications-page .header .actions .btn-danger:hover {
+            background: var(--danger);
+            color: #fff;
         }
         .notifications-page .notification-item {
             display: flex;
@@ -1593,6 +1606,7 @@
         .notifications-page .empty-state h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
         .notifications-page .empty-state p { color: var(--text2); margin-top: 4px; }
 
+        /* Results Page */
         .results-page {
             max-width: 1100px;
             margin: 0 auto;
@@ -1883,6 +1897,7 @@
         </div>
     </div>
 
+    <!-- Exam Security Modal - New Design -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
@@ -2446,7 +2461,7 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS SYSTEM
+        // NOTIFICATIONS SYSTEM - NEW PAGE
         // ============================================================
         function loadNotifications(uid) {
             database.ref('users/' + uid + '/notifications').on('value', (snapshot) => {
@@ -2459,7 +2474,6 @@
                     notifications = [];
                 }
                 updateNotificationBadge();
-                // Cache notifications
                 localCache.notifications = notifications;
             });
         }
@@ -2495,8 +2509,8 @@
                             <button onclick="APP.markAllNotificationsRead()">
                                 📖 تحديد الكل كمقروء
                             </button>
-                            <button onclick="APP.deleteAllNotifications()" style="color:var(--danger);border-color:var(--danger);">
-                                🗑️ حذف جميع الإشعارات
+                            <button onclick="APP.deleteAllNotifications()" class="btn-danger">
+                                🗑️ حذف الكل
                             </button>
                             <button onclick="APP.showDashboard()" class="btn-outline btn-sm">
                                 <i class="fas fa-arrow-right"></i> العودة
@@ -2605,7 +2619,6 @@
                 showToast('تم تسجيل الخروج', 'success');
                 updateUIForAuth(null);
                 closeUserMenu();
-                // Clear cache
                 localCache.userData = null;
                 localCache.progress = {};
                 localCache.subscriptions = [];
@@ -2650,11 +2663,9 @@
                 const notificationWrapper = document.getElementById('notificationWrapper');
                 if (notificationWrapper) notificationWrapper.style.display = 'flex';
                 
-                // Show skeleton or user data
                 if (userData) {
                     updateUserUI(userData);
                 } else {
-                    // Show skeleton
                     showUserSkeleton();
                 }
             } else {
@@ -2721,7 +2732,6 @@
         // LOAD USER DATA - Progressive Loading
         // ============================================================
         function loadUserData(uid) {
-            // Check cache first
             if (localCache.userData && localCache.timestamp > Date.now() - 60000) {
                 userData = localCache.userData;
                 updateUserUI(userData);
@@ -2734,12 +2744,8 @@
                     userData = snapshot.val();
                     localCache.userData = userData;
                     localCache.timestamp = Date.now();
-                    
                     updateUserUI(userData);
-                    
-                    if (currentUser) {
-                        updateUIForAuth(currentUser);
-                    }
+                    if (currentUser) updateUIForAuth(currentUser);
                 } else {
                     createNewUser(uid);
                 }
@@ -2782,13 +2788,8 @@
             userData = newUser;
             localCache.userData = newUser;
             localCache.timestamp = Date.now();
-            
             updateUserUI(newUser);
-            
-            if (currentUser) {
-                updateUIForAuth(currentUser);
-            }
-            
+            if (currentUser) updateUIForAuth(currentUser);
             await addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
         }
 
@@ -2799,7 +2800,6 @@
             const grid = document.getElementById('coursesGrid');
             if (!grid) return;
 
-            // Show skeleton
             grid.innerHTML = `
                 <div class="card skeleton" style="height:320px;"></div>
                 <div class="card skeleton" style="height:320px;"></div>
@@ -2824,7 +2824,7 @@
         }
 
         // ============================================================
-        // FILTER COURSES BY GRADE
+        // FILTER COURSES
         // ============================================================
         function filterCoursesByGrade(grade) {
             currentGradeFilter = grade;
@@ -2941,7 +2941,6 @@
         }
 
         function loadUserSubscriptions(uid) {
-            // Check cache
             if (localCache.subscriptions.length > 0 && localCache.timestamp > Date.now() - 60000) {
                 userSubscriptions = localCache.subscriptions;
                 renderCourses(allCourses);
@@ -4960,7 +4959,7 @@
         }
 
         // ============================================================
-        // ERROR BANK
+        // ERROR BANK - REBUILT
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -6032,7 +6031,6 @@
         // LOAD USER PROGRESS
         // ============================================================
         function loadUserProgress(uid) {
-            // Check cache first
             if (Object.keys(localCache.progress).length > 0 && localCache.timestamp > Date.now() - 60000) {
                 userCourseProgress = localCache.progress;
                 return;
@@ -6230,8 +6228,8 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v26.0 - ALL ISSUES FIXED!');
-            console.log('✅ Fast Login, Auto Submit Only on Timeout, Grade Messages, Complete Block');
+            console.log('🚀 Yalla Chemistry Platform v27.0 - ALL ISSUES FIXED!');
+            console.log('✅ Fast Login, Auto Submit Only on Timeout, Grade Messages, Complete Block, Notifications Page');
         }
 
         if (document.readyState === 'loading') {
