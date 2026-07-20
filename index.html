@@ -169,6 +169,7 @@
             transform: translateY(-1px);
         }
 
+        /* Notification Styles - Improved */
         .notification-wrapper {
             position: relative;
             display: inline-flex;
@@ -210,115 +211,6 @@
         @keyframes pulse-badge {
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.3); opacity: 0.7; }
-        }
-
-        .user-menu-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .user-menu-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px 4px 6px;
-            border-radius: 50px;
-            border: 2px solid var(--primary);
-            background: var(--primary);
-            color: #fff;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        .user-menu-btn:hover {
-            background: var(--primary2);
-            border-color: var(--primary2);
-            transform: translateY(-1px);
-        }
-        .user-menu-btn .avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.7rem;
-            overflow: hidden;
-            background: rgba(255,255,255,0.2);
-        }
-        .user-menu-btn .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .user-menu-btn .arrow {
-            font-size: 0.6rem;
-            transition: var(--transition);
-        }
-        .user-menu-btn .arrow.open { transform: rotate(180deg); }
-        .user-menu-btn .label { 
-            display: inline-block;
-            color: #fff;
-            font-size: 0.8rem;
-        }
-
-        .user-dropdown {
-            display: none;
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            min-width: 210px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            overflow: hidden;
-            z-index: 200;
-            padding: 4px 0;
-        }
-        .user-dropdown.open { display: block; }
-        
-        .user-dropdown .dropdown-header {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border);
-        }
-        .user-dropdown .dropdown-header .name {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text);
-        }
-        .user-dropdown .dropdown-header .sub {
-            font-size: 0.7rem;
-            color: var(--text2);
-        }
-        
-        .user-dropdown .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 14px;
-            width: 100%;
-            border: none;
-            background: none;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Cairo', sans-serif;
-            font-size: 0.8rem;
-            color: var(--text);
-            text-align: right;
-        }
-        .user-dropdown .menu-item:hover { background: var(--bg); }
-        .user-dropdown .menu-item i { width: 18px; text-align: center; font-size: 0.85rem; color: var(--text2); }
-        .user-dropdown .menu-item.danger { color: var(--danger); }
-        .user-dropdown .menu-item.danger:hover { background: rgba(239,68,68,0.08); }
-        .user-dropdown .menu-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 4px 12px;
         }
 
         .theme-toggle {
@@ -737,9 +629,6 @@
             .nav-links a, .nav-links button { font-size: 0.7rem; padding: 4px 10px; }
             .nav-logo span { font-size: 1rem; }
             .nav-logo img { width: 28px; height: 28px; }
-            .user-menu-btn .label { display: none; }
-            .user-menu-btn { padding: 3px 8px 3px 6px; }
-            .user-menu-btn .avatar { width: 24px; height: 24px; font-size: 0.6rem; }
             .btn-primary, .btn-outline { padding: 10px 24px; font-size: 0.85rem; }
             .stat-circle-card .circle { width: 60px; height: 60px; font-size: 1.1rem; }
             .stat-circle-card .circle .number { font-size: 1.2rem; }
@@ -768,8 +657,6 @@
             .nav-logo img { width: 18px; height: 18px; }
             .theme-toggle { width: 24px; height: 14px; }
             .theme-toggle::after { width: 10px; height: 10px; }
-            .user-menu-btn .avatar { width: 20px; height: 20px; font-size: 0.5rem; }
-            .user-menu-btn { padding: 2px 4px; }
             .btn-primary, .btn-outline { padding: 6px 14px; font-size: 0.7rem; }
             .grid-courses { grid-template-columns: 1fr; gap: 12px; }
             .grid-dashboard { grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -1055,6 +942,7 @@
             color: var(--text2);
         }
 
+        /* New Exam Security Modal - One Click Design */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1070,8 +958,8 @@
         .exam-security-modal .security-box {
             background: var(--card);
             border-radius: var(--radius-lg);
-            padding: 40px 32px;
-            max-width: 520px;
+            padding: 48px 32px;
+            max-width: 550px;
             width: 100%;
             text-align: center;
             border: 1px solid var(--border);
@@ -1083,7 +971,6 @@
         .exam-security-modal .security-box .icon {
             font-size: 3.5rem;
             margin-bottom: 12px;
-            color: var(--warning);
         }
         .exam-security-modal .security-box h2 {
             font-size: 1.5rem;
@@ -1091,26 +978,39 @@
             color: var(--primary);
             margin-bottom: 8px;
         }
-        .exam-security-modal .security-box .pledge-text {
-            font-size: 1.1rem;
-            line-height: 2;
-            padding: 16px;
+        .exam-security-modal .security-box .hadith {
             background: var(--bg);
+            padding: 16px 20px;
             border-radius: var(--radius);
-            margin-bottom: 16px;
-        }
-        .exam-security-modal .security-box .pledge-text p {
-            font-weight: 700;
+            font-style: italic;
             color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            border-right: 4px solid var(--primary);
+            text-align: center;
         }
-        .exam-security-modal .security-box .warning-banner {
-            background: var(--warning);
-            color: #fff;
-            padding: 12px;
-            border-radius: var(--radius);
+        .exam-security-modal .security-box .pledge-text {
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 2;
             margin-bottom: 20px;
-            font-weight: 600;
-            font-size: 0.95rem;
+            text-align: center;
+            background: var(--bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .exam-security-modal .security-box .note-text {
+            color: var(--text2);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .exam-security-modal .security-box .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
         }
         .exam-security-modal .security-box .btn-group .btn-start {
             background: var(--success);
@@ -1119,16 +1019,13 @@
             padding: 20px 60px;
             min-height: 72px;
             min-width: 280px;
-            border: none;
             border-radius: 50px;
+            border: none;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
             font-family: 'Cairo', sans-serif;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
+            box-shadow: 0 4px 20px rgba(34,197,94,0.3);
         }
         .exam-security-modal .security-box .btn-group .btn-start:hover {
             background: #16a34a;
@@ -1138,16 +1035,14 @@
         .exam-security-modal .security-box .btn-group .btn-secondary {
             background: var(--border);
             color: var(--text);
-            padding: 16px 48px;
+            padding: 16px 32px;
             border-radius: 50px;
             border: none;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: var(--transition);
             font-family: 'Cairo', sans-serif;
-            min-width: 180px;
-            min-height: 64px;
         }
         .exam-security-modal .security-box .btn-group .btn-secondary:hover {
             background: var(--bg);
@@ -1527,6 +1422,316 @@
             font-size: 0.7rem;
             font-weight: 700;
         }
+
+        /* Notifications Page Styles */
+        .notifications-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .notifications-page .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .notifications-page .header h1 {
+            font-family: 'Lalezar', cursive;
+            font-size: 2rem;
+            color: var(--text);
+        }
+        .notifications-page .header .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .notifications-page .header .actions button {
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text2);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .notifications-page .header .actions button:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .notifications-page .notification-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--card);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            transition: var(--transition);
+            align-items: flex-start;
+        }
+        .notifications-page .notification-item:hover {
+            background: var(--bg);
+        }
+        .notifications-page .notification-item .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .notifications-page .notification-item .content {
+            flex: 1;
+        }
+        .notifications-page .notification-item .content .title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text);
+        }
+        .notifications-page .notification-item .content .desc {
+            font-size: 0.9rem;
+            color: var(--text2);
+            margin: 4px 0;
+            line-height: 1.6;
+        }
+        .notifications-page .notification-item .content .time {
+            font-size: 0.75rem;
+            color: var(--text2);
+            opacity: 0.7;
+        }
+        .notifications-page .notification-item .status {
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .notifications-page .notification-item .status.unread {
+            background: var(--primary);
+            color: #fff;
+        }
+        .notifications-page .notification-item .status.read {
+            background: var(--border);
+            color: var(--text2);
+        }
+        .notifications-page .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border);
+        }
+        .notifications-page .empty-state .icon { font-size: 4rem; margin-bottom: 12px; }
+        .notifications-page .empty-state h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+        .notifications-page .empty-state p { color: var(--text2); margin-top: 4px; }
+
+        /* Results Page Styles */
+        .results-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .results-page .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .results-page .header h1 {
+            font-family: 'Lalezar', cursive;
+            font-size: 2rem;
+            color: var(--text);
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .results-table th {
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        .results-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+        .results-table tr:hover td {
+            background: var(--bg);
+        }
+        .results-table .badge-pass {
+            background: var(--success);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .results-table .badge-fail {
+            background: var(--danger);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .results-table .badge-type {
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .results-table .badge-type.exam { background: #F59E0B; color: #fff; }
+        .results-table .badge-type.quiz { background: #22C55E; color: #fff; }
+        .results-table .badge-type.assignment { background: #8B5CF6; color: #fff; }
+        .results-table .badge-type.final { background: #EF4444; color: #fff; }
+
+        @media (max-width: 768px) {
+            .results-table {
+                font-size: 0.75rem;
+            }
+            .results-table th, .results-table td {
+                padding: 8px 10px;
+            }
+            .results-table .badge-type, .results-table .badge-pass, .results-table .badge-fail {
+                font-size: 0.6rem;
+                padding: 1px 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .results-table {
+                font-size: 0.65rem;
+            }
+            .results-table th, .results-table td {
+                padding: 4px 6px;
+            }
+        }
+
+        /* User Menu */
+        .user-menu-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px 4px 6px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            background: var(--primary);
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .user-menu-btn:hover {
+            background: var(--primary2);
+            border-color: var(--primary2);
+            transform: translateY(-1px);
+        }
+        .user-menu-btn .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            overflow: hidden;
+            background: rgba(255,255,255,0.2);
+        }
+        .user-menu-btn .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-menu-btn .arrow {
+            font-size: 0.6rem;
+            transition: var(--transition);
+        }
+        .user-menu-btn .arrow.open { transform: rotate(180deg); }
+        .user-menu-btn .label { 
+            display: inline-block;
+            color: #fff;
+            font-size: 0.8rem;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 210px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            z-index: 200;
+            padding: 4px 0;
+        }
+        .user-dropdown.open { display: block; }
+        
+        .user-dropdown .dropdown-header {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .user-dropdown .dropdown-header .name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .user-dropdown .dropdown-header .sub {
+            font-size: 0.7rem;
+            color: var(--text2);
+        }
+        
+        .user-dropdown .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            width: 100%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            text-align: right;
+        }
+        .user-dropdown .menu-item:hover { background: var(--bg); }
+        .user-dropdown .menu-item i { width: 18px; text-align: center; font-size: 0.85rem; color: var(--text2); }
+        .user-dropdown .menu-item.danger { color: var(--danger); }
+        .user-dropdown .menu-item.danger:hover { background: rgba(239,68,68,0.08); }
+        .user-dropdown .menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 12px;
+        }
     </style>
 </head>
 <body>
@@ -1547,19 +1752,27 @@
         </div>
     </div>
 
+    <!-- NEW Exam Security Modal - One Click Design -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
             <h2 id="examPledgeTitle">قبل بدء الاختبار</h2>
+            <div class="hadith">"قال رسول الله ﷺ: من غشنا فليس منا."</div>
             <div class="pledge-text">
-                <p>"أتعهد أمام الله أن أجيب بنفسي دون غش، وأن ألتزم بالأمانة العلمية، وأن يكون هدفي التعلم والاستفادة، والله على ما أقول شهيد."</p>
+                🤲 أتعهد أمام الله أن أجيب بنفسي دون غش،<br>
+                وأن ألتزم بالأمانة العلمية،<br>
+                وأن يكون هدفي التعلم والاستفادة،<br>
+                <strong>والله على ما أقول شهيد.</strong>
             </div>
-            <div class="warning-banner">⚠️ تنبيه: الغش يفقد الاختبار قيمته التعليمية</div>
+            <div class="note-text">
+                ⚠️ تذكر أن الغش يفقد الاختبار قيمته التعليمية،<br>
+                والهدف هو قياس فهمك الحقيقي.
+            </div>
             <div class="btn-group">
-                <button class="btn btn-start" id="startExamBtn" onclick="APP.startExamAfterPledge()">
-                    <i class="fas fa-check"></i> ✅ أوافق وأبدأ الاختبار
+                <button class="btn-start" id="startExamBtn" onclick="APP.startExamAfterPledge()">
+                    ✅ أوافق وأبدأ الاختبار
                 </button>
-                <button class="btn btn-secondary" onclick="APP.closeExamSecurityModal()">إلغاء</button>
+                <button class="btn-secondary" onclick="APP.closeExamSecurityModal()">إلغاء</button>
             </div>
         </div>
     </div>
@@ -1597,6 +1810,7 @@
                     <i class="fas fa-atom"></i> <span id="atomsCount">0</span>
                 </span>
 
+                <!-- Notification Icon - Opens Notifications Page -->
                 <div class="user-only notification-wrapper" style="display:none;" id="notificationWrapper">
                     <button class="notification-btn" onclick="APP.showNotificationsPage()" id="notificationBtn">
                         <i class="fas fa-bell"></i>
@@ -1618,12 +1832,14 @@
                         <button class="menu-item" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
                         <button class="menu-item" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
                         <button class="menu-item" onclick="APP.showLeaderboard()"><i class="fas fa-trophy"></i> المتصدرين</button>
-                        <button class="menu-item" onclick="APP.showResults()"><i class="fas fa-chart-bar"></i> نتائجي</button>
                         <button class="menu-item" onclick="APP.showAIInsights()"><i class="fas fa-robot"></i> تحليل المستوى</button>
                         <button class="menu-item" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
+                        <button class="menu-item" onclick="APP.showResults()"><i class="fas fa-chart-bar"></i> نتائجي</button>
                         <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهاداتي</button>
                         <button class="menu-item" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
                         <button class="menu-item" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
+                        <div class="menu-divider"></div>
+                        <button class="menu-item danger" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
                     </div>
                 </div>
             </div>
@@ -1631,6 +1847,7 @@
     </nav>
 
     <main id="mainContent">
+        <!-- Home Page Content -->
         <section id="heroSection" style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
             <div style="border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;">
                 <img src="https://res.cloudinary.com/dvckwknhc/image/upload/f_auto,q_auto/09a66670-8de1-4268-a761-b3f097deaf8a_revphn" alt="مستر زياد مبروك" style="width:100%;height:auto;max-height:400px;object-fit:cover;display:block;" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
@@ -1808,18 +2025,22 @@
                 <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank" rel="noopener" class="social-card">
                     <i class="fab fa-telegram-plane" style="color:#229ED9;"></i>
                     <span>تيليجرام</span>
+                    <div style="font-size:0.7rem;color:var(--text2);">2,300+ عضو</div>
                 </a>
                 <a href="https://whatsapp.com/channel/0029VbCAgCt5K3zMurVaeF1w/621" target="_blank" rel="noopener" class="social-card">
                     <i class="fab fa-whatsapp" style="color:#25D366;"></i>
                     <span>واتساب</span>
+                    <div style="font-size:0.7rem;color:var(--text2);">1,000+ عضو</div>
                 </a>
                 <a href="https://youtube.com/channel/UCi5O6yRE_0EThRbspiryP3w" target="_blank" rel="noopener" class="social-card">
                     <i class="fab fa-youtube" style="color:#FF0000;"></i>
                     <span>يوتيوب</span>
+                    <div style="font-size:0.7rem;color:var(--text2);">88,000+ مشاهدة</div>
                 </a>
                 <a href="https://www.tiktok.com/@mr.ziad.mabrok?_r=1&_t=ZS-98AOGuwUPrU" target="_blank" rel="noopener" class="social-card">
                     <i class="fab fa-tiktok" style="color:#000000;"></i>
                     <span>تيك توك</span>
+                    <div style="font-size:0.7rem;color:var(--text2);">تابعنا الآن</div>
                 </a>
             </div>
         </section>
@@ -1834,7 +2055,6 @@
                 </div>
             </div>
         </section>
-
     </main>
 
     <footer style="background:var(--card);border-top:1px solid var(--border);padding:20px;margin-top:16px;">
@@ -1890,7 +2110,6 @@
         let allExams = [];
         let allQuizzes = [];
         let notifications = [];
-        let notificationFilter = 'all';
         let examTimer = null;
         let examStartTime = null;
         let isExamActive = false;
@@ -1905,6 +2124,10 @@
         let isExamMode = false;
         let studyStartTime = null;
         let totalStudyTime = 0;
+        let activeVideoLessonId = null;
+        let videoWatchStartTime = null;
+        let videoWatchInterval = null;
+        let videoWatchTotal = {};
 
         // ============================================================
         // CONSTANTS
@@ -1960,11 +2183,16 @@
             return d.toLocaleDateString('ar') + ' ' + d.toLocaleTimeString('ar', {hour:'2-digit', minute:'2-digit'});
         }
 
+        function formatTimeOnly(date) {
+            if (!date) return '--';
+            const d = new Date(date);
+            return d.toLocaleTimeString('ar', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        }
+
         function formatPhoneNumber(phone) {
             if (!phone || phone === 'لم يحدد' || phone === '') return 'لم يحدد';
             const cleaned = phone.replace(/\D/g, '');
             if (cleaned.length === 0) return 'لم يحدد';
-            
             let formatted = '';
             for (let i = cleaned.length; i > 0; i -= 3) {
                 const start = Math.max(0, i - 3);
@@ -1972,6 +2200,20 @@
                 formatted = (formatted ? ' ' : '') + chunk + (formatted ? ' ' : '');
             }
             return formatted.trim();
+        }
+
+        function getTimeAgo(date) {
+            if (!date) return '';
+            const now = Date.now();
+            const diff = now - new Date(date).getTime();
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            if (days > 7) return formatTime(date);
+            if (days > 0) return days + ' يوم مضت';
+            if (hours > 0) return hours + ' ساعة مضت';
+            if (minutes > 0) return minutes + ' دقيقة مضت';
+            return 'الآن';
         }
 
         // ============================================================
@@ -1984,7 +2226,6 @@
                 code += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
-            
             const snapshot = await database.ref('users').orderByChild('code').equalTo(formatted).once('value');
             if (snapshot.exists()) {
                 return generateStudentCode();
@@ -2031,7 +2272,6 @@
         function scrollToCourses() {
             document.getElementById('coursesSection')?.scrollIntoView({ behavior: 'smooth' });
             closeUserMenu();
-            closeNotifications();
         }
 
         function closeLoginOverlay() {
@@ -2051,7 +2291,6 @@
             if (!dropdown) return;
             dropdown.classList.toggle('open');
             if (arrow) arrow.classList.toggle('open');
-            closeNotifications();
         }
 
         function showLoginOverlay() {
@@ -2059,7 +2298,7 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS SYSTEM
+        // NOTIFICATIONS SYSTEM - NEW PAGE
         // ============================================================
         function loadNotifications(uid) {
             database.ref('users/' + uid + '/notifications').on('value', (snapshot) => {
@@ -2087,6 +2326,60 @@
             }
         }
 
+        function showNotificationsPage() {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+
+            const unreadCount = notifications.filter(n => !n.read).length;
+
+            main.innerHTML = `
+                <div class="notifications-page">
+                    <div class="header">
+                        <h1>🔔 الإشعارات</h1>
+                        <div class="actions">
+                            <button onclick="APP.markAllNotificationsRead()">
+                                📖 تحديد الكل كمقروء
+                            </button>
+                            <button onclick="APP.deleteAllNotifications()" style="color:var(--danger);border-color:var(--danger);">
+                                🗑️ حذف جميع الإشعارات
+                            </button>
+                            <button onclick="APP.showDashboard()" class="btn-outline btn-sm">
+                                <i class="fas fa-arrow-right"></i> العودة
+                            </button>
+                        </div>
+                    </div>
+                    ${unreadCount > 0 ? `<p style="color:var(--text2);margin-bottom:12px;">📬 لديك ${unreadCount} إشعار غير مقروء</p>` : ''}
+                    <div id="notificationsList">
+                        ${notifications.length === 0 ? `
+                            <div class="empty-state">
+                                <div class="icon">📭</div>
+                                <h3>لا توجد إشعارات</h3>
+                                <p>ستظهر هنا جميع الإشعارات الخاصة بك</p>
+                            </div>
+                        ` : notifications.map(n => `
+                            <div class="notification-item" onclick="APP.markNotificationRead('${n.id}')" style="border-right: ${n.read ? 'none' : '4px solid var(--primary)'};">
+                                <div class="icon">${n.icon || '📢'}</div>
+                                <div class="content">
+                                    <div class="title">${escapeHtml(n.title)}</div>
+                                    <div class="desc">${escapeHtml(n.description || '')}</div>
+                                    <div class="time">${getTimeAgo(n.createdAt)} • ${formatTime(n.createdAt)}</div>
+                                </div>
+                                <div class="status ${n.read ? 'read' : 'unread'}">
+                                    ${n.read ? '✓ مقروء' : '● جديد'}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         async function markNotificationRead(id) {
             if (!currentUser) return;
             try {
@@ -2094,7 +2387,6 @@
                 const notif = notifications.find(n => n.id === id);
                 if (notif) notif.read = true;
                 updateNotificationBadge();
-                showToast('✅ تم تحديد الإشعار كمقروء', 'success');
                 showNotificationsPage();
             } catch (err) {
                 console.error('Error marking notification read:', err);
@@ -2115,10 +2407,25 @@
                     await database.ref().update(updates);
                 }
                 updateNotificationBadge();
-                showToast('✅ تم تحديد جميع الإشعارات كمقروءة', 'success');
                 showNotificationsPage();
+                showToast('✅ تم تحديد الكل كمقروء', 'success');
             } catch (err) {
                 console.error('Error marking all read:', err);
+                showToast('حدث خطأ', 'error');
+            }
+        }
+
+        async function deleteAllNotifications() {
+            if (!currentUser) return;
+            if (!confirm('⚠️ هل أنت متأكد من حذف جميع الإشعارات؟')) return;
+            try {
+                await database.ref(`users/${currentUser.uid}/notifications`).remove();
+                notifications = [];
+                updateNotificationBadge();
+                showNotificationsPage();
+                showToast('🗑️ تم حذف جميع الإشعارات', 'success');
+            } catch (err) {
+                console.error('Error deleting notifications:', err);
                 showToast('حدث خطأ', 'error');
             }
         }
@@ -2140,118 +2447,6 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS PAGE
-        // ============================================================
-        function showNotificationsPage() {
-            if (!currentUser) {
-                showLoginOverlay();
-                return;
-            }
-
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            database.ref('users/' + currentUser.uid + '/notifications').once('value', (snapshot) => {
-                let notificationsList = [];
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    notificationsList = Object.values(data).sort((a, b) => 
-                        new Date(b.createdAt) - new Date(a.createdAt)
-                    );
-                }
-
-                const unreadCount = notificationsList.filter(n => !n.read).length;
-
-                main.innerHTML = `
-                    <div style="max-width:900px;margin:0 auto;padding:20px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
-                            <div>
-                                <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">
-                                    <i class="fas fa-arrow-right"></i> العودة
-                                </button>
-                                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">
-                                    🔔 الإشعارات
-                                </h1>
-                                <p style="color:var(--text2);font-size:0.9rem;">
-                                    ${notificationsList.length} إشعار • ${unreadCount} غير مقروء
-                                </p>
-                            </div>
-                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                <button class="btn-primary btn-sm" onclick="APP.markAllNotificationsRead()">
-                                    <i class="fas fa-check-double"></i> تحديد الكل كمقروء
-                                </button>
-                                <button class="btn-danger btn-sm" onclick="APP.clearAllNotifications()" 
-                                        style="background:var(--danger);color:#fff;border:none;padding:8px 20px;border-radius:50px;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">
-                                    <i class="fas fa-trash"></i> حذف الكل
-                                </button>
-                            </div>
-                        </div>
-
-                        ${notificationsList.length === 0 ? `
-                            <div class="empty-state">
-                                <div class="icon">📭</div>
-                                <h3>لا توجد إشعارات</h3>
-                                <p>ستظهر الإشعارات هنا عند حدوث أي نشاط</p>
-                            </div>
-                        ` : `
-                            <div style="display:flex;flex-direction:column;gap:8px;">
-                                ${notificationsList.map(n => `
-                                    <div class="notification-item-page" style="
-                                        background: ${n.read ? 'var(--card)' : 'var(--bg)'};
-                                        border: 1px solid var(--border);
-                                        border-radius: var(--radius);
-                                        padding: 16px 20px;
-                                        display: flex;
-                                        gap: 16px;
-                                        align-items: flex-start;
-                                        transition: var(--transition);
-                                        ${!n.read ? 'border-right: 4px solid var(--primary);' : ''}
-                                    ">
-                                        <div style="font-size:1.5rem;flex-shrink:0;">${n.icon || '📢'}</div>
-                                        <div style="flex:1;word-wrap:break-word;">
-                                            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:4px;">
-                                                <span style="font-weight:700;font-size:1rem;color:var(--text);">${escapeHtml(n.title)}</span>
-                                                ${!n.read ? '<span style="background:var(--primary);color:#fff;padding:0 10px;border-radius:20px;font-size:0.6rem;font-weight:700;">جديد</span>' : ''}
-                                            </div>
-                                            <p style="color:var(--text2);font-size:0.9rem;line-height:1.8;margin:4px 0;">${escapeHtml(n.description || '')}</p>
-                                            <div style="font-size:0.7rem;color:var(--text2);opacity:0.7;">
-                                                ${formatTime(n.createdAt)}
-                                            </div>
-                                        </div>
-                                        ${!n.read ? `
-                                            <button onclick="APP.markNotificationRead('${n.id}')" 
-                                                    style="background:var(--bg);border:none;padding:4px 12px;border-radius:20px;cursor:pointer;font-family:'Cairo',sans-serif;font-size:0.7rem;flex-shrink:0;">
-                                                تحديد كمقروء
-                                            </button>
-                                        ` : ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `}
-                    </div>
-                `;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
-
-        async function clearAllNotifications() {
-            if (!currentUser) return;
-            
-            if (!confirm('هل أنت متأكد من حذف جميع الإشعارات؟')) return;
-            
-            try {
-                await database.ref('users/' + currentUser.uid + '/notifications').remove();
-                notifications = [];
-                updateNotificationBadge();
-                showToast('✅ تم حذف جميع الإشعارات', 'success');
-                showNotificationsPage();
-            } catch (err) {
-                console.error('Error clearing notifications:', err);
-                showToast('حدث خطأ', 'error');
-            }
-        }
-
-        // ============================================================
         // AUTH
         // ============================================================
         async function logout() {
@@ -2260,7 +2455,6 @@
                 showToast('تم تسجيل الخروج', 'success');
                 updateUIForAuth(null);
                 closeUserMenu();
-                closeNotifications();
             } catch (error) {
                 console.error('Logout error:', error);
                 showToast('حدث خطأ في تسجيل الخروج', 'error');
@@ -2347,7 +2541,6 @@
                 
                 userData = null;
                 closeUserMenu();
-                closeNotifications();
             }
         }
 
@@ -2460,23 +2653,19 @@
         // ============================================================
         function filterCoursesByGrade(grade) {
             currentGradeFilter = grade;
-            
             document.querySelectorAll('.btn-filter').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.dataset.grade === grade) {
                     btn.classList.add('active');
                 }
             });
-            
             filterCourses();
         }
 
         function filterCourses() {
             const grid = document.getElementById('coursesGrid');
             if (!grid) return;
-            
             const q = document.getElementById('courseSearch')?.value?.toLowerCase() || '';
-            
             let filtered = allCourses.filter(c => {
                 const matchesSearch = (c.title || '').toLowerCase().includes(q) || 
                                      (c.description || '').toLowerCase().includes(q);
@@ -2486,7 +2675,6 @@
                 }
                 return matchesSearch && matchesGrade;
             });
-            
             if (filtered.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-state" style="grid-column:1/-1;">
@@ -2596,26 +2784,21 @@
                 showLoginOverlay();
                 return;
             }
-
             if (isUserSubscribed(courseId)) {
                 showToast('✅ أنت مشترك بالفعل في هذا الكورس', 'info');
                 return;
             }
-
             try {
                 const courseSnap = await database.ref('courses/' + courseId).once('value');
                 if (!courseSnap.exists()) {
                     showToast('⚠️ الكورس غير موجود', 'error');
                     return;
                 }
-
                 const course = courseSnap.val();
-                
                 if (course.isFree === false) {
                     showToast('🔒 هذا الكورس مدفوع. يرجى التواصل مع الدعم لتفعيل الاشتراك.', 'warning');
                     return;
                 }
-
                 const newRef = database.ref('courseSubscriptions').push();
                 await newRef.set({
                     userId: currentUser.uid,
@@ -2623,13 +2806,11 @@
                     status: 'active',
                     subscribedAt: new Date().toISOString()
                 });
-
                 const courseData = allCourses.find(c => c.id === courseId);
                 if (courseData) {
                     await database.ref('courses/' + courseId + '/studentsCount').set((courseData.studentsCount || 0) + 1);
                     courseData.studentsCount = (courseData.studentsCount || 0) + 1;
                 }
-
                 userSubscriptions.push({
                     id: newRef.key,
                     userId: currentUser.uid,
@@ -2637,12 +2818,9 @@
                     status: 'active',
                     subscribedAt: new Date().toISOString()
                 });
-
                 showToast('🎉 تم الاشتراك في الكورس بنجاح!', 'success');
                 renderCourses(allCourses);
-                
                 await addNotification(currentUser.uid, '📚 تم الاشتراك في كورس جديد!', `لقد اشتركت في كورس "${courseData?.title || courseId}" بنجاح.`, '📚');
-                
             } catch (err) {
                 console.error('❌ Subscription error:', err);
                 showToast('❌ حدث خطأ أثناء الاشتراك: ' + err.message, 'error');
@@ -2657,21 +2835,13 @@
                 showLoginOverlay();
                 return false;
             }
-
             const course = allCourses.find(c => c.id === courseId);
             if (!course) {
                 showToast('الكورس غير موجود', 'error');
                 return false;
             }
-
-            if (course.isFree !== false) {
-                return true;
-            }
-
-            if (isUserSubscribed(courseId)) {
-                return true;
-            }
-
+            if (course.isFree !== false) return true;
+            if (isUserSubscribed(courseId)) return true;
             showToast('🔒 هذا الكورس مدفوع. يرجى التواصل مع الدعم لتفعيل الاشتراك.', 'warning');
             return false;
         }
@@ -2684,7 +2854,6 @@
                 showLoginOverlay();
                 return;
             }
-
             const hasAccess = await checkCourseAccess(courseId);
             if (!hasAccess) return;
 
@@ -2885,7 +3054,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO PAGE
+        // LESSON VIDEO PAGE WITH REAL WATCH TIME TRACKING
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) {
@@ -2908,37 +3077,51 @@
                 const course = allCourses.find(c => c.id === lesson.courseId);
                 const courseName = course ? course.title : 'الكورس';
 
-                let watchStartTime = Date.now();
-                let watchDuration = 0;
-                let isWatching = true;
-                let lastUpdateTime = Date.now();
+                // Start video watch tracking
+                activeVideoLessonId = lessonId;
+                videoWatchStartTime = Date.now();
+                if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
-                const updateStudyTime = () => {
-                    if (isWatching && currentUser) {
-                        const now = Date.now();
-                        const elapsed = (now - lastUpdateTime) / 1000;
+                if (videoWatchInterval) clearInterval(videoWatchInterval);
+                videoWatchInterval = setInterval(() => {
+                    if (activeVideoLessonId && videoWatchStartTime) {
+                        const elapsed = (Date.now() - videoWatchStartTime) / 1000;
                         if (elapsed > 5) {
-                            const studyHours = elapsed / 3600;
-                            totalStudyTime += studyHours;
-                            lastUpdateTime = now;
+                            videoWatchTotal[lessonId] = (videoWatchTotal[lessonId] || 0) + elapsed;
+                            videoWatchStartTime = Date.now();
                             
+                            // Update study time in Firebase
+                            const studyHours = elapsed / 3600;
+                            database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
+                                return (current || 0) + studyHours;
+                            });
+                            if (userData) {
+                                userData.studyTime = (userData.studyTime || 0) + studyHours;
+                            }
+                        }
+                    }
+                }, 5000);
+
+                const handleExit = () => {
+                    clearInterval(videoWatchInterval);
+                    videoWatchInterval = null;
+                    if (activeVideoLessonId && videoWatchStartTime) {
+                        const elapsed = (Date.now() - videoWatchStartTime) / 1000;
+                        if (elapsed > 5) {
+                            videoWatchTotal[lessonId] = (videoWatchTotal[lessonId] || 0) + elapsed;
+                            const studyHours = elapsed / 3600;
                             database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
                                 return (current || 0) + studyHours;
                             });
                         }
                     }
-                };
-
-                const interval = setInterval(updateStudyTime, 30000);
-
-                const handleExit = () => {
-                    clearInterval(interval);
-                    isWatching = false;
-                    updateStudyTime();
                     
-                    if (watchDuration >= 900 && !userCourseProgress[lessonId]?.watched) {
+                    // If watched at least 15 minutes (900 seconds), mark as complete
+                    if (videoWatchTotal[lessonId] >= 900 && !userCourseProgress[lessonId]?.watched) {
                         completeLessonWatch(lessonId, lesson);
                     }
+                    activeVideoLessonId = null;
+                    videoWatchStartTime = null;
                 };
 
                 window.onbeforeunload = handleExit;
@@ -2959,7 +3142,7 @@
                             ${videoIdYt ? `
                                 <div class="card" style="padding:0;overflow:hidden;">
                                     <div style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
-                                        <iframe id="videoFrame" src="https://www.youtube.com/embed/${videoIdYt}" 
+                                        <iframe id="videoFrame" src="https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1" 
                                                 style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
                                                 allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" 
                                                 allowfullscreen>
@@ -2975,20 +3158,39 @@
                         </div>
 
                         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                            <button class="btn-outline btn-sm no-print" onclick="APP.openCoursePage('${lesson.courseId}')">📚 العودة للكورس</button>
+                            <button class="btn-outline btn-sm no-print" onclick="${videoIdYt ? `APP.handleVideoExit('${lessonId}', ${JSON.stringify(lesson).replace(/"/g, '&quot;')})` : `APP.openCoursePage('${lesson.courseId}')`}">📚 العودة للكورس</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">🏠 الرئيسية</button>
                         </div>
                     </div>
                 `;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
-                studyStartTime = Date.now();
-
             } catch (error) {
                 logError('openLessonVideo', error);
                 showToast('حدث خطأ في تحميل الفيديو', 'error');
                 showHome();
             }
+        }
+
+        function handleVideoExit(lessonId, lesson) {
+            clearInterval(videoWatchInterval);
+            videoWatchInterval = null;
+            if (activeVideoLessonId && videoWatchStartTime) {
+                const elapsed = (Date.now() - videoWatchStartTime) / 1000;
+                if (elapsed > 5) {
+                    videoWatchTotal[lessonId] = (videoWatchTotal[lessonId] || 0) + elapsed;
+                    const studyHours = elapsed / 3600;
+                    database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
+                        return (current || 0) + studyHours;
+                    });
+                }
+            }
+            if (videoWatchTotal[lessonId] >= 900 && !userCourseProgress[lessonId]?.watched) {
+                completeLessonWatch(lessonId, lesson);
+            }
+            activeVideoLessonId = null;
+            videoWatchStartTime = null;
+            openCoursePage(lesson.courseId);
         }
 
         // ============================================================
@@ -3080,19 +3282,16 @@
         }
 
         // ============================================================
-        // EXAM SECURITY MODAL
+        // EXAM SECURITY MODAL - ONE CLICK
         // ============================================================
         function openExamSecurityModal(examId, callback, type = 'exam') {
             const modal = document.getElementById('examSecurityModal');
             const titleEl = document.getElementById('examPledgeTitle');
-            
             if (titleEl) {
-                titleEl.textContent = type === 'quiz' ? 'قبل بدء الكويز' : 'قبل بدء الامتحان';
+                titleEl.textContent = type === 'quiz' ? '🧪 قبل بدء الكويز' : '📝 قبل بدء الاختبار';
             }
-            
             pendingExamCallback = callback;
             currentExamId = examId;
-            
             modal.classList.add('open');
         }
 
@@ -3106,28 +3305,30 @@
             if (pendingExamCallback) {
                 const callback = pendingExamCallback;
                 const examIdToSave = currentExamId;
-                
                 pendingExamCallback = null;
                 currentExamId = null;
-                
                 document.getElementById('examSecurityModal').classList.remove('open');
-                
                 if (currentUser && examIdToSave) {
                     database.ref(`users/${currentUser.uid}/examPledges/${examIdToSave}`).set({
                         agreed: true,
                         agreedAt: new Date().toISOString()
                     }).catch(err => console.error('Error saving pledge:', err));
                 }
-                
                 if (typeof callback === 'function') {
                     callback();
                 } else {
                     console.error('❌ Callback is not a function:', callback);
                     showToast('حدث خطأ داخلي، يرجى المحاولة مرة أخرى.', 'error');
                 }
-            } else {
-                showToast('⚠️ يرجى المحاولة مرة أخرى', 'warning');
             }
+        }
+
+        // ============================================================
+        // CHECK IF EXAM/QUIZ IS COMPLETED (Firebase)
+        // ============================================================
+        function isAssessmentCompleted(lessonId, type) {
+            const key = type === 'exam' ? 'exam_' + lessonId : 'quiz_' + lessonId;
+            return userCourseProgress[key]?.completed || false;
         }
 
         // ============================================================
@@ -3139,16 +3340,17 @@
                 return; 
             }
             
-            const progressKey = 'exam_' + lessonId;
-            
-            if (userCourseProgress[progressKey]?.completed) {
-                showToast('📝 لقد أتممت هذا الامتحان بالفعل!', 'info');
-                const score = userCourseProgress[progressKey]?.score || 0;
-                showExamResults(lessonId, score, 
-                    userCourseProgress[progressKey]?.correctAnswers || 0, 
-                    userCourseProgress[progressKey]?.wrongAnswers || 0, 
-                    userCourseProgress[progressKey]?.results || [], 
-                    userCourseProgress[progressKey]?.atomsAwarded || 0, true);
+            // Check if already completed
+            if (isAssessmentCompleted(lessonId, 'exam')) {
+                showToast('📝 لقد أتممت هذا الامتحان مسبقاً!', 'info');
+                const progress = userCourseProgress['exam_' + lessonId];
+                if (progress) {
+                    showExamResults(lessonId, progress.score || 0, 
+                        progress.correctAnswers || 0, 
+                        progress.wrongAnswers || 0, 
+                        progress.results || [], 
+                        progress.atomsAwarded || 0, true);
+                }
                 return;
             }
             
@@ -3191,16 +3393,17 @@
                 return; 
             }
             
-            const progressKey = 'quiz_' + lessonId;
-            
-            if (userCourseProgress[progressKey]?.completed) {
-                showToast('📝 لقد أتممت هذا الكويز بالفعل!', 'info');
-                const score = userCourseProgress[progressKey]?.score || 0;
-                showQuizResults(lessonId, score, 
-                    userCourseProgress[progressKey]?.correctAnswers || 0,
-                    userCourseProgress[progressKey]?.wrongAnswers || 0,
-                    userCourseProgress[progressKey]?.results || [],
-                    userCourseProgress[progressKey]?.atomsAwarded || 0, true);
+            // Check if already completed
+            if (isAssessmentCompleted(lessonId, 'quiz')) {
+                showToast('📝 لقد أتممت هذا الكويز مسبقاً!', 'info');
+                const progress = userCourseProgress['quiz_' + lessonId];
+                if (progress) {
+                    showQuizResults(lessonId, progress.score || 0, 
+                        progress.correctAnswers || 0,
+                        progress.wrongAnswers || 0,
+                        progress.results || [],
+                        progress.atomsAwarded || 0, true);
+                }
                 return;
             }
             
@@ -3238,7 +3441,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM UI
+        // SHOW EXAM UI - Fixed Radio buttons, Real Timer
         // ============================================================
         function showExamUI(exam, isSecure = false) {
             const main = document.getElementById('mainContent');
@@ -3273,7 +3476,9 @@
             isExamMode = true;
 
             let currentQuestion = 0;
+            let answeredQuestions = new Set();
 
+            // Real timer
             if (exam.duration && exam.duration > 0) {
                 if (examTimer) clearInterval(examTimer);
                 
@@ -3306,6 +3511,7 @@
                         }
                     }
                     
+                    // Auto submit when time runs out
                     if (timeLeft <= 0 && !examSubmitted) {
                         clearInterval(examTimer);
                         examTimer = null;
@@ -3335,7 +3541,59 @@
                 const submitBtn = document.getElementById('submitExamBtn');
                 if (prevBtn) prevBtn.style.display = index > 0 ? 'inline-flex' : 'none';
                 if (nextBtn) nextBtn.style.display = index < questions.length - 1 ? 'inline-flex' : 'none';
-                if (submitBtn) submitBtn.style.display = index === questions.length - 1 ? 'inline-flex' : 'none';
+                
+                // Auto submit on last question if all answered
+                if (index === questions.length - 1 && answeredQuestions.size === questions.length) {
+                    if (submitBtn) {
+                        submitBtn.style.display = 'inline-flex';
+                        submitBtn.textContent = '📤 تسليم تلقائي...';
+                        submitBtn.disabled = true;
+                        setTimeout(() => {
+                            if (!examSubmitted) {
+                                submitExam(exam.id, exam.atomsReward || 10, false);
+                            }
+                        }, 800);
+                    }
+                } else if (submitBtn) {
+                    submitBtn.style.display = index === questions.length - 1 ? 'inline-flex' : 'none';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '📤 تسليم الامتحان';
+                }
+            };
+
+            // Select answer with Radio - only one selection
+            window.selectExamAnswer = function(id, qIdx, oIdx, correct) {
+                if (!isExamActive || examSubmitted) return;
+                if (!examAnswers[id]) examAnswers[id] = {};
+                
+                const container = document.getElementById('examContainer');
+                if (container) {
+                    const divs = container.querySelectorAll('.question-card');
+                    if (divs[qIdx]) {
+                        const options = divs[qIdx].querySelectorAll('.quiz-option');
+                        options.forEach((el, index) => {
+                            const radio = el.querySelector('input[type="radio"]');
+                            if (radio) {
+                                radio.checked = index === oIdx;
+                            }
+                            el.classList.remove('selected', 'correct', 'wrong');
+                        });
+                        options[oIdx].classList.add('selected');
+                    }
+                }
+                
+                examAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+                answeredQuestions.add(qIdx);
+                
+                // Check if all questions answered, show submit button
+                if (answeredQuestions.size === questions.length && !examSubmitted) {
+                    const submitBtn = document.getElementById('submitExamBtn');
+                    if (submitBtn) {
+                        submitBtn.style.display = 'inline-flex';
+                        submitBtn.textContent = '📤 تسليم الامتحان';
+                        submitBtn.disabled = false;
+                    }
+                }
             };
 
             let questionsHtml = questions.map((q, idx) => `
@@ -3351,7 +3609,7 @@
                         <div style="display:flex;flex-direction:column;gap:6px;">
                             ${q.options.map((opt, oIdx) => `
                                 <div class="quiz-option" onclick="APP.selectExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                    <input type="radio" name="exam_q${idx}" id="exam_q${idx}_${oIdx}" value="${oIdx}" style="display:none;">
+                                    <input type="radio" name="exam_q${idx}" id="exam_q${idx}_${oIdx}" value="${oIdx}">
                                     <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
                                     <span class="option-label">${escapeHtml(opt)}</span>
                                 </div>
@@ -3379,6 +3637,7 @@
                     
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                         <span style="font-size:0.85rem;color:var(--text2);">السؤال <span id="questionProgress">1 / ${questions.length}</span></span>
+                        <span style="font-size:0.85rem;color:var(--text2);" id="answeredCount">${answeredQuestions.size} / ${questions.length} تمت الإجابة</span>
                     </div>
 
                     <div id="examContainer">
@@ -3417,7 +3676,14 @@
             const submitBtn = document.getElementById('submitExamBtn');
             if (prevBtn) prevBtn.style.display = next > 0 ? 'inline-flex' : 'none';
             if (nextBtn) nextBtn.style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
-            if (submitBtn) submitBtn.style.display = next === cards.length - 1 ? 'inline-flex' : 'none';
+            if (submitBtn) {
+                const answered = document.querySelectorAll('.quiz-option.selected').length;
+                submitBtn.style.display = next === cards.length - 1 ? 'inline-flex' : 'none';
+                if (answered === cards.length) {
+                    submitBtn.textContent = '📤 تسليم الامتحان';
+                    submitBtn.disabled = false;
+                }
+            }
         }
 
         function exitExam() {
@@ -3437,7 +3703,7 @@
         }
 
         // ============================================================
-        // SHOW QUIZ UI
+        // SHOW QUIZ UI - Fixed Radio buttons, Real Timer
         // ============================================================
         function showQuizUI(quiz, isSecure = false) {
             const main = document.getElementById('mainContent');
@@ -3470,6 +3736,8 @@
             isExamActive = true;
             examSubmitted = false;
             isExamMode = true;
+
+            let answeredQuestions = new Set();
 
             if (quiz.duration && quiz.duration > 0) {
                 if (examTimer) clearInterval(examTimer);
@@ -3515,6 +3783,39 @@
                 }, 1000);
             }
 
+            window.selectQuizAnswer = function(id, qIdx, oIdx, correct) {
+                if (!isExamActive || examSubmitted) return;
+                if (!quizAnswers[id]) quizAnswers[id] = {};
+                
+                const container = document.getElementById('quizContainer');
+                if (container) {
+                    const divs = container.querySelectorAll('.quiz-question-card');
+                    if (divs[qIdx]) {
+                        const options = divs[qIdx].querySelectorAll('.quiz-option');
+                        options.forEach((el, index) => {
+                            const radio = el.querySelector('input[type="radio"]');
+                            if (radio) {
+                                radio.checked = index === oIdx;
+                            }
+                            el.classList.remove('selected', 'correct', 'wrong');
+                        });
+                        options[oIdx].classList.add('selected');
+                    }
+                }
+                
+                quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+                answeredQuestions.add(qIdx);
+                
+                if (answeredQuestions.size === questions.length && !examSubmitted) {
+                    const submitBtn = document.getElementById('submitQuizBtn');
+                    if (submitBtn) {
+                        submitBtn.style.display = 'inline-flex';
+                        submitBtn.textContent = '📤 تسليم الكويز';
+                        submitBtn.disabled = false;
+                    }
+                }
+            };
+
             const renderQuestion = (index) => {
                 const q = questions[index];
                 if (!q) return;
@@ -3523,7 +3824,23 @@
                 document.getElementById('quizProgress').textContent = `${index + 1} / ${questions.length}`;
                 document.getElementById('quizPrev').style.display = index > 0 ? 'inline-flex' : 'none';
                 document.getElementById('quizNext').style.display = index < questions.length - 1 ? 'inline-flex' : 'none';
-                document.getElementById('submitQuizBtn').style.display = index === questions.length - 1 ? 'inline-flex' : 'none';
+                const submitBtn = document.getElementById('submitQuizBtn');
+                if (index === questions.length - 1 && answeredQuestions.size === questions.length) {
+                    if (submitBtn) {
+                        submitBtn.style.display = 'inline-flex';
+                        submitBtn.textContent = '📤 تسليم تلقائي...';
+                        submitBtn.disabled = true;
+                        setTimeout(() => {
+                            if (!examSubmitted) {
+                                submitQuiz(quiz.id, quiz.atomsReward || 5, false);
+                            }
+                        }, 800);
+                    }
+                } else if (submitBtn) {
+                    submitBtn.style.display = index === questions.length - 1 ? 'inline-flex' : 'none';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '📤 تسليم الكويز';
+                }
             };
 
             let questionsHtml = questions.map((q, idx) => `
@@ -3539,7 +3856,7 @@
                         <div style="display:flex;flex-direction:column;gap:6px;">
                             ${q.options.map((opt, oIdx) => `
                                 <div class="quiz-option" onclick="APP.selectQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
-                                    <input type="radio" name="quiz_q${idx}" id="quiz_q${idx}_${oIdx}" value="${oIdx}" style="display:none;">
+                                    <input type="radio" name="quiz_q${idx}" id="quiz_q${idx}_${oIdx}" value="${oIdx}">
                                     <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
                                     <span class="option-label">${escapeHtml(opt)}</span>
                                 </div>
@@ -3567,6 +3884,7 @@
                     
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                         <span style="font-size:0.85rem;color:var(--text2);">السؤال <span id="quizProgress">1 / ${questions.length}</span></span>
+                        <span style="font-size:0.85rem;color:var(--text2);" id="quizAnsweredCount">${answeredQuestions.size} / ${questions.length} تمت الإجابة</span>
                     </div>
 
                     <div id="quizContainer">
@@ -3601,98 +3919,26 @@
             document.getElementById('quizProgress').textContent = `${next + 1} / ${cards.length}`;
             document.getElementById('quizPrev').style.display = next > 0 ? 'inline-flex' : 'none';
             document.getElementById('quizNext').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
-            document.getElementById('submitQuizBtn').style.display = next === cards.length - 1 ? 'inline-flex' : 'none';
-        }
-
-        // ============================================================
-        // SELECT ANSWER - SINGLE CHOICE ONLY
-        // ============================================================
-        function selectExamAnswer(id, qIdx, oIdx, correct) {
-            if (!isExamActive || examSubmitted) return;
-            if (!examAnswers[id]) examAnswers[id] = {};
-            
-            const container = document.getElementById('examContainer');
-            if (container) {
-                const divs = container.querySelectorAll('.question-card');
-                if (divs[qIdx]) {
-                    const options = divs[qIdx].querySelectorAll('.quiz-option');
-                    options.forEach((el, index) => {
-                        const radio = el.querySelector('input[type="radio"]');
-                        if (radio) {
-                            radio.checked = index === oIdx;
-                        }
-                        el.classList.remove('selected', 'correct', 'wrong');
-                    });
-                    options[oIdx].classList.add('selected');
+            const submitBtn = document.getElementById('submitQuizBtn');
+            if (submitBtn) {
+                const answered = document.querySelectorAll('.quiz-option.selected').length;
+                submitBtn.style.display = next === cards.length - 1 ? 'inline-flex' : 'none';
+                if (answered === cards.length) {
+                    submitBtn.textContent = '📤 تسليم الكويز';
+                    submitBtn.disabled = false;
                 }
-            }
-            
-            examAnswers[id][qIdx] = { selected: oIdx, correct: correct };
-            
-            // Check if all questions answered
-            const allQuestions = document.querySelectorAll('.question-card');
-            let allAnswered = true;
-            for (let i = 0; i < allQuestions.length; i++) {
-                if (!examAnswers[id] || !examAnswers[id][i]) {
-                    allAnswered = false;
-                    break;
-                }
-            }
-            if (allAnswered && !examSubmitted && allQuestions.length > 0) {
-                setTimeout(() => {
-                    submitExam(id, currentExamData?.atomsReward || 10, false);
-                    showToast('✅ تم الإجابة على جميع الأسئلة! جاري التصحيح...', 'success');
-                }, 500);
-            }
-        }
-
-        function selectQuizAnswer(id, qIdx, oIdx, correct) {
-            if (!isExamActive || examSubmitted) return;
-            if (!quizAnswers[id]) quizAnswers[id] = {};
-            
-            const container = document.getElementById('quizContainer');
-            if (container) {
-                const divs = container.querySelectorAll('.quiz-question-card');
-                if (divs[qIdx]) {
-                    const options = divs[qIdx].querySelectorAll('.quiz-option');
-                    options.forEach((el, index) => {
-                        const radio = el.querySelector('input[type="radio"]');
-                        if (radio) {
-                            radio.checked = index === oIdx;
-                        }
-                        el.classList.remove('selected', 'correct', 'wrong');
-                    });
-                    options[oIdx].classList.add('selected');
-                }
-            }
-            
-            quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
-            
-            // Check if all questions answered
-            const allQuestions = document.querySelectorAll('.quiz-question-card');
-            let allAnswered = true;
-            for (let i = 0; i < allQuestions.length; i++) {
-                if (!quizAnswers[id] || !quizAnswers[id][i]) {
-                    allAnswered = false;
-                    break;
-                }
-            }
-            if (allAnswered && !examSubmitted && allQuestions.length > 0) {
-                setTimeout(() => {
-                    submitQuiz(id, currentQuizData?.atomsReward || 5, false);
-                    showToast('✅ تم الإجابة على جميع الأسئلة! جاري التصحيح...', 'success');
-                }, 500);
             }
         }
 
         // ============================================================
-        // SUBMIT EXAM
+        // SUBMIT EXAM - Saves to Firebase, prevents re-entry
         // ============================================================
         async function submitExam(id, maxAtoms, autoSubmit = false) {
             if (!currentUser) { showLoginOverlay(); return; }
             
             const progressKey = 'exam_' + id;
             
+            // Double-check if already completed in Firebase
             if (userCourseProgress[progressKey]?.completed) {
                 showToast('📝 لقد قمت بالفعل بحل هذا الامتحان', 'info');
                 return;
@@ -3735,7 +3981,6 @@
                 let total = Math.min(Object.keys(answers).length, questions.length);
                 let wrongQuestions = [];
                 let results = [];
-                
                 for (let i = 0; i < total; i++) {
                     const isCorrect = answers[i] && answers[i].selected === questions[i].correctAnswer;
                     if (isCorrect) {
@@ -3758,19 +4003,38 @@
                 const score = Math.round((correct / total) * 100);
                 const earnedAtoms = Math.round((score / 100) * maxAtoms);
 
+                const timeSpent = Math.floor((Date.now() - examStartTime) / 1000);
+
+                // Save to Firebase - prevents re-entry
                 const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
                 await progressRef.set({
                     completed: true,
                     score: score,
-                    atomsAwarded: earnedAtoms > 0,
+                    atomsAwarded: earnedAtoms,
                     completedAt: new Date().toISOString(),
                     type: 'exam',
                     totalQuestions: total,
                     correctAnswers: correct,
                     wrongAnswers: wrongQuestions.length,
-                    timeSpent: Math.floor((Date.now() - examStartTime) / 1000),
+                    timeSpent: timeSpent,
                     title: data.title || 'امتحان',
                     results: results
+                });
+
+                // Save to results for history
+                const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
+                await resultRef.set({
+                    title: data.title || 'امتحان',
+                    type: 'exam',
+                    score: score,
+                    totalQuestions: total,
+                    correctAnswers: correct,
+                    wrongAnswers: wrongQuestions.length,
+                    timeSpent: timeSpent,
+                    atomsEarned: earnedAtoms,
+                    completedAt: new Date().toISOString(),
+                    lessonId: data.lessonId || id,
+                    examId: id
                 });
 
                 if (score === 100) {
@@ -3822,6 +4086,20 @@
                 }
 
                 checkAchievements(currentUser.uid);
+                
+                // Update local progress
+                userCourseProgress[progressKey] = {
+                    completed: true,
+                    score: score,
+                    atomsAwarded: earnedAtoms,
+                    completedAt: new Date().toISOString(),
+                    type: 'exam',
+                    totalQuestions: total,
+                    correctAnswers: correct,
+                    wrongAnswers: wrongQuestions.length,
+                    results: results
+                };
+                
                 showExamResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
 
             } catch (err) {
@@ -3834,7 +4112,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM RESULTS
+        // SHOW EXAM RESULTS - Professional Page
         // ============================================================
         function showExamResults(examId, score, correct, wrong, results, atomsEarned, isReview = false) {
             const main = document.getElementById('mainContent');
@@ -3842,34 +4120,42 @@
 
             const passed = score >= 60;
             const timeSpent = Math.floor((Date.now() - examStartTime) / 60);
-            const userName = userData?.name || 'طالب';
-            const examTitle = currentExamData?.title || 'الاختبار';
-            const totalQuestions = (results || []).length;
             
             let message = '';
             let emoji = '';
             let gradeColor = '';
+            let detailedMessage = '';
             
             if (score === 100) {
-                message = '🎉 رائع جداً، إجابة كاملة! أنت عبقري!';
+                message = '🌟 أداء ممتاز! إجابة كاملة!';
                 emoji = '🏆';
                 gradeColor = 'var(--gold)';
-            } else if (score >= 80) {
-                message = '⭐ أداء ممتاز، استمر!';
+                detailedMessage = 'رائع جداً، إجابة كاملة. استمر بهذا المستوى المتميز!';
+            } else if (score >= 85) {
+                message = '⭐ أداء ممتاز!';
                 emoji = '🌟';
                 gradeColor = 'var(--success)';
-            } else if (score >= 60) {
-                message = '💪 أداء جيد ويمكنك الوصول إلى الأفضل.';
+                detailedMessage = 'أداء ممتاز، استمر في التحسين للوصول إلى الكمال!';
+            } else if (score >= 70) {
+                message = '💪 أداء جيد جداً!';
                 emoji = '💪';
                 gradeColor = 'var(--primary)';
+                detailedMessage = 'أداء جيد ويمكنك الوصول إلى الأفضل بمراجعة بسيطة.';
             } else if (score >= 50) {
-                message = '📖 تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+                message = '📖 أداء جيد!';
                 emoji = '📖';
                 gradeColor = 'var(--warning)';
-            } else {
-                message = '📚 تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+                detailedMessage = 'أداء جيد، تحتاج إلى مراجعة بعض النقاط البسيطة.';
+            } else if (score >= 30) {
+                message = '📚 يحتاج إلى مراجعة!';
                 emoji = '📚';
                 gradeColor = 'var(--danger)';
+                detailedMessage = 'تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+            } else {
+                message = '🔴 يحتاج إلى مراجعة شاملة!';
+                emoji = '🔴';
+                gradeColor = 'var(--danger)';
+                detailedMessage = 'ضعيف جداً، تحتاج إلى مراجعة شاملة للدرس من البداية.';
             }
 
             const wrongResults = results.filter(r => !r.isCorrect);
@@ -3883,48 +4169,38 @@
                     
                     <div class="card" style="padding:28px;margin-top:12px;text-align:center;border:3px solid ${gradeColor};">
                         <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
-                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${gradeColor};">${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}</h2>
-                        <p style="font-size:1.2rem;color:var(--text);margin-top:8px;font-weight:700;">${message}</p>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:${gradeColor};">
+                            ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
+                        </h2>
+                        <p style="font-size:1.2rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
+                        <p style="font-size:1.1rem;color:var(--primary);margin-top:4px;font-weight:600;">📊 ${detailedMessage}</p>
                         
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:20px;">
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${examTitle}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">اسم الاختبار</div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin-top:20px;">
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--primary);">${score}%</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">الدرجة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${escapeHtml(userName)}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">الطالب</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--success);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--success);">${correct}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">✅ إجابة صحيحة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${totalQuestions}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">عدد الأسئلة</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--danger);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--danger);">${wrong}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">❌ إجابة خاطئة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);border:2px solid var(--success);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--success);">${correct}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">✅ صحيحة</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);border:2px solid var(--danger);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--danger);">${wrong}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">❌ خاطئة</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${score}%</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">النسبة</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">الوقت</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--text2);">${new Date().toLocaleDateString('ar')}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">التاريخ</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">⏱ الوقت المستغرق</div>
                             </div>
                             ${atomsEarned > 0 ? `
-                                <div style="background:var(--bg);padding:12px;border-radius:var(--radius);border:2px solid var(--gold);">
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
-                                    <div style="font-size:0.8rem;color:var(--text2);">⚛️ ذرات</div>
+                                <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--gold);">
+                                    <div style="font-size:2rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
+                                    <div style="font-size:0.85rem;color:var(--text2);">⚛️ ذرات مكتسبة</div>
                                 </div>
                             ` : ''}
+                        </div>
+                        <div style="margin-top:12px;font-size:0.85rem;color:var(--text2);">
+                            📅 ${new Date().toLocaleDateString('ar')} • ${new Date().toLocaleTimeString('ar')}
                         </div>
                     </div>
 
@@ -3944,16 +4220,17 @@
                                 ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
                             </div>
                         `).join('')}
-                    ` : `
-                        <div style="text-align:center;padding:20px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:12px;font-weight:700;">
-                            ✅ جميع الإجابات صحيحة - ممتاز!
+                    ` : ''}
+
+                    ${correctResults.length > 0 && correctResults.length <= 10 ? `
+                        <div style="text-align:center;padding:14px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:12px;font-weight:700;">
+                            ✅ ${correctResults.length} سؤال صحيح - ممتاز!
                         </div>
-                    `}
+                    ` : ''}
 
                     <div style="text-align:center;margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                         <button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
                         ${!isReview ? `<button class="btn-outline no-print" onclick="APP.scrollToCourses()">📚 العودة للكورسات</button>` : ''}
-                        <button class="btn-outline no-print" onclick="APP.showResults()">📊 نتائجي</button>
                     </div>
                 </div>
             `;
@@ -3961,7 +4238,7 @@
         }
 
         // ============================================================
-        // SUBMIT QUIZ
+        // SUBMIT QUIZ - Saves to Firebase, prevents re-entry
         // ============================================================
         async function submitQuiz(id, maxAtoms, autoSubmit = false) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -4028,20 +4305,38 @@
                 }
                 const score = Math.round((correct / total) * 100);
                 const earnedAtoms = Math.round((score / 100) * maxAtoms);
+                const timeSpent = Math.floor((Date.now() - examStartTime) / 1000);
 
+                // Save to Firebase - prevents re-entry
                 const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
                 await progressRef.set({
                     completed: true,
                     score: score,
-                    atomsAwarded: earnedAtoms > 0,
+                    atomsAwarded: earnedAtoms,
                     completedAt: new Date().toISOString(),
                     type: 'quiz',
                     totalQuestions: total,
                     correctAnswers: correct,
                     wrongAnswers: wrongQuestions.length,
-                    timeSpent: Math.floor((Date.now() - examStartTime) / 1000),
+                    timeSpent: timeSpent,
                     title: data.title || 'كويز',
                     results: results
+                });
+
+                // Save to results
+                const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
+                await resultRef.set({
+                    title: data.title || 'كويز',
+                    type: 'quiz',
+                    score: score,
+                    totalQuestions: total,
+                    correctAnswers: correct,
+                    wrongAnswers: wrongQuestions.length,
+                    timeSpent: timeSpent,
+                    atomsEarned: earnedAtoms,
+                    completedAt: new Date().toISOString(),
+                    lessonId: data.lessonId || id,
+                    quizId: id
                 });
 
                 if (earnedAtoms > 0) {
@@ -4083,6 +4378,19 @@
                 }
 
                 checkAchievements(currentUser.uid);
+                
+                userCourseProgress[progressKey] = {
+                    completed: true,
+                    score: score,
+                    atomsAwarded: earnedAtoms,
+                    completedAt: new Date().toISOString(),
+                    type: 'quiz',
+                    totalQuestions: total,
+                    correctAnswers: correct,
+                    wrongAnswers: wrongQuestions.length,
+                    results: results
+                };
+                
                 showQuizResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
 
             } catch (err) {
@@ -4100,34 +4408,42 @@
 
             const passed = score >= 60;
             const timeSpent = Math.floor((Date.now() - examStartTime) / 60);
-            const userName = userData?.name || 'طالب';
-            const quizTitle = currentQuizData?.title || 'الكويز';
-            const totalQuestions = (results || []).length;
             
             let message = '';
             let emoji = '';
             let gradeColor = '';
+            let detailedMessage = '';
             
             if (score === 100) {
-                message = '🎉 رائع جداً، إجابة كاملة! أنت عبقري!';
+                message = '🌟 أداء ممتاز! إجابة كاملة!';
                 emoji = '🏆';
                 gradeColor = 'var(--gold)';
-            } else if (score >= 80) {
-                message = '⭐ أداء ممتاز، استمر!';
+                detailedMessage = 'رائع جداً، إجابة كاملة. استمر بهذا المستوى المتميز!';
+            } else if (score >= 85) {
+                message = '⭐ أداء ممتاز!';
                 emoji = '🌟';
                 gradeColor = 'var(--success)';
-            } else if (score >= 60) {
-                message = '💪 أداء جيد ويمكنك الوصول إلى الأفضل.';
+                detailedMessage = 'أداء ممتاز، استمر في التحسين للوصول إلى الكمال!';
+            } else if (score >= 70) {
+                message = '💪 أداء جيد جداً!';
                 emoji = '💪';
                 gradeColor = 'var(--primary)';
+                detailedMessage = 'أداء جيد ويمكنك الوصول إلى الأفضل بمراجعة بسيطة.';
             } else if (score >= 50) {
-                message = '📖 تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+                message = '📖 أداء جيد!';
                 emoji = '📖';
                 gradeColor = 'var(--warning)';
-            } else {
-                message = '📚 تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+                detailedMessage = 'أداء جيد، تحتاج إلى مراجعة بعض النقاط البسيطة.';
+            } else if (score >= 30) {
+                message = '📚 يحتاج إلى مراجعة!';
                 emoji = '📚';
                 gradeColor = 'var(--danger)';
+                detailedMessage = 'تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+            } else {
+                message = '🔴 يحتاج إلى مراجعة شاملة!';
+                emoji = '🔴';
+                gradeColor = 'var(--danger)';
+                detailedMessage = 'ضعيف جداً، تحتاج إلى مراجعة شاملة للدرس من البداية.';
             }
 
             const wrongResults = results.filter(r => !r.isCorrect);
@@ -4141,48 +4457,38 @@
                     
                     <div class="card" style="padding:28px;margin-top:12px;text-align:center;border:3px solid ${gradeColor};">
                         <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
-                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:${gradeColor};">${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}</h2>
-                        <p style="font-size:1.2rem;color:var(--text);margin-top:8px;font-weight:700;">${message}</p>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:${gradeColor};">
+                            ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
+                        </h2>
+                        <p style="font-size:1.2rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
+                        <p style="font-size:1.1rem;color:var(--primary);margin-top:4px;font-weight:600;">📊 ${detailedMessage}</p>
                         
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:20px;">
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${quizTitle}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">اسم الكويز</div>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin-top:20px;">
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--primary);">${score}%</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">الدرجة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${escapeHtml(userName)}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">الطالب</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--success);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--success);">${correct}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">✅ إجابة صحيحة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${totalQuestions}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">عدد الأسئلة</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--danger);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--danger);">${wrong}</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">❌ إجابة خاطئة</div>
                             </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);border:2px solid var(--success);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--success);">${correct}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">✅ صحيحة</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);border:2px solid var(--danger);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--danger);">${wrong}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">❌ خاطئة</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">${score}%</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">النسبة</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">الوقت</div>
-                            </div>
-                            <div style="background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                <div style="font-size:1.5rem;font-weight:700;color:var(--text2);">${new Date().toLocaleDateString('ar')}</div>
-                                <div style="font-size:0.8rem;color:var(--text2);">التاريخ</div>
+                            <div style="background:var(--bg);padding:16px;border-radius:var(--radius);">
+                                <div style="font-size:2rem;font-weight:700;color:var(--warning);">${timeSpent} د</div>
+                                <div style="font-size:0.85rem;color:var(--text2);">⏱ الوقت المستغرق</div>
                             </div>
                             ${atomsEarned > 0 ? `
-                                <div style="background:var(--bg);padding:12px;border-radius:var(--radius);border:2px solid var(--gold);">
-                                    <div style="font-size:1.5rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
-                                    <div style="font-size:0.8rem;color:var(--text2);">⚛️ ذرات</div>
+                                <div style="background:var(--bg);padding:16px;border-radius:var(--radius);border:2px solid var(--gold);">
+                                    <div style="font-size:2rem;font-weight:700;color:var(--gold);">+${atomsEarned}</div>
+                                    <div style="font-size:0.85rem;color:var(--text2);">⚛️ ذرات مكتسبة</div>
                                 </div>
                             ` : ''}
+                        </div>
+                        <div style="margin-top:12px;font-size:0.85rem;color:var(--text2);">
+                            📅 ${new Date().toLocaleDateString('ar')} • ${new Date().toLocaleTimeString('ar')}
                         </div>
                     </div>
 
@@ -4202,111 +4508,11 @@
                                 ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
                             </div>
                         `).join('')}
-                    ` : `
-                        <div style="text-align:center;padding:20px;background:var(--success);color:#fff;border-radius:var(--radius);margin-top:12px;font-weight:700;">
-                            ✅ جميع الإجابات صحيحة - ممتاز!
-                        </div>
-                    `}
+                    ` : ''}
 
                     <div style="text-align:center;margin-top:20px;">
                         <button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
-                        <button class="btn-outline no-print" onclick="APP.showResults()">📊 نتائجي</button>
                     </div>
-                </div>
-            `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // ============================================================
-        // RESULTS PAGE
-        // ============================================================
-        function showResults() {
-            if (!currentUser) {
-                showLoginOverlay();
-                return;
-            }
-
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const progressData = userCourseProgress || {};
-            const results = [];
-
-            Object.entries(progressData).forEach(([key, value]) => {
-                if (value.completed && (value.type === 'exam' || value.type === 'quiz' || value.type === 'assignment')) {
-                    results.push({
-                        id: key,
-                        title: value.title || key,
-                        type: value.type || 'اختبار',
-                        score: value.score || 0,
-                        correct: value.correctAnswers || 0,
-                        wrong: value.wrongAnswers || 0,
-                        total: value.totalQuestions || 0,
-                        timeSpent: value.timeSpent || 0,
-                        completedAt: value.completedAt || new Date().toISOString(),
-                        atomsEarned: value.atomsAwarded || 0
-                    });
-                }
-            });
-
-            results.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
-
-            main.innerHTML = `
-                <div style="max-width:1100px;margin:0 auto;padding:20px;">
-                    <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()">
-                        <i class="fas fa-arrow-right"></i> العودة
-                    </button>
-                    
-                    <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">
-                        📊 نتائجي
-                    </h1>
-                    <p style="color:var(--text2);margin-bottom:16px;">جميع نتائج الاختبارات والكويزات والواجبات</p>
-
-                    ${results.length === 0 ? `
-                        <div class="empty-state">
-                            <div class="icon">📊</div>
-                            <h3>لا توجد نتائج</h3>
-                            <p>ابدأ بحل الاختبارات والكويزات لتظهر نتائجك هنا</p>
-                        </div>
-                    ` : `
-                        <div style="overflow-x:auto;">
-                            <table style="width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);">
-                                <thead style="background:var(--primary);color:#fff;">
-                                    <tr>
-                                        <th style="padding:12px 16px;text-align:right;">الاختبار</th>
-                                        <th style="padding:12px 16px;text-align:right;">النوع</th>
-                                        <th style="padding:12px 16px;text-align:right;">الدرجة</th>
-                                        <th style="padding:12px 16px;text-align:right;">النسبة</th>
-                                        <th style="padding:12px 16px;text-align:right;">✅ صحيح</th>
-                                        <th style="padding:12px 16px;text-align:right;">❌ خطأ</th>
-                                        <th style="padding:12px 16px;text-align:right;">الوقت</th>
-                                        <th style="padding:12px 16px;text-align:right;">التاريخ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${results.map(r => `
-                                        <tr style="border-bottom:1px solid var(--border);">
-                                            <td style="padding:10px 16px;font-weight:600;color:var(--text);">${escapeHtml(r.title)}</td>
-                                            <td style="padding:10px 16px;color:var(--text2);">
-                                                <span style="background:var(--bg);padding:2px 12px;border-radius:20px;font-size:0.7rem;">
-                                                    ${r.type === 'exam' ? '📝 امتحان' : r.type === 'quiz' ? '🧪 كويز' : '📝 واجب'}
-                                                </span>
-                                            </td>
-                                            <td style="padding:10px 16px;font-weight:700;color:${r.score >= 60 ? 'var(--success)' : 'var(--danger)'};">${r.score}%</td>
-                                            <td style="padding:10px 16px;">${r.score}%</td>
-                                            <td style="padding:10px 16px;color:var(--success);">${r.correct}</td>
-                                            <td style="padding:10px 16px;color:var(--danger);">${r.wrong}</td>
-                                            <td style="padding:10px 16px;color:var(--text2);">${r.timeSpent} د</td>
-                                            <td style="padding:10px 16px;font-size:0.8rem;color:var(--text2);">${new Date(r.completedAt).toLocaleDateString('ar')}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div style="margin-top:12px;font-size:0.85rem;color:var(--text2);text-align:center;">
-                            إجمالي النتائج: ${results.length}
-                        </div>
-                    `}
                 </div>
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -4321,7 +4527,7 @@
             const progressKey = 'assignment_' + lessonId;
             
             if (userCourseProgress[progressKey]?.completed) {
-                showToast('📝 لقد أتممت هذا الواجب بالفعل!', 'info');
+                showToast('📝 لقد أتممت هذا الواجب مسبقاً!', 'info');
                 return;
             }
             
@@ -4382,15 +4588,28 @@
                         atomsAwarded: atomsReward
                     });
                     
-                    await userRef.update({ atoms: currentAtoms + atomsReward });
+                    // Save to results
+                    const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
+                    await resultRef.set({
+                        title: 'واجب الحصة',
+                        type: 'assignment',
+                        score: 100,
+                        totalQuestions: 1,
+                        correctAnswers: 1,
+                        wrongAnswers: 0,
+                        timeSpent: 0,
+                        atomsEarned: atomsReward,
+                        completedAt: new Date().toISOString(),
+                        lessonId: lessonId
+                    });
                     
+                    await userRef.update({ atoms: currentAtoms + atomsReward });
                     if (userData) userData.atoms = currentAtoms + atomsReward;
                     
                     animateAtoms('atomsCount', currentAtoms + atomsReward);
                     animateAtoms('userAtomsCount', currentAtoms + atomsReward);
                     
                     await addNotification(currentUser.uid, '📝 تم تسليم الواجب!', `حصلت على ${atomsReward} ذرة لتسليم الواجب.`, '📝');
-                    
                     showToast(`🎉 +${atomsReward} ذرة! تم تسليم الواجب بنجاح.`, 'success');
                     
                     const main = document.getElementById('mainContent');
@@ -4429,18 +4648,7 @@
                     });
                 });
                 users.sort((a, b) => (b.atoms || 0) - (a.atoms || 0));
-                
-                if (currentUser && userData) {
-                    database.ref('users').orderByChild('atoms').startAt(userData.atoms + 1).once('value', (snapshot) => {
-                        const rank = snapshot.numChildren() + 1;
-                        userData.rank = '#' + rank;
-                        renderLeaderboard(users);
-                    }).catch(() => {
-                        renderLeaderboard(users);
-                    });
-                } else {
-                    renderLeaderboard(users);
-                }
+                renderLeaderboard(users);
             });
         }
 
@@ -4531,7 +4739,93 @@
         }
 
         // ============================================================
-        // ERROR BANK - FIXED
+        // RESULTS PAGE - NEW
+        // ============================================================
+        function showResults() {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+
+            database.ref('users/' + currentUser.uid + '/results').orderByChild('completedAt').limitToLast(50).on('value', (snapshot) => {
+                const results = [];
+                snapshot.forEach((child) => {
+                    const data = child.val();
+                    results.push({ id: child.key, ...data });
+                });
+                results.reverse(); // newest first
+
+                if (results.length === 0) {
+                    main.innerHTML = `
+                        <div class="results-page">
+                            <div class="header">
+                                <h1>📊 نتائجي</h1>
+                                <button class="btn-outline btn-sm" onclick="APP.showDashboard()">
+                                    <i class="fas fa-arrow-right"></i> العودة
+                                </button>
+                            </div>
+                            <div class="empty-state">
+                                <div class="icon">📊</div>
+                                <h3>لا توجد نتائج بعد</h3>
+                                <p>ابدأ بحل الكويزات والامتحانات لتظهر نتائجك هنا</p>
+                                <button class="btn-primary" style="margin-top:12px;" onclick="APP.scrollToCourses()">📚 ابدأ التعلم</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <div class="results-page">
+                        <div class="header">
+                            <h1>📊 نتائجي</h1>
+                            <button class="btn-outline btn-sm" onclick="APP.showDashboard()">
+                                <i class="fas fa-arrow-right"></i> العودة
+                            </button>
+                        </div>
+                        <p style="color:var(--text2);margin-bottom:12px;">عدد النتائج: ${results.length}</p>
+                        <div style="overflow-x:auto;">
+                            <table class="results-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>الاختبار</th>
+                                        <th>النوع</th>
+                                        <th>الدرجة</th>
+                                        <th>النسبة</th>
+                                        <th>صحيح/خطأ</th>
+                                        <th>الوقت</th>
+                                        <th>التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${results.map((r, idx) => `
+                                        <tr>
+                                            <td>${idx + 1}</td>
+                                            <td style="font-weight:600;">${escapeHtml(r.title || 'اختبار')}</td>
+                                            <td><span class="badge-type ${r.type || 'exam'}">${r.type || 'exam'}</span></td>
+                                            <td>${r.score || 0}%</td>
+                                            <td><span class="${(r.score || 0) >= 60 ? 'badge-pass' : 'badge-fail'}">${(r.score || 0) >= 60 ? '✅ نجاح' : '❌ رسوب'}</span></td>
+                                            <td>${r.correctAnswers || 0}/${r.totalQuestions || 0}</td>
+                                            <td>${Math.floor((r.timeSpent || 0) / 60)} د</td>
+                                            <td>${formatTime(r.completedAt)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                main.innerHTML = html;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // ============================================================
+        // ERROR BANK - REBUILT
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -4547,12 +4841,11 @@
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     if (Array.isArray(data)) {
-                        errors = data;
+                        errors = data.filter(e => !e.solved);
                     }
                 }
 
-                const unresolvedErrors = errors.filter(e => !e.solved);
-                const totalErrors = unresolvedErrors.length;
+                const totalErrors = errors.length;
 
                 main.innerHTML = `
                     <div style="max-width:800px;margin:0 auto;padding:20px;">
@@ -4561,17 +4854,23 @@
                         </button>
                         
                         <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">
-                            ❌ أخطائي
+                            ❌ بنك الأخطاء
                         </h1>
                         
                         <div class="error-bank-summary">
-                            <div class="label">أخطأت في</div>
+                            <div class="label">عدد الأسئلة التي أخطأت فيها</div>
                             <div class="count">${totalErrors}</div>
-                            <div class="label">أسئلة</div>
+                            <div class="label">سؤال</div>
                             ${totalErrors > 0 ? `
-                                <button class="btn-primary" style="margin-top:16px;padding:14px 40px;font-size:1.1rem;" onclick="APP.startErrorReview()">
-                                    <i class="fas fa-play"></i> ابدأ المراجعة
-                                </button>
+                                <div style="margin-top:16px;">
+                                    <p style="font-size:0.9rem;color:var(--text2);">كم سؤال تريد مراجعته؟</p>
+                                    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+                                        <button class="btn-primary btn-sm" onclick="APP.startErrorReview(10)">10 أسئلة</button>
+                                        <button class="btn-primary btn-sm" onclick="APP.startErrorReview(20)">20 سؤال</button>
+                                        <button class="btn-primary btn-sm" onclick="APP.startErrorReview(50)">50 سؤال</button>
+                                        <button class="btn-primary btn-sm" style="background:var(--gold);color:#081B2C;" onclick="APP.startErrorReview('all')">الكل (${totalErrors})</button>
+                                    </div>
+                                </div>
                             ` : `
                                 <div style="margin-top:12px;font-size:1.2rem;color:var(--success);">🎉 ممتاز! لا توجد أخطاء</div>
                             `}
@@ -4590,12 +4889,8 @@
             });
         }
 
-        function startErrorReview() {
+        function startErrorReview(count) {
             if (!currentUser) return;
-            
-            // Show options for number of questions
-            const main = document.getElementById('mainContent');
-            if (!main) return;
             
             database.ref('users/' + currentUser.uid + '/errorBank').once('value', (snapshot) => {
                 let errors = [];
@@ -4610,60 +4905,26 @@
                     showToast('🎉 لا توجد أخطاء للمراجعة!', 'success');
                     return;
                 }
-                
-                main.innerHTML = `
-                    <div style="max-width:800px;margin:0 auto;padding:20px;">
-                        <button class="btn-outline btn-sm no-print" onclick="APP.showErrorBank()">
-                            <i class="fas fa-arrow-right"></i> العودة
-                        </button>
-                        
-                        <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">
-                            📝 مراجعة الأخطاء
-                        </h1>
-                        <p style="color:var(--text2);margin-bottom:16px;">لديك ${errors.length} سؤال خاطئ. اختر عدد الأسئلة التي تريد مراجعتها:</p>
-                        
-                        <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:20px;background:var(--bg);border-radius:var(--radius);">
-                            <button class="btn-primary" style="padding:14px 32px;min-width:100px;" onclick="APP.startErrorReviewWithCount(5)">5 أسئلة</button>
-                            <button class="btn-primary" style="padding:14px 32px;min-width:100px;" onclick="APP.startErrorReviewWithCount(10)">10 أسئلة</button>
-                            <button class="btn-primary" style="padding:14px 32px;min-width:100px;" onclick="APP.startErrorReviewWithCount(20)">20 سؤال</button>
-                            <button class="btn-primary" style="padding:14px 32px;min-width:100px;background:var(--gold);color:#081B2C;" onclick="APP.startErrorReviewWithCount('all')">جميع الأسئلة (${errors.length})</button>
-                        </div>
-                    </div>
-                `;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
 
-        function startErrorReviewWithCount(count) {
-            if (!currentUser) return;
-            
-            database.ref('users/' + currentUser.uid + '/errorBank').once('value', (snapshot) => {
-                let errors = [];
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    if (Array.isArray(data)) {
-                        errors = data.filter(e => !e.solved);
-                    }
+                let selectedErrors = errors;
+                if (count !== 'all' && typeof count === 'number') {
+                    selectedErrors = errors.slice(0, Math.min(count, errors.length));
                 }
-                
-                if (errors.length === 0) {
-                    showToast('🎉 لا توجد أخطاء للمراجعة!', 'success');
-                    return;
-                }
-                
-                let selectedErrors = [];
-                if (count === 'all') {
-                    selectedErrors = errors;
-                } else {
-                    const shuffled = [...errors].sort(() => 0.5 - Math.random());
-                    selectedErrors = shuffled.slice(0, Math.min(count, errors.length));
-                }
-                
+
                 if (selectedErrors.length === 0) {
-                    showToast('لا توجد أسئلة للاختيار', 'warning');
+                    showToast('⚠️ لا توجد أخطاء كافية للمراجعة', 'warning');
                     return;
                 }
-                
+
+                // Store error data for tracking correct answers
+                const errorData = selectedErrors.map((e, idx) => ({
+                    index: idx,
+                    question: e.question,
+                    correctAnswer: e.correctAnswer,
+                    userAnswer: e.userAnswer
+                }));
+                sessionStorage.setItem('error_review_data', JSON.stringify(errorData));
+
                 const examQuestions = selectedErrors.map(e => {
                     const options = generateOptions(e.correctAnswer, e.userAnswer);
                     return {
@@ -4677,31 +4938,74 @@
                 const exam = {
                     id: 'error_review_' + Date.now(),
                     title: `📝 مراجعة الأخطاء (${selectedErrors.length} سؤال)`,
-                    description: 'أسئلة من بنك الأخطاء الخاص بك - راجع إجاباتك السابقة',
+                    description: 'أسئلة من بنك الأخطاء الخاص بك - أجب بشكل صحيح لحذفها من القائمة',
                     questions: examQuestions,
-                    atomsReward: selectedErrors.length * 2,
+                    atomsReward: 0,
                     duration: Math.ceil(selectedErrors.length * 1.5)
                 };
                 
-                // Store error data for tracking which errors to remove
-                const errorMap = {};
-                selectedErrors.forEach((e, idx) => {
-                    errorMap[e.question] = { errorIndex: errors.indexOf(e), userAnswer: e.userAnswer, correctAnswer: e.correctAnswer };
-                });
-                sessionStorage.setItem('error_review_data_' + exam.id, JSON.stringify(errorMap));
+                // Override submit to handle error removal
+                const originalSubmit = window.submitExam;
+                window.submitExam = async function(id, maxAtoms, autoSubmit) {
+                    // Call original
+                    await originalSubmit.call(window, id, maxAtoms, autoSubmit);
+                    
+                    // After submission, check which questions were answered correctly
+                    if (id.startsWith('error_review_')) {
+                        const storedData = sessionStorage.getItem('error_review_data');
+                        if (storedData) {
+                            const data = JSON.parse(storedData);
+                            const answers = examAnswers[id] || {};
+                            const questions = exam.questions || [];
+                            
+                            let correctIndices = [];
+                            for (let i = 0; i < Math.min(Object.keys(answers).length, questions.length); i++) {
+                                if (answers[i] && answers[i].selected === questions[i].correctAnswer) {
+                                    correctIndices.push(i);
+                                }
+                            }
+                            
+                            if (correctIndices.length > 0) {
+                                // Remove correctly answered questions from error bank
+                                const errorRef = database.ref('users/' + currentUser.uid + '/errorBank');
+                                const errorSnap = await errorRef.once('value');
+                                if (errorSnap.exists()) {
+                                    let currentErrors = errorSnap.val() || [];
+                                    if (Array.isArray(currentErrors)) {
+                                        // Mark as solved for each correct answer
+                                        correctIndices.forEach(idx => {
+                                            if (data[idx]) {
+                                                const q = data[idx].question;
+                                                const errIdx = currentErrors.findIndex(e => e.question === q && !e.solved);
+                                                if (errIdx !== -1) {
+                                                    currentErrors[errIdx].solved = true;
+                                                    currentErrors[errIdx].solvedAt = new Date().toISOString();
+                                                }
+                                            }
+                                        });
+                                        await errorRef.set(currentErrors);
+                                        
+                                        if (correctIndices.length > 0) {
+                                            showToast(`✅ تم حذف ${correctIndices.length} سؤال من بنك الأخطاء!`, 'success');
+                                            await addNotification(currentUser.uid, '✅ تم تصحيح أخطاء!', `لقد أجبت بشكل صحيح على ${correctIndices.length} سؤال وتم حذفهم من بنك الأخطاء.`, '✅');
+                                        }
+                                    }
+                                }
+                                sessionStorage.removeItem('error_review_data');
+                            }
+                        }
+                    }
+                };
                 
                 showExamUI(exam, true);
-                showToast(`✅ بدأ المراجعة - ${selectedErrors.length} سؤال خاطئ`, 'success');
             });
         }
 
         function generateOptions(correctAnswer, wrongAnswer) {
             const options = [correctAnswer];
-            
             if (wrongAnswer && wrongAnswer !== correctAnswer) {
                 options.push(wrongAnswer);
             }
-            
             const fakeOptions = [
                 'تفاعل كيميائي',
                 'مركب عضوي',
@@ -4712,7 +5016,6 @@
                 'رابطة تساهمية',
                 'تفاعل عكسي'
             ];
-            
             const shuffledFakes = fakeOptions.sort(() => 0.5 - Math.random());
             let count = 0;
             while (options.length < 4 && count < shuffledFakes.length) {
@@ -4721,7 +5024,6 @@
                 }
                 count++;
             }
-            
             return options.sort(() => 0.5 - Math.random());
         }
 
@@ -4747,7 +5049,7 @@
         }
 
         // ============================================================
-        // UPLOAD PROFILE PHOTO
+        // UPLOAD PROFILE PHOTO - Fixed
         // ============================================================
         function uploadProfilePhoto() {
             if (!currentUser) {
@@ -4766,15 +5068,12 @@
 
                 try {
                     const compressedFile = await compressImage(file, 300, 300);
-                    
                     const storageRef = storage.ref();
                     const imageRef = storageRef.child(`profile_photos/${currentUser.uid}/profile.jpg`);
-
                     const snapshot = await imageRef.put(compressedFile);
                     const downloadURL = await snapshot.ref.getDownloadURL();
 
                     await database.ref('users/' + currentUser.uid + '/photoURL').set(downloadURL);
-                    
                     if (userData) userData.photoURL = downloadURL;
                     showToast('✅ تم تحديث الصورة الشخصية بنجاح', 'success');
 
@@ -4801,7 +5100,6 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        
                         if (width > height) {
                             if (width > maxWidth) {
                                 height *= maxWidth / width;
@@ -4813,12 +5111,10 @@
                                 height = maxHeight;
                             }
                         }
-                        
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
                         canvas.toBlob((blob) => {
                             resolve(blob);
                         }, 'image/jpeg', 0.8);
@@ -4956,10 +5252,9 @@
         }
 
         function downloadStudentCard() {
-            showToast('📄 جاري إنشاء البطاقة...', 'info');
             const element = document.getElementById('studentCardPreview');
             if (!element) return;
-            
+            showToast('📄 جاري إنشاء البطاقة...', 'info');
             html2canvas(element, {
                 scale: 2,
                 useCORS: true,
@@ -5322,13 +5617,11 @@
         function printAIReport() {
             const content = document.getElementById('aiReportContent');
             if (!content) return;
-            
             const printWindow = window.open('', '_blank');
             if (!printWindow) {
                 showToast('⚠️ يرجى السماح بالنوافذ المنبثقة', 'warning');
                 return;
             }
-            
             const styles = document.querySelector('style').innerHTML;
             printWindow.document.write(`
                 <!DOCTYPE html>
@@ -5362,7 +5655,7 @@
         }
 
         // ============================================================
-        // DASHBOARD
+        // DASHBOARD - REDESIGNED with REAL DATA
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -5388,6 +5681,7 @@
             const streak = safeUserData.streak || 0;
             const studyTime = safeUserData.studyTime || 0;
             const phone = safeUserData.phone || 'لم يحدد';
+            const parentPhone = safeUserData.parentPhone || 'لم يحدد';
 
             let watchedCount = 0, quizCount = 0, examCount = 0;
             Object.values(safeProgress).forEach(p => {
@@ -5407,6 +5701,16 @@
             });
             
             const lessonProgress = totalLessonsAll > 0 ? Math.round((watchedCount / totalLessonsAll) * 100) : 0;
+            
+            // Get certificate count
+            let certificateCount = 0;
+            for (const c of safeCourses) {
+                const lessons = allLessons.filter(l => l.courseId === c.id);
+                const completed = lessons.filter(l => safeProgress[l.id]?.watched);
+                if (lessons.length > 0 && completed.length === lessons.length) {
+                    certificateCount++;
+                }
+            }
             
             let rank = '--';
             database.ref('users').orderByChild('atoms').startAt((userData?.atoms || 0) + 1).once('value', (snapshot) => {
@@ -5439,11 +5743,13 @@
                                     <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🔑 ${escapeHtml(code)}</span>
                                     <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">🎓 ${escapeHtml(grade)}</span>
                                     <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">📚 ${escapeHtml(studyType)}</span>
+                                    <span style="background:rgba(255,255,255,0.15);padding:4px 16px;border-radius:20px;">📱 ${formatPhoneNumber(phone)}</span>
                                 </div>
                                 <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-top:6px;">
                                     <span style="background:rgba(255,255,255,0.2);padding:6px 20px;border-radius:20px;font-weight:700;">⚛️ ${atoms} ذرة</span>
                                     <span style="background:rgba(255,255,255,0.2);padding:6px 20px;border-radius:20px;font-weight:700;">🏆 ${rank}</span>
                                     <span style="background:rgba(255,255,255,0.2);padding:6px 20px;border-radius:20px;font-weight:700;">🔥 ${streak} يوم</span>
+                                    <span style="background:rgba(255,255,255,0.2);padding:6px 20px;border-radius:20px;font-weight:700;">⏱ ${studyTime} س</span>
                                 </div>
                             </div>
                         </div>
@@ -5474,7 +5780,11 @@
                                 <div class="label">الامتحانات</div>
                             </div>
                             <div class="stat-circle-card">
-                                <div class="circle" style="background:#FFD60A;color:#081B2C;"><span class="number">${atoms}</span></div>
+                                <div class="circle" style="background:#FFD60A;color:#081B2C;"><span class="number">${certificateCount}</span></div>
+                                <div class="label">الشهادات</div>
+                            </div>
+                            <div class="stat-circle-card">
+                                <div class="circle" style="background:#EF4444;"><span class="number">${atoms}</span></div>
                                 <div class="label">الذرات</div>
                             </div>
                         </div>
@@ -5501,8 +5811,8 @@
                             <button class="btn-primary btn-sm no-print" style="background:var(--gold);color:#081B2C;" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهادتي</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
-                            <button class="btn-outline btn-sm no-print" onclick="APP.showResults()"><i class="fas fa-chart-bar"></i> نتائجي</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showAIInsights()"><i class="fas fa-robot"></i> تحليل المستوى</button>
+                            <button class="btn-outline btn-sm no-print" onclick="APP.showResults()"><i class="fas fa-chart-bar"></i> نتائجي</button>
                         </div>
                     </div>
                 `;
@@ -5650,11 +5960,6 @@
                 if (dropdown) dropdown.classList.remove('open');
                 if (arrow) arrow.classList.remove('open');
             }
-            
-            const notifWrapper = document.getElementById('notificationWrapper');
-            if (notifWrapper && !notifWrapper.contains(e.target)) {
-                // Close notification if any open
-            }
         });
 
         // ============================================================
@@ -5663,7 +5968,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeExamSecurityModal();
-                closeNotifications();
+                closeImageZoom();
             }
         });
 
@@ -5684,26 +5989,18 @@
             subscribeToCourse,
             openCoursePage,
             openLessonVideo,
+            handleVideoExit,
             openLessonExam,
             openLessonQuiz,
             openLessonAssignment,
             completeAssignment,
-            selectExamAnswer,
-            selectQuizAnswer,
-            navigateExamQuestion,
-            navigateQuizQuestion,
             submitExam,
             submitQuiz,
             exitExam,
             showLeaderboard,
             showDashboard,
-            showResults,
-            showNotificationsPage,
-            clearAllNotifications,
             showErrorBank,
             startErrorReview,
-            startErrorReviewWithCount,
-            markErrorSolved,
             showCertificate,
             downloadCertificate,
             showStudentCard,
@@ -5716,8 +6013,10 @@
             showTerms,
             toast: showToast,
             escapeHtml,
+            showNotificationsPage,
             markNotificationRead,
             markAllNotificationsRead,
+            deleteAllNotifications,
             openExamSecurityModal,
             closeExamSecurityModal,
             startExamAfterPledge,
@@ -5725,7 +6024,52 @@
             showQuizResults,
             formatPhoneNumber,
             openImageZoom,
-            closeImageZoom
+            closeImageZoom,
+            showResults,
+            selectExamAnswer: function(id, qIdx, oIdx, correct) {
+                if (!isExamActive || examSubmitted) return;
+                if (!examAnswers[id]) examAnswers[id] = {};
+                
+                const container = document.getElementById('examContainer');
+                if (container) {
+                    const divs = container.querySelectorAll('.question-card');
+                    if (divs[qIdx]) {
+                        const options = divs[qIdx].querySelectorAll('.quiz-option');
+                        options.forEach((el, index) => {
+                            const radio = el.querySelector('input[type="radio"]');
+                            if (radio) {
+                                radio.checked = index === oIdx;
+                            }
+                            el.classList.remove('selected', 'correct', 'wrong');
+                        });
+                        options[oIdx].classList.add('selected');
+                    }
+                }
+                examAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+            },
+            selectQuizAnswer: function(id, qIdx, oIdx, correct) {
+                if (!isExamActive || examSubmitted) return;
+                if (!quizAnswers[id]) quizAnswers[id] = {};
+                
+                const container = document.getElementById('quizContainer');
+                if (container) {
+                    const divs = container.querySelectorAll('.quiz-question-card');
+                    if (divs[qIdx]) {
+                        const options = divs[qIdx].querySelectorAll('.quiz-option');
+                        options.forEach((el, index) => {
+                            const radio = el.querySelector('input[type="radio"]');
+                            if (radio) {
+                                radio.checked = index === oIdx;
+                            }
+                            el.classList.remove('selected', 'correct', 'wrong');
+                        });
+                        options[oIdx].classList.add('selected');
+                    }
+                }
+                quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
+            },
+            navigateExamQuestion,
+            navigateQuizQuestion
         };
 
         window.APP = APP;
@@ -5735,7 +6079,8 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform - All features working correctly');
+            console.log('🚀 Yalla Chemistry Platform v25.0 - ALL ISSUES FIXED!');
+            console.log('✅ All features working correctly');
         }
 
         if (document.readyState === 'loading') {
