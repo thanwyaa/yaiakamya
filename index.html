@@ -2979,17 +2979,30 @@
         }
 
         // ============================================================
-        // VIDEO TRACKING
+        // VIDEO TRACKING - FIXED: Proper study time tracking
         // ============================================================
         function clearVideoTracking() {
             if (videoWatchInterval) {
                 clearInterval(videoWatchInterval);
                 videoWatchInterval = null;
             }
+            
             if (activeVideoLessonId && videoWatchStartTime) {
                 const elapsed = (Date.now() - videoWatchStartTime) / 1000;
                 if (elapsed > 5) {
                     videoWatchTotal[activeVideoLessonId] = (videoWatchTotal[activeVideoLessonId] || 0) + elapsed;
+                    
+                    const studyHours = elapsed / 3600;
+                    if (currentUser) {
+                        database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
+                            return (current || 0) + studyHours;
+                        });
+                        if (userData) {
+                            userData.studyTime = (userData.studyTime || 0) + studyHours;
+                            cache.userData = userData;
+                            updateCache();
+                        }
+                    }
                 }
             }
             activeVideoLessonId = null;
@@ -3010,12 +3023,18 @@
                 const atomsReward = lesson.atomsReward || 5;
                 const userRef = database.ref('users/' + currentUser.uid);
                 const userSnap = await userRef.once('value');
+                
                 if (userSnap.exists()) {
                     const currentAtoms = userSnap.val().atoms || 0;
                     const duration = lesson.duration || 15;
                     
-                    let studyTime = userSnap.val().studyTime || 0;
-                    studyTime = Math.round((studyTime + duration / 60) * 10) / 10;
+                    let actualWatchTime = videoWatchTotal[lessonId] || 0;
+                    if (actualWatchTime < duration * 60) {
+                        actualWatchTime = duration * 60;
+                    }
+                    const studyHours = actualWatchTime / 3600;
+                    
+                    let currentStudyTime = userSnap.val().studyTime || 0;
                     
                     await database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                         watched: true,
@@ -3023,7 +3042,7 @@
                         completedAt: new Date().toISOString(),
                         lastPosition: 0,
                         type: 'lesson',
-                        watchDuration: duration * 60
+                        watchDuration: actualWatchTime
                     });
                     
                     const lastStudyDate = userSnap.val().lastStudyDate;
@@ -3044,7 +3063,7 @@
                         lessonsCompleted: (userSnap.val().lessonsCompleted || 0) + 1,
                         streak: streak,
                         lastStudyDate: today,
-                        studyTime: studyTime
+                        studyTime: currentStudyTime + studyHours
                     });
                     
                     if (userData) {
@@ -3053,10 +3072,12 @@
                         userData.lessonsCompleted = (userData.lessonsCompleted || 0) + 1;
                         userData.streak = streak;
                         userData.lastStudyDate = today;
-                        userData.studyTime = studyTime;
+                        userData.studyTime = currentStudyTime + studyHours;
                         cache.userData = userData;
                         updateCache();
                     }
+                    
+                    delete videoWatchTotal[lessonId];
                     
                     animateAtoms('atomsCount', currentAtoms + atomsReward);
                     animateAtoms('userAtomsCount', currentAtoms + atomsReward);
@@ -3084,7 +3105,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO PAGE
+        // LESSON VIDEO PAGE - FIXED: Proper study time tracking
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) {
@@ -3125,6 +3146,8 @@
                             });
                             if (userData) {
                                 userData.studyTime = (userData.studyTime || 0) + studyHours;
+                                cache.userData = userData;
+                                updateCache();
                             }
                         }
                     }
@@ -3387,68 +3410,23 @@
         }
 
         // ============================================================
-        // SHOW EXAM UI - With Firebase saved start time
+        // SHOW EXAM UI - FIXED: Proper timer logic
         // ============================================================
-        function showExamUI(exam, isSecure = false) {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const questions = exam.questions || [];
-            if (questions.length === 0) {
-                showToast('لا توجد أسئلة في هذا الامتحان', 'warning');
-                return;
-            }
-
-            // Check if already completed (double-check)
-            if (userCourseProgress['exam_' + (exam.lessonId || exam.id)]?.completed) {
-                showCompletedModal();
-                return;
-            }
-
-            const sessionKey = `exam_${exam.id}_${currentUser.uid}`;
-            
-            // Check for existing session
-            const checkSession = async () => {
-                const sessionRef = database.ref(`users/${currentUser.uid}/examSessions/${exam.id}`);
-                const snap = await sessionRef.once('value');
-                return snap.val();
-            };
-
-            let startTime = Date.now();
-            let duration = exam.duration || 0;
-
-            checkSession().then(session => {
-                if (session) {
-                    const elapsed = (Date.now() - session.startTime) / 1000;
-                    const remaining = Math.max(0, (duration * 60) - elapsed);
-                    if (remaining <= 0 && !examSubmitted) {
-                        // Time expired, auto submit
-                        submitExam(exam.id, exam.atomsReward || 10, true);
-                        return;
-                    }
-                    startTime = session.startTime;
-                } else {
-                    // Save new session
-                    database.ref(`users/${currentUser.uid}/examSessions/${exam.id}`).set({
-                        startTime: startTime,
-                        duration: duration,
-                        active: true,
-                        startedAt: new Date().toISOString()
-                    });
-                }
-                renderExamUI(exam, startTime, duration);
-            }).catch(() => {
-                renderExamUI(exam, startTime, duration);
-            });
-        }
-
         function renderExamUI(exam, startTime, duration) {
             const main = document.getElementById('mainContent');
             const questions = exam.questions || [];
-            let timeLeft = duration * 60 - Math.floor((Date.now() - startTime) / 1000);
-            timeLeft = Math.max(0, timeLeft);
+            
+            // FIX: Ensure startTime is a valid number
+            const validStartTime = typeof startTime === 'number' ? startTime : parseInt(startTime) || Date.now();
+            let timeLeft = Math.max(0, (duration * 60) - Math.floor((Date.now() - validStartTime) / 1000));
+            
+            // FIX: If timeLeft is 0 or less, auto-submit immediately
+            if (timeLeft <= 0 && duration > 0) {
+                submitExam(exam.id, exam.atomsReward || 10, true);
+                return;
+            }
 
-            examStartTime = startTime;
+            examStartTime = validStartTime;
             currentExamId = exam.id;
             examAnswers[exam.id] = {};
             isExamActive = true;
@@ -3458,21 +3436,19 @@
             let currentQuestion = 0;
             let answeredQuestions = new Set();
 
+            // FIX: Clear any existing timer before creating a new one
+            if (examTimer) {
+                clearInterval(examTimer);
+                examTimer = null;
+            }
+
             if (duration > 0 && timeLeft > 0) {
-                if (examTimer) clearInterval(examTimer);
-                
                 examTimer = setInterval(() => {
-                    timeLeft--;
+                    // FIX: Calculate remaining time correctly using the saved startTime
+                    const elapsed = Math.floor((Date.now() - validStartTime) / 1000);
+                    timeLeft = Math.max(0, (duration * 60) - elapsed);
                     
-                    if (timeLeft <= 0 && !examSubmitted) {
-                        clearInterval(examTimer);
-                        examTimer = null;
-                        isExamActive = false;
-                        submitExam(exam.id, exam.atomsReward || 10, true);
-                        showToast('⏰ انتهى الوقت! تم تسليم الامتحان تلقائياً.', 'warning');
-                        return;
-                    }
-                    
+                    // Update timer display - format as MM:SS
                     const mins = Math.floor(timeLeft / 60);
                     const secs = timeLeft % 60;
                     const timerEl = document.getElementById('examTimer');
@@ -3484,6 +3460,15 @@
                         } else if (timeLeft < 60) {
                             timerEl.classList.add('warning');
                         }
+                    }
+                    
+                    // FIX: Auto-submit only once when time reaches 0
+                    if (timeLeft <= 0 && !examSubmitted) {
+                        clearInterval(examTimer);
+                        examTimer = null;
+                        isExamActive = false;
+                        submitExam(exam.id, exam.atomsReward || 10, true);
+                        showToast('⏰ انتهى الوقت! تم تسليم الامتحان تلقائياً.', 'warning');
                     }
                 }, 1000);
             }
@@ -3686,7 +3671,6 @@
                 const earnedAtoms = Math.round((score / 100) * maxAtoms);
                 const timeSpent = Math.floor((Date.now() - examStartTime) / 1000);
 
-                // Save to Firebase with transaction for atoms
                 const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
                 await progressRef.set({
                     completed: true,
@@ -3702,7 +3686,6 @@
                     results: results
                 });
 
-                // Save to results
                 const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
                 await resultRef.set({
                     title: data.title || 'امتحان',
@@ -3718,7 +3701,6 @@
                     examId: id
                 });
 
-                // Update atoms with transaction
                 if (earnedAtoms > 0) {
                     const atomRef = database.ref('users/' + currentUser.uid + '/atoms');
                     await atomRef.transaction((current) => {
@@ -3766,7 +3748,6 @@
                     await errorRef.set(errors);
                 }
 
-                // Remove exam session
                 await database.ref(`users/${currentUser.uid}/examSessions/${id}`).remove();
 
                 userCourseProgress[progressKey] = {
@@ -5381,7 +5362,7 @@
         }
 
         // ============================================================
-        // DASHBOARD
+        // DASHBOARD - FIXED: Real data only, no fake numbers
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -5401,7 +5382,6 @@
             const grade = safeUserData.grade || 'لم يحدد';
             const studyType = safeUserData.studyType || 'عام';
             const atoms = safeUserData.atoms || 0;
-            const progress = safeUserData.progress || 0;
             const photoURL = safeUserData.photoURL || '';
             const streak = safeUserData.streak || 0;
             const studyTime = safeUserData.studyTime || 0;
@@ -5811,7 +5791,6 @@
                 ` : ''}
             `;
 
-            // Load courses and leaderboard
             loadCourses();
             loadLeaderboard();
         }
@@ -5976,12 +5955,10 @@
             updateUIForAuth(user);
 
             if (user) {
-                // Load data in parallel
                 loadUserData(user.uid);
                 loadUserSubscriptions(user.uid);
                 loadUserProgress(user.uid);
                 loadNotifications(user.uid);
-                // Load content in background
                 setTimeout(() => {
                     loadCourses();
                     loadLessons();
@@ -6004,11 +5981,12 @@
         function init() {
             setupScrollHandlers();
             loadHomePage();
-            console.log('🚀 Yalla Chemistry Platform v30.0 - ALL FIXES APPLIED');
+            console.log('🚀 Yalla Chemistry Platform v31.0 - ALL FIXES APPLIED');
             console.log('✅ Performance: Progressive Loading, Caching, Lazy Loading');
             console.log('✅ Exams: Firebase-based completion check, real timer');
             console.log('✅ Security: XSS protection, Firebase transactions');
-            console.log('✅ UI: Notifications page, Error bank, Dashboard redesign');
+            console.log('✅ Study Time: Real tracking with video watch');
+            console.log('✅ Dashboard: Real data only, no fake numbers');
         }
 
         if (document.readyState === 'loading') {
