@@ -99,31 +99,6 @@
             100% { background-position: -200% 0; }
         }
 
-        .skeleton-avatar {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            background: var(--border);
-            animation: shimmer 1.5s infinite;
-        }
-        .skeleton-text {
-            height: 20px;
-            width: 100%;
-            max-width: 300px;
-            border-radius: 8px;
-            background: var(--border);
-            animation: shimmer 1.5s infinite;
-            margin: 4px auto;
-        }
-        .skeleton-text-sm {
-            height: 14px;
-            width: 80%;
-            border-radius: 6px;
-            background: var(--border);
-            animation: shimmer 1.5s infinite;
-            margin: 4px auto;
-        }
-
         .navbar {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -353,13 +328,22 @@
         .card:hover .card-img { transform: scale(1.03); }
         .card-body { padding: 16px 18px; }
 
-        /* Completed Card Style */
+        /* Completed Card Style - Green with Checkmark */
         .card-completed {
             border: 3px solid var(--success) !important;
             background: rgba(34, 197, 94, 0.08) !important;
         }
         .card-completed .completed-overlay {
             display: flex !important;
+        }
+        .card-completed .card-body .btn-primary {
+            background: var(--success) !important;
+            cursor: default !important;
+            opacity: 0.8 !important;
+        }
+        .card-completed .card-body .btn-primary:hover {
+            transform: none !important;
+            box-shadow: none !important;
         }
         .completed-overlay {
             display: none;
@@ -376,6 +360,7 @@
             z-index: 10;
             flex-direction: column;
             gap: 4px;
+            pointer-events: none;
         }
         .completed-overlay .check {
             font-size: 3rem;
@@ -2461,7 +2446,7 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS SYSTEM - NEW PAGE
+        // NOTIFICATIONS SYSTEM
         // ============================================================
         function loadNotifications(uid) {
             database.ref('users/' + uid + '/notifications').on('value', (snapshot) => {
@@ -2864,7 +2849,7 @@
         }
 
         // ============================================================
-        // RENDER COURSES
+        // RENDER COURSES - with COMPLETED state
         // ============================================================
         function renderCourses(courses) {
             const grid = document.getElementById('coursesGrid');
@@ -2886,9 +2871,14 @@
                 const isLocked = !currentUser || (!subscribed && c.isFree === false);
                 const isFree = c.isFree !== false;
                 const priceDisplay = isFree ? 'مجاني' : (c.price || 'مدفوع');
+                
+                // Check if course is completed
+                const lessons = allLessons.filter(l => l.courseId === c.id);
+                const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
+                const isCompleted = lessons.length > 0 && completed.length === lessons.length;
 
                 return `
-                    <div class="card" style="cursor:pointer;position:relative;" onclick="APP.openCoursePage('${c.id}')">
+                    <div class="card ${isCompleted ? 'card-completed' : ''}" style="cursor:pointer;position:relative;" onclick="${isCompleted ? `APP.showCompletedModal()` : `APP.openCoursePage('${c.id}')`}">
                         <div style="position:relative;overflow:hidden;">
                             <img src="${c.image || 'https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'}" 
                                  alt="${escapeHtml(c.title) || 'كورس'}" 
@@ -2901,8 +2891,10 @@
                                 </span>
                                 ${!isFree ? `<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--gold);color:#081B2C;font-weight:700;">${escapeHtml(priceDisplay)}</span>` : ''}
                                 ${isLocked ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:rgba(0,0,0,0.7);color:#fff;font-weight:700;">🔒</span>' : ''}
+                                ${isCompleted ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--success);color:#fff;font-weight:700;">✅ مكتمل</span>' : ''}
                             </div>
                             ${isLocked ? `<div class="lock-overlay"><span class="lock-text">🔒 هذا الكورس مدفوع</span></div>` : ''}
+                            ${isCompleted ? `<div class="completed-overlay"><div class="check">✅</div><div class="label">مكتمل</div></div>` : ''}
                         </div>
                         <div class="card-body">
                             <h3 style="font-weight:800;font-size:1.2rem;color:var(--text);margin-bottom:4px;">${escapeHtml(c.title) || 'كورس'}</h3>
@@ -2914,8 +2906,8 @@
                             </div>
                             ${currentUser ? `
                                 ${subscribed ? `
-                                    <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:var(--primary2);" onclick="event.stopPropagation(); APP.openCoursePage('${c.id}')">
-                                        📖 متابعة
+                                    <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:${isCompleted ? 'var(--success)' : 'var(--primary2)'};" onclick="event.stopPropagation(); ${isCompleted ? `APP.showCompletedModal()` : `APP.openCoursePage('${c.id}')`}">
+                                        ${isCompleted ? '✅ مكتمل' : '📖 متابعة'}
                                     </button>
                                 ` : `
                                     <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.subscribeToCourse('${c.id}')">
@@ -6228,8 +6220,9 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v27.0 - ALL ISSUES FIXED!');
+            console.log('🚀 Yalla Chemistry Platform v28.0 - ALL ISSUES FIXED!');
             console.log('✅ Fast Login, Auto Submit Only on Timeout, Grade Messages, Complete Block, Notifications Page');
+            console.log('✅ PREVENT RE-ENTRY: Completed exams show green card with ✅ and cannot be reopened');
         }
 
         if (document.readyState === 'loading') {
