@@ -87,6 +87,43 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
+        /* Skeleton Loading */
+        .skeleton-loading {
+            background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius);
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--border);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-text {
+            height: 20px;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            background: var(--border);
+            animation: shimmer 1.5s infinite;
+            margin: 4px auto;
+        }
+        .skeleton-text-sm {
+            height: 14px;
+            width: 80%;
+            border-radius: 6px;
+            background: var(--border);
+            animation: shimmer 1.5s infinite;
+            margin: 4px auto;
+        }
+
         .navbar {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -169,7 +206,6 @@
             transform: translateY(-1px);
         }
 
-        /* Notification Styles - Improved */
         .notification-wrapper {
             position: relative;
             display: inline-flex;
@@ -316,6 +352,42 @@
         .card:hover .card-img { transform: scale(1.03); }
         .card-body { padding: 16px 18px; }
 
+        .card-completed {
+            border: 2px solid var(--success) !important;
+            background: rgba(34, 197, 94, 0.05) !important;
+        }
+        .card-completed .card-body .completed-overlay {
+            display: flex !important;
+        }
+        .completed-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(34, 197, 94, 0.1);
+            backdrop-filter: blur(2px);
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            z-index: 10;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .completed-overlay .check {
+            font-size: 3rem;
+            color: var(--success);
+        }
+        .completed-overlay .label {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 1.1rem;
+            background: var(--card);
+            padding: 4px 16px;
+            border-radius: 20px;
+        }
+
         .lock-overlay {
             position: absolute;
             inset: 0;
@@ -457,11 +529,16 @@
             cursor: pointer;
             background: var(--card);
             min-height: 60px;
+            position: relative;
         }
         .lesson-content-item:hover { 
             border-color: var(--primary); 
             background: var(--bg);
             transform: translateX(-4px);
+        }
+        .lesson-content-item.completed-item {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.05);
         }
         .lesson-content-item .item-icon {
             width: 50px;
@@ -557,16 +634,6 @@
         .quiz-option .option-label {
             flex: 1;
             cursor: pointer;
-        }
-
-        .skeleton {
-            background: linear-gradient(90deg, var(--border), var(--bg), var(--border));
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
         }
 
         .spinner {
@@ -942,7 +1009,6 @@
             color: var(--text2);
         }
 
-        /* New Exam Security Modal - One Click Design */
         .exam-security-modal {
             position: fixed;
             inset: 0;
@@ -1423,7 +1489,6 @@
             font-weight: 700;
         }
 
-        /* Notifications Page Styles */
         .notifications-page {
             max-width: 900px;
             margin: 0 auto;
@@ -1528,7 +1593,6 @@
         .notifications-page .empty-state h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
         .notifications-page .empty-state p { color: var(--text2); margin-top: 4px; }
 
-        /* Results Page Styles */
         .results-page {
             max-width: 1100px;
             margin: 0 auto;
@@ -1623,7 +1687,6 @@
             }
         }
 
-        /* User Menu */
         .user-menu-wrapper {
             position: relative;
             display: flex;
@@ -1732,6 +1795,64 @@
             background: var(--border);
             margin: 4px 12px;
         }
+
+        /* Completed Assessment Modal */
+        .completed-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .completed-modal.open { display: flex; }
+        .completed-modal .modal-box {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+            border: 2px solid var(--success);
+            animation: modalIn 0.4s ease;
+        }
+        .completed-modal .modal-box .icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 12px;
+        }
+        .completed-modal .modal-box h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+        .completed-modal .modal-box p {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .completed-modal .modal-box .btn {
+            padding: 12px 40px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+            background: var(--primary);
+            color: #fff;
+        }
+        .completed-modal .modal-box .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(11,79,140,0.3);
+        }
     </style>
 </head>
 <body>
@@ -1752,7 +1873,16 @@
         </div>
     </div>
 
-    <!-- NEW Exam Security Modal - One Click Design -->
+    <!-- Completed Assessment Modal -->
+    <div class="completed-modal" id="completedModal">
+        <div class="modal-box">
+            <div class="icon">✅</div>
+            <h2>لقد قمت بإتمام هذا الاختبار بالفعل</h2>
+            <p>لا يمكن إعادة دخوله مرة أخرى.<br>يمكنك مراجعة النتيجة من خلال صفحة <strong>نتائجي</strong>.</p>
+            <button class="btn" onclick="APP.closeCompletedModal()">حسناً</button>
+        </div>
+    </div>
+
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
@@ -1810,7 +1940,6 @@
                     <i class="fas fa-atom"></i> <span id="atomsCount">0</span>
                 </span>
 
-                <!-- Notification Icon - Opens Notifications Page -->
                 <div class="user-only notification-wrapper" style="display:none;" id="notificationWrapper">
                     <button class="notification-btn" onclick="APP.showNotificationsPage()" id="notificationBtn">
                         <i class="fas fa-bell"></i>
@@ -2098,6 +2227,9 @@
         const storage = firebase.storage();
         const auth = firebase.auth();
 
+        // Enable persistence for faster auth
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
         // ============================================================
         // APP STATE
         // ============================================================
@@ -2128,6 +2260,17 @@
         let videoWatchStartTime = null;
         let videoWatchInterval = null;
         let videoWatchTotal = {};
+        let isDataLoaded = false;
+        let isAuthChecked = false;
+
+        // Cache for frequent data
+        const localCache = {
+            userData: null,
+            progress: {},
+            subscriptions: [],
+            notifications: [],
+            timestamp: 0
+        };
 
         // ============================================================
         // CONSTANTS
@@ -2181,12 +2324,6 @@
             if (!date) return '--';
             const d = new Date(date);
             return d.toLocaleDateString('ar') + ' ' + d.toLocaleTimeString('ar', {hour:'2-digit', minute:'2-digit'});
-        }
-
-        function formatTimeOnly(date) {
-            if (!date) return '--';
-            const d = new Date(date);
-            return d.toLocaleTimeString('ar', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
         }
 
         function formatPhoneNumber(phone) {
@@ -2298,7 +2435,18 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS SYSTEM - NEW PAGE
+        // COMPLETED MODAL
+        // ============================================================
+        function showCompletedModal() {
+            document.getElementById('completedModal').classList.add('open');
+        }
+
+        function closeCompletedModal() {
+            document.getElementById('completedModal').classList.remove('open');
+        }
+
+        // ============================================================
+        // NOTIFICATIONS SYSTEM
         // ============================================================
         function loadNotifications(uid) {
             database.ref('users/' + uid + '/notifications').on('value', (snapshot) => {
@@ -2311,6 +2459,8 @@
                     notifications = [];
                 }
                 updateNotificationBadge();
+                // Cache notifications
+                localCache.notifications = notifications;
             });
         }
 
@@ -2447,7 +2597,7 @@
         }
 
         // ============================================================
-        // AUTH
+        // AUTH - FAST LOGIN
         // ============================================================
         async function logout() {
             try {
@@ -2455,6 +2605,11 @@
                 showToast('تم تسجيل الخروج', 'success');
                 updateUIForAuth(null);
                 closeUserMenu();
+                // Clear cache
+                localCache.userData = null;
+                localCache.progress = {};
+                localCache.subscriptions = [];
+                localCache.notifications = [];
             } catch (error) {
                 console.error('Logout error:', error);
                 showToast('حدث خطأ في تسجيل الخروج', 'error');
@@ -2495,19 +2650,12 @@
                 const notificationWrapper = document.getElementById('notificationWrapper');
                 if (notificationWrapper) notificationWrapper.style.display = 'flex';
                 
+                // Show skeleton or user data
                 if (userData) {
-                    const atoms = userData.atoms || 0;
-                    document.getElementById('atomsCount').textContent = atoms;
-                    document.getElementById('userAtomsCount').textContent = atoms;
-                    document.getElementById('userNameDisplay').textContent = userData.name || 'مستخدم';
-                    
-                    const avatar = userData.photoURL || '';
-                    const avatarEl = document.getElementById('userAvatar');
-                    if (avatar) {
-                        avatarEl.innerHTML = `<img src="${avatar}" alt="صورة">`;
-                    } else {
-                        avatarEl.textContent = (userData.name || 'U')[0].toUpperCase();
-                    }
+                    updateUserUI(userData);
+                } else {
+                    // Show skeleton
+                    showUserSkeleton();
                 }
             } else {
                 guestElements.forEach(el => {
@@ -2544,29 +2692,50 @@
             }
         }
 
+        function showUserSkeleton() {
+            const avatarEl = document.getElementById('userAvatar');
+            if (avatarEl) avatarEl.textContent = '👤';
+            document.getElementById('userNameDisplay').textContent = 'جاري التحميل...';
+            document.getElementById('userMenuLabel').textContent = '...';
+            document.getElementById('atomsCount').textContent = '...';
+            document.getElementById('userAtomsCount').textContent = '...';
+        }
+
+        function updateUserUI(data) {
+            const atoms = data.atoms || 0;
+            document.getElementById('atomsCount').textContent = atoms;
+            document.getElementById('userAtomsCount').textContent = atoms;
+            document.getElementById('userNameDisplay').textContent = data.name || 'مستخدم';
+            document.getElementById('userMenuLabel').textContent = data.name || 'حسابي';
+            
+            const avatar = data.photoURL || '';
+            const avatarEl = document.getElementById('userAvatar');
+            if (avatar) {
+                avatarEl.innerHTML = `<img src="${avatar}" alt="صورة">`;
+            } else {
+                avatarEl.textContent = (data.name || 'U')[0].toUpperCase();
+            }
+        }
+
         // ============================================================
-        // LOAD USER DATA
+        // LOAD USER DATA - Progressive Loading
         // ============================================================
         function loadUserData(uid) {
+            // Check cache first
+            if (localCache.userData && localCache.timestamp > Date.now() - 60000) {
+                userData = localCache.userData;
+                updateUserUI(userData);
+                if (currentUser) updateUIForAuth(currentUser);
+                return;
+            }
+
             database.ref('users/' + uid).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userData = snapshot.val();
+                    localCache.userData = userData;
+                    localCache.timestamp = Date.now();
                     
-                    const atoms = userData.atoms || 0;
-                    document.getElementById('atomsCount').textContent = atoms;
-                    document.getElementById('userAtomsCount').textContent = atoms;
-                    document.getElementById('userNameDisplay').textContent = userData.name || 'مستخدم';
-                    
-                    const avatar = userData.photoURL || '';
-                    const avatarEl = document.getElementById('userAvatar');
-                    if (avatar) {
-                        avatarEl.innerHTML = `<img src="${avatar}" alt="صورة">`;
-                    } else {
-                        avatarEl.textContent = (userData.name || 'U')[0].toUpperCase();
-                    }
-                    
-                    const userMenuLabel = document.getElementById('userMenuLabel');
-                    if (userMenuLabel) userMenuLabel.textContent = userData.name || 'حسابي';
+                    updateUserUI(userData);
                     
                     if (currentUser) {
                         updateUIForAuth(currentUser);
@@ -2611,12 +2780,10 @@
             
             await database.ref('users/' + uid).set(newUser);
             userData = newUser;
+            localCache.userData = newUser;
+            localCache.timestamp = Date.now();
             
-            document.getElementById('userNameDisplay').textContent = 'مستخدم';
-            document.getElementById('userAvatar').textContent = 'U';
-            document.getElementById('atomsCount').textContent = '0';
-            document.getElementById('userAtomsCount').textContent = '0';
-            document.getElementById('userMenuLabel').textContent = 'مستخدم';
+            updateUserUI(newUser);
             
             if (currentUser) {
                 updateUIForAuth(currentUser);
@@ -2626,11 +2793,18 @@
         }
 
         // ============================================================
-        // LOAD COURSES
+        // LOAD COURSES - Lazy Loading
         // ============================================================
         function loadCourses() {
             const grid = document.getElementById('coursesGrid');
             if (!grid) return;
+
+            // Show skeleton
+            grid.innerHTML = `
+                <div class="card skeleton" style="height:320px;"></div>
+                <div class="card skeleton" style="height:320px;"></div>
+                <div class="card skeleton" style="height:320px;"></div>
+            `;
 
             database.ref('courses').on('value', (snapshot) => {
                 allCourses = [];
@@ -2645,6 +2819,7 @@
                 });
                 allCourses.sort((a, b) => (a.order || 0) - (b.order || 0));
                 filterCourses();
+                isDataLoaded = true;
             });
         }
 
@@ -2766,12 +2941,20 @@
         }
 
         function loadUserSubscriptions(uid) {
+            // Check cache
+            if (localCache.subscriptions.length > 0 && localCache.timestamp > Date.now() - 60000) {
+                userSubscriptions = localCache.subscriptions;
+                renderCourses(allCourses);
+                return;
+            }
+
             database.ref('courseSubscriptions').orderByChild('userId').equalTo(uid).on('value', (snapshot) => {
                 userSubscriptions = [];
                 snapshot.forEach((child) => {
                     const data = child.val();
                     userSubscriptions.push({ id: child.key, ...data });
                 });
+                localCache.subscriptions = userSubscriptions;
                 renderCourses(allCourses);
             });
         }
@@ -2818,6 +3001,7 @@
                     status: 'active',
                     subscribedAt: new Date().toISOString()
                 });
+                localCache.subscriptions = userSubscriptions;
                 showToast('🎉 تم الاشتراك في الكورس بنجاح!', 'success');
                 renderCourses(allCourses);
                 await addNotification(currentUser.uid, '📚 تم الاشتراك في كورس جديد!', `لقد اشتركت في كورس "${courseData?.title || courseId}" بنجاح.`, '📚');
@@ -2949,6 +3133,7 @@
                     }
                     
                     if (lesson.hasQuiz) {
+                        const isQuizCompleted = userCourseProgress['quiz_' + lesson.id]?.completed || false;
                         contentItems.push({
                             type: 'quiz',
                             icon: 'quiz',
@@ -2960,6 +3145,7 @@
                     }
                     
                     if (lesson.hasExam) {
+                        const isExamCompleted = userCourseProgress['exam_' + lesson.id]?.completed || false;
                         contentItems.push({
                             type: 'exam',
                             icon: 'exam',
@@ -2973,7 +3159,7 @@
                     const contentHtml = contentItems.length > 0 ? `
                         <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">
                             ${contentItems.map(item => `
-                                <div class="lesson-content-item" onclick="${item.action}">
+                                <div class="lesson-content-item ${item.completed ? 'completed-item' : ''}" onclick="${item.action}">
                                     <div class="item-icon ${item.iconClass}"><i class="fas fa-${item.icon === 'video' ? 'play' : item.icon === 'pdf' ? 'file-pdf' : item.icon === 'assignment' ? 'tasks' : item.icon === 'quiz' ? 'puzzle-piece' : 'file-alt'}"></i></div>
                                     <div class="item-text"><div class="title">${item.title}</div></div>
                                     ${item.completed ? '<span class="completed-badge">✅ مكتمل</span>' : ''}
@@ -3054,7 +3240,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO PAGE WITH REAL WATCH TIME TRACKING
+        // LESSON VIDEO PAGE
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) {
@@ -3090,7 +3276,6 @@
                             videoWatchTotal[lessonId] = (videoWatchTotal[lessonId] || 0) + elapsed;
                             videoWatchStartTime = Date.now();
                             
-                            // Update study time in Firebase
                             const studyHours = elapsed / 3600;
                             database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
                                 return (current || 0) + studyHours;
@@ -3116,7 +3301,6 @@
                         }
                     }
                     
-                    // If watched at least 15 minutes (900 seconds), mark as complete
                     if (videoWatchTotal[lessonId] >= 900 && !userCourseProgress[lessonId]?.watched) {
                         completeLessonWatch(lessonId, lesson);
                     }
@@ -3247,6 +3431,7 @@
                         userData.streak = streak;
                         userData.lastStudyDate = today;
                         userData.studyTime = studyTime;
+                        localCache.userData = userData;
                     }
                     
                     animateAtoms('atomsCount', currentAtoms + atomsReward);
@@ -3282,7 +3467,7 @@
         }
 
         // ============================================================
-        // EXAM SECURITY MODAL - ONE CLICK
+        // EXAM SECURITY MODAL
         // ============================================================
         function openExamSecurityModal(examId, callback, type = 'exam') {
             const modal = document.getElementById('examSecurityModal');
@@ -3324,7 +3509,7 @@
         }
 
         // ============================================================
-        // CHECK IF EXAM/QUIZ IS COMPLETED (Firebase)
+        // CHECK IF ASSESSMENT IS COMPLETED (Firebase)
         // ============================================================
         function isAssessmentCompleted(lessonId, type) {
             const key = type === 'exam' ? 'exam_' + lessonId : 'quiz_' + lessonId;
@@ -3332,7 +3517,7 @@
         }
 
         // ============================================================
-        // OPEN LESSON EXAM
+        // OPEN LESSON EXAM - With completion check BEFORE entry
         // ============================================================
         async function openLessonExam(lessonId) {
             if (!currentUser) { 
@@ -3340,17 +3525,9 @@
                 return; 
             }
             
-            // Check if already completed
+            // Check if already completed - PREVENT ENTRY
             if (isAssessmentCompleted(lessonId, 'exam')) {
-                showToast('📝 لقد أتممت هذا الامتحان مسبقاً!', 'info');
-                const progress = userCourseProgress['exam_' + lessonId];
-                if (progress) {
-                    showExamResults(lessonId, progress.score || 0, 
-                        progress.correctAnswers || 0, 
-                        progress.wrongAnswers || 0, 
-                        progress.results || [], 
-                        progress.atomsAwarded || 0, true);
-                }
+                showCompletedModal();
                 return;
             }
             
@@ -3393,17 +3570,9 @@
                 return; 
             }
             
-            // Check if already completed
+            // Check if already completed - PREVENT ENTRY
             if (isAssessmentCompleted(lessonId, 'quiz')) {
-                showToast('📝 لقد أتممت هذا الكويز مسبقاً!', 'info');
-                const progress = userCourseProgress['quiz_' + lessonId];
-                if (progress) {
-                    showQuizResults(lessonId, progress.score || 0, 
-                        progress.correctAnswers || 0,
-                        progress.wrongAnswers || 0,
-                        progress.results || [],
-                        progress.atomsAwarded || 0, true);
-                }
+                showCompletedModal();
                 return;
             }
             
@@ -3441,7 +3610,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM UI - Fixed Radio buttons, Real Timer
+        // SHOW EXAM UI - NO AUTO SUBMIT ON LAST QUESTION
         // ============================================================
         function showExamUI(exam, isSecure = false) {
             const main = document.getElementById('mainContent');
@@ -3478,7 +3647,7 @@
             let currentQuestion = 0;
             let answeredQuestions = new Set();
 
-            // Real timer
+            // Real timer - auto submit only on time out
             if (exam.duration && exam.duration > 0) {
                 if (examTimer) clearInterval(examTimer);
                 
@@ -3511,7 +3680,7 @@
                         }
                     }
                     
-                    // Auto submit when time runs out
+                    // AUTO SUBMIT ONLY ON TIME OUT
                     if (timeLeft <= 0 && !examSubmitted) {
                         clearInterval(examTimer);
                         examTimer = null;
@@ -3523,6 +3692,8 @@
                     }
                 }, 1000);
             }
+
+            // NO AUTO SUBMIT ON LAST QUESTION - User must click submit
 
             const renderQuestion = (index) => {
                 const q = questions[index];
@@ -3541,20 +3712,7 @@
                 const submitBtn = document.getElementById('submitExamBtn');
                 if (prevBtn) prevBtn.style.display = index > 0 ? 'inline-flex' : 'none';
                 if (nextBtn) nextBtn.style.display = index < questions.length - 1 ? 'inline-flex' : 'none';
-                
-                // Auto submit on last question if all answered
-                if (index === questions.length - 1 && answeredQuestions.size === questions.length) {
-                    if (submitBtn) {
-                        submitBtn.style.display = 'inline-flex';
-                        submitBtn.textContent = '📤 تسليم تلقائي...';
-                        submitBtn.disabled = true;
-                        setTimeout(() => {
-                            if (!examSubmitted) {
-                                submitExam(exam.id, exam.atomsReward || 10, false);
-                            }
-                        }, 800);
-                    }
-                } else if (submitBtn) {
+                if (submitBtn) {
                     submitBtn.style.display = index === questions.length - 1 ? 'inline-flex' : 'none';
                     submitBtn.disabled = false;
                     submitBtn.textContent = '📤 تسليم الامتحان';
@@ -3584,16 +3742,6 @@
                 
                 examAnswers[id][qIdx] = { selected: oIdx, correct: correct };
                 answeredQuestions.add(qIdx);
-                
-                // Check if all questions answered, show submit button
-                if (answeredQuestions.size === questions.length && !examSubmitted) {
-                    const submitBtn = document.getElementById('submitExamBtn');
-                    if (submitBtn) {
-                        submitBtn.style.display = 'inline-flex';
-                        submitBtn.textContent = '📤 تسليم الامتحان';
-                        submitBtn.disabled = false;
-                    }
-                }
             };
 
             let questionsHtml = questions.map((q, idx) => `
@@ -3677,12 +3825,9 @@
             if (prevBtn) prevBtn.style.display = next > 0 ? 'inline-flex' : 'none';
             if (nextBtn) nextBtn.style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
             if (submitBtn) {
-                const answered = document.querySelectorAll('.quiz-option.selected').length;
                 submitBtn.style.display = next === cards.length - 1 ? 'inline-flex' : 'none';
-                if (answered === cards.length) {
-                    submitBtn.textContent = '📤 تسليم الامتحان';
-                    submitBtn.disabled = false;
-                }
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 تسليم الامتحان';
             }
         }
 
@@ -3703,7 +3848,7 @@
         }
 
         // ============================================================
-        // SHOW QUIZ UI - Fixed Radio buttons, Real Timer
+        // SHOW QUIZ UI - NO AUTO SUBMIT
         // ============================================================
         function showQuizUI(quiz, isSecure = false) {
             const main = document.getElementById('mainContent');
@@ -3805,15 +3950,6 @@
                 
                 quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
                 answeredQuestions.add(qIdx);
-                
-                if (answeredQuestions.size === questions.length && !examSubmitted) {
-                    const submitBtn = document.getElementById('submitQuizBtn');
-                    if (submitBtn) {
-                        submitBtn.style.display = 'inline-flex';
-                        submitBtn.textContent = '📤 تسليم الكويز';
-                        submitBtn.disabled = false;
-                    }
-                }
             };
 
             const renderQuestion = (index) => {
@@ -3825,18 +3961,7 @@
                 document.getElementById('quizPrev').style.display = index > 0 ? 'inline-flex' : 'none';
                 document.getElementById('quizNext').style.display = index < questions.length - 1 ? 'inline-flex' : 'none';
                 const submitBtn = document.getElementById('submitQuizBtn');
-                if (index === questions.length - 1 && answeredQuestions.size === questions.length) {
-                    if (submitBtn) {
-                        submitBtn.style.display = 'inline-flex';
-                        submitBtn.textContent = '📤 تسليم تلقائي...';
-                        submitBtn.disabled = true;
-                        setTimeout(() => {
-                            if (!examSubmitted) {
-                                submitQuiz(quiz.id, quiz.atomsReward || 5, false);
-                            }
-                        }, 800);
-                    }
-                } else if (submitBtn) {
+                if (submitBtn) {
                     submitBtn.style.display = index === questions.length - 1 ? 'inline-flex' : 'none';
                     submitBtn.disabled = false;
                     submitBtn.textContent = '📤 تسليم الكويز';
@@ -3921,12 +4046,9 @@
             document.getElementById('quizNext').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
             const submitBtn = document.getElementById('submitQuizBtn');
             if (submitBtn) {
-                const answered = document.querySelectorAll('.quiz-option.selected').length;
                 submitBtn.style.display = next === cards.length - 1 ? 'inline-flex' : 'none';
-                if (answered === cards.length) {
-                    submitBtn.textContent = '📤 تسليم الكويز';
-                    submitBtn.disabled = false;
-                }
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 تسليم الكويز';
             }
         }
 
@@ -3940,7 +4062,7 @@
             
             // Double-check if already completed in Firebase
             if (userCourseProgress[progressKey]?.completed) {
-                showToast('📝 لقد قمت بالفعل بحل هذا الامتحان', 'info');
+                showCompletedModal();
                 return;
             }
 
@@ -4044,6 +4166,7 @@
                         const perfectExams = userSnap.val().perfectExams || 0;
                         await userRef.update({ perfectExams: perfectExams + 1 });
                         if (userData) userData.perfectExams = perfectExams + 1;
+                        localCache.userData = userData;
                     }
                 }
 
@@ -4054,6 +4177,7 @@
                         const currentAtoms = userSnap.val().atoms || 0;
                         await userRef.update({ atoms: currentAtoms + earnedAtoms });
                         if (userData) userData.atoms = currentAtoms + earnedAtoms;
+                        localCache.userData = userData;
                         animateAtoms('atomsCount', currentAtoms + earnedAtoms);
                         animateAtoms('userAtomsCount', currentAtoms + earnedAtoms);
                         await addNotification(currentUser.uid, '⭐ حصلت على ذرات!', `حصلت على ${earnedAtoms} ذرة من امتحان "${data.title || 'الامتحان'}"`, '⭐');
@@ -4099,6 +4223,7 @@
                     wrongAnswers: wrongQuestions.length,
                     results: results
                 };
+                localCache.progress = userCourseProgress;
                 
                 showExamResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
 
@@ -4112,13 +4237,12 @@
         }
 
         // ============================================================
-        // SHOW EXAM RESULTS - Professional Page
+        // SHOW EXAM RESULTS - WITH GRADE MESSAGES
         // ============================================================
         function showExamResults(examId, score, correct, wrong, results, atomsEarned, isReview = false) {
             const main = document.getElementById('mainContent');
             if (!main) return;
 
-            const passed = score >= 60;
             const timeSpent = Math.floor((Date.now() - examStartTime) / 60);
             
             let message = '';
@@ -4127,35 +4251,40 @@
             let detailedMessage = '';
             
             if (score === 100) {
-                message = '🌟 أداء ممتاز! إجابة كاملة!';
+                message = '🌟 ممتاز جداً، إجابة كاملة، استمر بهذا المستوى.';
                 emoji = '🏆';
                 gradeColor = 'var(--gold)';
                 detailedMessage = 'رائع جداً، إجابة كاملة. استمر بهذا المستوى المتميز!';
-            } else if (score >= 85) {
-                message = '⭐ أداء ممتاز!';
+            } else if (score >= 90) {
+                message = '🎉 أداء رائع جداً، اقتربت من العلامة الكاملة.';
                 emoji = '🌟';
+                gradeColor = 'var(--gold)';
+                detailedMessage = 'أداء رائع جداً، أنت على بعد خطوة من الكمال!';
+            } else if (score >= 80) {
+                message = '👏 ممتاز، استمر وستصل إلى الدرجة النهائية.';
+                emoji = '⭐';
                 gradeColor = 'var(--success)';
-                detailedMessage = 'أداء ممتاز، استمر في التحسين للوصول إلى الكمال!';
+                detailedMessage = 'ممتاز، استمر في التحسين للوصول إلى الكمال!';
             } else if (score >= 70) {
-                message = '💪 أداء جيد جداً!';
+                message = '👍 جيد جداً، راجع بعض النقاط البسيطة.';
                 emoji = '💪';
                 gradeColor = 'var(--primary)';
-                detailedMessage = 'أداء جيد ويمكنك الوصول إلى الأفضل بمراجعة بسيطة.';
-            } else if (score >= 50) {
-                message = '📖 أداء جيد!';
+                detailedMessage = 'جيد جداً، راجع بعض النقاط البسيطة وحسّن أدائك!';
+            } else if (score >= 60) {
+                message = '📚 جيد، لكن تحتاج إلى مراجعة بعض الدروس.';
                 emoji = '📖';
                 gradeColor = 'var(--warning)';
-                detailedMessage = 'أداء جيد، تحتاج إلى مراجعة بعض النقاط البسيطة.';
-            } else if (score >= 30) {
-                message = '📚 يحتاج إلى مراجعة!';
-                emoji = '📚';
-                gradeColor = 'var(--danger)';
-                detailedMessage = 'تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+                detailedMessage = 'جيد، لكن تحتاج إلى مراجعة بعض الدروس لتحسين الفهم.';
+            } else if (score >= 50) {
+                message = '⚠️ مقبول، ننصح بإعادة مراجعة الدرس قبل المتابعة.';
+                emoji = '⚠️';
+                gradeColor = '#FFA726';
+                detailedMessage = 'مقبول، ننصح بإعادة مراجعة الدرس قبل المتابعة.';
             } else {
-                message = '🔴 يحتاج إلى مراجعة شاملة!';
+                message = '❌ تحتاج إلى مراجعة الدرس بالكامل ثم إعادة التدريب.';
                 emoji = '🔴';
                 gradeColor = 'var(--danger)';
-                detailedMessage = 'ضعيف جداً، تحتاج إلى مراجعة شاملة للدرس من البداية.';
+                detailedMessage = 'تحتاج إلى مراجعة شاملة للدرس من البداية وإعادة التدريب.';
             }
 
             const wrongResults = results.filter(r => !r.isCorrect);
@@ -4170,9 +4299,9 @@
                     <div class="card" style="padding:28px;margin-top:12px;text-align:center;border:3px solid ${gradeColor};">
                         <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
                         <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:${gradeColor};">
-                            ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
+                            ${score >= 50 ? '✅ نجاح' : '❌ يحتاج مراجعة'}
                         </h2>
-                        <p style="font-size:1.2rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
+                        <p style="font-size:1.3rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
                         <p style="font-size:1.1rem;color:var(--primary);margin-top:4px;font-weight:600;">📊 ${detailedMessage}</p>
                         
                         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin-top:20px;">
@@ -4246,7 +4375,7 @@
             const progressKey = 'quiz_' + id;
             
             if (userCourseProgress[progressKey]?.completed) {
-                showToast('📝 لقد قمت بالفعل بحل هذا الكويز', 'info');
+                showCompletedModal();
                 return;
             }
 
@@ -4346,6 +4475,7 @@
                         const currentAtoms = userSnap.val().atoms || 0;
                         await userRef.update({ atoms: currentAtoms + earnedAtoms });
                         if (userData) userData.atoms = currentAtoms + earnedAtoms;
+                        localCache.userData = userData;
                         animateAtoms('atomsCount', currentAtoms + earnedAtoms);
                         animateAtoms('userAtomsCount', currentAtoms + earnedAtoms);
                         await addNotification(currentUser.uid, '⭐ حصلت على ذرات!', `حصلت على ${earnedAtoms} ذرة من كويز "${data.title || 'الكويز'}"`, '⭐');
@@ -4390,6 +4520,7 @@
                     wrongAnswers: wrongQuestions.length,
                     results: results
                 };
+                localCache.progress = userCourseProgress;
                 
                 showQuizResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
 
@@ -4406,7 +4537,6 @@
             const main = document.getElementById('mainContent');
             if (!main) return;
 
-            const passed = score >= 60;
             const timeSpent = Math.floor((Date.now() - examStartTime) / 60);
             
             let message = '';
@@ -4415,35 +4545,40 @@
             let detailedMessage = '';
             
             if (score === 100) {
-                message = '🌟 أداء ممتاز! إجابة كاملة!';
+                message = '🌟 ممتاز جداً، إجابة كاملة، استمر بهذا المستوى.';
                 emoji = '🏆';
                 gradeColor = 'var(--gold)';
                 detailedMessage = 'رائع جداً، إجابة كاملة. استمر بهذا المستوى المتميز!';
-            } else if (score >= 85) {
-                message = '⭐ أداء ممتاز!';
+            } else if (score >= 90) {
+                message = '🎉 أداء رائع جداً، اقتربت من العلامة الكاملة.';
                 emoji = '🌟';
+                gradeColor = 'var(--gold)';
+                detailedMessage = 'أداء رائع جداً، أنت على بعد خطوة من الكمال!';
+            } else if (score >= 80) {
+                message = '👏 ممتاز، استمر وستصل إلى الدرجة النهائية.';
+                emoji = '⭐';
                 gradeColor = 'var(--success)';
-                detailedMessage = 'أداء ممتاز، استمر في التحسين للوصول إلى الكمال!';
+                detailedMessage = 'ممتاز، استمر في التحسين للوصول إلى الكمال!';
             } else if (score >= 70) {
-                message = '💪 أداء جيد جداً!';
+                message = '👍 جيد جداً، راجع بعض النقاط البسيطة.';
                 emoji = '💪';
                 gradeColor = 'var(--primary)';
-                detailedMessage = 'أداء جيد ويمكنك الوصول إلى الأفضل بمراجعة بسيطة.';
-            } else if (score >= 50) {
-                message = '📖 أداء جيد!';
+                detailedMessage = 'جيد جداً، راجع بعض النقاط البسيطة وحسّن أدائك!';
+            } else if (score >= 60) {
+                message = '📚 جيد، لكن تحتاج إلى مراجعة بعض الدروس.';
                 emoji = '📖';
                 gradeColor = 'var(--warning)';
-                detailedMessage = 'أداء جيد، تحتاج إلى مراجعة بعض النقاط البسيطة.';
-            } else if (score >= 30) {
-                message = '📚 يحتاج إلى مراجعة!';
-                emoji = '📚';
-                gradeColor = 'var(--danger)';
-                detailedMessage = 'تحتاج إلى مراجعة الدرس جيداً ثم إعادة المذاكرة.';
+                detailedMessage = 'جيد، لكن تحتاج إلى مراجعة بعض الدروس لتحسين الفهم.';
+            } else if (score >= 50) {
+                message = '⚠️ مقبول، ننصح بإعادة مراجعة الدرس قبل المتابعة.';
+                emoji = '⚠️';
+                gradeColor = '#FFA726';
+                detailedMessage = 'مقبول، ننصح بإعادة مراجعة الدرس قبل المتابعة.';
             } else {
-                message = '🔴 يحتاج إلى مراجعة شاملة!';
+                message = '❌ تحتاج إلى مراجعة الدرس بالكامل ثم إعادة التدريب.';
                 emoji = '🔴';
                 gradeColor = 'var(--danger)';
-                detailedMessage = 'ضعيف جداً، تحتاج إلى مراجعة شاملة للدرس من البداية.';
+                detailedMessage = 'تحتاج إلى مراجعة شاملة للدرس من البداية وإعادة التدريب.';
             }
 
             const wrongResults = results.filter(r => !r.isCorrect);
@@ -4458,9 +4593,9 @@
                     <div class="card" style="padding:28px;margin-top:12px;text-align:center;border:3px solid ${gradeColor};">
                         <div style="font-size:4rem;margin-bottom:8px;">${emoji}</div>
                         <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:${gradeColor};">
-                            ${passed ? '✅ نجاح' : '❌ يحتاج مراجعة'}
+                            ${score >= 50 ? '✅ نجاح' : '❌ يحتاج مراجعة'}
                         </h2>
-                        <p style="font-size:1.2rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
+                        <p style="font-size:1.3rem;color:var(--text);margin-top:10px;font-weight:700;">${message}</p>
                         <p style="font-size:1.1rem;color:var(--primary);margin-top:4px;font-weight:600;">📊 ${detailedMessage}</p>
                         
                         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px;margin-top:20px;">
@@ -4527,7 +4662,7 @@
             const progressKey = 'assignment_' + lessonId;
             
             if (userCourseProgress[progressKey]?.completed) {
-                showToast('📝 لقد أتممت هذا الواجب مسبقاً!', 'info');
+                showCompletedModal();
                 return;
             }
             
@@ -4569,7 +4704,7 @@
             const progressKey = 'assignment_' + lessonId;
             
             if (userCourseProgress[progressKey]?.completed) {
-                showToast('✅ تم تسليم الواجب بالفعل', 'info');
+                showCompletedModal();
                 return;
             }
             
@@ -4588,7 +4723,6 @@
                         atomsAwarded: atomsReward
                     });
                     
-                    // Save to results
                     const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
                     await resultRef.set({
                         title: 'واجب الحصة',
@@ -4605,6 +4739,7 @@
                     
                     await userRef.update({ atoms: currentAtoms + atomsReward });
                     if (userData) userData.atoms = currentAtoms + atomsReward;
+                    localCache.userData = userData;
                     
                     animateAtoms('atomsCount', currentAtoms + atomsReward);
                     animateAtoms('userAtomsCount', currentAtoms + atomsReward);
@@ -4739,7 +4874,7 @@
         }
 
         // ============================================================
-        // RESULTS PAGE - NEW
+        // RESULTS PAGE
         // ============================================================
         function showResults() {
             if (!currentUser) {
@@ -4756,7 +4891,7 @@
                     const data = child.val();
                     results.push({ id: child.key, ...data });
                 });
-                results.reverse(); // newest first
+                results.reverse();
 
                 if (results.length === 0) {
                     main.innerHTML = `
@@ -4808,7 +4943,7 @@
                                             <td style="font-weight:600;">${escapeHtml(r.title || 'اختبار')}</td>
                                             <td><span class="badge-type ${r.type || 'exam'}">${r.type || 'exam'}</span></td>
                                             <td>${r.score || 0}%</td>
-                                            <td><span class="${(r.score || 0) >= 60 ? 'badge-pass' : 'badge-fail'}">${(r.score || 0) >= 60 ? '✅ نجاح' : '❌ رسوب'}</span></td>
+                                            <td><span class="${(r.score || 0) >= 50 ? 'badge-pass' : 'badge-fail'}">${(r.score || 0) >= 50 ? '✅ نجاح' : '❌ رسوب'}</span></td>
                                             <td>${r.correctAnswers || 0}/${r.totalQuestions || 0}</td>
                                             <td>${Math.floor((r.timeSpent || 0) / 60)} د</td>
                                             <td>${formatTime(r.completedAt)}</td>
@@ -4825,7 +4960,7 @@
         }
 
         // ============================================================
-        // ERROR BANK - REBUILT
+        // ERROR BANK
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -4916,7 +5051,6 @@
                     return;
                 }
 
-                // Store error data for tracking correct answers
                 const errorData = selectedErrors.map((e, idx) => ({
                     index: idx,
                     question: e.question,
@@ -4944,13 +5078,10 @@
                     duration: Math.ceil(selectedErrors.length * 1.5)
                 };
                 
-                // Override submit to handle error removal
                 const originalSubmit = window.submitExam;
                 window.submitExam = async function(id, maxAtoms, autoSubmit) {
-                    // Call original
                     await originalSubmit.call(window, id, maxAtoms, autoSubmit);
                     
-                    // After submission, check which questions were answered correctly
                     if (id.startsWith('error_review_')) {
                         const storedData = sessionStorage.getItem('error_review_data');
                         if (storedData) {
@@ -4966,13 +5097,11 @@
                             }
                             
                             if (correctIndices.length > 0) {
-                                // Remove correctly answered questions from error bank
                                 const errorRef = database.ref('users/' + currentUser.uid + '/errorBank');
                                 const errorSnap = await errorRef.once('value');
                                 if (errorSnap.exists()) {
                                     let currentErrors = errorSnap.val() || [];
                                     if (Array.isArray(currentErrors)) {
-                                        // Mark as solved for each correct answer
                                         correctIndices.forEach(idx => {
                                             if (data[idx]) {
                                                 const q = data[idx].question;
@@ -4984,7 +5113,6 @@
                                             }
                                         });
                                         await errorRef.set(currentErrors);
-                                        
                                         if (correctIndices.length > 0) {
                                             showToast(`✅ تم حذف ${correctIndices.length} سؤال من بنك الأخطاء!`, 'success');
                                             await addNotification(currentUser.uid, '✅ تم تصحيح أخطاء!', `لقد أجبت بشكل صحيح على ${correctIndices.length} سؤال وتم حذفهم من بنك الأخطاء.`, '✅');
@@ -5049,7 +5177,7 @@
         }
 
         // ============================================================
-        // UPLOAD PROFILE PHOTO - Fixed
+        // UPLOAD PROFILE PHOTO
         // ============================================================
         function uploadProfilePhoto() {
             if (!currentUser) {
@@ -5075,6 +5203,7 @@
 
                     await database.ref('users/' + currentUser.uid + '/photoURL').set(downloadURL);
                     if (userData) userData.photoURL = downloadURL;
+                    localCache.userData = userData;
                     showToast('✅ تم تحديث الصورة الشخصية بنجاح', 'success');
 
                     const avatar = document.getElementById('userAvatar');
@@ -5364,7 +5493,7 @@
         function checkAchievements(uid) {}
 
         // ============================================================
-        // AI INSIGHTS - REAL ANALYSIS
+        // AI INSIGHTS
         // ============================================================
         function showAIInsights() {
             if (!currentUser) {
@@ -5655,7 +5784,7 @@
         }
 
         // ============================================================
-        // DASHBOARD - REDESIGNED with REAL DATA
+        // DASHBOARD - REDESIGNED
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -5702,7 +5831,6 @@
             
             const lessonProgress = totalLessonsAll > 0 ? Math.round((watchedCount / totalLessonsAll) * 100) : 0;
             
-            // Get certificate count
             let certificateCount = 0;
             for (const c of safeCourses) {
                 const lessons = allLessons.filter(l => l.courseId === c.id);
@@ -5904,9 +6032,16 @@
         // LOAD USER PROGRESS
         // ============================================================
         function loadUserProgress(uid) {
+            // Check cache first
+            if (Object.keys(localCache.progress).length > 0 && localCache.timestamp > Date.now() - 60000) {
+                userCourseProgress = localCache.progress;
+                return;
+            }
+
             database.ref('users/' + uid + '/progress').on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userCourseProgress = snapshot.val();
+                    localCache.progress = userCourseProgress;
                 } else {
                     userCourseProgress = {};
                 }
@@ -5914,22 +6049,33 @@
         }
 
         // ============================================================
-        // AUTH STATE OBSERVER
+        // AUTH STATE OBSERVER - FAST
         // ============================================================
+        let authInitialized = false;
+
         auth.onAuthStateChanged((user) => {
             currentUser = user;
+            isAuthChecked = true;
+            
+            // Immediately update UI for fast login
             updateUIForAuth(user);
 
             if (user) {
-                loadUserData(user.uid);
-                loadUserSubscriptions(user.uid);
-                loadUserProgress(user.uid);
-                loadNotifications(user.uid);
-                loadCourses();
-                loadLessons();
-                loadExams();
-                loadQuizzes();
-                loadLeaderboard();
+                // Load data in parallel for speed
+                Promise.all([
+                    loadUserData(user.uid),
+                    loadUserSubscriptions(user.uid),
+                    loadUserProgress(user.uid),
+                    loadNotifications(user.uid)
+                ]);
+                // Load courses in background
+                setTimeout(() => {
+                    loadCourses();
+                    loadLessons();
+                    loadExams();
+                    loadQuizzes();
+                    loadLeaderboard();
+                }, 100);
             } else {
                 loadCourses();
                 loadLessons();
@@ -5937,6 +6083,8 @@
                 loadQuizzes();
                 loadLeaderboard();
             }
+            
+            authInitialized = true;
         });
 
         // ============================================================
@@ -5969,6 +6117,7 @@
             if (e.key === 'Escape') {
                 closeExamSecurityModal();
                 closeImageZoom();
+                closeCompletedModal();
             }
         });
 
@@ -6026,6 +6175,8 @@
             openImageZoom,
             closeImageZoom,
             showResults,
+            closeCompletedModal,
+            showCompletedModal,
             selectExamAnswer: function(id, qIdx, oIdx, correct) {
                 if (!isExamActive || examSubmitted) return;
                 if (!examAnswers[id]) examAnswers[id] = {};
@@ -6079,8 +6230,8 @@
         // ============================================================
         function init() {
             setupScrollHandlers();
-            console.log('🚀 Yalla Chemistry Platform v25.0 - ALL ISSUES FIXED!');
-            console.log('✅ All features working correctly');
+            console.log('🚀 Yalla Chemistry Platform v26.0 - ALL ISSUES FIXED!');
+            console.log('✅ Fast Login, Auto Submit Only on Timeout, Grade Messages, Complete Block');
         }
 
         if (document.readyState === 'loading') {
