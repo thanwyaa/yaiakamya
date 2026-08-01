@@ -38,6 +38,15 @@ async function openLessonExam(lessonId) {
     if (!currentUser) { showLoginOverlay(); return; }
     if (await isAssessmentCompleted(lessonId, 'exam')) { showCompletedModal(); return; }
     try {
+        // التحقق من صلاحية الكورس
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (lesson) {
+            const course = allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
+                showSubscriptionPage(course.id);
+                return;
+            }
+        }
         const snapshot = await database.ref('exams').orderByChild('lessonId').equalTo(lessonId).once('value');
         if (!snapshot.exists()) { showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning'); return; }
         let exam = null;
@@ -54,6 +63,14 @@ async function openLessonQuiz(lessonId) {
     if (!currentUser) { showLoginOverlay(); return; }
     if (await isAssessmentCompleted(lessonId, 'quiz')) { showCompletedModal(); return; }
     try {
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (lesson) {
+            const course = allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
+                showSubscriptionPage(course.id);
+                return;
+            }
+        }
         const snapshot = await database.ref('quizzes').orderByChild('lessonId').equalTo(lessonId).once('value');
         if (!snapshot.exists()) { showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning'); return; }
         let quiz = null;
@@ -71,6 +88,14 @@ async function openLessonAssignment(lessonId) {
     const progressKey = 'assignment_' + lessonId;
     if (userCourseProgress[progressKey]?.completed) { showCompletedModal(); return; }
     try {
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (lesson) {
+            const course = allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
+                showSubscriptionPage(course.id);
+                return;
+            }
+        }
         const snapshot = await database.ref('assignments/' + lessonId).once('value');
         if (!snapshot.exists()) { showToast('الواجب غير موجود', 'error'); return; }
         const assign = { id: lessonId, ...snapshot.val() };
@@ -792,7 +817,6 @@ function exitExam() {
 // ربط الدوال بـ APP
 // ============================================================
 
-// دالة لربط الدوال بالـ APP بعد تحميل الملف
 function bindExamFunctions() {
     if (window.APP) {
         APP.openLessonExam = openLessonExam;
@@ -817,7 +841,6 @@ function bindExamFunctions() {
     }
 }
 
-// تنفيذ الربط عند تحميل الملف
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bindExamFunctions);
 } else {
