@@ -737,4 +737,228 @@ async function openLessonVideo(lessonId) {
 
         window.videoWatchInterval = setInterval(() => {
             if (window.activeVideoLessonId && window.videoWatchStartTime) {
-                const elapsed = (Date.now() - window.videoWatchStartTime) / 
+                const elapsed = (Date.now() - window.videoWatchStartTime) / 1000;
+                if (elapsed > 5) {
+                    window.videoWatchTotal[lessonId] = (window.videoWatchTotal[lessonId] || 0) + elapsed;
+                    window.videoWatchStartTime = Date.now();
+                    
+                    const studyHours = elapsed / 3600;
+                    window.database.ref('users/' + window.currentUser.uid + '/studyTime').transaction((current) => {
+                        return (current || 0) + studyHours;
+                    });
+                    if (window.userData) {
+                        window.userData.studyTime = (window.userData.studyTime || 0) + studyHours;
+                        window.cache.userData = window.userData;
+                        updateCache();
+                    }
+                }
+            }
+        }, 5000);
+
+        main.innerHTML = `
+            <div style="max-width:900px;margin:0 auto;padding:16px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:0.85rem;color:var(--text2);flex-wrap:wrap;">
+                    <button class="btn-outline btn-sm no-print" onclick="APP.openCoursePage('${lesson.courseId}')" style="padding:4px 12px;">
+                        <i class="fas fa-arrow-right"></i> ${escapeHtml(courseName)}
+                    </button>
+                    <span style="color:var(--border);">/</span>
+                    <span style="font-weight:600;color:var(--text);">${escapeHtml(lesson.title)}</span>
+                </div>
+
+                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text);margin-bottom:12px;">🎥 ${escapeHtml(lesson.title)}</h1>
+
+                <div style="margin-bottom:12px;">
+                    ${videoIdYt ? `
+                        <div class="card" style="padding:0;overflow:hidden;">
+                            <div style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
+                                <iframe id="videoFrame" src="https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1" 
+                                        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+                                        allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="empty-state">
+                            <div class="icon">🎥</div>
+                            <h3>لا يوجد فيديو لهذه الحصة</h3>
+                        </div>
+                    `}
+                </div>
+
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <button class="btn-outline btn-sm no-print" onclick="${videoIdYt ? `APP.handleVideoExit('${lessonId}', ${JSON.stringify(lesson).replace(/"/g, '&quot;')})` : `APP.openCoursePage('${lesson.courseId}')`}">📚 العودة للكورس</button>
+                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">🏠 الرئيسية</button>
+                </div>
+            </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (error) {
+        console.error('openLessonVideo error:', error);
+        showToast('حدث خطأ في تحميل الفيديو', 'error');
+        showHome();
+    }
+}
+
+function handleVideoExit(lessonId, lesson) {
+    clearVideoTracking();
+    if (window.videoWatchTotal[lessonId] >= 900 && !window.userCourseProgress[lessonId]?.watched) {
+        completeLessonWatch(lessonId, lesson);
+    }
+    openCoursePage(lesson.courseId);
+}
+
+async function openLessonAssignment(lessonId) {
+    if (!window.currentUser) { showLoginForm(); return; }
+    
+    const progressKey = 'assignment_' + lessonId;
+    
+    if (window.userCourseProgress[progressKey]?.completed) {
+        showCompletedModal();
+        return;
+    }
+    
+    try {
+        const snapshot = await window.database.ref('assignments/' + lessonId).once('value');
+        if (!snapshot.exists()) {
+            showToast('الواجب غير موجود', 'error');
+            return;
+        }
+        const assign = { id: lessonId, ...snapshot.val() };
+        const main = document.getElementById('mainContent');
+        if (!main) return;
+        main.innerHTML = `
+            <div style="max-width:800px;margin:0 auto;padding:20px;">
+                <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📚 ${escapeHtml(assign.title)}</h2>
+                <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(assign.description) || ''}</p>
+                <div class="card" style="padding:16px;margin-bottom:12px;">
+                    <p style="color:var(--text);"><strong>الدرجة:</strong> ${assign.grade || 10}</p>
+                    <p style="color:var(--text);"><strong>الحالة:</strong> <span style="color:var(--warning);">⏳ في انتظار التقييم</span></p>
+                    ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);">${escapeHtml(assign.content)}</div>` : ''}
+                    <button class="btn-primary" style="margin-top:12px;width:100%;" onclick="APP.completeAssignment('${lessonId}')">
+                        <i class="fas fa-check"></i> تسليم الواجب
+                    </button>
+                </div>
+                <div style="text-align:center;"><button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button></div>
+            </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+        console.error('openLessonAssignment error:', err);
+        showToast('حدث خطأ في تحميل الواجب', 'error');
+    }
+}
+
+async function completeAssignment(lessonId) {
+    if (!window.currentUser) return;
+    
+    const progressKey = 'assignment_' + lessonId;
+    
+    if (window.userCourseProgress[progressKey]?.completed) {
+        showCompletedModal();
+        return;
+    }
+    
+    try {
+        const atomsReward = 10;
+        const userRef = window.database.ref('users/' + window.currentUser.uid);
+        const userSnap = await userRef.once('value');
+        
+        if (userSnap.exists()) {
+            const currentAtoms = userSnap.val().atoms || 0;
+            
+            await window.database.ref('users/' + window.currentUser.uid + '/progress/' + progressKey).set({
+                completed: true,
+                completedAt: new Date().toISOString(),
+                type: 'assignment',
+                atomsAwarded: atomsReward
+            });
+            
+            const resultRef = window.database.ref('users/' + window.currentUser.uid + '/results').push();
+            await resultRef.set({
+                title: 'واجب الحصة',
+                type: 'assignment',
+                score: 100,
+                totalQuestions: 1,
+                correctAnswers: 1,
+                wrongAnswers: 0,
+                timeSpent: 0,
+                atomsEarned: atomsReward,
+                completedAt: new Date().toISOString(),
+                lessonId: lessonId
+            });
+            
+            await userRef.update({ atoms: currentAtoms + atomsReward });
+            if (window.userData) window.userData.atoms = currentAtoms + atomsReward;
+            window.cache.userData = window.userData;
+            updateCache();
+            
+            animateAtoms('atomsCount', currentAtoms + atomsReward);
+            animateAtoms('userAtomsCount', currentAtoms + atomsReward);
+            
+            if (typeof addNotification === 'function') {
+                await addNotification(window.currentUser.uid, '📝 تم تسليم الواجب!', `حصلت على ${atomsReward} ذرة لتسليم الواجب.`, '📝');
+            }
+            showToast(`🎉 +${atomsReward} ذرة! تم تسليم الواجب بنجاح.`, 'success');
+            
+            const main = document.getElementById('mainContent');
+            if (main) {
+                main.innerHTML = `<div style="max-width:800px;margin:0 auto;padding:20px;text-align:center;">
+                    <div style="font-size:4rem;">✅</div>
+                    <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--success);">تم تسليم الواجب بنجاح!</h2>
+                    <p style="color:var(--text2);margin-top:8px;">حصلت على ${atomsReward} ذرة.</p>
+                    <button class="btn-primary" style="margin-top:16px;" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
+                </div>`;
+            }
+        }
+    } catch (err) {
+        console.error('Error completing assignment:', err);
+        showToast('حدث خطأ في تسليم الواجب', 'error');
+    }
+}
+
+function animateAtoms(elementId, target) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    const start = parseInt(el.textContent) || 0;
+    const duration = 600;
+    const startTime = Date.now();
+
+    function update() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + (target - start) * progress);
+        el.textContent = current;
+        if (progress < 1) requestAnimationFrame(update);
+        else el.textContent = target;
+    }
+    update();
+}
+
+// ============================================================
+// EXPORTS
+// ============================================================
+
+window.loadCourses = loadCourses;
+window.loadLessons = loadLessons;
+window.loadExams = loadExams;
+window.loadQuizzes = loadQuizzes;
+window.loadUserSubscriptions = loadUserSubscriptions;
+window.loadUserProgress = loadUserProgress;
+window.renderCourses = renderCourses;
+window.isUserSubscribed = isUserSubscribed;
+window.filterCoursesByGrade = filterCoursesByGrade;
+window.filterCourses = filterCourses;
+window.subscribeToCourse = subscribeToCourse;
+window.openCoursePage = openCoursePage;
+window.clearVideoTracking = clearVideoTracking;
+window.extractYouTubeId = extractYouTubeId;
+window.completeLessonWatch = completeLessonWatch;
+window.checkCourseCompletion = checkCourseCompletion;
+window.openLessonVideo = openLessonVideo;
+window.handleVideoExit = handleVideoExit;
+window.openLessonAssignment = openLessonAssignment;
+window.completeAssignment = completeAssignment;
+window.animateAtoms = animateAtoms;
