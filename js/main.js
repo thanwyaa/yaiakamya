@@ -15,6 +15,7 @@ function toggleTheme() {
     applyTheme(!isDark);
 }
 
+// التحقق من وجود theme في localStorage
 if (localStorage.getItem('theme') === 'dark') applyTheme(true);
 
 // ============================================================
@@ -691,3 +692,31 @@ function getTimeAgo(date) {
     if (minutes > 0) return minutes + ' دقيقة مضت';
     return 'الآن';
 }
+
+// ============================================================
+// EXPOSE MAIN FUNCTIONS
+// ============================================================
+window.applyTheme = applyTheme;
+window.toggleTheme = toggleTheme;
+window.showHome = showHome;
+window.scrollToCourses = scrollToCourses;
+window.shareOn = shareOn;
+window.showCompletedModal = showCompletedModal;
+window.closeCompletedModal = closeCompletedModal;
+window.openImageZoom = openImageZoom;
+window.closeImageZoom = closeImageZoom;
+window.loadNotifications = loadNotifications;
+window.updateNotificationBadge = updateNotificationBadge;
+window.showNotificationsPage = showNotificationsPage;
+window.markNotificationRead = markNotificationRead;
+window.markAllNotificationsRead = markAllNotificationsRead;
+window.deleteAllNotifications = deleteAllNotifications;
+window.addNotification = addNotification;
+window.loadLeaderboard = loadLeaderboard;
+window.showLeaderboard = showLeaderboard;
+window.showDashboard = showDashboard;
+window.showPrivacy = showPrivacy;
+window.showTerms = showTerms;
+window.loadHomePage = loadHomePage;
+window.formatTime = formatTime;
+window.getTimeAgo = getTimeAgo;
