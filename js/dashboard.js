@@ -36,7 +36,10 @@ function showDashboard() {
     let coursesCompleted = 0;
     let totalLessons = 0;
     window.allCourses.forEach(c => {
-        const lessons = window.allLessons.filter(l => l.courseId === c.id);
+        const lessons = window.allLessons.filter(l => {
+            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
+            return lCourseId === c.id;
+        });
         const completed = lessons.filter(l => safeProgress[l.id]?.watched);
         if (lessons.length > 0 && completed.length === lessons.length) {
             coursesCompleted++;
@@ -67,6 +70,9 @@ function showDashboard() {
                     </button>
                     <button class="btn-primary btn-sm no-print" onclick="APP.showAIInsights()" style="background:var(--gold);color:#081B2C;">
                         🤖 تحليل المستوى
+                    </button>
+                    <button class="btn-primary btn-sm no-print" onclick="APP.showLessonDebug()" style="background:var(--warning);color:#081B2C;">
+                        🔍 التحقق من الربط
                     </button>
                 </div>
             </div>
@@ -141,6 +147,7 @@ function showDashboard() {
                 <button class="btn-primary btn-sm" onclick="APP.showAchievements()" style="background:var(--gold);color:#081B2C;">🏅 إنجازاتي</button>
                 <button class="btn-primary btn-sm" onclick="APP.showCertificate()" style="background:var(--success);">📜 شهاداتي</button>
                 <button class="btn-primary btn-sm" onclick="APP.showLeaderboard()" style="background:var(--primary);">🏆 المتصدرين</button>
+                <button class="btn-primary btn-sm" onclick="APP.showLessonDebug()" style="background:var(--warning);color:#081B2C;">🔍 التحقق من الربط</button>
             </div>
 
             <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:8px;">🏅 آخر الإنجازات</h3>
