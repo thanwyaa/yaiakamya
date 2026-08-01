@@ -157,6 +157,7 @@
                         <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهاداتي</button>
                         <button class="menu-item" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
                         <button class="menu-item" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
+                        <button class="menu-item" onclick="APP.showLessonDebug()"><i class="fas fa-link"></i> 🔍 التحقق من الربط</button>
                         <div class="menu-divider"></div>
                         <button class="menu-item danger" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
                     </div>
@@ -204,7 +205,7 @@
             setupScrollHandlers();
             loadHomePage();
             initAuth();
-            console.log('🚀 Yalla Chemistry Platform v32.0 - Final Version');
+            console.log('🚀 Yalla Chemistry Platform v32.0 - Fixed');
             console.log('✅ All modules loaded correctly');
         }
 
@@ -299,7 +300,17 @@
             showCompletedModal: window.showCompletedModal || function() {},
             closeCompletedModal: window.closeCompletedModal || function() {},
             openImageZoom: window.openImageZoom || function() {},
-            closeImageZoom: window.closeImageZoom || function() {}
+            closeImageZoom: window.closeImageZoom || function() {},
+            // Debug Functions
+            showLessonDebug: window.showLessonDebug || function() {},
+            autoFixLessonBinding: window.autoFixLessonBinding || function() {},
+            checkFirebaseStructure: window.checkFirebaseStructure || function() {},
+            validateLessonBinding: window.validateLessonBinding || function() {},
+            fixLessonBinding: window.fixLessonBinding || function() {},
+            fixAllLessonsInCourse: window.fixAllLessonsInCourse || function() {},
+            addCourseIdToLesson: window.addCourseIdToLesson || function() {},
+            loadLessons: window.loadLessons || function() {},
+            loadCourses: window.loadCourses || function() {}
         };
 
         window.APP = APP;
