@@ -38,7 +38,6 @@ async function openLessonExam(lessonId) {
     if (!currentUser) { showLoginOverlay(); return; }
     if (await isAssessmentCompleted(lessonId, 'exam')) { showCompletedModal(); return; }
     try {
-        // التحقق من صلاحية الكورس
         const lesson = allLessons.find(l => l.id === lessonId);
         if (lesson) {
             const course = allCourses.find(c => c.id === lesson.courseId);
