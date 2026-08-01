@@ -16,9 +16,13 @@ window.currentQuizData = null;
 window.pendingExamCallback = null;
 window.isExamMode = false;
 
+// ============================================================
+// ERROR BANK
+// ============================================================
+
 function showErrorBank() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -91,6 +95,8 @@ function showErrorBank() {
 function startErrorReview(count) {
     if (!window.currentUser) return;
     
+    showToast('📝 جاري تجهيز مراجعة الأخطاء...', 'info');
+    
     window.database.ref('users/' + window.currentUser.uid + '/errorBank').once('value', (snapshot) => {
         let errors = [];
         if (snapshot.exists()) {
@@ -115,117 +121,94 @@ function startErrorReview(count) {
             return;
         }
 
-        const examQuestions = selectedErrors.map(e => {
-            const options = generateOptions(e.correctAnswer, e.userAnswer);
-            return {
-                question: e.question,
-                options: options,
-                correctAnswer: options.indexOf(e.correctAnswer),
-                explanation: `إجابتك السابقة: ${e.userAnswer} | الإجابة الصحيحة: ${e.correctAnswer}`
-            };
+        showToast(`📝 مراجعة ${selectedErrors.length} سؤال...`, 'info');
+        
+        // عرض الأسئلة للمراجعة مع الإجابات الصحيحة
+        const main = document.getElementById('mainContent');
+        if (!main) return;
+        
+        let html = `
+            <div style="max-width:800px;margin:0 auto;padding:20px;">
+                <button class="btn-outline btn-sm no-print" onclick="APP.showErrorBank()">
+                    <i class="fas fa-arrow-right"></i> العودة
+                </button>
+                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text);margin:12px 0 4px;">
+                    📝 مراجعة الأخطاء
+                </h1>
+                <p style="color:var(--text2);margin-bottom:16px;">
+                    راجع إجاباتك الصحيحة لهذه الأسئلة التي أخطأت فيها سابقاً
+                </p>
+        `;
+        
+        selectedErrors.forEach((e, idx) => {
+            html += `
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;border-right:4px solid var(--success);">
+                    <div style="font-weight:600;font-size:1rem;color:var(--text);">${idx + 1}. ${escapeHtml(e.question)}</div>
+                    <div style="font-size:0.9rem;color:var(--text2);margin-top:8px;">
+                        <span style="color:var(--success);font-weight:700;">✅ الإجابة الصحيحة: ${escapeHtml(e.correctAnswer)}</span>
+                        <span style="color:var(--danger);margin-right:16px;">❌ إجابتك السابقة: ${escapeHtml(e.userAnswer)}</span>
+                    </div>
+                    ${e.explanation ? `<div style="font-size:0.85rem;color:var(--text2);margin-top:6px;padding:8px;background:var(--bg);border-radius:var(--radius);">📖 ${escapeHtml(e.explanation)}</div>` : ''}
+                    <button class="btn-primary btn-sm" style="margin-top:8px;" onclick="APP.markErrorAsReviewed('${idx}', '${escapeHtml(e.question)}')">
+                        ✅ فهمت وحلته صح
+                    </button>
+                </div>
+            `;
         });
-
-        const exam = {
-            id: 'error_review_' + Date.now(),
-            title: `📝 مراجعة الأخطاء (${selectedErrors.length} سؤال)`,
-            description: 'أسئلة من بنك الأخطاء الخاص بك - أجب بشكل صحيح لحذفها من القائمة',
-            questions: examQuestions,
-            atomsReward: 0,
-            duration: Math.ceil(selectedErrors.length * 1.5)
-        };
         
-        const errorData = selectedErrors.map((e, idx) => ({
-            index: idx,
-            question: e.question,
-            correctAnswer: e.correctAnswer,
-            userAnswer: e.userAnswer
-        }));
-        sessionStorage.setItem('error_review_data', JSON.stringify(errorData));
+        html += `
+                <div style="text-align:center;margin-top:16px;">
+                    <button class="btn-primary" onclick="APP.showErrorBank()">📚 العودة لبنك الأخطاء</button>
+                </div>
+            </div>
+        `;
         
-        const originalSubmit = submitExam;
-        submitExam = async function(id, maxAtoms, autoSubmit) {
-            await originalSubmit.call(this, id, maxAtoms, autoSubmit);
-            
-            if (id && id.startsWith('error_review_')) {
-                const storedData = sessionStorage.getItem('error_review_data');
-                if (storedData) {
-                    const data = JSON.parse(storedData);
-                    const answers = window.examAnswers[id] || {};
-                    const questions = exam.questions || [];
-                    
-                    let correctIndices = [];
-                    for (let i = 0; i < Math.min(Object.keys(answers).length, questions.length); i++) {
-                        if (answers[i] && answers[i].selected === questions[i].correctAnswer) {
-                            correctIndices.push(i);
-                        }
-                    }
-                    
-                    if (correctIndices.length > 0) {
-                        const errorRef = window.database.ref('users/' + window.currentUser.uid + '/errorBank');
-                        const errorSnap = await errorRef.once('value');
-                        if (errorSnap.exists()) {
-                            let currentErrors = errorSnap.val() || [];
-                            if (Array.isArray(currentErrors)) {
-                                correctIndices.forEach(idx => {
-                                    if (data[idx]) {
-                                        const q = data[idx].question;
-                                        const errIdx = currentErrors.findIndex(e => e.question === q && !e.solved);
-                                        if (errIdx !== -1) {
-                                            currentErrors[errIdx].solved = true;
-                                            currentErrors[errIdx].solvedAt = new Date().toISOString();
-                                        }
-                                    }
-                                });
-                                await errorRef.set(currentErrors);
-                                if (correctIndices.length > 0) {
-                                    showToast(`✅ تم حذف ${correctIndices.length} سؤال من بنك الأخطاء!`, 'success');
-                                    if (typeof addNotification === 'function') {
-                                        await addNotification(window.currentUser.uid, '✅ تم تصحيح أخطاء!', `لقد أجبت بشكل صحيح على ${correctIndices.length} سؤال وتم حذفهم من بنك الأخطاء.`, '✅');
-                                    }
-                                }
-                            }
-                        }
-                        sessionStorage.removeItem('error_review_data');
-                    }
-                }
-            }
-        };
-        
-        window.currentExamData = exam;
-        const startTime = Date.now();
-        renderExamUI(exam, startTime, exam.duration || 0);
+        main.innerHTML = html;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }
 
-function generateOptions(correctAnswer, wrongAnswer) {
-    const options = [correctAnswer];
-    if (wrongAnswer && wrongAnswer !== correctAnswer) {
-        options.push(wrongAnswer);
-    }
-    const fakeOptions = [
-        'تفاعل كيميائي',
-        'مركب عضوي',
-        'عنصر فلزي',
-        'محلول قاعدي',
-        'غاز خامل',
-        'أيون موجب',
-        'رابطة تساهمية',
-        'تفاعل عكسي'
-    ];
-    const shuffledFakes = fakeOptions.sort(() => 0.5 - Math.random());
-    let count = 0;
-    while (options.length < 4 && count < shuffledFakes.length) {
-        if (!options.includes(shuffledFakes[count]) && shuffledFakes[count] !== correctAnswer && shuffledFakes[count] !== wrongAnswer) {
-            options.push(shuffledFakes[count]);
+async function markErrorAsReviewed(index, question) {
+    if (!window.currentUser) return;
+    
+    try {
+        const errorRef = window.database.ref('users/' + window.currentUser.uid + '/errorBank');
+        const errorSnap = await errorRef.once('value');
+        if (errorSnap.exists()) {
+            let errors = errorSnap.val() || [];
+            if (Array.isArray(errors)) {
+                let found = false;
+                let foundIndex = -1;
+                for (let i = 0; i < errors.length; i++) {
+                    if (!errors[i].solved && errors[i].question === question) {
+                        found = true;
+                        foundIndex = i;
+                        break;
+                    }
+                }
+                if (found && foundIndex !== -1) {
+                    errors[foundIndex].solved = true;
+                    errors[foundIndex].solvedAt = new Date().toISOString();
+                    await errorRef.set(errors);
+                    showToast('✅ تم حذف السؤال من بنك الأخطاء', 'success');
+                    // إعادة تحميل بنك الأخطاء
+                    showErrorBank();
+                }
+            }
         }
-        count++;
+    } catch (err) {
+        console.error('Error marking error as reviewed:', err);
+        showToast('حدث خطأ', 'error');
     }
-    return options.sort(() => 0.5 - Math.random());
 }
+
+// ============================================================
+// RESULTS
+// ============================================================
 
 function showResults() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -306,9 +289,13 @@ function showResults() {
     });
 }
 
+// ============================================================
+// CERTIFICATE
+// ============================================================
+
 function showCertificate() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -324,10 +311,7 @@ function showCertificate() {
 
     let completedCourse = null;
     for (const c of window.allCourses) {
-        const lessons = window.allLessons.filter(l => {
-            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
-            return lCourseId === c.id;
-        });
+        const lessons = window.allLessons.filter(l => l.courseId === c.id);
         const completed = lessons.filter(l => window.userCourseProgress[l.id]?.watched);
         if (lessons.length > 0 && completed.length === lessons.length) {
             completedCourse = c;
@@ -371,9 +355,13 @@ function downloadCertificate() {
     window.print();
 }
 
+// ============================================================
+// STUDENT CARD
+// ============================================================
+
 function showStudentCard() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -391,7 +379,7 @@ function showStudentCard() {
     const createdAt = window.userData?.createdAt ? new Date(window.userData.createdAt).toLocaleDateString('ar') : 'غير معروف';
 
     const avatarHtml = photoURL ? 
-        `<img src="${photoURL}" alt="${escapeHtml(name)}" loading="lazy">` : 
+        `<img src="${photoURL}" alt="${escapeHtml(name)}" loading="lazy" onerror="this.parentElement.textContent='${(name || 'U')[0].toUpperCase()}'">` : 
         (name || 'U')[0].toUpperCase();
 
     main.innerHTML = `
@@ -452,6 +440,10 @@ function downloadStudentCard() {
     });
 }
 
+// ============================================================
+// ACHIEVEMENTS
+// ============================================================
+
 function getAchievements() {
     const safeData = window.userData || {};
     const progressData = window.userCourseProgress || {};
@@ -466,10 +458,7 @@ function getAchievements() {
     
     let coursesCompleted = 0;
     window.allCourses.forEach(c => {
-        const lessons = window.allLessons.filter(l => {
-            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
-            return lCourseId === c.id;
-        });
+        const lessons = window.allLessons.filter(l => l.courseId === c.id);
         const completed = lessons.filter(l => progressData[l.id]?.watched);
         if (lessons.length > 0 && completed.length === lessons.length) {
             coursesCompleted++;
@@ -509,7 +498,7 @@ function getAchievements() {
 
 function showAchievements() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -538,9 +527,13 @@ function showAchievements() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ============================================================
+// AI INSIGHTS
+// ============================================================
+
 function showAIInsights() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -825,12 +818,18 @@ function printAIReport() {
     printWindow.document.close();
 }
 
+// ============================================================
+// EXAM STUBS (للامتثال مع الواجهة)
+// ============================================================
+
 function openLessonExam(lessonId) {
-    showToast('جاري فتح الامتحان...', 'info');
+    showToast('📝 جاري فتح الامتحان...', 'info');
+    // يمكن تنفيذ منطق الامتحان هنا حسب الحاجة
 }
 
 function openLessonQuiz(lessonId) {
-    showToast('جاري فتح الكويز...', 'info');
+    showToast('🧪 جاري فتح الكويز...', 'info');
+    // يمكن تنفيذ منطق الكويز هنا حسب الحاجة
 }
 
 function openExamSecurityModal() {
@@ -850,32 +849,44 @@ function startExamAfterPledge() {
 }
 
 function submitExam(id, maxAtoms, autoSubmit) {
-    showToast('جاري تقديم الامتحان...', 'info');
+    showToast('📝 جاري تقديم الامتحان...', 'info');
 }
 
 function submitQuiz(id, maxAtoms, autoSubmit) {
-    showToast('جاري تقديم الكويز...', 'info');
+    showToast('🧪 جاري تقديم الكويز...', 'info');
 }
 
 function exitExam() {
     showToast('تم الخروج من الامتحان', 'info');
 }
 
-function navigateExamQuestion(direction) {}
+function navigateExamQuestion(direction) {
+    // تنقل بين أسئلة الامتحان
+}
 
-function navigateQuizQuestion(direction) {}
+function navigateQuizQuestion(direction) {
+    // تنقل بين أسئلة الكويز
+}
 
-function selectExamAnswer(questionIndex, optionIndex) {}
+function selectExamAnswer(questionIndex, optionIndex) {
+    // اختيار إجابة في الامتحان
+}
 
-function selectQuizAnswer(questionIndex, optionIndex) {}
+function selectQuizAnswer(questionIndex, optionIndex) {
+    // اختيار إجابة في الكويز
+}
 
 function renderExamUI(exam, startTime, duration) {
-    showToast('جاري تجهيز الامتحان...', 'info');
+    showToast('📝 جاري تجهيز الامتحان...', 'info');
 }
+
+// ============================================================
+// EXPORTS
+// ============================================================
 
 window.showErrorBank = showErrorBank;
 window.startErrorReview = startErrorReview;
-window.generateOptions = generateOptions;
+window.markErrorAsReviewed = markErrorAsReviewed;
 window.showResults = showResults;
 window.showCertificate = showCertificate;
 window.downloadCertificate = downloadCertificate;
