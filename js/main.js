@@ -15,7 +15,6 @@ function toggleTheme() {
     applyTheme(!isDark);
 }
 
-// التحقق من وجود theme في localStorage
 if (localStorage.getItem('theme') === 'dark') applyTheme(true);
 
 // ============================================================
