@@ -298,7 +298,7 @@ function navigateExamQuestion(direction) {
     document.getElementById('nextQuestion').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
-// ===== تسليم الامتحان =====
+// ===== تسليم الامتحان (مع إصلاح التحقق من الإجابة على كل الأسئلة) =====
 async function submitExam(id, maxAtoms, autoSubmit = false) {
     if (!currentUser) { showLoginOverlay(); return; }
     const progressKey = 'exam_' + (currentExamData?.lessonId || id);
@@ -307,9 +307,18 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
 
     const answers = examAnswers[id] || {};
     const totalQuestions = currentExamData?.questions?.length || 0;
-    if (Object.keys(answers).length < totalQuestions && !autoSubmit) {
-        showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - Object.keys(answers).length} متبقي)`, 'error');
-        return;
+
+    // التحقق من الإجابة على كل سؤال
+    if (!autoSubmit) {
+        let allAnswered = true;
+        for (let i = 0; i < totalQuestions; i++) {
+            if (!answers[i]) { allAnswered = false; break; }
+        }
+        if (!allAnswered) {
+            const answeredCount = Object.keys(answers).length;
+            showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - answeredCount} متبقي)`, 'error');
+            return;
+        }
     }
 
     if (examTimer) { clearInterval(examTimer);
@@ -620,7 +629,7 @@ function navigateQuizQuestion(direction) {
     document.getElementById('quizNext').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
-// ===== تسليم الكويز (مع إعادة تحميل صفحة الكورس لإظهار علامة مكتمل) =====
+// ===== تسليم الكويز (مع إصلاح التحقق من الإجابة على كل الأسئلة) =====
 async function submitQuiz(id, maxAtoms, autoSubmit = false) {
     if (!currentUser) { showLoginOverlay(); return; }
     const progressKey = 'quiz_' + (currentQuizData?.lessonId || id);
@@ -629,9 +638,18 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
 
     const answers = quizAnswers[id] || {};
     const totalQuestions = currentQuizData?.questions?.length || 0;
-    if (Object.keys(answers).length < totalQuestions && !autoSubmit) {
-        showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - Object.keys(answers).length} متبقي)`, 'error');
-        return;
+
+    // التحقق من الإجابة على كل سؤال
+    if (!autoSubmit) {
+        let allAnswered = true;
+        for (let i = 0; i < totalQuestions; i++) {
+            if (!answers[i]) { allAnswered = false; break; }
+        }
+        if (!allAnswered) {
+            const answeredCount = Object.keys(answers).length;
+            showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - answeredCount} متبقي)`, 'error');
+            return;
+        }
     }
 
     if (examTimer) { clearInterval(examTimer); examTimer = null; }
