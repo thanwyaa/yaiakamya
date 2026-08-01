@@ -324,7 +324,10 @@ function showCertificate() {
 
     let completedCourse = null;
     for (const c of window.allCourses) {
-        const lessons = window.allLessons.filter(l => l.courseId === c.id);
+        const lessons = window.allLessons.filter(l => {
+            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
+            return lCourseId === c.id;
+        });
         const completed = lessons.filter(l => window.userCourseProgress[l.id]?.watched);
         if (lessons.length > 0 && completed.length === lessons.length) {
             completedCourse = c;
@@ -463,7 +466,10 @@ function getAchievements() {
     
     let coursesCompleted = 0;
     window.allCourses.forEach(c => {
-        const lessons = window.allLessons.filter(l => l.courseId === c.id);
+        const lessons = window.allLessons.filter(l => {
+            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
+            return lCourseId === c.id;
+        });
         const completed = lessons.filter(l => progressData[l.id]?.watched);
         if (lessons.length > 0 && completed.length === lessons.length) {
             coursesCompleted++;
