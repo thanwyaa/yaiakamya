@@ -16,6 +16,18 @@ const firebaseConfig = {
     measurementId: "G-B3SJFF8R1R"
 };
 
+// منع تحذيرات Firebase المتكررة
+console.warn = function() {
+    // تجاهل تحذيرات Firebase المحددة
+    const args = Array.from(arguments);
+    const msg = args.join(' ');
+    if (msg.includes('FIREBASE WARNING') || msg.includes('Using an unspecified index')) {
+        return;
+    }
+    // السماح بباقي التحذيرات
+    console.warn.apply(console, args);
+};
+
 firebase.initializeApp(firebaseConfig);
 window.database = firebase.database();
 window.storage = firebase.storage();
@@ -74,21 +86,29 @@ function initAuth() {
         if (user) {
             loadUserData(user.uid);
             setTimeout(() => {
-                if (typeof loadUserSubscriptions === 'function') loadUserSubscriptions(user.uid);
-                if (typeof loadUserProgress === 'function') loadUserProgress(user.uid);
-                if (typeof loadNotifications === 'function') loadNotifications(user.uid);
+                try {
+                    if (typeof loadUserSubscriptions === 'function') loadUserSubscriptions(user.uid);
+                    if (typeof loadUserProgress === 'function') loadUserProgress(user.uid);
+                    if (typeof loadNotifications === 'function') loadNotifications(user.uid);
+                    if (typeof loadCourses === 'function') loadCourses();
+                    if (typeof loadLessons === 'function') loadLessons();
+                    if (typeof loadExams === 'function') loadExams();
+                    if (typeof loadQuizzes === 'function') loadQuizzes();
+                    if (typeof loadLeaderboard === 'function') loadLeaderboard();
+                } catch (err) {
+                    console.error('Error loading data:', err);
+                }
+            }, 300);
+        } else {
+            try {
                 if (typeof loadCourses === 'function') loadCourses();
                 if (typeof loadLessons === 'function') loadLessons();
                 if (typeof loadExams === 'function') loadExams();
                 if (typeof loadQuizzes === 'function') loadQuizzes();
                 if (typeof loadLeaderboard === 'function') loadLeaderboard();
-            }, 300);
-        } else {
-            if (typeof loadCourses === 'function') loadCourses();
-            if (typeof loadLessons === 'function') loadLessons();
-            if (typeof loadExams === 'function') loadExams();
-            if (typeof loadQuizzes === 'function') loadQuizzes();
-            if (typeof loadLeaderboard === 'function') loadLeaderboard();
+            } catch (err) {
+                console.error('Error loading data:', err);
+            }
         }
     });
 }
@@ -167,7 +187,7 @@ function updateUserUI(data) {
     const avatarEl = document.getElementById('userAvatar');
     if (avatarEl) {
         if (avatar) {
-            avatarEl.innerHTML = `<img src="${avatar}" alt="صورة">`;
+            avatarEl.innerHTML = `<img src="${avatar}" alt="صورة" loading="lazy">`;
         } else {
             avatarEl.textContent = (data.name || 'U')[0].toUpperCase();
         }
@@ -183,59 +203,69 @@ function loadUserData(uid) {
     }
 
     window.database.ref('users/' + uid).once('value', (snapshot) => {
-        if (snapshot.exists()) {
-            window.userData = snapshot.val();
-            window.cache.userData = window.userData;
-            updateCache();
-            updateUserUI(window.userData);
-            if (window.currentUser) updateUIForAuth(window.currentUser);
-        } else {
-            createNewUser(uid);
+        try {
+            if (snapshot.exists()) {
+                window.userData = snapshot.val();
+                window.cache.userData = window.userData;
+                updateCache();
+                updateUserUI(window.userData);
+                if (window.currentUser) updateUIForAuth(window.currentUser);
+            } else {
+                createNewUser(uid);
+            }
+        } catch (err) {
+            console.error('Error loading user data:', err);
         }
+    }).catch(err => {
+        console.error('Firebase error:', err);
     });
 }
 
 async function createNewUser(uid) {
-    const email = window.auth.currentUser?.email || '';
-    const code = await generateStudentCode();
-    
-    const newUser = {
-        name: 'مستخدم',
-        email: email,
-        grade: '',
-        studyType: 'عام',
-        phone: '',
-        parentPhone: '',
-        code: code,
-        atoms: 0,
-        progress: 0,
-        photoURL: '',
-        createdAt: new Date().toISOString(),
-        active: true,
-        coursesCount: 0,
-        lastActive: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-        loginCount: 1,
-        streak: 0,
-        examsPassed: 0,
-        quizzesPassed: 0,
-        studyTime: 0,
-        videosWatched: 0,
-        lessonsCompleted: 0,
-        rank: '--',
-        perfectExams: 0,
-        lastStudyDate: new Date().toDateString(),
-        premiumCourses: {}
-    };
-    
-    await window.database.ref('users/' + uid).set(newUser);
-    window.userData = newUser;
-    window.cache.userData = newUser;
-    updateCache();
-    updateUserUI(newUser);
-    if (window.currentUser) updateUIForAuth(window.currentUser);
-    if (typeof addNotification === 'function') {
-        await addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
+    try {
+        const email = window.auth.currentUser?.email || '';
+        const code = await generateStudentCode();
+        
+        const newUser = {
+            name: 'مستخدم',
+            email: email,
+            grade: '',
+            studyType: 'عام',
+            phone: '',
+            parentPhone: '',
+            code: code,
+            atoms: 0,
+            progress: 0,
+            photoURL: '',
+            createdAt: new Date().toISOString(),
+            active: true,
+            coursesCount: 0,
+            lastActive: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            loginCount: 1,
+            streak: 0,
+            examsPassed: 0,
+            quizzesPassed: 0,
+            studyTime: 0,
+            videosWatched: 0,
+            lessonsCompleted: 0,
+            rank: '--',
+            perfectExams: 0,
+            lastStudyDate: new Date().toDateString(),
+            premiumCourses: {}
+        };
+        
+        await window.database.ref('users/' + uid).set(newUser);
+        window.userData = newUser;
+        window.cache.userData = newUser;
+        updateCache();
+        updateUserUI(newUser);
+        if (window.currentUser) updateUIForAuth(window.currentUser);
+        if (typeof addNotification === 'function') {
+            await addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
+        }
+    } catch (err) {
+        console.error('Error creating user:', err);
     }
 }
 
@@ -281,11 +311,13 @@ function toggleUserMenu() {
 }
 
 function closeLoginOverlay() {
-    document.getElementById('loginOverlay').classList.remove('open');
+    const overlay = document.getElementById('loginOverlay');
+    if (overlay) overlay.classList.remove('open');
 }
 
 function showLoginOverlay() {
-    document.getElementById('loginOverlay').classList.add('open');
+    const overlay = document.getElementById('loginOverlay');
+    if (overlay) overlay.classList.add('open');
 }
 
 // ============================================================
@@ -386,9 +418,13 @@ async function generateStudentCode() {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
-    const snapshot = await window.database.ref('users').orderByChild('code').equalTo(formatted).once('value');
-    if (snapshot.exists()) {
-        return generateStudentCode();
+    try {
+        const snapshot = await window.database.ref('users').orderByChild('code').equalTo(formatted).once('value');
+        if (snapshot.exists()) {
+            return generateStudentCode();
+        }
+    } catch (err) {
+        console.error('Error generating code:', err);
     }
     return formatted;
 }
