@@ -2,9 +2,6 @@
 // SECURITY MODULE - Firebase, Auth, Permissions, Premium
 // ============================================================
 
-// ============================================================
-// FIREBASE CONFIG
-// ============================================================
 const firebaseConfig = {
     apiKey: "AIzaSyBOBu3wp3GcA-VjwtqIt1PAYYpo_HXFhtU",
     authDomain: "yalla-kimya.firebaseapp.com",
@@ -16,15 +13,13 @@ const firebaseConfig = {
     measurementId: "G-B3SJFF8R1R"
 };
 
-// منع تحذيرات Firebase المتكررة
+// تجاهل تحذيرات Firebase المحددة
 console.warn = function() {
-    // تجاهل تحذيرات Firebase المحددة
     const args = Array.from(arguments);
     const msg = args.join(' ');
     if (msg.includes('FIREBASE WARNING') || msg.includes('Using an unspecified index')) {
         return;
     }
-    // السماح بباقي التحذيرات
     console.warn.apply(console, args);
 };
 
@@ -34,16 +29,10 @@ window.storage = firebase.storage();
 window.auth = firebase.auth();
 window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-// ============================================================
-// AUTH STATE
-// ============================================================
 window.currentUser = null;
 window.userData = null;
 window.isAuthChecked = false;
 
-// ============================================================
-// CACHE SYSTEM
-// ============================================================
 window.cache = {
     userData: null,
     progress: {},
@@ -73,9 +62,6 @@ function updateCache() {
     window.cache.timestamp = Date.now();
 }
 
-// ============================================================
-// AUTH FUNCTIONS
-// ============================================================
 function initAuth() {
     window.auth.onAuthStateChanged((user) => {
         window.currentUser = user;
@@ -320,9 +306,6 @@ function showLoginOverlay() {
     if (overlay) overlay.classList.add('open');
 }
 
-// ============================================================
-// PREMIUM SYSTEM
-// ============================================================
 function hasPremiumAccess(courseId) {
     if (!window.currentUser) return false;
     if (!window.userData) return false;
@@ -408,9 +391,6 @@ function showPremiumPage(course) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// STUDENT CODE GENERATOR
-// ============================================================
 async function generateStudentCode() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
@@ -429,9 +409,6 @@ async function generateStudentCode() {
     return formatted;
 }
 
-// ============================================================
-// UTILITY FUNCTIONS
-// ============================================================
 function escapeHtml(str) {
     if (!str) return '';
     const div = document.createElement('div');
@@ -462,9 +439,6 @@ function formatPhoneNumber(phone) {
     return formatted.trim();
 }
 
-// ============================================================
-// EXPOSE SECURITY API
-// ============================================================
 window.Security = {
     initAuth,
     logout,
@@ -482,9 +456,6 @@ window.Security = {
     updateCache
 };
 
-// ============================================================
-// EXPOSE FUNCTIONS TO GLOBAL
-// ============================================================
 window.initAuth = initAuth;
 window.logout = logout;
 window.toggleUserMenu = toggleUserMenu;
