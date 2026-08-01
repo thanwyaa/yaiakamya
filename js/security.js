@@ -1,5 +1,5 @@
 // ============================================================
-// SECURITY MODULE - Firebase, Auth, Permissions, Premium
+// SECURITY MODULE - Firebase, Auth, Permissions
 // ============================================================
 
 const firebaseConfig = {
@@ -13,7 +13,7 @@ const firebaseConfig = {
     measurementId: "G-B3SJFF8R1R"
 };
 
-// إخفاء تحذيرات Firebase غير الضرورية
+// إخفاء تحذيرات Firebase غير المهمة
 console.warn = function() {
     const args = Array.from(arguments);
     const msg = args.join(' ');
@@ -33,6 +33,7 @@ window.currentUser = null;
 window.userData = null;
 window.isAuthChecked = false;
 
+// Cache مع صلاحية 5 دقائق
 window.cache = {
     userData: null,
     progress: {},
@@ -43,7 +44,7 @@ window.cache = {
     exams: [],
     quizzes: [],
     timestamp: 0,
-    ttl: 60000
+    ttl: 300000 // 5 دقائق
 };
 
 function isCacheValid() {
@@ -66,6 +67,7 @@ function initAuth() {
     window.auth.onAuthStateChanged((user) => {
         window.currentUser = user;
         window.isAuthChecked = true;
+        
         updateUIForAuth(user);
 
         if (user) {
@@ -75,7 +77,10 @@ function initAuth() {
                     if (typeof loadUserSubscriptions === 'function') loadUserSubscriptions(user.uid);
                     if (typeof loadUserProgress === 'function') loadUserProgress(user.uid);
                     if (typeof loadNotifications === 'function') loadNotifications(user.uid);
-                    if (typeof loadAllData === 'function') loadAllData();
+                    if (typeof loadCourses === 'function') loadCourses();
+                    if (typeof loadLessons === 'function') loadLessons();
+                    if (typeof loadExams === 'function') loadExams();
+                    if (typeof loadQuizzes === 'function') loadQuizzes();
                     if (typeof loadLeaderboard === 'function') loadLeaderboard();
                 } catch (err) {
                     console.error('Error loading data:', err);
@@ -83,7 +88,10 @@ function initAuth() {
             }, 300);
         } else {
             try {
-                if (typeof loadAllData === 'function') loadAllData();
+                if (typeof loadCourses === 'function') loadCourses();
+                if (typeof loadLessons === 'function') loadLessons();
+                if (typeof loadExams === 'function') loadExams();
+                if (typeof loadQuizzes === 'function') loadQuizzes();
                 if (typeof loadLeaderboard === 'function') loadLeaderboard();
             } catch (err) {
                 console.error('Error loading data:', err);
@@ -108,6 +116,7 @@ function updateUIForAuth(user) {
         
         const atomsBadge = document.getElementById('atomsBadge');
         if (atomsBadge) atomsBadge.style.display = 'inline-flex';
+        
         const notificationWrapper = document.getElementById('notificationWrapper');
         if (notificationWrapper) notificationWrapper.style.display = 'flex';
         
@@ -128,6 +137,7 @@ function updateUIForAuth(user) {
         
         const atomsBadge = document.getElementById('atomsBadge');
         if (atomsBadge) atomsBadge.style.display = 'none';
+        
         const notificationWrapper = document.getElementById('notificationWrapper');
         if (notificationWrapper) notificationWrapper.style.display = 'none';
         
@@ -164,7 +174,7 @@ function updateUserUI(data) {
     const avatarEl = document.getElementById('userAvatar');
     if (avatarEl) {
         if (avatar) {
-            avatarEl.innerHTML = `<img src="${avatar}" alt="صورة" loading="lazy">`;
+            avatarEl.innerHTML = `<img src="${avatar}" alt="صورة" loading="lazy" onerror="this.parentElement.textContent='${(data.name || 'U')[0].toUpperCase()}'">`;
         } else {
             avatarEl.textContent = (data.name || 'U')[0].toUpperCase();
         }
@@ -229,7 +239,8 @@ async function createNewUser(uid) {
             rank: '--',
             perfectExams: 0,
             lastStudyDate: new Date().toDateString(),
-            premiumCourses: {}
+            premiumCourses: {},
+            role: 'user' // <-- إضافة حقل الصلاحية
         };
         
         await window.database.ref('users/' + uid).set(newUser);
@@ -244,6 +255,25 @@ async function createNewUser(uid) {
     } catch (err) {
         console.error('Error creating user:', err);
     }
+}
+
+async function generateStudentCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
+    
+    try {
+        const snapshot = await window.database.ref('users').orderByChild('code').equalTo(formatted).once('value');
+        if (snapshot.exists()) {
+            return generateStudentCode();
+        }
+    } catch (err) {
+        console.error('Error generating code:', err);
+    }
+    return formatted;
 }
 
 async function logout() {
@@ -262,7 +292,7 @@ async function logout() {
             exams: [],
             quizzes: [],
             timestamp: 0,
-            ttl: 60000
+            ttl: 300000
         };
         closeUserMenu();
         if (typeof showHome === 'function') showHome();
@@ -295,6 +325,99 @@ function closeLoginOverlay() {
 function showLoginOverlay() {
     const overlay = document.getElementById('loginOverlay');
     if (overlay) overlay.classList.add('open');
+}
+
+function showLoginForm() {
+    document.getElementById('loginOverlay').classList.remove('open');
+    document.getElementById('loginModal').style.display = 'flex';
+}
+
+function showRegisterForm() {
+    document.getElementById('loginOverlay').classList.remove('open');
+    document.getElementById('registerModal').style.display = 'flex';
+}
+
+function closeLoginModal() {
+    document.getElementById('loginModal').style.display = 'none';
+}
+
+function closeRegisterModal() {
+    document.getElementById('registerModal').style.display = 'none';
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    try {
+        await window.auth.signInWithEmailAndPassword(email, password);
+        closeLoginModal();
+        showToast('✅ تم تسجيل الدخول بنجاح', 'success');
+    } catch (err) {
+        showToast('❌ ' + err.message, 'error');
+    }
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    const phone = document.getElementById('registerPhone').value.trim();
+    const grade = document.getElementById('registerGrade').value;
+
+    if (!name || !email || !password) {
+        showToast('⚠️ يرجى ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+
+    try {
+        const cred = await window.auth.createUserWithEmailAndPassword(email, password);
+        const uid = cred.user.uid;
+        const code = await generateStudentCode();
+        
+        const newUser = {
+            name: name,
+            email: email,
+            grade: grade || '',
+            studyType: 'عام',
+            phone: phone || '',
+            parentPhone: '',
+            code: code,
+            atoms: 0,
+            progress: 0,
+            photoURL: '',
+            createdAt: new Date().toISOString(),
+            active: true,
+            coursesCount: 0,
+            lastActive: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            loginCount: 1,
+            streak: 0,
+            examsPassed: 0,
+            quizzesPassed: 0,
+            studyTime: 0,
+            videosWatched: 0,
+            lessonsCompleted: 0,
+            rank: '--',
+            perfectExams: 0,
+            lastStudyDate: new Date().toDateString(),
+            premiumCourses: {},
+            role: 'user'
+        };
+        
+        await window.database.ref('users/' + uid).set(newUser);
+        window.userData = newUser;
+        window.cache.userData = newUser;
+        updateCache();
+        closeRegisterModal();
+        showToast('🎉 تم إنشاء الحساب بنجاح!', 'success');
+        if (typeof addNotification === 'function') {
+            await addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
+        }
+    } catch (err) {
+        showToast('❌ ' + err.message, 'error');
+    }
 }
 
 function hasPremiumAccess(courseId) {
@@ -347,7 +470,7 @@ function showPremiumPage(course) {
                     ${escapeHtml(course.title)}
                 </h1>
                 <div style="font-size:2rem;font-weight:700;color:var(--gold);margin:12px 0;">
-                    ${course.price || 'جاري التحديد'} جنيه
+                    ${escapeHtml(course.price || 'جاري التحديد')} جنيه
                 </div>
                 <p style="color:var(--text2);margin-bottom:16px;line-height:1.8;">
                     ${escapeHtml(course.description) || 'هذا الكورس مدفوع، يمكنك الاشتراك للوصول إلى جميع محتوياته.'}
@@ -382,23 +505,9 @@ function showPremiumPage(course) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-async function generateStudentCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
-    try {
-        const snapshot = await window.database.ref('users').orderByChild('code').equalTo(formatted).once('value');
-        if (snapshot.exists()) {
-            return generateStudentCode();
-        }
-    } catch (err) {
-        console.error('Error generating code:', err);
-    }
-    return formatted;
-}
+// ============================================================
+// تنقية المدخلات
+// ============================================================
 
 function escapeHtml(str) {
     if (!str) return '';
@@ -430,28 +539,25 @@ function formatPhoneNumber(phone) {
     return formatted.trim();
 }
 
-window.Security = {
-    initAuth,
-    logout,
-    toggleUserMenu,
-    closeLoginOverlay,
-    showLoginOverlay,
-    hasPremiumAccess,
-    checkCourseAccess,
-    showPremiumPage,
-    generateStudentCode,
-    updateUIForAuth,
-    loadUserData,
-    createNewUser,
-    isCacheValid,
-    updateCache
-};
+// ============================================================
+// دوال التصحيح محذوفة نهائياً (أمنياً)
+// ============================================================
+
+// ============================================================
+// EXPORTS
+// ============================================================
 
 window.initAuth = initAuth;
 window.logout = logout;
 window.toggleUserMenu = toggleUserMenu;
 window.closeLoginOverlay = closeLoginOverlay;
 window.showLoginOverlay = showLoginOverlay;
+window.showLoginForm = showLoginForm;
+window.showRegisterForm = showRegisterForm;
+window.closeLoginModal = closeLoginModal;
+window.closeRegisterModal = closeRegisterModal;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
 window.hasPremiumAccess = hasPremiumAccess;
 window.checkCourseAccess = checkCourseAccess;
 window.showPremiumPage = showPremiumPage;
