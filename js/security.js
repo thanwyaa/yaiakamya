@@ -30,7 +30,7 @@ window.userData = null;
 window.isAuthChecked = false;
 
 // ============================================================
-// CACHE SYSTEM - تحسين الأداء
+// CACHE SYSTEM
 // ============================================================
 window.cache = {
     userData: null,
@@ -42,7 +42,7 @@ window.cache = {
     exams: [],
     quizzes: [],
     timestamp: 0,
-    ttl: 60000 // 1 دقيقة
+    ttl: 60000
 };
 
 function isCacheValid() {
@@ -77,15 +77,13 @@ function initAuth() {
                 if (typeof loadUserSubscriptions === 'function') loadUserSubscriptions(user.uid);
                 if (typeof loadUserProgress === 'function') loadUserProgress(user.uid);
                 if (typeof loadNotifications === 'function') loadNotifications(user.uid);
-                // تحميل البيانات الأساسية فقط
                 if (typeof loadCourses === 'function') loadCourses();
                 if (typeof loadLessons === 'function') loadLessons();
                 if (typeof loadExams === 'function') loadExams();
                 if (typeof loadQuizzes === 'function') loadQuizzes();
                 if (typeof loadLeaderboard === 'function') loadLeaderboard();
-            }, 300); // تأخير بسيط لتجنب التحميل المتزامن
+            }, 300);
         } else {
-            // تحميل البيانات للزوار
             if (typeof loadCourses === 'function') loadCourses();
             if (typeof loadLessons === 'function') loadLessons();
             if (typeof loadExams === 'function') loadExams();
@@ -291,7 +289,7 @@ function showLoginOverlay() {
 }
 
 // ============================================================
-// PREMIUM SYSTEM - Course Permissions
+// PREMIUM SYSTEM
 // ============================================================
 function hasPremiumAccess(courseId) {
     if (!window.currentUser) return false;
@@ -447,3 +445,24 @@ window.Security = {
     isCacheValid,
     updateCache
 };
+
+// ============================================================
+// EXPOSE FUNCTIONS TO GLOBAL
+// ============================================================
+window.initAuth = initAuth;
+window.logout = logout;
+window.toggleUserMenu = toggleUserMenu;
+window.closeLoginOverlay = closeLoginOverlay;
+window.showLoginOverlay = showLoginOverlay;
+window.hasPremiumAccess = hasPremiumAccess;
+window.checkCourseAccess = checkCourseAccess;
+window.showPremiumPage = showPremiumPage;
+window.generateStudentCode = generateStudentCode;
+window.updateUIForAuth = updateUIForAuth;
+window.loadUserData = loadUserData;
+window.createNewUser = createNewUser;
+window.isCacheValid = isCacheValid;
+window.updateCache = updateCache;
+window.escapeHtml = escapeHtml;
+window.showToast = showToast;
+window.formatPhoneNumber = formatPhoneNumber;
