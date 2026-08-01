@@ -54,44 +54,10 @@
             <h3>تسجيل الدخول مطلوب</h3>
             <p>يجب تسجيل الدخول أولاً للوصول إلى هذا المحتوى</p>
             <div class="btn-group">
-                <button onclick="APP.showLoginForm()" class="btn-primary">تسجيل الدخول</button>
-                <button onclick="APP.showRegisterForm()" class="btn-outline">إنشاء حساب</button>
+                <a href="login.html" class="btn-primary">تسجيل الدخول</a>
+                <a href="login.html" class="btn-outline">إنشاء حساب</a>
                 <button onclick="APP.closeLoginOverlay()" class="btn-outline" style="border-color:var(--border);color:var(--text2);">إلغاء</button>
             </div>
-        </div>
-    </div>
-
-    <div class="login-modal" id="loginModal" style="display:none;">
-        <div class="login-box" style="max-width:400px;">
-            <div class="icon"><i class="fas fa-user"></i></div>
-            <h3>تسجيل الدخول</h3>
-            <form onsubmit="APP.handleLogin(event)">
-                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required style="width:100%;padding:10px;margin:6px 0;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text);">
-                <input type="password" id="loginPassword" placeholder="كلمة المرور" required style="width:100%;padding:10px;margin:6px 0;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text);">
-                <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">تسجيل الدخول</button>
-            </form>
-            <button onclick="APP.closeLoginModal()" class="btn-outline" style="margin-top:8px;width:100%;">إلغاء</button>
-        </div>
-    </div>
-
-    <div class="login-modal" id="registerModal" style="display:none;">
-        <div class="login-box" style="max-width:400px;">
-            <div class="icon"><i class="fas fa-user-plus"></i></div>
-            <h3>إنشاء حساب جديد</h3>
-            <form onsubmit="APP.handleRegister(event)">
-                <input type="text" id="registerName" placeholder="الاسم الكامل" required style="width:100%;padding:10px;margin:6px 0;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text);">
-                <input type="email" id="registerEmail" placeholder="البريد الإلكتروني" required style="width:100%;padding:10px;margin:6px 0;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text);">
-                <input type="password" id="registerPassword" placeholder="كلمة المرور (6 أحرف على الأقل)" required minlength="6" style="width:100%;padding:10px;margin:6px 0;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text);">
-                <input type="text" id="registerPhone" placeholder="رقم الهاتف" style="width:100%;padding:10px;margin:6px 0;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text);">
-                <select id="registerGrade" style="width:100%;padding:10px;margin:6px 0;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text);">
-                    <option value="">اختر الصف الدراسي</option>
-                    <option value="أولى ثانوي">أولى ثانوي</option>
-                    <option value="تانية ثانوي">تانية ثانوي</option>
-                    <option value="تالتة ثانوي">تالتة ثانوي</option>
-                </select>
-                <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">إنشاء حساب</button>
-            </form>
-            <button onclick="APP.closeRegisterModal()" class="btn-outline" style="margin-top:8px;width:100%;">إلغاء</button>
         </div>
     </div>
 
@@ -140,13 +106,13 @@
                      alt="يلا كيمياء" 
                      loading="eager" 
                      fetchpriority="high" 
-                     onerror="this.src='https://placehold.co/40x40/0B4F8C/FFFFFF?text=YK'">
+                     onerror="this.style.display='none'">
             </a>
 
             <ul class="nav-links" id="navLinks">
                 <li class="guest-only"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
                 <li class="guest-only"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
-                <li class="guest-only"><button onclick="APP.showLoginForm()" class="btn-primary-nav">تسجيل الدخول</button></li>
+                <li class="guest-only"><a href="login.html" class="btn-primary-nav">تسجيل الدخول</a></li>
 
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
                 <li class="user-only" style="display:none;"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
@@ -207,13 +173,12 @@
                 <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" 
                      alt="يلا كيمياء" 
                      style="width:32px;height:32px;object-fit:contain;border:none;" 
-                     loading="lazy"
-                     onerror="this.src='https://placehold.co/32x32/0B4F8C/FFFFFF?text=YK'">
+                     loading="lazy">
                 <span style="font-family:'Lalezar',cursive;font-size:1.2rem;color:var(--primary);">يلا كيمياء</span>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.85rem;">
                 <a href="#" onclick="APP.showHome()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">الرئيسية</a>
-                <button onclick="APP.showLoginForm()" style="color:var(--text2);text-decoration:none;transition:var(--transition);background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;">تسجيل الدخول</button>
+                <a href="login.html" style="color:var(--text2);text-decoration:none;transition:var(--transition);">تسجيل الدخول</a>
                 <a href="#" onclick="APP.showPrivacy()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">سياسة الخصوصية</a>
                 <a href="#" onclick="APP.showTerms()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">الشروط والأحكام</a>
             </div>
@@ -239,8 +204,7 @@
             setupScrollHandlers();
             loadHomePage();
             initAuth();
-            console.log('🚀 Yalla Chemistry Platform v33.0 - Fixed & Secure');
-            console.log('✅ All modules loaded correctly');
+            console.log('🚀 Yalla Chemistry Platform v33.0 - Final Fixed');
         }
 
         function setupScrollHandlers() {
@@ -268,9 +232,6 @@
                 if (typeof closeExamSecurityModal === 'function') closeExamSecurityModal();
                 if (typeof closeImageZoom === 'function') closeImageZoom();
                 if (typeof closeCompletedModal === 'function') closeCompletedModal();
-                if (typeof closeLoginOverlay === 'function') closeLoginOverlay();
-                if (typeof closeLoginModal === 'function') closeLoginModal();
-                if (typeof closeRegisterModal === 'function') closeRegisterModal();
             }
         });
 
@@ -286,12 +247,6 @@
             toggleUserMenu: window.toggleUserMenu || function() {},
             closeLoginOverlay: window.closeLoginOverlay || function() {},
             showLoginOverlay: window.showLoginOverlay || function() {},
-            showLoginForm: window.showLoginForm || function() {},
-            showRegisterForm: window.showRegisterForm || function() {},
-            closeLoginModal: window.closeLoginModal || function() {},
-            closeRegisterModal: window.closeRegisterModal || function() {},
-            handleLogin: window.handleLogin || function() {},
-            handleRegister: window.handleRegister || function() {},
             showHome: window.showHome || function() {},
             scrollToCourses: window.scrollToCourses || function() {},
             share: window.shareOn || function() {},
@@ -343,9 +298,7 @@
             showCompletedModal: window.showCompletedModal || function() {},
             closeCompletedModal: window.closeCompletedModal || function() {},
             openImageZoom: window.openImageZoom || function() {},
-            closeImageZoom: window.closeImageZoom || function() {},
-            loadCourses: window.loadCourses || function() {},
-            loadLessons: window.loadLessons || function() {}
+            closeImageZoom: window.closeImageZoom || function() {}
         };
 
         window.APP = APP;
