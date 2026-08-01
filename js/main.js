@@ -2,9 +2,6 @@
 // MAIN MODULE - Home Page, Navigation, Dashboard UI
 // ============================================================
 
-// ============================================================
-// THEME
-// ============================================================
 function applyTheme(isDark) {
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -17,9 +14,6 @@ function toggleTheme() {
 
 if (localStorage.getItem('theme') === 'dark') applyTheme(true);
 
-// ============================================================
-// NAVIGATION
-// ============================================================
 function showHome() { 
     loadHomePage();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -39,9 +33,6 @@ function scrollToCourses() {
     closeUserMenu();
 }
 
-// ============================================================
-// SHARE
-// ============================================================
 const APP_URL = 'https://yaiakamya.vercel.app/';
 const SHARE_TEXT = 
     `🔥 لو عايز تبدأ الكيمياء صح وتفهم المنهج من الصفر لحد الاحتراف، فـ منصة يلا كيمياء مع مستر زياد مبروك هتساعدك توصل لهدفك خطوة بخطوة.\n\n📚 شرح مبسط وسهل\n📝 اختبارات وتقييمات مستمرة\n🏆 نظام ذرات ومتصدرين\n📈 متابعة مستمرة لمستواك\n🔔 إشعارات فورية بكل جديد\n📱 تعمل على جميع الأجهزة\n\nابدأ رحلتك دلوقتي 👇\n${APP_URL}`;
@@ -57,9 +48,6 @@ function shareOn(platform) {
     window.open(links[platform] || links.whatsapp, '_blank');
 }
 
-// ============================================================
-// COMPLETED MODAL
-// ============================================================
 function showCompletedModal() {
     document.getElementById('completedModal').classList.add('open');
 }
@@ -68,9 +56,6 @@ function closeCompletedModal() {
     document.getElementById('completedModal').classList.remove('open');
 }
 
-// ============================================================
-// IMAGE ZOOM
-// ============================================================
 function openImageZoom(src) {
     const overlay = document.getElementById('imageOverlay');
     const img = document.getElementById('zoomedImage');
@@ -89,9 +74,6 @@ function closeImageZoom() {
     }
 }
 
-// ============================================================
-// NOTIFICATIONS SYSTEM
-// ============================================================
 window.notifications = [];
 
 function loadNotifications(uid) {
@@ -241,9 +223,6 @@ async function addNotification(uid, title, description, icon = '📢') {
     }
 }
 
-// ============================================================
-// LEADERBOARD
-// ============================================================
 function loadLeaderboard() {
     const container = document.getElementById('leaderboardContainer');
     if (!container) return;
@@ -351,9 +330,6 @@ function showLeaderboard() {
     loadLeaderboard();
 }
 
-// ============================================================
-// DASHBOARD
-// ============================================================
 function showDashboard() {
     if (typeof window.Dashboard !== 'undefined' && window.Dashboard.showDashboard) {
         window.Dashboard.showDashboard();
@@ -370,9 +346,6 @@ function showDashboard() {
     }
 }
 
-// ============================================================
-// PRIVACY & TERMS
-// ============================================================
 function showPrivacy() {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -417,9 +390,6 @@ function showTerms() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// HOME PAGE
-// ============================================================
 function loadHomePage() {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -427,7 +397,6 @@ function loadHomePage() {
     const isUser = window.currentUser !== null;
 
     main.innerHTML = `
-        <!-- Hero Section -->
         <section class="hero-section">
             <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png" 
                  alt="يلا كيمياء - المنصة التعليمية المتكاملة" 
@@ -451,7 +420,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Video Section -->
         <section class="video-section">
             <h2 class="video-title">تفاصيل بداية المنهج وتفاصيل المنصة | خطة الكيمياء الكاملة لطلاب دفعة 2027 مع مستر زياد مبروك</h2>
             <div class="video-wrapper">
@@ -463,7 +431,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Stats Section -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 24px;">
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;background:var(--card);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);">
                 <div style="text-align:center;">
@@ -484,7 +451,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- About Section -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
                 <div style="order:2;">
@@ -504,7 +470,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Why Section -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
                 <div>
@@ -524,7 +489,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Instructor Section -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
                 <div style="order:2;">
@@ -542,7 +506,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Courses Section -->
         <section id="coursesSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📚 الكورسات المتاحة</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:12px;">اختر صفك الدراسي وابدأ التعلم</p>
@@ -568,7 +531,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Testimonials Section -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">💬 آراء الطلاب</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:16px;">ماذا يقول طلابنا عن المنصة</p>
@@ -581,7 +543,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Leaderboard Section -->
         <section id="leaderboardSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">🏆 المتصدرين</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:12px;">أفضل الطلاب في منصة يلا كيمياء</p>
@@ -595,7 +556,6 @@ function loadHomePage() {
             ` : ''}
         </section>
 
-        <!-- FAQ Section -->
         <section style="max-width:800px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">❓ أسئلة شائعة</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:16px;">كل اللي محتاج تعرفه عن المنصة</p>
@@ -612,7 +572,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Share Section -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📢 شارك المنصة مع أصحابك</h2>
             <p style="text-align:center;color:var(--text2);margin-bottom:16px;">انشر الرابط وساعد غيرك يتعلم الكيمياء بسهولة</p>
@@ -623,7 +582,6 @@ function loadHomePage() {
             </div>
         </section>
 
-        <!-- Social Section -->
         <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
             <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:16px;">انضم لمجتمعنا 🚀</h2>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
@@ -664,14 +622,10 @@ function loadHomePage() {
         ` : ''}
     `;
 
-    // Load courses and leaderboard
     if (typeof loadCourses === 'function') loadCourses();
     if (typeof loadLeaderboard === 'function') loadLeaderboard();
 }
 
-// ============================================================
-// UTILITY FUNCTIONS
-// ============================================================
 function formatTime(date) {
     if (!date) return '--';
     const d = new Date(date);
@@ -692,9 +646,6 @@ function getTimeAgo(date) {
     return 'الآن';
 }
 
-// ============================================================
-// EXPOSE MAIN FUNCTIONS
-// ============================================================
 window.applyTheme = applyTheme;
 window.toggleTheme = toggleTheme;
 window.showHome = showHome;
