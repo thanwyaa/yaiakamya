@@ -16,9 +16,6 @@ window.currentQuizData = null;
 window.pendingExamCallback = null;
 window.isExamMode = false;
 
-// ============================================================
-// ERROR BANK FUNCTIONS
-// ============================================================
 function showErrorBank() {
     if (!window.currentUser) {
         showLoginOverlay();
@@ -226,9 +223,6 @@ function generateOptions(correctAnswer, wrongAnswer) {
     return options.sort(() => 0.5 - Math.random());
 }
 
-// ============================================================
-// RESULTS FUNCTIONS
-// ============================================================
 function showResults() {
     if (!window.currentUser) {
         showLoginOverlay();
@@ -312,9 +306,6 @@ function showResults() {
     });
 }
 
-// ============================================================
-// CERTIFICATE FUNCTIONS
-// ============================================================
 function showCertificate() {
     if (!window.currentUser) {
         showLoginOverlay();
@@ -377,9 +368,6 @@ function downloadCertificate() {
     window.print();
 }
 
-// ============================================================
-// STUDENT CARD FUNCTIONS
-// ============================================================
 function showStudentCard() {
     if (!window.currentUser) {
         showLoginOverlay();
@@ -461,9 +449,6 @@ function downloadStudentCard() {
     });
 }
 
-// ============================================================
-// ACHIEVEMENTS FUNCTIONS
-// ============================================================
 function getAchievements() {
     const safeData = window.userData || {};
     const progressData = window.userCourseProgress || {};
@@ -547,9 +532,6 @@ function showAchievements() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// AI INSIGHTS FUNCTIONS
-// ============================================================
 function showAIInsights() {
     if (!window.currentUser) {
         showLoginOverlay();
@@ -837,16 +819,11 @@ function printAIReport() {
     printWindow.document.close();
 }
 
-// ============================================================
-// EXAM FUNCTIONS (المختصرة للحفاظ على المساحة)
-// ============================================================
 function openLessonExam(lessonId) {
-    // يتم تنفيذها في dashboard.js
     showToast('جاري فتح الامتحان...', 'info');
 }
 
 function openLessonQuiz(lessonId) {
-    // يتم تنفيذها في dashboard.js
     showToast('جاري فتح الكويز...', 'info');
 }
 
@@ -878,30 +855,18 @@ function exitExam() {
     showToast('تم الخروج من الامتحان', 'info');
 }
 
-function navigateExamQuestion(direction) {
-    // يتم تنفيذها في dashboard.js
-}
+function navigateExamQuestion(direction) {}
 
-function navigateQuizQuestion(direction) {
-    // يتم تنفيذها في dashboard.js
-}
+function navigateQuizQuestion(direction) {}
 
-function selectExamAnswer(questionIndex, optionIndex) {
-    // يتم تنفيذها في dashboard.js
-}
+function selectExamAnswer(questionIndex, optionIndex) {}
 
-function selectQuizAnswer(questionIndex, optionIndex) {
-    // يتم تنفيذها في dashboard.js
-}
+function selectQuizAnswer(questionIndex, optionIndex) {}
 
 function renderExamUI(exam, startTime, duration) {
-    // يتم تنفيذها في dashboard.js
     showToast('جاري تجهيز الامتحان...', 'info');
 }
 
-// ============================================================
-// EXPOSE EXAMS FUNCTIONS
-// ============================================================
 window.showErrorBank = showErrorBank;
 window.startErrorReview = startErrorReview;
 window.generateOptions = generateOptions;
