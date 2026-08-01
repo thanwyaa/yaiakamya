@@ -164,7 +164,7 @@ function showExamUI(exam, isSecure = false) {
     if (questions.length === 0) { showToast('لا توجد أسئلة في هذا الامتحان', 'warning'); return; }
     if (userCourseProgress['exam_' + (exam.lessonId || exam.id)]?.completed) { showCompletedModal(); return; }
 
-    let startTime = Date.now();
+    examStartTime = Date.now();
     let duration = exam.duration || 0;
     let timeLeft = duration * 60;
 
@@ -468,7 +468,7 @@ function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
 }
 
 // ============================================================
-// دوال الكويزات
+// دوال الكويزات (مع إصلاح الاختيار والتسليم)
 // ============================================================
 
 // ===== عرض واجهة الكويز =====
@@ -479,7 +479,7 @@ function showQuizUI(quiz, isSecure = false) {
     if (questions.length === 0) { showToast('لا توجد أسئلة في هذا الكويز', 'warning'); return; }
     if (userCourseProgress['quiz_' + (quiz.lessonId || quiz.id)]?.completed) { showCompletedModal(); return; }
 
-    let startTime = Date.now();
+    examStartTime = Date.now();
     let duration = quiz.duration || 0;
     let timeLeft = duration * 60;
 
@@ -514,8 +514,12 @@ function showQuizUI(quiz, isSecure = false) {
         }, 1000);
     }
 
+    // دالة اختيار الإجابة (مربوطة بـ window و APP)
     window.selectQuizAnswer = function(id, qIdx, oIdx, correct) {
-        if (!isExamActive || examSubmitted) return;
+        if (!isExamActive || examSubmitted) {
+            if (examSubmitted) showToast('تم تسليم الكويز بالفعل', 'info');
+            return;
+        }
         if (!quizAnswers[id]) quizAnswers[id] = {};
         const container = document.getElementById('quizContainer');
         if (container) {
@@ -533,9 +537,13 @@ function showQuizUI(quiz, isSecure = false) {
         quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
         answeredQuestions.add(qIdx);
         const countEl = document.getElementById('quizAnsweredCount');
-        if (countEl) countEl.textContent = `${answeredQuestions.size} / ${questions.length} تمت الإجابة`;
+        if (countEl) {
+            const total = questions.length;
+            countEl.textContent = `${answeredQuestions.size} / ${total} تمت الإجابة`;
+        }
     };
 
+    // دالة التنقل بين الأسئلة
     const renderQuestion = (index) => {
         const q = questions[index];
         if (!q) return;
@@ -585,7 +593,7 @@ function showQuizUI(quiz, isSecure = false) {
             <p style="color:var(--gold);font-weight:700;margin-bottom:12px;">⭐ ${quiz.atomsReward || 5} ذرة عند النجاح</p>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <span style="font-size:0.85rem;color:var(--text2);">السؤال <span id="quizProgress">1 / ${questions.length}</span></span>
-                <span style="font-size:0.85rem;color:var(--text2);" id="quizAnsweredCount">${answeredQuestions.size} / ${questions.length} تمت الإجابة</span>
+                <span style="font-size:0.85rem;color:var(--text2);" id="quizAnsweredCount">0 / ${questions.length} تمت الإجابة</span>
             </div>
             <div id="quizContainer">${questionsHtml}</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;justify-content:space-between;">
@@ -613,7 +621,7 @@ function navigateQuizQuestion(direction) {
     document.getElementById('quizNext').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
-// ===== تسليم الكويز =====
+// ===== تسليم الكويز (مع إعادة تحميل صفحة الكورس لإظهار علامة مكتمل) =====
 async function submitQuiz(id, maxAtoms, autoSubmit = false) {
     if (!currentUser) { showLoginOverlay(); return; }
     const progressKey = 'quiz_' + (currentQuizData?.lessonId || id);
@@ -627,8 +635,7 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
         return;
     }
 
-    if (examTimer) { clearInterval(examTimer);
-        examTimer = null; }
+    if (examTimer) { clearInterval(examTimer); examTimer = null; }
     isExamActive = false;
     examSubmitted = true;
     isExamMode = false;
@@ -692,11 +699,23 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
 
         showQuizResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
         await addNotification(currentUser.uid, '🧪 تم إكمال كويز!', `لقد أكملت كويز "${data.title || 'الكويز'}" وحصلت على ${earnedAtoms} ذرة.`, '🧪');
-    } catch (err) { console.error('submitQuiz error:', err);
+
+        // ===== إعادة تحميل صفحة الكورس لإظهار علامة "مكتمل" =====
+        if (currentQuizData?.lessonId) {
+            setTimeout(() => {
+                const lesson = allLessons.find(l => l.id === currentQuizData.lessonId);
+                if (lesson) openCoursePage(lesson.courseId);
+                else showHome();
+            }, 2000);
+        }
+
+    } catch (err) {
+        console.error('submitQuiz error:', err);
         showToast('حدث خطأ أثناء تصحيح الكويز: ' + err.message, 'error');
         isExamActive = true;
         examSubmitted = false;
-        isExamMode = true; }
+        isExamMode = true;
+    }
 }
 
 // ===== عرض نتيجة الكويز =====
