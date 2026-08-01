@@ -15,9 +15,15 @@ window.videoWatchInterval = null;
 let dataLoading = false;
 let dataLoaded = false;
 
-function loadCourses() {
+// ============================================================
+// LOAD ALL DATA - دمج جميع التحميلات في دالة واحدة
+// ============================================================
+async function loadAllData() {
     if (dataLoaded && window.cache.courses && window.cache.courses.length > 0) {
         window.allCourses = window.cache.courses;
+        window.allLessons = window.cache.lessons || [];
+        window.allExams = window.cache.exams || [];
+        window.allQuizzes = window.cache.quizzes || [];
         renderCourses(window.allCourses);
         return;
     }
@@ -25,74 +31,100 @@ function loadCourses() {
     if (dataLoading) return;
     dataLoading = true;
 
-    window.database.ref('courses').orderByChild('order').once('value', (snapshot) => {
-        try {
-            window.allCourses = [];
-            snapshot.forEach((child) => {
-                const data = child.val();
-                window.allCourses.push({
-                    id: child.key,
-                    ...data,
-                    studentsCount: data.studentsCount || data.students || 0,
-                    lessonsCount: data.lessonsCount || data.lessons || 0
-                });
+    try {
+        // تحميل جميع البيانات معاً
+        const [coursesSnap, lessonsSnap, examsSnap, quizzesSnap] = await Promise.all([
+            window.database.ref('courses').orderByChild('order').once('value'),
+            window.database.ref('lessons').orderByChild('order').once('value'),
+            window.database.ref('exams').once('value'),
+            window.database.ref('quizzes').once('value')
+        ]);
+        
+        // معالجة الكورسات
+        window.allCourses = [];
+        coursesSnap.forEach((child) => {
+            const data = child.val();
+            window.allCourses.push({
+                id: child.key,
+                ...data,
+                studentsCount: data.studentsCount || data.students || 0,
+                lessonsCount: data.lessonsCount || data.lessons || 0
             });
-            window.allCourses.sort((a, b) => (a.order || 0) - (b.order || 0));
-            window.cache.courses = window.allCourses;
-            updateCache();
-            renderCourses(window.allCourses);
-            dataLoaded = true;
-            dataLoading = false;
-        } catch (err) {
-            console.error('Error loading courses:', err);
-            dataLoading = false;
+        });
+        window.allCourses.sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        // معالجة الحصص
+        window.allLessons = [];
+        lessonsSnap.forEach((child) => {
+            const data = child.val();
+            window.allLessons.push({
+                id: child.key,
+                ...data,
+                courseId: data.courseId || data.course_id || data.parentCourse || data.parent_course || data.course || ''
+            });
+        });
+        
+        // معالجة الامتحانات
+        window.allExams = [];
+        if (examsSnap.exists()) {
+            examsSnap.forEach((child) => {
+                window.allExams.push({ id: child.key, ...child.val() });
+            });
         }
-    }).catch(err => {
-        console.error('Firebase error loading courses:', err);
+        
+        // معالجة الكويزات
+        window.allQuizzes = [];
+        if (quizzesSnap.exists()) {
+            quizzesSnap.forEach((child) => {
+                window.allQuizzes.push({ id: child.key, ...child.val() });
+            });
+        }
+        
+        // تحديث الكاش
+        window.cache.courses = window.allCourses;
+        window.cache.lessons = window.allLessons;
+        window.cache.exams = window.allExams;
+        window.cache.quizzes = window.allQuizzes;
+        updateCache();
+        
+        dataLoaded = true;
         dataLoading = false;
-    });
+        
+        // عرض الكورسات
+        renderCourses(window.allCourses);
+        
+        console.log('✅ تم تحميل جميع البيانات:', {
+            courses: window.allCourses.length,
+            lessons: window.allLessons.length,
+            exams: window.allExams.length,
+            quizzes: window.allQuizzes.length
+        });
+        
+    } catch (err) {
+        console.error('❌ Error loading data:', err);
+        dataLoading = false;
+        showToast('حدث خطأ في تحميل البيانات', 'error');
+    }
+}
+
+// ============================================================
+// INDIVIDUAL LOAD FUNCTIONS (للتوافق مع الكود القديم)
+// ============================================================
+function loadCourses() {
+    if (dataLoaded && window.cache.courses && window.cache.courses.length > 0) {
+        window.allCourses = window.cache.courses;
+        renderCourses(window.allCourses);
+        return;
+    }
+    loadAllData();
 }
 
 function loadLessons() {
     if (dataLoaded && window.cache.lessons && window.cache.lessons.length > 0) {
         window.allLessons = window.cache.lessons;
-        console.log('📚 تم تحميل الحصص من الكاش:', window.allLessons.length);
         return;
     }
-    
-    if (dataLoading) return;
-    dataLoading = true;
-
-    window.database.ref('lessons').orderByChild('order').once('value', (snapshot) => {
-        try {
-            window.allLessons = [];
-            snapshot.forEach((child) => {
-                const data = child.val();
-                // توحيد حقل courseId
-                const courseId = data.courseId || data.course_id || data.parentCourse || data.parent_course || data.course || '';
-                const lesson = { 
-                    id: child.key, 
-                    ...data,
-                    courseId: courseId
-                };
-                window.allLessons.push(lesson);
-            });
-            
-            console.log('📚 تم تحميل الحصص:', window.allLessons.length);
-            window.cache.lessons = window.allLessons;
-            updateCache();
-            dataLoading = false;
-            
-            renderCourses(window.allCourses);
-            
-        } catch (err) {
-            console.error('❌ Error loading lessons:', err);
-            dataLoading = false;
-        }
-    }).catch((err) => {
-        console.error('❌ Firebase error loading lessons:', err);
-        dataLoading = false;
-    });
+    loadAllData();
 }
 
 function loadExams() {
@@ -100,24 +132,7 @@ function loadExams() {
         window.allExams = window.cache.exams;
         return;
     }
-    
-    if (dataLoading) return;
-
-    window.database.ref('exams').once('value', (snapshot) => {
-        try {
-            window.allExams = [];
-            snapshot.forEach((child) => {
-                const data = child.val();
-                window.allExams.push({ id: child.key, ...data });
-            });
-            window.cache.exams = window.allExams;
-            updateCache();
-        } catch (err) {
-            console.error('Error loading exams:', err);
-        }
-    }).catch(err => {
-        console.error('Firebase error loading exams:', err);
-    });
+    loadAllData();
 }
 
 function loadQuizzes() {
@@ -125,24 +140,7 @@ function loadQuizzes() {
         window.allQuizzes = window.cache.quizzes;
         return;
     }
-    
-    if (dataLoading) return;
-
-    window.database.ref('quizzes').once('value', (snapshot) => {
-        try {
-            window.allQuizzes = [];
-            snapshot.forEach((child) => {
-                const data = child.val();
-                window.allQuizzes.push({ id: child.key, ...data });
-            });
-            window.cache.quizzes = window.allQuizzes;
-            updateCache();
-        } catch (err) {
-            console.error('Error loading quizzes:', err);
-        }
-    }).catch(err => {
-        console.error('Firebase error loading quizzes:', err);
-    });
+    loadAllData();
 }
 
 function loadUserSubscriptions(uid) {
@@ -195,6 +193,9 @@ function loadUserProgress(uid) {
     });
 }
 
+// ============================================================
+// RENDER COURSES
+// ============================================================
 function renderCourses(courses) {
     const grid = document.getElementById('coursesGrid');
     if (!grid) return;
@@ -211,7 +212,10 @@ function renderCourses(courses) {
     }
 
     grid.innerHTML = courses.map(c => {
-        const lessons = window.allLessons.filter(l => l.courseId === c.id);
+        const lessons = window.allLessons.filter(l => {
+            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
+            return lCourseId === c.id;
+        });
         
         const completed = lessons.filter(l => window.userCourseProgress[l.id]?.watched);
         const isCompleted = lessons.length > 0 && completed.length === lessons.length;
@@ -261,7 +265,7 @@ function renderCourses(courses) {
                             </button>
                         `}
                     ` : `
-                        <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.showLoginForm()">
+                        <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.showLoginOverlay()">
                             🔒 اشترك الآن
                         </button>
                     `}
@@ -314,7 +318,7 @@ function filterCourses() {
 
 async function subscribeToCourse(courseId) {
     if (!window.currentUser) {
-        showLoginForm();
+        showLoginOverlay();
         return;
     }
     if (isUserSubscribed(courseId)) {
@@ -366,9 +370,12 @@ async function subscribeToCourse(courseId) {
     }
 }
 
+// ============================================================
+// OPEN COURSE PAGE
+// ============================================================
 async function openCoursePage(courseId) {
     if (!window.currentUser) {
-        showLoginForm();
+        showLoginOverlay();
         return;
     }
     const hasAccess = await checkCourseAccess(courseId);
@@ -392,7 +399,10 @@ async function openCoursePage(courseId) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
-        const lessons = window.allLessons.filter(l => l.courseId === courseId);
+        const lessons = window.allLessons.filter(l => {
+            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
+            return lCourseId === courseId;
+        });
         lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
 
         let completedCount = 0;
@@ -454,7 +464,9 @@ async function openCoursePage(courseId) {
                 });
             }
             
-            if (lesson.hasQuiz) {
+            // ربط الكويزات بالحصة
+            const lessonQuizzes = window.allQuizzes.filter(q => q.lessonId === lesson.id);
+            if (lesson.hasQuiz || lessonQuizzes.length > 0) {
                 const isQuizCompleted = window.userCourseProgress['quiz_' + lesson.id]?.completed || false;
                 contentItems.push({
                     type: 'quiz',
@@ -517,7 +529,7 @@ async function openCoursePage(courseId) {
 
                 <div class="course-page-hero" style="margin-top:12px;">
                     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-                        ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:160px;height:160px;border-radius:var(--radius);object-fit:cover;border:3px solid rgba(255,255,255,0.3);" loading="lazy" onerror="this.style.display='none'">` : ''}
+                        ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:160px;height:160px;border-radius:var(--radius);object-fit:cover;border:3px solid rgba(255,255,255,0.3);" loading="lazy">` : ''}
                         <div style="flex:1;">
                             <h1 style="font-size:2rem;">${escapeHtml(course.title)}</h1>
                             <p style="font-size:1rem;">${escapeHtml(course.description) || ''}</p>
@@ -561,6 +573,9 @@ async function openCoursePage(courseId) {
     }
 }
 
+// ============================================================
+// VIDEO FUNCTIONS
+// ============================================================
 function clearVideoTracking() {
     if (window.videoWatchInterval) {
         clearInterval(window.videoWatchInterval);
@@ -588,11 +603,6 @@ function clearVideoTracking() {
     window.activeVideoLessonId = null;
     window.videoWatchStartTime = null;
 }
-
-// حفظ وقت المشاهدة عند إغلاق المتصفح
-window.addEventListener('beforeunload', function() {
-    clearVideoTracking();
-});
 
 function extractYouTubeId(url) {
     if (!url) return null;
@@ -681,37 +691,22 @@ async function completeLessonWatch(lessonId, lesson) {
 }
 
 async function checkCourseCompletion(courseId) {
-    const lessons = window.allLessons.filter(l => l.courseId === courseId);
+    const lessons = window.allLessons.filter(l => {
+        const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
+        return lCourseId === courseId;
+    });
     const completed = lessons.filter(l => window.userCourseProgress[l.id]?.watched);
     if (lessons.length > 0 && completed.length === lessons.length) {
         const course = window.allCourses.find(c => c.id === courseId);
-        if (course) {
-            // مكافأة إكمال الكورس
-            const bonusAtoms = 50;
-            const userRef = window.database.ref('users/' + window.currentUser.uid);
-            const userSnap = await userRef.once('value');
-            if (userSnap.exists()) {
-                const currentAtoms = userSnap.val().atoms || 0;
-                await userRef.update({ atoms: currentAtoms + bonusAtoms });
-                if (window.userData) {
-                    window.userData.atoms = currentAtoms + bonusAtoms;
-                    window.cache.userData = window.userData;
-                    updateCache();
-                }
-                showToast(`🎉 +${bonusAtoms} ذرة مكافأة إكمال الكورس!`, 'success');
-                animateAtoms('atomsCount', currentAtoms + bonusAtoms);
-                animateAtoms('userAtomsCount', currentAtoms + bonusAtoms);
-            }
-            if (typeof addNotification === 'function') {
-                await addNotification(window.currentUser.uid, '🎓 تم إكمال كورس كامل!', `مبروك! لقد أكملت كورس "${course.title}" بالكامل وحصلت على ${bonusAtoms} ذرة إضافية!`, '🎓');
-            }
+        if (course && typeof addNotification === 'function') {
+            await addNotification(window.currentUser.uid, '🎓 تم إكمال كورس كامل!', `مبروك! لقد أكملت كورس "${course.title}" بالكامل!`, '🎓');
         }
     }
 }
 
 async function openLessonVideo(lessonId) {
     if (!window.currentUser) {
-        showLoginForm();
+        showLoginOverlay();
         return;
     }
 
@@ -810,7 +805,7 @@ function handleVideoExit(lessonId, lesson) {
 }
 
 async function openLessonAssignment(lessonId) {
-    if (!window.currentUser) { showLoginForm(); return; }
+    if (!window.currentUser) { showLoginOverlay(); return; }
     
     const progressKey = 'assignment_' + lessonId;
     
@@ -938,9 +933,9 @@ function animateAtoms(elementId, target) {
 }
 
 // ============================================================
-// EXPORTS
+// EXPOSE
 // ============================================================
-
+window.loadAllData = loadAllData;
 window.loadCourses = loadCourses;
 window.loadLessons = loadLessons;
 window.loadExams = loadExams;
