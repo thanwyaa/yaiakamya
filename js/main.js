@@ -105,7 +105,7 @@ function loadNotifications(uid) {
             window.notifications = [];
         }
         updateNotificationBadge();
-        if (window.cache) window.cache.notifications = window.notifications;
+        window.cache.notifications = window.notifications;
     });
 }
 
@@ -352,12 +352,12 @@ function showLeaderboard() {
 }
 
 // ============================================================
-// DASHBOARD (UI only - actual logic in dashboard.js)
+// DASHBOARD
 // ============================================================
 function showDashboard() {
-    // This function is defined in dashboard.js
-    // If not loaded yet, show loading
-    if (typeof window.Dashboard === 'undefined') {
+    if (typeof window.Dashboard !== 'undefined' && window.Dashboard.showDashboard) {
+        window.Dashboard.showDashboard();
+    } else {
         const main = document.getElementById('mainContent');
         if (main) {
             main.innerHTML = `
@@ -367,9 +367,7 @@ function showDashboard() {
                 </div>
             `;
         }
-        return;
     }
-    window.Dashboard.showDashboard();
 }
 
 // ============================================================
