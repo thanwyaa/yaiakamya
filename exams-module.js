@@ -15,7 +15,11 @@ let currentQuizData = null;
 let pendingExamCallback = null;
 let isExamMode = false;
 
-// ===== دوال الامتحانات =====
+// ============================================================
+// دوال الامتحانات والكويزات والواجبات
+// ============================================================
+
+// ===== التحقق من إكمال الامتحان/الكويز =====
 async function isAssessmentCompleted(lessonId, type) {
     const key = type === 'exam' ? 'exam_' + lessonId : 'quiz_' + lessonId;
     if (userCourseProgress[key]?.completed) return true;
@@ -29,6 +33,7 @@ async function isAssessmentCompleted(lessonId, type) {
     return false;
 }
 
+// ===== فتح امتحان الحصة =====
 async function openLessonExam(lessonId) {
     if (!currentUser) { showLoginOverlay(); return; }
     if (await isAssessmentCompleted(lessonId, 'exam')) { showCompletedModal(); return; }
@@ -44,6 +49,7 @@ async function openLessonExam(lessonId) {
         showToast('حدث خطأ في تحميل الامتحان: ' + err.message, 'error'); }
 }
 
+// ===== فتح كويز الحصة =====
 async function openLessonQuiz(lessonId) {
     if (!currentUser) { showLoginOverlay(); return; }
     if (await isAssessmentCompleted(lessonId, 'quiz')) { showCompletedModal(); return; }
@@ -59,6 +65,7 @@ async function openLessonQuiz(lessonId) {
         showToast('حدث خطأ في تحميل الكويز: ' + err.message, 'error'); }
 }
 
+// ===== فتح واجب الحصة =====
 async function openLessonAssignment(lessonId) {
     if (!currentUser) { showLoginOverlay(); return; }
     const progressKey = 'assignment_' + lessonId;
@@ -88,6 +95,7 @@ async function openLessonAssignment(lessonId) {
         showToast('حدث خطأ في تحميل الواجب', 'error'); }
 }
 
+// ===== تسليم الواجب =====
 async function completeAssignment(lessonId) {
     if (!currentUser) return;
     const progressKey = 'assignment_' + lessonId;
@@ -123,35 +131,7 @@ async function completeAssignment(lessonId) {
         showToast('حدث خطأ في تسليم الواجب', 'error'); }
 }
 
-function openExamSecurityModal(examId, callback, type = 'exam') {
-    const modal = document.getElementById('examSecurityModal');
-    const titleEl = document.getElementById('examPledgeTitle');
-    if (titleEl) { titleEl.textContent = type === 'quiz' ? '🧪 قبل بدء الكويز' : '📝 قبل بدء الاختبار'; }
-    pendingExamCallback = callback;
-    currentExamId = examId;
-    modal.classList.add('open');
-}
-
-function closeExamSecurityModal() {
-    document.getElementById('examSecurityModal').classList.remove('open');
-    pendingExamCallback = null;
-    currentExamId = null;
-}
-
-function startExamAfterPledge() {
-    if (pendingExamCallback) {
-        const callback = pendingExamCallback;
-        const examIdToSave = currentExamId;
-        pendingExamCallback = null;
-        currentExamId = null;
-        document.getElementById('examSecurityModal').classList.remove('open');
-        if (currentUser && examIdToSave) {
-            database.ref(`users/${currentUser.uid}/examPledges/${examIdToSave}`).set({ agreed: true, agreedAt: new Date().toISOString() }).catch(err => console.error('Error saving pledge:', err));
-        }
-        if (typeof callback === 'function') { callback(); } else { showToast('حدث خطأ داخلي، يرجى المحاولة مرة أخرى.', 'error'); }
-    }
-}
-
+// ===== عرض واجهة الامتحان =====
 function showExamUI(exam, isSecure = false) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -194,6 +174,7 @@ function showExamUI(exam, isSecure = false) {
         }, 1000);
     }
 
+    // دالة اختيار الإجابة
     window.selectExamAnswer = function(id, qIdx, oIdx, correct) {
         if (!isExamActive || examSubmitted) return;
         if (!examAnswers[id]) examAnswers[id] = {};
@@ -281,6 +262,7 @@ function showExamUI(exam, isSecure = false) {
     examAnswers[exam.id] = {};
 }
 
+// ===== التنقل بين أسئلة الامتحان =====
 function navigateExamQuestion(direction) {
     const cards = document.querySelectorAll('.question-card');
     let current = 0;
@@ -292,6 +274,7 @@ function navigateExamQuestion(direction) {
     document.getElementById('nextQuestion').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
+// ===== تسليم الامتحان =====
 async function submitExam(id, maxAtoms, autoSubmit = false) {
     if (!currentUser) { showLoginOverlay(); return; }
     const progressKey = 'exam_' + (currentExamData?.lessonId || id);
@@ -385,6 +368,7 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
         isExamMode = true; }
 }
 
+// ===== عرض نتيجة الامتحان =====
 function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -458,7 +442,11 @@ function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== دوال الكويزات =====
+// ============================================================
+// دوال الكويزات
+// ============================================================
+
+// ===== عرض واجهة الكويز =====
 function showQuizUI(quiz, isSecure = false) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -588,6 +576,7 @@ function showQuizUI(quiz, isSecure = false) {
     quizAnswers[quiz.id] = {};
 }
 
+// ===== التنقل بين أسئلة الكويز =====
 function navigateQuizQuestion(direction) {
     const cards = document.querySelectorAll('.quiz-question-card');
     let current = 0;
@@ -599,6 +588,7 @@ function navigateQuizQuestion(direction) {
     document.getElementById('quizNext').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
+// ===== تسليم الكويز =====
 async function submitQuiz(id, maxAtoms, autoSubmit = false) {
     if (!currentUser) { showLoginOverlay(); return; }
     const progressKey = 'quiz_' + (currentQuizData?.lessonId || id);
@@ -684,6 +674,7 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
         isExamMode = true; }
 }
 
+// ===== عرض نتيجة الكويز =====
 function showQuizResults(quizId, score, correct, wrong, results, atomsEarned) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -756,6 +747,40 @@ function showQuizResults(quizId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ============================================================
+// دوال الأمان والعهد
+// ============================================================
+
+function openExamSecurityModal(examId, callback, type = 'exam') {
+    const modal = document.getElementById('examSecurityModal');
+    const titleEl = document.getElementById('examPledgeTitle');
+    if (titleEl) { titleEl.textContent = type === 'quiz' ? '🧪 قبل بدء الكويز' : '📝 قبل بدء الاختبار'; }
+    pendingExamCallback = callback;
+    currentExamId = examId;
+    modal.classList.add('open');
+}
+
+function closeExamSecurityModal() {
+    document.getElementById('examSecurityModal').classList.remove('open');
+    pendingExamCallback = null;
+    currentExamId = null;
+}
+
+function startExamAfterPledge() {
+    if (pendingExamCallback) {
+        const callback = pendingExamCallback;
+        const examIdToSave = currentExamId;
+        pendingExamCallback = null;
+        currentExamId = null;
+        document.getElementById('examSecurityModal').classList.remove('open');
+        if (currentUser && examIdToSave) {
+            database.ref(`users/${currentUser.uid}/examPledges/${examIdToSave}`).set({ agreed: true, agreedAt: new Date().toISOString() }).catch(err => console.error('Error saving pledge:', err));
+        }
+        if (typeof callback === 'function') { callback(); } else { showToast('حدث خطأ داخلي، يرجى المحاولة مرة أخرى.', 'error'); }
+    }
+}
+
+// ===== الخروج من الامتحان =====
 function exitExam() {
     isExamMode = false;
     if (examTimer) { clearInterval(examTimer);
@@ -763,22 +788,40 @@ function exitExam() {
     showHome();
 }
 
-// ===== دوال بنك الأخطاء، النتائج، التحليل، إلخ =====
-// (سيتم إضافة دوال errorBank, results, AI insights, achievements, certificate, studentCard لاحقاً)
-// لكن المطلوب هنا هو ملف الامتحانات فقط، وسيتم إضافة الباقي في الملف الرئيسي.
+// ============================================================
+// ربط الدوال بـ APP
+// ============================================================
 
-// ===== ربط الدوال بالـ APP =====
-window.APP.openLessonExam = openLessonExam;
-window.APP.openLessonQuiz = openLessonQuiz;
-window.APP.openLessonAssignment = openLessonAssignment;
-window.APP.completeAssignment = completeAssignment;
-window.APP.submitExam = submitExam;
-window.APP.submitQuiz = submitQuiz;
-window.APP.exitExam = exitExam;
-window.APP.navigateExamQuestion = navigateExamQuestion;
-window.APP.navigateQuizQuestion = navigateQuizQuestion;
-window.APP.selectExamAnswer = window.selectExamAnswer;
-window.APP.selectQuizAnswer = window.selectQuizAnswer;
-window.APP.openExamSecurityModal = openExamSecurityModal;
-window.APP.closeExamSecurityModal = closeExamSecurityModal;
-window.APP.startExamAfterPledge = startExamAfterPledge;
+// دالة لربط الدوال بالـ APP بعد تحميل الملف
+function bindExamFunctions() {
+    if (window.APP) {
+        APP.openLessonExam = openLessonExam;
+        APP.openLessonQuiz = openLessonQuiz;
+        APP.openLessonAssignment = openLessonAssignment;
+        APP.completeAssignment = completeAssignment;
+        APP.submitExam = submitExam;
+        APP.submitQuiz = submitQuiz;
+        APP.exitExam = exitExam;
+        APP.navigateExamQuestion = navigateExamQuestion;
+        APP.navigateQuizQuestion = navigateQuizQuestion;
+        APP.selectExamAnswer = window.selectExamAnswer;
+        APP.selectQuizAnswer = window.selectQuizAnswer;
+        APP.openExamSecurityModal = openExamSecurityModal;
+        APP.closeExamSecurityModal = closeExamSecurityModal;
+        APP.startExamAfterPledge = startExamAfterPledge;
+        APP.isAssessmentCompleted = isAssessmentCompleted;
+        console.log('✅ Exam module loaded and bound to APP');
+    } else {
+        console.warn('⚠️ APP not found, retrying...');
+        setTimeout(bindExamFunctions, 100);
+    }
+}
+
+// تنفيذ الربط عند تحميل الملف
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindExamFunctions);
+} else {
+    bindExamFunctions();
+}
+
+console.log('📦 Exams Module loaded successfully');
