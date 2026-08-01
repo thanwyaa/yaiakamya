@@ -26,30 +26,283 @@
     }
     </script>
 
-    <!-- NEW LOGO - FAVICON -->
     <link rel="icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
     <title>يلا كيمياء | المنصة التعليمية المتكاملة</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome - تحميل مع fallback -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
           crossorigin="anonymous" 
-          referrerpolicy="no-referrer"
-          onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';">
+          referrerpolicy="no-referrer">
 
-    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- MAIN CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- ... باقي المحتوى كما هو ... -->
+
+    <div id="toastContainer"></div>
+    <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="icon"><i class="fas fa-lock"></i></div>
+            <h3>تسجيل الدخول مطلوب</h3>
+            <p>يجب تسجيل الدخول أولاً للوصول إلى هذا المحتوى</p>
+            <div class="btn-group">
+                <a href="login.html" class="btn-primary">تسجيل الدخول</a>
+                <a href="login.html" class="btn-outline">إنشاء حساب</a>
+                <button onclick="APP.closeLoginOverlay()" class="btn-outline" style="border-color:var(--border);color:var(--text2);">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="completed-modal" id="completedModal">
+        <div class="modal-box">
+            <div class="icon">✅</div>
+            <h2>لقد قمت بإتمام هذا الاختبار بالفعل</h2>
+            <p>لا يمكن إعادة دخوله مرة أخرى.<br>يمكنك مراجعة النتيجة من خلال صفحة <strong>نتائجي</strong>.</p>
+            <button class="btn" onclick="APP.closeCompletedModal()">حسناً</button>
+        </div>
+    </div>
+
+    <div class="exam-security-modal" id="examSecurityModal">
+        <div class="security-box">
+            <div class="icon">📜</div>
+            <h2 id="examPledgeTitle">قبل بدء الاختبار</h2>
+            <div class="hadith">"قال رسول الله ﷺ: من غشنا فليس منا."</div>
+            <div class="pledge-text">
+                🤲 أتعهد أمام الله أن أجيب بنفسي دون غش،<br>
+                وأن ألتزم بالأمانة العلمية،<br>
+                وأن يكون هدفي التعلم والاستفادة،<br>
+                <strong>والله على ما أقول شهيد.</strong>
+            </div>
+            <div class="note-text">
+                ⚠️ تذكر أن الغش يفقد الاختبار قيمته التعليمية،<br>
+                والهدف هو قياس فهمك الحقيقي.
+            </div>
+            <div class="btn-group">
+                <button class="btn-start" id="startExamBtn" onclick="APP.startExamAfterPledge()">
+                    ✅ أوافق وأبدأ الاختبار
+                </button>
+                <button class="btn-secondary" onclick="APP.closeExamSecurityModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-image-overlay" id="imageOverlay" onclick="APP.closeImageZoom()">
+        <div class="close-btn">✕</div>
+        <img id="zoomedImage" src="" alt="تكبير الصورة">
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" onclick="APP.showHome()">
+                <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" 
+                     alt="يلا كيمياء" 
+                     loading="eager" 
+                     fetchpriority="high" 
+                     onerror="this.style.display='none'">
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li class="guest-only"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
+                <li class="guest-only"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
+                <li class="guest-only"><a href="login.html" class="btn-primary-nav">تسجيل الدخول</a></li>
+
+                <li class="user-only" style="display:none;"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
+                <li class="user-only" style="display:none;"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
+                <li class="user-only" style="display:none;">
+                    <button class="nav-dashboard-btn" onclick="APP.showDashboard()">
+                        👨‍🎓 حسابي
+                    </button>
+                </li>
+            </ul>
+
+            <div style="display:flex;align-items:center;gap:6px;">
+                <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر"></button>
+                
+                <span class="user-only atoms-badge" style="display:none;font-size:0.7rem;padding:2px 10px;" id="atomsBadge">
+                    <i class="fas fa-atom"></i> <span id="atomsCount">0</span>
+                </span>
+
+                <div class="user-only notification-wrapper" style="display:none;" id="notificationWrapper">
+                    <button class="notification-btn" onclick="APP.showNotificationsPage()" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notificationBadge">0</span>
+                    </button>
+                </div>
+
+                <div class="user-only user-menu-wrapper" style="display:none;" id="userMenuWrapper">
+                    <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatarBtn">
+                        <span class="avatar" id="userAvatar">U</span>
+                        <span class="label" id="userMenuLabel">حسابي</span>
+                        <span class="arrow" id="userMenuArrow">▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-header">
+                            <div class="name" id="userNameDisplay">مستخدم</div>
+                            <div class="sub"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</div>
+                        </div>
+                        <button class="menu-item" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
+                        <button class="menu-item" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
+                        <button class="menu-item" onclick="APP.showLeaderboard()"><i class="fas fa-trophy"></i> المتصدرين</button>
+                        <button class="menu-item" onclick="APP.showAIInsights()"><i class="fas fa-robot"></i> تحليل المستوى</button>
+                        <button class="menu-item" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
+                        <button class="menu-item" onclick="APP.showResults()"><i class="fas fa-chart-bar"></i> نتائجي</button>
+                        <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهاداتي</button>
+                        <button class="menu-item" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
+                        <button class="menu-item" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
+                        <div class="menu-divider"></div>
+                        <button class="menu-item danger" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="mainContent"></main>
+
+    <footer style="background:var(--card);border-top:1px solid var(--border);padding:20px;margin-top:16px;">
+        <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" 
+                     alt="يلا كيمياء" 
+                     style="width:32px;height:32px;object-fit:contain;border:none;" 
+                     loading="lazy">
+                <span style="font-family:'Lalezar',cursive;font-size:1.2rem;color:var(--primary);">يلا كيمياء</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.85rem;">
+                <a href="#" onclick="APP.showHome()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">الرئيسية</a>
+                <a href="login.html" style="color:var(--text2);text-decoration:none;transition:var(--transition);">تسجيل الدخول</a>
+                <a href="#" onclick="APP.showPrivacy()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">سياسة الخصوصية</a>
+                <a href="#" onclick="APP.showTerms()" style="color:var(--text2);text-decoration:none;transition:var(--transition);">الشروط والأحكام</a>
+            </div>
+            <p style="font-size:0.75rem;color:var(--text2);">جميع الحقوق محفوظة © يلا كيمياء 2026</p>
+        </div>
+    </footer>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+
+    <!-- Application Modules -->
+    <script src="js/security.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/courses.js"></script>
+    <script src="js/exams.js"></script>
+    <script src="js/dashboard.js"></script>
+
+    <script>
+        function init() {
+            setupScrollHandlers();
+            loadHomePage();
+            initAuth();
+            console.log('🚀 Yalla Chemistry Platform v32.0 - Final Version');
+            console.log('✅ All modules loaded correctly');
+        }
+
+        function setupScrollHandlers() {
+            const backBtn = document.getElementById('backTop');
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                if (backBtn) backBtn.style.display = scrollY > 500 ? 'flex' : 'none';
+                if (navbar) navbar.classList.toggle('scrolled', scrollY > 50);
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('userMenuWrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                const dropdown = document.getElementById('userDropdown');
+                const arrow = document.getElementById('userMenuArrow');
+                if (dropdown) dropdown.classList.remove('open');
+                if (arrow) arrow.classList.remove('open');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (typeof closeExamSecurityModal === 'function') closeExamSecurityModal();
+                if (typeof closeImageZoom === 'function') closeImageZoom();
+                if (typeof closeCompletedModal === 'function') closeCompletedModal();
+            }
+        });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        const APP = {
+            toggleTheme: window.toggleTheme || function() {},
+            logout: window.logout || function() {},
+            toggleUserMenu: window.toggleUserMenu || function() {},
+            closeLoginOverlay: window.closeLoginOverlay || function() {},
+            showLoginOverlay: window.showLoginOverlay || function() {},
+            showHome: window.showHome || function() {},
+            scrollToCourses: window.scrollToCourses || function() {},
+            share: window.shareOn || function() {},
+            filterCourses: window.filterCourses || function() {},
+            filterCoursesByGrade: window.filterCoursesByGrade || function() {},
+            subscribeToCourse: window.subscribeToCourse || function() {},
+            openCoursePage: window.openCoursePage || function() {},
+            openLessonVideo: window.openLessonVideo || function() {},
+            handleVideoExit: window.handleVideoExit || function() {},
+            openLessonAssignment: window.openLessonAssignment || function() {},
+            completeAssignment: window.completeAssignment || function() {},
+            openLessonExam: window.openLessonExam || function() {},
+            openLessonQuiz: window.openLessonQuiz || function() {},
+            openExamSecurityModal: window.openExamSecurityModal || function() {},
+            closeExamSecurityModal: window.closeExamSecurityModal || function() {},
+            startExamAfterPledge: window.startExamAfterPledge || function() {},
+            submitExam: window.submitExam || function() {},
+            submitQuiz: window.submitQuiz || function() {},
+            exitExam: window.exitExam || function() {},
+            navigateExamQuestion: window.navigateExamQuestion || function() {},
+            navigateQuizQuestion: window.navigateQuizQuestion || function() {},
+            selectExamAnswer: window.selectExamAnswer || function() {},
+            selectQuizAnswer: window.selectQuizAnswer || function() {},
+            showDashboard: window.showDashboard || function() {},
+            uploadProfilePhoto: function() {
+                if (window.Dashboard && window.Dashboard.uploadProfilePhoto) {
+                    window.Dashboard.uploadProfilePhoto();
+                } else {
+                    showToast('جاري تحميل ميزة رفع الصورة...', 'info');
+                }
+            },
+            showLeaderboard: window.showLeaderboard || function() {},
+            showErrorBank: window.showErrorBank || function() {},
+            startErrorReview: window.startErrorReview || function() {},
+            showCertificate: window.showCertificate || function() {},
+            downloadCertificate: window.downloadCertificate || function() {},
+            showStudentCard: window.showStudentCard || function() {},
+            downloadStudentCard: window.downloadStudentCard || function() {},
+            showAchievements: window.showAchievements || function() {},
+            showAIInsights: window.showAIInsights || function() {},
+            printAIReport: window.printAIReport || function() {},
+            showResults: window.showResults || function() {},
+            showNotificationsPage: window.showNotificationsPage || function() {},
+            markNotificationRead: window.markNotificationRead || function() {},
+            markAllNotificationsRead: window.markAllNotificationsRead || function() {},
+            deleteAllNotifications: window.deleteAllNotifications || function() {},
+            showPrivacy: window.showPrivacy || function() {},
+            showTerms: window.showTerms || function() {},
+            showCompletedModal: window.showCompletedModal || function() {},
+            closeCompletedModal: window.closeCompletedModal || function() {},
+            openImageZoom: window.openImageZoom || function() {},
+            closeImageZoom: window.closeImageZoom || function() {}
+        };
+
+        window.APP = APP;
+    </script>
 </body>
 </html>
