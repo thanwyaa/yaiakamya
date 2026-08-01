@@ -26,26 +26,34 @@
     }
     </script>
 
-    <!-- NEW LOGO -->
+    <!-- NEW LOGO - FAVICON -->
     <link rel="icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
     <title>يلا كيمياء | المنصة التعليمية المتكاملة</title>
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <!-- External CSS -->
+    <!-- MAIN CSS - تأكد من المسار الصحيح -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+    <!-- Toast Container -->
     <div id="toastContainer"></div>
+    
+    <!-- Back to Top Button -->
     <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
 
+    <!-- Login Overlay -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="icon"><i class="fas fa-lock"></i></div>
@@ -59,6 +67,7 @@
         </div>
     </div>
 
+    <!-- Completed Modal -->
     <div class="completed-modal" id="completedModal">
         <div class="modal-box">
             <div class="icon">✅</div>
@@ -68,6 +77,7 @@
         </div>
     </div>
 
+    <!-- Exam Security Modal -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
@@ -92,15 +102,19 @@
         </div>
     </div>
 
+    <!-- Image Zoom Overlay -->
     <div class="quiz-image-overlay" id="imageOverlay" onclick="APP.closeImageZoom()">
         <div class="close-btn">✕</div>
         <img id="zoomedImage" src="" alt="تكبير الصورة">
     </div>
 
+    <!-- ============================================================
+         NAVBAR
+         ============================================================ -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
+            <!-- LOGO - بدون نص -->
             <a href="#" class="nav-logo" onclick="APP.showHome()">
-                <!-- NEW LOGO - بدون نص -->
                 <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" 
                      alt="يلا كيمياء" 
                      loading="eager" 
@@ -108,6 +122,7 @@
                      onerror="this.style.display='none'">
             </a>
 
+            <!-- NAV LINKS -->
             <ul class="nav-links" id="navLinks">
                 <li class="guest-only"><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
                 <li class="guest-only"><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
@@ -122,13 +137,17 @@
                 </li>
             </ul>
 
+            <!-- RIGHT SIDE -->
             <div style="display:flex;align-items:center;gap:6px;">
+                <!-- Theme Toggle -->
                 <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر"></button>
                 
+                <!-- Atoms Badge -->
                 <span class="user-only atoms-badge" style="display:none;font-size:0.7rem;padding:2px 10px;" id="atomsBadge">
                     <i class="fas fa-atom"></i> <span id="atomsCount">0</span>
                 </span>
 
+                <!-- Notifications -->
                 <div class="user-only notification-wrapper" style="display:none;" id="notificationWrapper">
                     <button class="notification-btn" onclick="APP.showNotificationsPage()" id="notificationBtn">
                         <i class="fas fa-bell"></i>
@@ -136,6 +155,7 @@
                     </button>
                 </div>
 
+                <!-- User Menu -->
                 <div class="user-only user-menu-wrapper" style="display:none;" id="userMenuWrapper">
                     <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatarBtn">
                         <span class="avatar" id="userAvatar">U</span>
@@ -164,14 +184,19 @@
         </div>
     </nav>
 
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
     <main id="mainContent">
         <!-- Home Page - Loaded via JavaScript -->
     </main>
 
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
     <footer style="background:var(--card);border-top:1px solid var(--border);padding:20px;margin-top:16px;">
         <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
-                <!-- NEW LOGO -->
                 <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" 
                      alt="يلا كيمياء" 
                      style="width:32px;height:32px;object-fit:contain;border:none;" 
@@ -188,7 +213,10 @@
         </div>
     </footer>
 
-    <!-- External JavaScript Files -->
+    <!-- ============================================================
+         EXTERNAL SCRIPTS
+         ============================================================ -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -201,17 +229,17 @@
     <script src="js/exams.js"></script>
     <script src="js/dashboard.js"></script>
 
+    <!-- ============================================================
+         INIT
+         ============================================================ -->
     <script>
-        // ============================================================
-        // INIT
-        // ============================================================
         function init() {
             setupScrollHandlers();
             loadHomePage();
             initAuth();
-            console.log('🚀 Yalla Chemistry Platform v32.0 - Optimized');
-            console.log('✅ Performance: Lazy loading, caching, reduced calls');
-            console.log('✅ All modules working correctly');
+            console.log('🚀 Yalla Chemistry Platform v32.0 - CSS Fixed');
+            console.log('✅ All modules loaded correctly');
+            console.log('✅ CSS linked properly');
         }
 
         function setupScrollHandlers() {
@@ -236,9 +264,9 @@
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                closeExamSecurityModal();
-                closeImageZoom();
-                closeCompletedModal();
+                if (typeof closeExamSecurityModal === 'function') closeExamSecurityModal();
+                if (typeof closeImageZoom === 'function') closeImageZoom();
+                if (typeof closeCompletedModal === 'function') closeCompletedModal();
             }
         });
 
@@ -253,95 +281,99 @@
         // ============================================================
         const APP = {
             // Theme
-            toggleTheme,
+            toggleTheme: window.toggleTheme || function() {},
             
             // Auth
-            logout,
-            toggleUserMenu,
-            closeLoginOverlay,
-            showLoginOverlay,
+            logout: window.logout || function() {},
+            toggleUserMenu: window.toggleUserMenu || function() {},
+            closeLoginOverlay: window.closeLoginOverlay || function() {},
+            showLoginOverlay: window.showLoginOverlay || function() {},
             
             // Navigation
-            showHome,
-            scrollToCourses,
+            showHome: window.showHome || function() {},
+            scrollToCourses: window.scrollToCourses || function() {},
             
             // Share
-            share: shareOn,
+            share: window.shareOn || function() {},
             
             // Courses
-            filterCourses,
-            filterCoursesByGrade,
-            subscribeToCourse,
-            openCoursePage,
+            filterCourses: window.filterCourses || function() {},
+            filterCoursesByGrade: window.filterCoursesByGrade || function() {},
+            subscribeToCourse: window.subscribeToCourse || function() {},
+            openCoursePage: window.openCoursePage || function() {},
             
             // Video
-            openLessonVideo,
-            handleVideoExit,
+            openLessonVideo: window.openLessonVideo || function() {},
+            handleVideoExit: window.handleVideoExit || function() {},
             
             // Assignments
-            openLessonAssignment,
-            completeAssignment,
+            openLessonAssignment: window.openLessonAssignment || function() {},
+            completeAssignment: window.completeAssignment || function() {},
             
             // Exams & Quizzes
-            openLessonExam,
-            openLessonQuiz,
-            openExamSecurityModal,
-            closeExamSecurityModal,
-            startExamAfterPledge,
-            submitExam,
-            submitQuiz,
-            exitExam,
-            navigateExamQuestion,
-            navigateQuizQuestion,
+            openLessonExam: window.openLessonExam || function() {},
+            openLessonQuiz: window.openLessonQuiz || function() {},
+            openExamSecurityModal: window.openExamSecurityModal || function() {},
+            closeExamSecurityModal: window.closeExamSecurityModal || function() {},
+            startExamAfterPledge: window.startExamAfterPledge || function() {},
+            submitExam: window.submitExam || function() {},
+            submitQuiz: window.submitQuiz || function() {},
+            exitExam: window.exitExam || function() {},
+            navigateExamQuestion: window.navigateExamQuestion || function() {},
+            navigateQuizQuestion: window.navigateQuizQuestion || function() {},
             selectExamAnswer: window.selectExamAnswer || function() {},
             selectQuizAnswer: window.selectQuizAnswer || function() {},
             
             // Dashboard
-            showDashboard,
-            uploadProfilePhoto: window.Dashboard ? window.Dashboard.uploadProfilePhoto : function() {
-                showToast('جاري تحميل ميزة رفع الصورة...', 'info');
+            showDashboard: window.showDashboard || function() {},
+            uploadProfilePhoto: function() {
+                if (window.Dashboard && window.Dashboard.uploadProfilePhoto) {
+                    window.Dashboard.uploadProfilePhoto();
+                } else {
+                    showToast('جاري تحميل ميزة رفع الصورة...', 'info');
+                }
             },
             
             // Leaderboard
-            showLeaderboard,
+            showLeaderboard: window.showLeaderboard || function() {},
             
             // Error Bank
-            showErrorBank,
-            startErrorReview,
+            showErrorBank: window.showErrorBank || function() {},
+            startErrorReview: window.startErrorReview || function() {},
             
             // Certificate
-            showCertificate,
-            downloadCertificate,
+            showCertificate: window.showCertificate || function() {},
+            downloadCertificate: window.downloadCertificate || function() {},
             
             // Student Card
-            showStudentCard,
-            downloadStudentCard,
+            showStudentCard: window.showStudentCard || function() {},
+            downloadStudentCard: window.downloadStudentCard || function() {},
             
             // Achievements
-            showAchievements,
+            showAchievements: window.showAchievements || function() {},
             
             // AI Insights
-            showAIInsights,
-            printAIReport,
+            showAIInsights: window.showAIInsights || function() {},
+            printAIReport: window.printAIReport || function() {},
             
             // Results
-            showResults,
+            showResults: window.showResults || function() {},
             
             // Notifications
-            showNotificationsPage,
-            markNotificationRead,
-            markAllNotificationsRead,
-            deleteAllNotifications,
+            showNotificationsPage: window.showNotificationsPage || function() {},
+            markNotificationRead: window.markNotificationRead || function() {},
+            markAllNotificationsRead: window.markAllNotificationsRead || function() {},
+            deleteAllNotifications: window.deleteAllNotifications || function() {},
             
             // Privacy & Terms
-            showPrivacy,
-            showTerms,
+            showPrivacy: window.showPrivacy || function() {},
+            showTerms: window.showTerms || function() {},
             
             // Modals
-            showCompletedModal,
-            closeCompletedModal,
-            openImageZoom,
-            closeImageZoom
+            showCompletedModal: window.showCompletedModal || function() {},
+            closeCompletedModal: window.closeCompletedModal || function() {},
+            openImageZoom: window.openImageZoom || function() {},
+            closeImageZoom: window.closeImageZoom || function() {}
         };
 
         window.APP = APP;
