@@ -30,6 +30,38 @@ window.userData = null;
 window.isAuthChecked = false;
 
 // ============================================================
+// CACHE SYSTEM - تحسين الأداء
+// ============================================================
+window.cache = {
+    userData: null,
+    progress: {},
+    subscriptions: [],
+    notifications: [],
+    courses: [],
+    lessons: [],
+    exams: [],
+    quizzes: [],
+    timestamp: 0,
+    ttl: 60000 // 1 دقيقة
+};
+
+function isCacheValid() {
+    return window.cache.timestamp > 0 && (Date.now() - window.cache.timestamp) < window.cache.ttl;
+}
+
+function updateCache() {
+    window.cache.userData = window.userData;
+    window.cache.progress = window.userCourseProgress || {};
+    window.cache.subscriptions = window.userSubscriptions || [];
+    window.cache.notifications = window.notifications || [];
+    window.cache.courses = window.allCourses || [];
+    window.cache.lessons = window.allLessons || [];
+    window.cache.exams = window.allExams || [];
+    window.cache.quizzes = window.allQuizzes || [];
+    window.cache.timestamp = Date.now();
+}
+
+// ============================================================
 // AUTH FUNCTIONS
 // ============================================================
 function initAuth() {
@@ -41,17 +73,19 @@ function initAuth() {
 
         if (user) {
             loadUserData(user.uid);
-            if (typeof loadUserSubscriptions === 'function') loadUserSubscriptions(user.uid);
-            if (typeof loadUserProgress === 'function') loadUserProgress(user.uid);
-            if (typeof loadNotifications === 'function') loadNotifications(user.uid);
             setTimeout(() => {
+                if (typeof loadUserSubscriptions === 'function') loadUserSubscriptions(user.uid);
+                if (typeof loadUserProgress === 'function') loadUserProgress(user.uid);
+                if (typeof loadNotifications === 'function') loadNotifications(user.uid);
+                // تحميل البيانات الأساسية فقط
                 if (typeof loadCourses === 'function') loadCourses();
                 if (typeof loadLessons === 'function') loadLessons();
                 if (typeof loadExams === 'function') loadExams();
                 if (typeof loadQuizzes === 'function') loadQuizzes();
                 if (typeof loadLeaderboard === 'function') loadLeaderboard();
-            }, 100);
+            }, 300); // تأخير بسيط لتجنب التحميل المتزامن
         } else {
+            // تحميل البيانات للزوار
             if (typeof loadCourses === 'function') loadCourses();
             if (typeof loadLessons === 'function') loadLessons();
             if (typeof loadExams === 'function') loadExams();
@@ -143,7 +177,7 @@ function updateUserUI(data) {
 }
 
 function loadUserData(uid) {
-    if (window.cache && window.cache.userData && isCacheValid()) {
+    if (window.cache.userData && isCacheValid()) {
         window.userData = window.cache.userData;
         updateUserUI(window.userData);
         if (window.currentUser) updateUIForAuth(window.currentUser);
@@ -153,7 +187,7 @@ function loadUserData(uid) {
     window.database.ref('users/' + uid).once('value', (snapshot) => {
         if (snapshot.exists()) {
             window.userData = snapshot.val();
-            if (window.cache) window.cache.userData = window.userData;
+            window.cache.userData = window.userData;
             updateCache();
             updateUserUI(window.userData);
             if (window.currentUser) updateUIForAuth(window.currentUser);
@@ -198,7 +232,7 @@ async function createNewUser(uid) {
     
     await window.database.ref('users/' + uid).set(newUser);
     window.userData = newUser;
-    if (window.cache) window.cache.userData = newUser;
+    window.cache.userData = newUser;
     updateCache();
     updateUserUI(newUser);
     if (window.currentUser) updateUIForAuth(window.currentUser);
@@ -213,12 +247,18 @@ async function logout() {
         await window.auth.signOut();
         showToast('تم تسجيل الخروج', 'success');
         updateUIForAuth(null);
-        if (window.cache) {
-            window.cache.userData = null;
-            window.cache.progress = {};
-            window.cache.subscriptions = [];
-            window.cache.notifications = [];
-        }
+        window.cache = {
+            userData: null,
+            progress: {},
+            subscriptions: [],
+            notifications: [],
+            courses: [],
+            lessons: [],
+            exams: [],
+            quizzes: [],
+            timestamp: 0,
+            ttl: 60000
+        };
         closeUserMenu();
         if (typeof showHome === 'function') showHome();
     } catch (error) {
@@ -257,11 +297,9 @@ function hasPremiumAccess(courseId) {
     if (!window.currentUser) return false;
     if (!window.userData) return false;
     
-    // Check if course is free
     const course = window.allCourses?.find(c => c.id === courseId);
     if (course && course.isFree !== false) return true;
     
-    // Check premium courses
     const premiumCourses = window.userData.premiumCourses || {};
     return premiumCourses[courseId] === true;
 }
@@ -279,7 +317,6 @@ async function checkCourseAccess(courseId) {
     if (course.isFree !== false) return true;
     if (hasPremiumAccess(courseId)) return true;
     
-    // Show premium subscription page
     showPremiumPage(course);
     return false;
 }
@@ -288,7 +325,6 @@ function showPremiumPage(course) {
     const main = document.getElementById('mainContent');
     if (!main) return;
     
-    // Default contact info - can be managed from admin
     const contactInfo = {
         phone: '01012345678',
         telegram: 'https://t.me/yala_kamya_ziad_mabrok',
@@ -360,18 +396,8 @@ async function generateStudentCode() {
 }
 
 // ============================================================
-// UTILITY FUNCTIONS FOR SECURITY
+// UTILITY FUNCTIONS
 // ============================================================
-function isCacheValid() {
-    return window.cache && window.cache.timestamp > 0 && (Date.now() - window.cache.timestamp) < 60000;
-}
-
-function updateCache() {
-    if (!window.cache) window.cache = {};
-    window.cache.userData = window.userData;
-    window.cache.timestamp = Date.now();
-}
-
 function escapeHtml(str) {
     if (!str) return '';
     const div = document.createElement('div');
@@ -417,5 +443,7 @@ window.Security = {
     generateStudentCode,
     updateUIForAuth,
     loadUserData,
-    createNewUser
+    createNewUser,
+    isCacheValid,
+    updateCache
 };
