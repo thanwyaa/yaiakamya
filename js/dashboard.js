@@ -4,9 +4,6 @@
 
 window.Dashboard = {};
 
-// ============================================================
-// SHOW DASHBOARD
-// ============================================================
 function showDashboard() {
     if (!window.currentUser) {
         showLoginOverlay();
@@ -36,7 +33,6 @@ function showDashboard() {
     const perfectExams = safeData.perfectExams || 0;
     const rank = safeData.rank || '--';
     
-    // حساب الكورسات المكتملة
     let coursesCompleted = 0;
     let totalLessons = 0;
     window.allCourses.forEach(c => {
@@ -51,7 +47,6 @@ function showDashboard() {
     const completedLessons = Object.values(safeProgress).filter(p => p.watched).length;
     const lessonProgress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
-    // الإنجازات
     const achievements = getAchievements();
     const unlockedCount = achievements.filter(a => a.unlocked).length;
     const totalAchievements = achievements.length;
@@ -76,7 +71,6 @@ function showDashboard() {
                 </div>
             </div>
 
-            <!-- معلومات الطالب -->
             <div class="card" style="padding:20px;margin-bottom:16px;">
                 <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;">
                     <div style="display:flex;align-items:center;gap:16px;">
@@ -113,7 +107,6 @@ function showDashboard() {
                 </div>
             </div>
 
-            <!-- إحصائيات سريعة -->
             <div class="grid-dashboard" style="margin-bottom:16px;">
                 <div class="stat-circle-card">
                     <div class="circle" style="background:var(--primary);"><span class="number">${streak}</span></div>
@@ -141,7 +134,6 @@ function showDashboard() {
                 </div>
             </div>
 
-            <!-- الروابط السريعة -->
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:16px;">
                 <button class="btn-primary btn-sm" onclick="APP.showErrorBank()" style="background:var(--danger);">❌ أخطائي</button>
                 <button class="btn-primary btn-sm" onclick="APP.showResults()" style="background:var(--warning);color:#081B2C;">📊 نتائجي</button>
@@ -151,7 +143,6 @@ function showDashboard() {
                 <button class="btn-primary btn-sm" onclick="APP.showLeaderboard()" style="background:var(--primary);">🏆 المتصدرين</button>
             </div>
 
-            <!-- إنجازات سريعة -->
             <h3 style="font-weight:700;font-size:1.1rem;color:var(--text);margin-bottom:8px;">🏅 آخر الإنجازات</h3>
             <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
                 ${achievements.filter(a => a.unlocked).slice(0, 5).map(a => `
@@ -164,9 +155,6 @@ function showDashboard() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// UPLOAD PROFILE PHOTO
-// ============================================================
 function uploadProfilePhoto() {
     if (!window.currentUser) {
         showLoginOverlay();
@@ -208,9 +196,6 @@ function uploadProfilePhoto() {
     input.click();
 }
 
-// ============================================================
-// EXPOSE DASHBOARD FUNCTIONS
-// ============================================================
 window.Dashboard.showDashboard = showDashboard;
 window.Dashboard.uploadProfilePhoto = uploadProfilePhoto;
 window.showDashboard = showDashboard;
