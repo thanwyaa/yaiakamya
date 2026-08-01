@@ -198,7 +198,7 @@ function showExamUI(exam, isSecure = false) {
         }, 1000);
     }
 
-    // دالة اختيار الإجابة
+    // دالة اختيار الإجابة (مربوطة بـ window مباشرة)
     window.selectExamAnswer = function(id, qIdx, oIdx, correct) {
         if (!isExamActive || examSubmitted) return;
         if (!examAnswers[id]) examAnswers[id] = {};
@@ -243,7 +243,7 @@ function showExamUI(exam, isSecure = false) {
                 </p>
                 <div style="display:flex;flex-direction:column;gap:6px;">
                     ${q.options.map((opt, oIdx) => `
-                        <div class="quiz-option" onclick="APP.selectExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                        <div class="quiz-option" onclick="window.selectExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                             <input type="radio" name="exam_q${idx}" id="exam_q${idx}_${oIdx}" value="${oIdx}">
                             <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
                             <span class="option-label">${escapeHtml(opt)}</span>
@@ -522,7 +522,7 @@ function showQuizUI(quiz, isSecure = false) {
         }, 1000);
     }
 
-    // دالة اختيار الإجابة (مربوطة بـ window و APP)
+    // دالة اختيار الإجابة (مربوطة بـ window مباشرة)
     window.selectQuizAnswer = function(id, qIdx, oIdx, correct) {
         if (!isExamActive || examSubmitted) {
             if (examSubmitted) showToast('تم تسليم الكويز بالفعل', 'info');
@@ -574,7 +574,7 @@ function showQuizUI(quiz, isSecure = false) {
                 </p>
                 <div style="display:flex;flex-direction:column;gap:6px;">
                     ${q.options.map((opt, oIdx) => `
-                        <div class="quiz-option" onclick="APP.selectQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                        <div class="quiz-option" onclick="window.selectQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                             <input type="radio" name="quiz_q${idx}" id="quiz_q${idx}_${oIdx}" value="${oIdx}">
                             <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
                             <span class="option-label">${escapeHtml(opt)}</span>
@@ -864,8 +864,9 @@ function bindExamFunctions() {
         APP.exitExam = exitExam;
         APP.navigateExamQuestion = navigateExamQuestion;
         APP.navigateQuizQuestion = navigateQuizQuestion;
-        APP.selectExamAnswer = window.selectExamAnswer;
-        APP.selectQuizAnswer = window.selectQuizAnswer;
+        // ربط دوال الاختيار من window إلى APP (احتياطي)
+        APP.selectExamAnswer = window.selectExamAnswer || function() {};
+        APP.selectQuizAnswer = window.selectQuizAnswer || function() {};
         APP.openExamSecurityModal = openExamSecurityModal;
         APP.closeExamSecurityModal = closeExamSecurityModal;
         APP.startExamAfterPledge = startExamAfterPledge;
