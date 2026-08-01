@@ -1,5 +1,5 @@
 // ============================================================
-// SECURITY MODULE - Firebase, Auth, Permissions, Premium
+// SECURITY MODULE - Firebase, Auth, Permissions
 // ============================================================
 
 const firebaseConfig = {
@@ -172,7 +172,7 @@ function updateUserUI(data) {
     const avatarEl = document.getElementById('userAvatar');
     if (avatarEl) {
         if (avatar) {
-            avatarEl.innerHTML = `<img src="${avatar}" alt="صورة" loading="lazy">`;
+            avatarEl.innerHTML = `<img src="${avatar}" alt="صورة" loading="lazy" onerror="this.parentElement.textContent='${(data.name || 'U')[0].toUpperCase()}'">`;
         } else {
             avatarEl.textContent = (data.name || 'U')[0].toUpperCase();
         }
@@ -254,6 +254,25 @@ async function createNewUser(uid) {
     }
 }
 
+async function generateStudentCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
+    
+    try {
+        const snapshot = await window.database.ref('users').orderByChild('code').equalTo(formatted).once('value');
+        if (snapshot.exists()) {
+            return generateStudentCode();
+        }
+    } catch (err) {
+        console.error('Error generating code:', err);
+    }
+    return formatted;
+}
+
 async function logout() {
     try {
         if (typeof clearVideoTracking === 'function') clearVideoTracking();
@@ -303,6 +322,98 @@ function closeLoginOverlay() {
 function showLoginOverlay() {
     const overlay = document.getElementById('loginOverlay');
     if (overlay) overlay.classList.add('open');
+}
+
+function showLoginForm() {
+    document.getElementById('loginOverlay').classList.remove('open');
+    document.getElementById('loginModal').style.display = 'flex';
+}
+
+function showRegisterForm() {
+    document.getElementById('loginOverlay').classList.remove('open');
+    document.getElementById('registerModal').style.display = 'flex';
+}
+
+function closeLoginModal() {
+    document.getElementById('loginModal').style.display = 'none';
+}
+
+function closeRegisterModal() {
+    document.getElementById('registerModal').style.display = 'none';
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    try {
+        await window.auth.signInWithEmailAndPassword(email, password);
+        closeLoginModal();
+        showToast('✅ تم تسجيل الدخول بنجاح', 'success');
+    } catch (err) {
+        showToast('❌ ' + err.message, 'error');
+    }
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    const phone = document.getElementById('registerPhone').value.trim();
+    const grade = document.getElementById('registerGrade').value;
+
+    if (!name || !email || !password) {
+        showToast('⚠️ يرجى ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+
+    try {
+        const cred = await window.auth.createUserWithEmailAndPassword(email, password);
+        const uid = cred.user.uid;
+        const code = await generateStudentCode();
+        
+        const newUser = {
+            name: name,
+            email: email,
+            grade: grade || '',
+            studyType: 'عام',
+            phone: phone || '',
+            parentPhone: '',
+            code: code,
+            atoms: 0,
+            progress: 0,
+            photoURL: '',
+            createdAt: new Date().toISOString(),
+            active: true,
+            coursesCount: 0,
+            lastActive: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            loginCount: 1,
+            streak: 0,
+            examsPassed: 0,
+            quizzesPassed: 0,
+            studyTime: 0,
+            videosWatched: 0,
+            lessonsCompleted: 0,
+            rank: '--',
+            perfectExams: 0,
+            lastStudyDate: new Date().toDateString(),
+            premiumCourses: {}
+        };
+        
+        await window.database.ref('users/' + uid).set(newUser);
+        window.userData = newUser;
+        window.cache.userData = newUser;
+        updateCache();
+        closeRegisterModal();
+        showToast('🎉 تم إنشاء الحساب بنجاح!', 'success');
+        if (typeof addNotification === 'function') {
+            await addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
+        }
+    } catch (err) {
+        showToast('❌ ' + err.message, 'error');
+    }
 }
 
 function hasPremiumAccess(courseId) {
@@ -390,24 +501,6 @@ function showPremiumPage(course) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-async function generateStudentCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
-    try {
-        const snapshot = await window.database.ref('users').orderByChild('code').equalTo(formatted).once('value');
-        if (snapshot.exists()) {
-            return generateStudentCode();
-        }
-    } catch (err) {
-        console.error('Error generating code:', err);
-    }
-    return formatted;
-}
-
 function escapeHtml(str) {
     if (!str) return '';
     const div = document.createElement('div');
@@ -439,80 +532,20 @@ function formatPhoneNumber(phone) {
 }
 
 // ============================================================
-// FIX FUNCTIONS
+// EXPORTS
 // ============================================================
-
-async function fixAllLessonsInCourse(courseId, oldCourseId) {
-    if (!window.currentUser) {
-        showToast('⚠️ يجب تسجيل الدخول أولاً', 'error');
-        return;
-    }
-    
-    try {
-        const snapshot = await window.database.ref('lessons').orderByChild('courseId').equalTo(oldCourseId || '').once('value');
-        const updates = {};
-        let count = 0;
-        
-        snapshot.forEach((child) => {
-            updates[child.key + '/courseId'] = courseId;
-            count++;
-        });
-        
-        if (count === 0) {
-            showToast('⚠️ لا توجد حصص بهذا الـ courseId', 'warning');
-            return;
-        }
-        
-        await window.database.ref('lessons').update(updates);
-        showToast(`✅ تم تحديث ${count} حصة بنجاح`, 'success');
-        
-        if (typeof loadLessons === 'function') loadLessons();
-        if (typeof loadCourses === 'function') loadCourses();
-        
-    } catch (err) {
-        console.error('❌ Error fixing lessons:', err);
-        showToast('❌ حدث خطأ في التحديث', 'error');
-    }
-}
-
-async function addCourseIdToLesson(lessonId, courseId) {
-    if (!window.currentUser) {
-        showToast('⚠️ يجب تسجيل الدخول أولاً', 'error');
-        return;
-    }
-    
-    try {
-        await window.database.ref('lessons/' + lessonId + '/courseId').set(courseId);
-        showToast('✅ تم تحديث الحصة بنجاح', 'success');
-        if (typeof loadLessons === 'function') loadLessons();
-    } catch (err) {
-        console.error('❌ Error adding courseId:', err);
-        showToast('❌ حدث خطأ في التحديث', 'error');
-    }
-}
-
-window.Security = {
-    initAuth,
-    logout,
-    toggleUserMenu,
-    closeLoginOverlay,
-    showLoginOverlay,
-    hasPremiumAccess,
-    checkCourseAccess,
-    showPremiumPage,
-    generateStudentCode,
-    updateUIForAuth,
-    loadUserData,
-    createNewUser,
-    isCacheValid,
-    updateCache
-};
 
 window.initAuth = initAuth;
 window.logout = logout;
 window.toggleUserMenu = toggleUserMenu;
 window.closeLoginOverlay = closeLoginOverlay;
 window.showLoginOverlay = showLoginOverlay;
+window.showLoginForm = showLoginForm;
+window.showRegisterForm = showRegisterForm;
+window.closeLoginModal = closeLoginModal;
+window.closeRegisterModal = closeRegisterModal;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
 window.hasPremiumAccess = hasPremiumAccess;
 window.checkCourseAccess = checkCourseAccess;
 window.showPremiumPage = showPremiumPage;
@@ -525,5 +558,3 @@ window.updateCache = updateCache;
 window.escapeHtml = escapeHtml;
 window.showToast = showToast;
 window.formatPhoneNumber = formatPhoneNumber;
-window.fixAllLessonsInCourse = fixAllLessonsInCourse;
-window.addCourseIdToLesson = addCourseIdToLesson;
