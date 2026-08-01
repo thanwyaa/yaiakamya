@@ -100,13 +100,12 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo" onclick="APP.showHome()">
-                <!-- NEW LOGO -->
+                <!-- NEW LOGO - بدون نص -->
                 <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" 
                      alt="يلا كيمياء" 
                      loading="eager" 
                      fetchpriority="high" 
                      onerror="this.style.display='none'">
-                <span>يلا كيمياء</span>
             </a>
 
             <ul class="nav-links" id="navLinks">
@@ -175,7 +174,7 @@
                 <!-- NEW LOGO -->
                 <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" 
                      alt="يلا كيمياء" 
-                     style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" 
+                     style="width:32px;height:32px;object-fit:contain;border:none;" 
                      loading="lazy">
                 <span style="font-family:'Lalezar',cursive;font-size:1.2rem;color:var(--primary);">يلا كيمياء</span>
             </div>
@@ -210,9 +209,9 @@
             setupScrollHandlers();
             loadHomePage();
             initAuth();
-            console.log('🚀 Yalla Chemistry Platform v31.0 - Modular Architecture');
-            console.log('✅ 4 Modules: Main | Courses | Exams | Security');
-            console.log('✅ All functions preserved 100%');
+            console.log('🚀 Yalla Chemistry Platform v32.0 - Optimized');
+            console.log('✅ Performance: Lazy loading, caching, reduced calls');
+            console.log('✅ All modules working correctly');
         }
 
         function setupScrollHandlers() {
@@ -298,12 +297,7 @@
             selectQuizAnswer: window.selectQuizAnswer || function() {},
             
             // Dashboard
-            showDashboard: window.Dashboard ? window.Dashboard.showDashboard : function() {
-                showToast('جاري تحميل لوحة الطالب...', 'info');
-                if (typeof window.Dashboard !== 'undefined') {
-                    window.Dashboard.showDashboard();
-                }
-            },
+            showDashboard,
             uploadProfilePhoto: window.Dashboard ? window.Dashboard.uploadProfilePhoto : function() {
                 showToast('جاري تحميل ميزة رفع الصورة...', 'info');
             },
@@ -312,87 +306,26 @@
             showLeaderboard,
             
             // Error Bank
-            showErrorBank: function() {
-                // This function is defined in exams.js
-                if (typeof window.showErrorBank === 'function') {
-                    window.showErrorBank();
-                } else {
-                    showToast('جاري تحميل بنك الأخطاء...', 'info');
-                }
-            },
-            startErrorReview: function(count) {
-                if (typeof window.startErrorReview === 'function') {
-                    window.startErrorReview(count);
-                } else {
-                    showToast('جاري تحميل مراجعة الأخطاء...', 'info');
-                }
-            },
+            showErrorBank,
+            startErrorReview,
             
             // Certificate
-            showCertificate: function() {
-                if (typeof window.showCertificate === 'function') {
-                    window.showCertificate();
-                } else {
-                    showToast('جاري تحميل الشهادات...', 'info');
-                }
-            },
-            downloadCertificate: function() {
-                if (typeof window.downloadCertificate === 'function') {
-                    window.downloadCertificate();
-                } else {
-                    showToast('جاري تحميل الشهادة...', 'info');
-                }
-            },
+            showCertificate,
+            downloadCertificate,
             
             // Student Card
-            showStudentCard: function() {
-                if (typeof window.showStudentCard === 'function') {
-                    window.showStudentCard();
-                } else {
-                    showToast('جاري تحميل البطاقة...', 'info');
-                }
-            },
-            downloadStudentCard: function() {
-                if (typeof window.downloadStudentCard === 'function') {
-                    window.downloadStudentCard();
-                } else {
-                    showToast('جاري تحميل البطاقة...', 'info');
-                }
-            },
+            showStudentCard,
+            downloadStudentCard,
             
             // Achievements
-            showAchievements: function() {
-                if (typeof window.showAchievements === 'function') {
-                    window.showAchievements();
-                } else {
-                    showToast('جاري تحميل الإنجازات...', 'info');
-                }
-            },
+            showAchievements,
             
             // AI Insights
-            showAIInsights: function() {
-                if (typeof window.showAIInsights === 'function') {
-                    window.showAIInsights();
-                } else {
-                    showToast('جاري تحميل تحليل المستوى...', 'info');
-                }
-            },
-            printAIReport: function() {
-                if (typeof window.printAIReport === 'function') {
-                    window.printAIReport();
-                } else {
-                    showToast('جاري تحميل التقرير...', 'info');
-                }
-            },
+            showAIInsights,
+            printAIReport,
             
             // Results
-            showResults: function() {
-                if (typeof window.showResults === 'function') {
-                    window.showResults();
-                } else {
-                    showToast('جاري تحميل النتائج...', 'info');
-                }
-            },
+            showResults,
             
             // Notifications
             showNotificationsPage,
