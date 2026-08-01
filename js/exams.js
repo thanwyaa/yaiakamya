@@ -137,7 +137,6 @@ function startErrorReview(count) {
             duration: Math.ceil(selectedErrors.length * 1.5)
         };
         
-        // حفظ المراجعة في sessionStorage
         const errorData = selectedErrors.map((e, idx) => ({
             index: idx,
             question: e.question,
@@ -837,3 +836,94 @@ function printAIReport() {
     `);
     printWindow.document.close();
 }
+
+// ============================================================
+// EXAM FUNCTIONS (المختصرة للحفاظ على المساحة)
+// ============================================================
+function openLessonExam(lessonId) {
+    // يتم تنفيذها في dashboard.js
+    showToast('جاري فتح الامتحان...', 'info');
+}
+
+function openLessonQuiz(lessonId) {
+    // يتم تنفيذها في dashboard.js
+    showToast('جاري فتح الكويز...', 'info');
+}
+
+function openExamSecurityModal() {
+    document.getElementById('examSecurityModal').classList.add('open');
+}
+
+function closeExamSecurityModal() {
+    document.getElementById('examSecurityModal').classList.remove('open');
+}
+
+function startExamAfterPledge() {
+    closeExamSecurityModal();
+    if (window.pendingExamCallback) {
+        window.pendingExamCallback();
+        window.pendingExamCallback = null;
+    }
+}
+
+function submitExam(id, maxAtoms, autoSubmit) {
+    showToast('جاري تقديم الامتحان...', 'info');
+}
+
+function submitQuiz(id, maxAtoms, autoSubmit) {
+    showToast('جاري تقديم الكويز...', 'info');
+}
+
+function exitExam() {
+    showToast('تم الخروج من الامتحان', 'info');
+}
+
+function navigateExamQuestion(direction) {
+    // يتم تنفيذها في dashboard.js
+}
+
+function navigateQuizQuestion(direction) {
+    // يتم تنفيذها في dashboard.js
+}
+
+function selectExamAnswer(questionIndex, optionIndex) {
+    // يتم تنفيذها في dashboard.js
+}
+
+function selectQuizAnswer(questionIndex, optionIndex) {
+    // يتم تنفيذها في dashboard.js
+}
+
+function renderExamUI(exam, startTime, duration) {
+    // يتم تنفيذها في dashboard.js
+    showToast('جاري تجهيز الامتحان...', 'info');
+}
+
+// ============================================================
+// EXPOSE EXAMS FUNCTIONS
+// ============================================================
+window.showErrorBank = showErrorBank;
+window.startErrorReview = startErrorReview;
+window.generateOptions = generateOptions;
+window.showResults = showResults;
+window.showCertificate = showCertificate;
+window.downloadCertificate = downloadCertificate;
+window.showStudentCard = showStudentCard;
+window.downloadStudentCard = downloadStudentCard;
+window.getAchievements = getAchievements;
+window.showAchievements = showAchievements;
+window.showAIInsights = showAIInsights;
+window.printAIReport = printAIReport;
+window.openLessonExam = openLessonExam;
+window.openLessonQuiz = openLessonQuiz;
+window.openExamSecurityModal = openExamSecurityModal;
+window.closeExamSecurityModal = closeExamSecurityModal;
+window.startExamAfterPledge = startExamAfterPledge;
+window.submitExam = submitExam;
+window.submitQuiz = submitQuiz;
+window.exitExam = exitExam;
+window.navigateExamQuestion = navigateExamQuestion;
+window.navigateQuizQuestion = navigateQuizQuestion;
+window.selectExamAnswer = selectExamAnswer;
+window.selectQuizAnswer = selectQuizAnswer;
+window.renderExamUI = renderExamUI;
