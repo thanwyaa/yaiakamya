@@ -272,7 +272,7 @@ function renderLeaderboard(users) {
     podiumData.forEach(p => {
         if (!p.user) return;
         const avatarHtml = p.user.photoURL ? 
-            `<img src="${p.user.photoURL}" alt="${escapeHtml(p.user.name)}" loading="lazy" onerror="this.parentElement.textContent='${(p.user.name || 'U')[0].toUpperCase()}'">` : 
+            `<img src="${p.user.photoURL}" alt="${escapeHtml(p.user.name)}" loading="lazy">` : 
             (p.user.name || 'U')[0].toUpperCase();
         podiumHtml += `
             <div class="podium-item ${p.class}">
@@ -291,7 +291,7 @@ function renderLeaderboard(users) {
     rest.forEach((user, idx) => {
         const rank = idx + 4;
         const avatarHtml = user.photoURL ? 
-            `<img src="${user.photoURL}" alt="${escapeHtml(user.name)}" loading="lazy" onerror="this.parentElement.textContent='${(user.name || 'U')[0].toUpperCase()}'">` : 
+            `<img src="${user.photoURL}" alt="${escapeHtml(user.name)}" loading="lazy">` : 
             (user.name || 'U')[0].toUpperCase();
         listHtml += `
             <div class="leaderboard-item">
@@ -403,7 +403,7 @@ function loadHomePage() {
                  class="hero-image" 
                  loading="eager" 
                  fetchpriority="high"
-                 onerror="this.src='https://placehold.co/1200x400/0B4F8C/FFFFFF?text=%D9%8A%D9%84%D8%A7+%D9%83%D9%8A%D9%85%D9%8A%D8%A7%D8%A1'">
+                 onerror="this.style.display='none'">
             
             <div style="text-align:center;margin-top:20px;">
                 <h1 class="hero-title">ابدأ صح… وخلّي الكيمياء تبقى لعبتك 🔥</h1>
@@ -413,8 +413,8 @@ function loadHomePage() {
                         <button class="btn-primary" onclick="APP.scrollToCourses()">📚 كورساتي</button>
                         <button class="btn-primary" onclick="APP.showDashboard()" style="background:var(--gold);color:#081B2C;">👨‍🎓 لوحة الطالب</button>
                     ` : `
-                        <button onclick="APP.showLoginForm()" class="btn-primary">🚀 ابدأ التعلم الآن</button>
-                        <button onclick="APP.showLoginForm()" class="btn-outline">⚪ سجل دخول</button>
+                        <a href="login.html" class="btn-primary">🚀 ابدأ التعلم الآن</a>
+                        <a href="login.html" class="btn-outline">⚪ سجل دخول</a>
                     `}
                 </div>
             </div>
@@ -464,7 +464,7 @@ function loadHomePage() {
                     ${isUser ? `
                         <button class="btn-primary" onclick="APP.scrollToCourses()">📚 استكشف الكورسات</button>
                     ` : `
-                        <button onclick="APP.showLoginForm()" class="btn-primary">ابدأ رحلتك الآن 🚀</button>
+                        <a href="login.html" class="btn-primary">ابدأ رحلتك الآن 🚀</a>
                     `}
                 </div>
             </div>
@@ -483,7 +483,7 @@ function loadHomePage() {
                     ${isUser ? `
                         <button class="btn-primary" onclick="APP.scrollToCourses()">📚 استكشف الكورسات</button>
                     ` : `
-                        <button onclick="APP.showLoginForm()" class="btn-primary">خليني أفهم 🧠</button>
+                        <a href="login.html" class="btn-primary">خليني أفهم 🧠</a>
                     `}
                 </div>
             </div>
@@ -551,7 +551,7 @@ function loadHomePage() {
             </div>
             ${!isUser ? `
                 <div style="text-align:center;margin-top:16px;">
-                    <button onclick="APP.showLoginForm()" class="btn-primary">🚀 انضم وكن من المتصدرين</button>
+                    <a href="login.html" class="btn-primary">🚀 انضم وكن من المتصدرين</a>
                 </div>
             ` : ''}
         </section>
@@ -564,7 +564,7 @@ function loadHomePage() {
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">قم بإدخال:<br>• البريد الإلكتروني<br>• كلمة المرور<br><br>ثم اضغط على تسجيل الدخول.</div></div>
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🎯 هل المنصة مناسبة للمبتدئين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.</div></div>
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔄 هل يتم إضافة محتوى جديد باستمرار؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، يتم إضافة حصص وكورسات وامتحانات جديدة بشكل دوري.</div></div>
-                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🏆 ما هو ترتيب المتصدرين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يتم ترتيب المتصدرين تلقائياً حسب عدد الذرات التي جمعها كل طالب، ويتم تحديث الترتيب باستمرار مع أي تغيير في رصيد الذرات.</div></div>
+                <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🏆 ما هو ترتيب المتصدرين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يتم ترتيب المتصدرين تلقائيًا حسب عدد الذرات التي جمعها كل طالب، ويتم تحديث الترتيب باستمرار مع أي تغيير في رصيد الذرات.</div></div>
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>⚛️ ما هي الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">الذرات هي نظام المكافآت داخل منصة يلا كيمياء، يحصل عليها الطالب من خلال حل الامتحانات والكويزات وإكمال الحصص والكورسات، وتُستخدم في ترتيب المتصدرين وتحفيز الطلاب على الاستمرار.</div></div>
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🎯 كيف يمكنني الحصول على الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يمكنك جمع الذرات عن طريق:<br>• إكمال الكورسات بالكامل<br>• إنهاء جميع الحصص<br>• دخول الامتحانات<br>• حل الكويزات<br>• تسليم الواجبات<br>• الالتزام بالدراسة والمتابعة المستمرة مع المستر<br><br>كلما زاد نشاطك داخل المنصة، زاد عدد الذرات التي تحصل عليها.</div></div>
                 <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>❌ هل يمكن أن أخسر الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">لا، الذرات يتم اكتسابها فقط كمكافآت على الإنجاز، ولا يتم خصمها إلا إذا قررت إدارة المنصة ذلك في حالات خاصة.</div></div>
@@ -614,15 +614,15 @@ function loadHomePage() {
                     <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,3vw,2.5rem);color:var(--text);margin-bottom:8px;">🚀 ابدأ رحلتك الآن</h2>
                     <p style="color:var(--text2);margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto;">انضم إلى آلاف الطلاب الذين بدأوا رحلتهم في الكيمياء مع مستر زياد مبروك</p>
                     <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
-                        <button onclick="APP.showRegisterForm()" class="btn-primary">✨ إنشاء حساب مجاناً</button>
-                        <button onclick="APP.showLoginForm()" class="btn-outline">🔑 تسجيل الدخول</button>
+                        <a href="login.html" class="btn-primary">✨ إنشاء حساب مجاناً</a>
+                        <a href="login.html" class="btn-outline">🔑 تسجيل الدخول</a>
                     </div>
                 </div>
             </section>
         ` : ''}
     `;
 
-    if (typeof loadCourses === 'function') loadCourses();
+    if (typeof loadAllData === 'function') loadAllData();
     if (typeof loadLeaderboard === 'function') loadLeaderboard();
 }
 
@@ -645,10 +645,6 @@ function getTimeAgo(date) {
     if (minutes > 0) return minutes + ' دقيقة مضت';
     return 'الآن';
 }
-
-// ============================================================
-// EXPORTS
-// ============================================================
 
 window.applyTheme = applyTheme;
 window.toggleTheme = toggleTheme;
