@@ -6,7 +6,7 @@ window.Dashboard = {};
 
 function showDashboard() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -32,14 +32,12 @@ function showDashboard() {
     const quizzesPassed = safeData.quizzesPassed || 0;
     const perfectExams = safeData.perfectExams || 0;
     const rank = safeData.rank || '--';
+    const photoURL = safeData.photoURL || '';
     
     let coursesCompleted = 0;
     let totalLessons = 0;
     window.allCourses.forEach(c => {
-        const lessons = window.allLessons.filter(l => {
-            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
-            return lCourseId === c.id;
-        });
+        const lessons = window.allLessons.filter(l => l.courseId === c.id);
         const completed = lessons.filter(l => safeProgress[l.id]?.watched);
         if (lessons.length > 0 && completed.length === lessons.length) {
             coursesCompleted++;
@@ -53,6 +51,10 @@ function showDashboard() {
     const achievements = getAchievements();
     const unlockedCount = achievements.filter(a => a.unlocked).length;
     const totalAchievements = achievements.length;
+
+    const avatarHtml = photoURL ? 
+        `<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${(name || 'U')[0].toUpperCase()}'">` : 
+        (name || 'U')[0].toUpperCase();
 
     main.innerHTML = `
         <div style="max-width:1280px;margin:0 auto;padding:20px;">
@@ -76,9 +78,10 @@ function showDashboard() {
 
             <div class="card" style="padding:20px;margin-bottom:16px;">
                 <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;">
-                    <div style="display:flex;align-items:center;gap:16px;">
-                        <div style="width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;background:var(--primary);color:#fff;overflow:hidden;">
-                            ${safeData.photoURL ? `<img src="${safeData.photoURL}" style="width:100%;height:100%;object-fit:cover;">` : (name || 'U')[0].toUpperCase()}
+                    <div style="display:flex;align-items:center;gap:16px;position:relative;">
+                        <div style="width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;background:var(--primary);color:#fff;overflow:hidden;position:relative;">
+                            ${avatarHtml}
+                            <button onclick="APP.uploadProfilePhoto()" style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;border:none;font-size:0.6rem;padding:2px;cursor:pointer;border-radius:0 0 50% 50%;">📷</button>
                         </div>
                         <div>
                             <div style="font-weight:700;font-size:1.2rem;color:var(--text);">${escapeHtml(name)}</div>
@@ -153,6 +156,10 @@ function showDashboard() {
                 `).join('')}
                 ${unlockedCount === 0 ? '<span style="color:var(--text2);font-size:0.85rem;">لم تحصل على أي إنجاز بعد، استمر في التعلم!</span>' : ''}
             </div>
+            
+            <div style="background:var(--card);border-radius:var(--radius);padding:12px;border:1px solid var(--border);text-align:center;">
+                <p style="font-size:0.8rem;color:var(--text2);">📌 يمكنك تحديث بياناتك الشخصية من خلال زر تعديل الصورة أو التواصل مع الدعم.</p>
+            </div>
         </div>
     `;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -160,7 +167,7 @@ function showDashboard() {
 
 function uploadProfilePhoto() {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
     
