@@ -68,17 +68,17 @@ function loadLessons() {
             window.allLessons = [];
             snapshot.forEach((child) => {
                 const data = child.val();
+                // توحيد حقل courseId
+                const courseId = data.courseId || data.course_id || data.parentCourse || data.parent_course || data.course || '';
                 const lesson = { 
                     id: child.key, 
                     ...data,
-                    courseId: data.courseId || data.course_id || data.parentCourse || data.parent_course || data.course || ''
+                    courseId: courseId
                 };
                 window.allLessons.push(lesson);
             });
             
             console.log('📚 تم تحميل الحصص:', window.allLessons.length);
-            console.log('📚 عينة من الحصص:', window.allLessons.slice(0, 3));
-            
             window.cache.lessons = window.allLessons;
             updateCache();
             dataLoading = false;
@@ -205,24 +205,16 @@ function renderCourses(courses) {
                 <div class="icon">📚</div>
                 <h3>لا توجد كورسات متاحة حالياً</h3>
                 <p>سيتم إضافة الكورسات قريباً</p>
-                <button class="btn-primary btn-sm" style="margin-top:12px;" onclick="APP.validateLessonBinding()">
-                    🔍 التحقق من الربط
-                </button>
             </div>
         `;
         return;
     }
 
     grid.innerHTML = courses.map(c => {
-        const lessons = window.allLessons.filter(l => {
-            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
-            return lCourseId === c.id;
-        });
+        const lessons = window.allLessons.filter(l => l.courseId === c.id);
         
         const completed = lessons.filter(l => window.userCourseProgress[l.id]?.watched);
         const isCompleted = lessons.length > 0 && completed.length === lessons.length;
-        
-        console.log(`📚 كورس: ${c.title} (${c.id}) - عدد الحصص: ${lessons.length}`);
 
         const subscribed = window.currentUser ? isUserSubscribed(c.id) : false;
         const hasPremium = window.currentUser ? hasPremiumAccess(c.id) : false;
@@ -246,7 +238,6 @@ function renderCourses(courses) {
                         ${!isFree ? `<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--gold);color:#081B2C;font-weight:700;">${escapeHtml(priceDisplay)}</span>` : ''}
                         ${isLocked ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:rgba(0,0,0,0.7);color:#fff;font-weight:700;">🔒</span>' : ''}
                         ${isCompleted ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--success);color:#fff;font-weight:700;">✅ مكتمل</span>' : ''}
-                        ${lessons.length === 0 ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--warning);color:#081B2C;font-weight:700;">⚠️ لا توجد حصص</span>' : ''}
                     </div>
                     ${isLocked ? `<div class="lock-overlay"><span class="lock-text">🔒 هذا الكورس مدفوع</span></div>` : ''}
                     ${isCompleted ? `<div class="completed-overlay"><div class="check">✅</div><div class="label">مكتمل</div></div>` : ''}
@@ -270,7 +261,7 @@ function renderCourses(courses) {
                             </button>
                         `}
                     ` : `
-                        <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.showLoginOverlay()">
+                        <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.showLoginForm()">
                             🔒 اشترك الآن
                         </button>
                     `}
@@ -323,7 +314,7 @@ function filterCourses() {
 
 async function subscribeToCourse(courseId) {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
     if (isUserSubscribed(courseId)) {
@@ -377,7 +368,7 @@ async function subscribeToCourse(courseId) {
 
 async function openCoursePage(courseId) {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
     const hasAccess = await checkCourseAccess(courseId);
@@ -401,13 +392,8 @@ async function openCoursePage(courseId) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
-        const lessons = window.allLessons.filter(l => {
-            const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
-            return lCourseId === courseId;
-        });
+        const lessons = window.allLessons.filter(l => l.courseId === courseId);
         lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
-
-        console.log(`📚 كورس: ${course.title} - تم العثور على ${lessons.length} حصة`);
 
         let completedCount = 0;
         let totalAtoms = 0;
@@ -531,7 +517,7 @@ async function openCoursePage(courseId) {
 
                 <div class="course-page-hero" style="margin-top:12px;">
                     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-                        ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:160px;height:160px;border-radius:var(--radius);object-fit:cover;border:3px solid rgba(255,255,255,0.3);" loading="lazy">` : ''}
+                        ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:160px;height:160px;border-radius:var(--radius);object-fit:cover;border:3px solid rgba(255,255,255,0.3);" loading="lazy" onerror="this.style.display='none'">` : ''}
                         <div style="flex:1;">
                             <h1 style="font-size:2rem;">${escapeHtml(course.title)}</h1>
                             <p style="font-size:1rem;">${escapeHtml(course.description) || ''}</p>
@@ -559,7 +545,7 @@ async function openCoursePage(courseId) {
                 </div>
 
                 <h3 style="font-weight:700;font-size:1.2rem;color:var(--primary);margin-bottom:12px;">📚 قائمة الحصص</h3>
-                ${lessonsHtml || '<div class="empty-state"><div class="icon">📚</div><h3>لا توجد حصص</h3><button class="btn-primary btn-sm" style="margin-top:12px;" onclick="APP.showLessonDebug()">🔍 التحقق من الربط</button></div>'}
+                ${lessonsHtml || '<div class="empty-state"><div class="icon">📚</div><h3>لا توجد حصص</h3></div>'}
             </div>
         `;
     } catch (error) {
@@ -570,7 +556,6 @@ async function openCoursePage(courseId) {
                 <h3 style="font-weight:700;color:var(--text);">حدث خطأ في تحميل الكورس</h3>
                 <p style="color:var(--text2);">${error.message}</p>
                 <button class="btn-primary no-print" style="margin-top:12px;" onclick="APP.showHome()">🏠 العودة</button>
-                <button class="btn-outline btn-sm" style="margin-top:8px;" onclick="APP.showLessonDebug()">🔍 التحقق من الربط</button>
             </div>
         `;
     }
@@ -603,6 +588,11 @@ function clearVideoTracking() {
     window.activeVideoLessonId = null;
     window.videoWatchStartTime = null;
 }
+
+// حفظ وقت المشاهدة عند إغلاق المتصفح
+window.addEventListener('beforeunload', function() {
+    clearVideoTracking();
+});
 
 function extractYouTubeId(url) {
     if (!url) return null;
@@ -691,22 +681,37 @@ async function completeLessonWatch(lessonId, lesson) {
 }
 
 async function checkCourseCompletion(courseId) {
-    const lessons = window.allLessons.filter(l => {
-        const lCourseId = l.courseId || l.course_id || l.parentCourse || l.parent_course || l.course || '';
-        return lCourseId === courseId;
-    });
+    const lessons = window.allLessons.filter(l => l.courseId === courseId);
     const completed = lessons.filter(l => window.userCourseProgress[l.id]?.watched);
     if (lessons.length > 0 && completed.length === lessons.length) {
         const course = window.allCourses.find(c => c.id === courseId);
-        if (course && typeof addNotification === 'function') {
-            await addNotification(window.currentUser.uid, '🎓 تم إكمال كورس كامل!', `مبروك! لقد أكملت كورس "${course.title}" بالكامل!`, '🎓');
+        if (course) {
+            // مكافأة إكمال الكورس
+            const bonusAtoms = 50;
+            const userRef = window.database.ref('users/' + window.currentUser.uid);
+            const userSnap = await userRef.once('value');
+            if (userSnap.exists()) {
+                const currentAtoms = userSnap.val().atoms || 0;
+                await userRef.update({ atoms: currentAtoms + bonusAtoms });
+                if (window.userData) {
+                    window.userData.atoms = currentAtoms + bonusAtoms;
+                    window.cache.userData = window.userData;
+                    updateCache();
+                }
+                showToast(`🎉 +${bonusAtoms} ذرة مكافأة إكمال الكورس!`, 'success');
+                animateAtoms('atomsCount', currentAtoms + bonusAtoms);
+                animateAtoms('userAtomsCount', currentAtoms + bonusAtoms);
+            }
+            if (typeof addNotification === 'function') {
+                await addNotification(window.currentUser.uid, '🎓 تم إكمال كورس كامل!', `مبروك! لقد أكملت كورس "${course.title}" بالكامل وحصلت على ${bonusAtoms} ذرة إضافية!`, '🎓');
+            }
         }
     }
 }
 
 async function openLessonVideo(lessonId) {
     if (!window.currentUser) {
-        showLoginOverlay();
+        showLoginForm();
         return;
     }
 
@@ -732,224 +737,4 @@ async function openLessonVideo(lessonId) {
 
         window.videoWatchInterval = setInterval(() => {
             if (window.activeVideoLessonId && window.videoWatchStartTime) {
-                const elapsed = (Date.now() - window.videoWatchStartTime) / 1000;
-                if (elapsed > 5) {
-                    window.videoWatchTotal[lessonId] = (window.videoWatchTotal[lessonId] || 0) + elapsed;
-                    window.videoWatchStartTime = Date.now();
-                    
-                    const studyHours = elapsed / 3600;
-                    window.database.ref('users/' + window.currentUser.uid + '/studyTime').transaction((current) => {
-                        return (current || 0) + studyHours;
-                    });
-                    if (window.userData) {
-                        window.userData.studyTime = (window.userData.studyTime || 0) + studyHours;
-                        window.cache.userData = window.userData;
-                        updateCache();
-                    }
-                }
-            }
-        }, 5000);
-
-        main.innerHTML = `
-            <div style="max-width:900px;margin:0 auto;padding:16px;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:0.85rem;color:var(--text2);flex-wrap:wrap;">
-                    <button class="btn-outline btn-sm no-print" onclick="APP.openCoursePage('${lesson.courseId}')" style="padding:4px 12px;">
-                        <i class="fas fa-arrow-right"></i> ${escapeHtml(courseName)}
-                    </button>
-                    <span style="color:var(--border);">/</span>
-                    <span style="font-weight:600;color:var(--text);">${escapeHtml(lesson.title)}</span>
-                </div>
-
-                <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text);margin-bottom:12px;">🎥 ${escapeHtml(lesson.title)}</h1>
-
-                <div style="margin-bottom:12px;">
-                    ${videoIdYt ? `
-                        <div class="card" style="padding:0;overflow:hidden;">
-                            <div style="position:relative;padding-bottom:56.25%;height:0;background:#000;">
-                                <iframe id="videoFrame" src="https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1" 
-                                        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
-                                        allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" 
-                                        allowfullscreen>
-                                </iframe>
-                            </div>
-                        </div>
-                    ` : `
-                        <div class="empty-state">
-                            <div class="icon">🎥</div>
-                            <h3>لا يوجد فيديو لهذه الحصة</h3>
-                        </div>
-                    `}
-                </div>
-
-                <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                    <button class="btn-outline btn-sm no-print" onclick="${videoIdYt ? `APP.handleVideoExit('${lessonId}', ${JSON.stringify(lesson).replace(/"/g, '&quot;')})` : `APP.openCoursePage('${lesson.courseId}')`}">📚 العودة للكورس</button>
-                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">🏠 الرئيسية</button>
-                </div>
-            </div>
-        `;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    } catch (error) {
-        console.error('openLessonVideo error:', error);
-        showToast('حدث خطأ في تحميل الفيديو', 'error');
-        showHome();
-    }
-}
-
-function handleVideoExit(lessonId, lesson) {
-    clearVideoTracking();
-    if (window.videoWatchTotal[lessonId] >= 900 && !window.userCourseProgress[lessonId]?.watched) {
-        completeLessonWatch(lessonId, lesson);
-    }
-    openCoursePage(lesson.courseId);
-}
-
-async function openLessonAssignment(lessonId) {
-    if (!window.currentUser) { showLoginOverlay(); return; }
-    
-    const progressKey = 'assignment_' + lessonId;
-    
-    if (window.userCourseProgress[progressKey]?.completed) {
-        showCompletedModal();
-        return;
-    }
-    
-    try {
-        const snapshot = await window.database.ref('assignments/' + lessonId).once('value');
-        if (!snapshot.exists()) {
-            showToast('الواجب غير موجود', 'error');
-            return;
-        }
-        const assign = { id: lessonId, ...snapshot.val() };
-        const main = document.getElementById('mainContent');
-        if (!main) return;
-        main.innerHTML = `
-            <div style="max-width:800px;margin:0 auto;padding:20px;">
-                <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📚 ${escapeHtml(assign.title)}</h2>
-                <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(assign.description) || ''}</p>
-                <div class="card" style="padding:16px;margin-bottom:12px;">
-                    <p style="color:var(--text);"><strong>الدرجة:</strong> ${assign.grade || 10}</p>
-                    <p style="color:var(--text);"><strong>الحالة:</strong> <span style="color:var(--warning);">⏳ في انتظار التقييم</span></p>
-                    ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);">${escapeHtml(assign.content)}</div>` : ''}
-                    <button class="btn-primary" style="margin-top:12px;width:100%;" onclick="APP.completeAssignment('${lessonId}')">
-                        <i class="fas fa-check"></i> تسليم الواجب
-                    </button>
-                </div>
-                <div style="text-align:center;"><button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button></div>
-            </div>
-        `;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (err) {
-        console.error('openLessonAssignment error:', err);
-        showToast('حدث خطأ في تحميل الواجب', 'error');
-    }
-}
-
-async function completeAssignment(lessonId) {
-    if (!window.currentUser) return;
-    
-    const progressKey = 'assignment_' + lessonId;
-    
-    if (window.userCourseProgress[progressKey]?.completed) {
-        showCompletedModal();
-        return;
-    }
-    
-    try {
-        const atomsReward = 10;
-        const userRef = window.database.ref('users/' + window.currentUser.uid);
-        const userSnap = await userRef.once('value');
-        
-        if (userSnap.exists()) {
-            const currentAtoms = userSnap.val().atoms || 0;
-            
-            await window.database.ref('users/' + window.currentUser.uid + '/progress/' + progressKey).set({
-                completed: true,
-                completedAt: new Date().toISOString(),
-                type: 'assignment',
-                atomsAwarded: atomsReward
-            });
-            
-            const resultRef = window.database.ref('users/' + window.currentUser.uid + '/results').push();
-            await resultRef.set({
-                title: 'واجب الحصة',
-                type: 'assignment',
-                score: 100,
-                totalQuestions: 1,
-                correctAnswers: 1,
-                wrongAnswers: 0,
-                timeSpent: 0,
-                atomsEarned: atomsReward,
-                completedAt: new Date().toISOString(),
-                lessonId: lessonId
-            });
-            
-            await userRef.update({ atoms: currentAtoms + atomsReward });
-            if (window.userData) window.userData.atoms = currentAtoms + atomsReward;
-            window.cache.userData = window.userData;
-            updateCache();
-            
-            animateAtoms('atomsCount', currentAtoms + atomsReward);
-            animateAtoms('userAtomsCount', currentAtoms + atomsReward);
-            
-            if (typeof addNotification === 'function') {
-                await addNotification(window.currentUser.uid, '📝 تم تسليم الواجب!', `حصلت على ${atomsReward} ذرة لتسليم الواجب.`, '📝');
-            }
-            showToast(`🎉 +${atomsReward} ذرة! تم تسليم الواجب بنجاح.`, 'success');
-            
-            const main = document.getElementById('mainContent');
-            if (main) {
-                main.innerHTML = `<div style="max-width:800px;margin:0 auto;padding:20px;text-align:center;">
-                    <div style="font-size:4rem;">✅</div>
-                    <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--success);">تم تسليم الواجب بنجاح!</h2>
-                    <p style="color:var(--text2);margin-top:8px;">حصلت على ${atomsReward} ذرة.</p>
-                    <button class="btn-primary" style="margin-top:16px;" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
-                </div>`;
-            }
-        }
-    } catch (err) {
-        console.error('Error completing assignment:', err);
-        showToast('حدث خطأ في تسليم الواجب', 'error');
-    }
-}
-
-function animateAtoms(elementId, target) {
-    const el = document.getElementById(elementId);
-    if (!el) return;
-    const start = parseInt(el.textContent) || 0;
-    const duration = 600;
-    const startTime = Date.now();
-
-    function update() {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const current = Math.floor(start + (target - start) * progress);
-        el.textContent = current;
-        if (progress < 1) requestAnimationFrame(update);
-        else el.textContent = target;
-    }
-    update();
-}
-
-window.loadCourses = loadCourses;
-window.loadLessons = loadLessons;
-window.loadExams = loadExams;
-window.loadQuizzes = loadQuizzes;
-window.loadUserSubscriptions = loadUserSubscriptions;
-window.loadUserProgress = loadUserProgress;
-window.renderCourses = renderCourses;
-window.isUserSubscribed = isUserSubscribed;
-window.filterCoursesByGrade = filterCoursesByGrade;
-window.filterCourses = filterCourses;
-window.subscribeToCourse = subscribeToCourse;
-window.openCoursePage = openCoursePage;
-window.clearVideoTracking = clearVideoTracking;
-window.extractYouTubeId = extractYouTubeId;
-window.completeLessonWatch = completeLessonWatch;
-window.checkCourseCompletion = checkCourseCompletion;
-window.openLessonVideo = openLessonVideo;
-window.handleVideoExit = handleVideoExit;
-window.openLessonAssignment = openLessonAssignment;
-window.completeAssignment = completeAssignment;
-window.animateAtoms = animateAtoms;
+                const elapsed = (Date.now() - window.videoWatchStartTime) / 
