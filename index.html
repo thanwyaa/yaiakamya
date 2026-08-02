@@ -116,94 +116,111 @@
             .hero-image-container img { max-height: 200px; aspect-ratio: 16/10; object-fit: contain; background: var(--bg); }
         }
 
-        /* ===== حماية الفيديو ===== */
+        /* ===== هيكل حماية الفيديو ===== */
         .video-protected {
             position: relative;
-            cursor: default;
+            width: 100%;
+            max-width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            background: #000;
         }
-        .video-protected iframe {
+
+        .video-protected iframe, .video-protected video {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
-            aspect-ratio: 16/9;
-            pointer-events: auto !important;
         }
-        .video-protected .video-blocker {
+
+        /* طبقة الحجب - تمنع النقر بزر الماوس الأيمن والتفاعل المباشر */
+        .video-blocker {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 10;
-            cursor: default;
             background: transparent;
-            pointer-events: none;
-        }
-        /* طبقة لمنع النقر بزر الماوس الأيمن فقط */
-        .video-protected .video-context-blocker {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 11;
             cursor: default;
-            background: transparent;
             pointer-events: auto;
         }
+
         /* علامة مائية ثابتة */
         .video-watermark {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            color: rgba(255, 255, 255, 0.85);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            z-index: 20;
+            bottom: 15px;
+            right: 15px;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 13px;
+            z-index: 15;
             pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.5px;
+            font-weight: bold;
+            font-family: 'Cairo', Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .video-watermark span { color: var(--gold); margin-right: 6px; }
 
         /* علامة مائية متحركة */
         .dynamic-watermark {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 1.1rem;
-            font-weight: 900;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 2.5rem;
             z-index: 15;
             pointer-events: none;
+            transition: all 2.5s ease-in-out;
             font-family: 'Lalezar', cursive;
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-            white-space: nowrap;
-            animation: watermarkMove 35s linear infinite;
-            letter-spacing: 3px;
-            user-select: none;
-            opacity: 0.5;
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            font-weight: 900;
+            letter-spacing: 4px;
+            opacity: 0.4;
+            top: 10px;
+            left: 10px;
         }
-        .dynamic-watermark .name { color: var(--gold); opacity: 0.8; }
-        @keyframes watermarkMove {
-            0% { transform: translate(0, 0); opacity: 0.3; }
-            25% { transform: translate(calc(100% - 200px), 20px); opacity: 0.5; }
-            50% { transform: translate(calc(100% - 200px), calc(100% - 60px)); opacity: 0.3; }
-            75% { transform: translate(0, calc(100% - 60px)); opacity: 0.5; }
-            100% { transform: translate(0, 0); opacity: 0.3; }
+        .dynamic-watermark .gold-text {
+            color: var(--gold);
+            opacity: 0.6;
+        }
+
+        /* شريط تقدم المشاهدة */
+        .watch-progress-container {
+            margin-top: 16px;
+            padding: 0 4px;
+        }
+        .watch-progress-container .timer-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text2);
+            margin-bottom: 4px;
+        }
+        .watch-progress-container .timer-row .time-display {
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Lalezar', cursive;
+            font-size: 1.1rem;
+        }
+        .watch-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .watch-progress-bar .fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.5s ease;
+            width: 0%;
         }
 
         .no-copy {
@@ -1726,21 +1743,6 @@
         .rank-badge.silver { background: var(--silver); color: #081B2C; }
         .rank-badge.bronze { background: var(--bronze); color: #fff; }
         .rank-badge.normal { background: var(--bg); color: var(--text2); }
-
-        /* تحسين عرض الفيديو */
-        .video-container {
-            position: relative;
-            width: 100%;
-            background: #000;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-        .video-container iframe {
-            width: 100%;
-            aspect-ratio: 16/9;
-            border: none;
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -2173,7 +2175,7 @@
                 }
             });
             
-            // منع النقر بزر اليمين
+            // منع النقر بزر الماوس الأيمن
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -2260,6 +2262,7 @@
         let studyInterval = null;
         let examSubmitted = false;
         let videoProgressTimer = null;
+        let dynamicWatermarkTimer = null;
 
         const cache = {
             userData: null,
@@ -2933,6 +2936,8 @@
                 videoWatchInterval = null; }
             if (videoProgressTimer) { clearInterval(videoProgressTimer);
                 videoProgressTimer = null; }
+            if (dynamicWatermarkTimer) { clearInterval(dynamicWatermarkTimer);
+                dynamicWatermarkTimer = null; }
             if (activeVideoLessonId && videoWatchStartTime) {
                 const elapsed = (Date.now() - videoWatchStartTime) / 1000;
                 if (elapsed > 5) {
@@ -2951,7 +2956,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO - محمي بالكامل مع تتبع وقت المشاهدة
+        // LESSON VIDEO - محمي بالكامل مع هيكل الحماية
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -2987,8 +2992,10 @@
                 videoWatchStartTime = Date.now();
                 if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
-                // اسم الطالب للعلامة المائية
+                // بيانات الطالب للعلامات المائية
                 const studentName = userData?.name || 'طالب';
+                const studentCode = userData?.code || 'YK-XXXX-XXXX';
+                const studentId = currentUser?.uid?.slice(0, 6) || '000000';
 
                 // رابط الفيديو مع إعدادات الحماية
                 const embedUrl = `https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0&iv_load_policy=3&cc_load_policy=0&disablekb=1`;
@@ -3004,10 +3011,23 @@
                         </div>
                         <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text);margin-bottom:12px;">🎥 ${escapeHtml(lesson.title)}</h1>
                         
-                        <!-- ===== حاوية الفيديو المحمية ===== -->
-                        <div class="video-container" style="position:relative;border-radius:var(--radius-lg);overflow:hidden;background:#000;">
+                        <!-- ===== هيكل حماية الفيديو ===== -->
+                        <div class="video-protected" id="videoContainer">
                             
-                            <!-- فيديو يوتيوب -->
+                            <!-- ===== طبقة حجب - تمنع النقر بزر الماوس الأيمن والتفاعل المباشر ===== -->
+                            <div class="video-blocker" id="videoBlocker"></div>
+                            
+                            <!-- ===== علامة مائية ثابتة ===== -->
+                            <div class="video-watermark" id="staticWatermark">
+                                👤 ${escapeHtml(studentName)} | كود: ${escapeHtml(studentCode)} | 🧪 يلا كيمياء
+                            </div>
+                            
+                            <!-- ===== علامة مائية متحركة ===== -->
+                            <div class="dynamic-watermark" id="dynamicWatermark">
+                                <span class="gold-text">🧪</span> ${escapeHtml(studentCode)} <span class="gold-text">🧪</span>
+                            </div>
+
+                            <!-- ===== مشغل الفيديو ===== -->
                             <iframe 
                                 id="videoFrame"
                                 src="${embedUrl}" 
@@ -3015,24 +3035,21 @@
                                 allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
                                 allowfullscreen>
                             </iframe>
-                            
-                            <!-- ===== طبقة حماية تمنع النقر بزر الماوس الأيمن ===== -->
-                            <div class="video-context-blocker" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:11;cursor:default;background:transparent;pointer-events:auto;"
-                                 onclick="event.preventDefault(); event.stopPropagation(); return false;"
-                                 oncontextmenu="event.preventDefault(); event.stopPropagation(); return false;"
-                                 onmousedown="event.preventDefault(); event.stopPropagation(); return false;"
-                                 onmouseup="event.preventDefault(); event.stopPropagation(); return false;"
-                                 ondblclick="event.preventDefault(); event.stopPropagation(); return false;">
+                        </div>
+                        
+                        <!-- ===== شريط تقدم المشاهدة ===== -->
+                        <div class="watch-progress-container">
+                            <div class="timer-row">
+                                <span>⏱ وقت المشاهدة</span>
+                                <span class="time-display" id="watchTimer">00:00</span>
                             </div>
-                            
-                            <!-- ===== علامة مائية متحركة باسم الطالب ===== -->
-                            <div class="dynamic-watermark">
-                                🧪 <span class="name">${escapeHtml(studentName)}</span> | يلا كيمياء
+                            <div class="watch-progress-bar">
+                                <div class="fill" id="watchProgressFill" style="width:0%;"></div>
                             </div>
-                            
-                            <!-- ===== علامة مائية ثابتة في الأسفل ===== -->
-                            <div class="video-watermark">
-                                🔒 <span>يلا كيمياء</span> | ${escapeHtml(studentName)}
+                            <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text2);margin-top:4px;">
+                                <span>0%</span>
+                                <span id="progressPercentLabel">0%</span>
+                                <span>100%</span>
                             </div>
                         </div>
                         
@@ -3041,46 +3058,56 @@
                             <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">🏠 الرئيسية</button>
                         </div>
                         
-                        <!-- ===== شريط تقدم المشاهدة ===== -->
-                        <div style="margin-top:16px;">
-                            <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--text2);margin-bottom:4px;">
-                                <span>⏱ وقت المشاهدة</span>
-                                <span id="watchTimer">00:00</span>
-                            </div>
-                            <div class="progress-bar" id="watchProgressBar">
-                                <div class="fill" id="watchProgressFill" style="width:0%;"></div>
-                            </div>
-                            <p style="text-align:center;font-size:0.7rem;color:var(--text2);margin-top:8px;">
-                                🔒 هذا المحتوى محمي بحقوق النشر - ممنوع النسخ أو المشاركة
-                            </p>
-                        </div>
+                        <p style="text-align:center;font-size:0.7rem;color:var(--text2);margin-top:12px;">
+                            🔒 هذا المحتوى محمي بحقوق النشر - ممنوع النسخ أو المشاركة
+                        </p>
                     </div>
                 `;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
+                // ===== بدء تحريك العلامة المائية =====
+                setTimeout(() => {
+                    const container = document.getElementById('videoContainer');
+                    const dynamicWM = document.getElementById('dynamicWatermark');
+                    if (container && dynamicWM) {
+                        // تحريك العلامة المائية كل 4 ثوانٍ
+                        if (dynamicWatermarkTimer) clearInterval(dynamicWatermarkTimer);
+                        dynamicWatermarkTimer = setInterval(() => {
+                            if (!container || !dynamicWM) return;
+                            const maxWidth = container.clientWidth - 120;
+                            const maxHeight = container.clientHeight - 60;
+                            const randomX = Math.floor(Math.random() * Math.max(0, maxWidth));
+                            const randomY = Math.floor(Math.random() * Math.max(0, maxHeight));
+                            dynamicWM.style.left = randomX + 'px';
+                            dynamicWM.style.top = randomY + 'px';
+                        }, 4000);
+                    }
+                }, 500);
+
                 // ===== بدء تتبع وقت المشاهدة =====
                 let watchSeconds = 0;
-                const lessonDuration = parseInt(lesson.duration) || 15; // دقيقة افتراضية
+                const lessonDuration = parseInt(lesson.duration) || 15;
                 const totalSeconds = lessonDuration * 60;
                 
-                // تحديث المؤقت كل ثانية
                 if (videoProgressTimer) clearInterval(videoProgressTimer);
                 videoProgressTimer = setInterval(() => {
                     if (!activeVideoLessonId) return;
                     watchSeconds++;
                     videoWatchTotal[lessonId] = (videoWatchTotal[lessonId] || 0) + 1;
                     
-                    // تحديث عرض الوقت
                     const mins = Math.floor(watchSeconds / 60);
                     const secs = watchSeconds % 60;
-                    document.getElementById('watchTimer').textContent = 
-                        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                    const timerEl = document.getElementById('watchTimer');
+                    if (timerEl) {
+                        timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                    }
                     
-                    // تحديث شريط التقدم
                     const progress = Math.min((watchSeconds / totalSeconds) * 100, 100);
-                    document.getElementById('watchProgressFill').style.width = `${progress}%`;
+                    const fillEl = document.getElementById('watchProgressFill');
+                    const percentLabel = document.getElementById('progressPercentLabel');
+                    if (fillEl) fillEl.style.width = `${progress}%`;
+                    if (percentLabel) percentLabel.textContent = `${Math.round(progress)}%`;
                     
-                    // حفظ التقدم كل 30 ثانية
                     if (watchSeconds % 30 === 0 && currentUser) {
                         database.ref(`users/${currentUser.uid}/progress/${lessonId}/watchPercent`).set(
                             Math.min(Math.round(progress), 89)
@@ -3088,12 +3115,15 @@
                         database.ref(`users/${currentUser.uid}/progress/${lessonId}/watchDuration`).set(watchSeconds);
                     }
                     
-                    // إذا وصل لـ 90% أو أكثر - إكمال الحصة
                     if (progress >= 90 && !userCourseProgress[lessonId]?.watched) {
                         completeLessonWatch(lessonId);
                         if (videoProgressTimer) {
                             clearInterval(videoProgressTimer);
                             videoProgressTimer = null;
+                        }
+                        if (dynamicWatermarkTimer) {
+                            clearInterval(dynamicWatermarkTimer);
+                            dynamicWatermarkTimer = null;
                         }
                     }
                 }, 1000);
@@ -3117,7 +3147,7 @@
                 const userSnap = await userRef.once('value');
                 if (userSnap.exists()) {
                     const currentAtoms = userSnap.val().atoms || 0;
-                    const actualWatchTime = videoWatchTotal[lessonId] || 900; // 15 دقيقة افتراضياً
+                    const actualWatchTime = videoWatchTotal[lessonId] || 900;
                     const studyHours = actualWatchTime / 3600;
                     let currentStudyTime = userSnap.val().studyTime || 0;
                     
@@ -3164,10 +3194,13 @@
                     calculateUserRank(currentUser.uid, currentAtoms + atomsReward);
                     checkCourseCompletion(lesson.courseId);
                     
-                    // إيقاف المؤقت
                     if (videoProgressTimer) {
                         clearInterval(videoProgressTimer);
                         videoProgressTimer = null;
+                    }
+                    if (dynamicWatermarkTimer) {
+                        clearInterval(dynamicWatermarkTimer);
+                        dynamicWatermarkTimer = null;
                     }
                 }
             } catch (err) { console.error('Error completing lesson watch:', err); }
@@ -3179,7 +3212,10 @@
                 clearInterval(videoProgressTimer);
                 videoProgressTimer = null;
             }
-            // حفظ التقدم إذا كان هناك تقدم
+            if (dynamicWatermarkTimer) {
+                clearInterval(dynamicWatermarkTimer);
+                dynamicWatermarkTimer = null;
+            }
             if (videoWatchTotal[lessonId] && videoWatchTotal[lessonId] > 60 && !userCourseProgress[lessonId]?.watched) {
                 const watchPercent = Math.min(Math.round((videoWatchTotal[lessonId] / 900) * 100), 89);
                 if (currentUser) {
