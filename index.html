@@ -1,3 +1,108 @@
+<script>
+    // ============================================================
+    // 🚀 BOOTSTRAP - ضمان عمل المنصة حتى لو فشل تحميل الملفات
+    // ============================================================
+    (function() {
+        console.log('🚀 Yalla Chemistry - Bootstrap loading...');
+        
+        // نعرف دوال أساسية في حالة فشل تحميل الملفات
+        window.APP = window.APP || {};
+        
+        // دوال أساسية
+        window.APP.showHome = function() {
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+            main.innerHTML = `
+                <div style="max-width:1280px;margin:0 auto;padding:40px 20px;text-align:center;">
+                    <div style="font-size:4rem;margin-bottom:20px;">🧪</div>
+                    <h1 style="font-family:'Lalezar',cursive;font-size:2.5rem;color:var(--text);">يلا كيمياء</h1>
+                    <p style="font-size:1.2rem;color:var(--text2);margin-bottom:20px;">منصة تعليم الكيمياء - مع مستر زياد مبروك</p>
+                    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                        <a href="login.html" class="btn-primary">🚀 ابدأ التعلم الآن</a>
+                        <a href="login.html" class="btn-outline">⚪ تسجيل الدخول</a>
+                    </div>
+                    <div style="margin-top:30px;padding:20px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+                        <p style="color:var(--text2);">⏳ جاري تحميل المنصة... يرجى تحديث الصفحة</p>
+                        <button onclick="location.reload()" class="btn-outline btn-sm" style="margin-top:10px;">🔄 تحديث الصفحة</button>
+                    </div>
+                </div>
+            `;
+        };
+        
+        window.APP.scrollToCourses = function() { window.APP.showHome(); };
+        window.APP.showLoginOverlay = function() { 
+            document.getElementById('loginOverlay')?.classList.add('open');
+        };
+        window.APP.closeLoginOverlay = function() {
+            document.getElementById('loginOverlay')?.classList.remove('open');
+        };
+        window.APP.toggleTheme = function() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        };
+        window.APP.logout = function() { alert('جاري تسجيل الخروج...'); };
+        window.APP.showDashboard = function() { alert('لوحة الطالب - قيد التحميل'); };
+        window.APP.showLeaderboard = function() { alert('المتصدرين - قيد التحميل'); };
+        window.APP.showAIInsights = function() { alert('تحليل المستوى - قيد التحميل'); };
+        window.APP.showErrorBank = function() { alert('بنك الأخطاء - قيد التحميل'); };
+        window.APP.showResults = function() { alert('النتائج - قيد التحميل'); };
+        window.APP.showCertificate = function() { alert('الشهادات - قيد التحميل'); };
+        window.APP.showStudentCard = function() { alert('بطاقة الطالب - قيد التحميل'); };
+        window.APP.showAchievements = function() { alert('الإنجازات - قيد التحميل'); };
+        window.APP.showNotificationsPage = function() { alert('الإشعارات - قيد التحميل'); };
+        window.APP.closeCompletedModal = function() {
+            document.getElementById('completedModal')?.classList.remove('open');
+        };
+        window.APP.showCompletedModal = function() {
+            document.getElementById('completedModal')?.classList.add('open');
+        };
+        window.APP.openImageZoom = function(src) {
+            const overlay = document.getElementById('imageOverlay');
+            const img = document.getElementById('zoomedImage');
+            if (overlay && img) { img.src = src; overlay.classList.add('open'); }
+        };
+        window.APP.closeImageZoom = function() {
+            document.getElementById('imageOverlay')?.classList.remove('open');
+        };
+        window.APP.share = function(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('🔥 منصة يلا كيمياء - اشرح الكيمياء ببساطة مع مستر زياد مبروك');
+            const links = {
+                whatsapp: `https://wa.me/?text=${text}%20${url}`,
+                telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`
+            };
+            window.open(links[platform] || links.whatsapp, '_blank');
+        };
+        
+        // نعرف دوال الامتحانات الأساسية
+        window.APP.openLessonExam = function(id) { alert('جاري تحميل الامتحان...'); };
+        window.APP.openLessonQuiz = function(id) { alert('جاري تحميل الكويز...'); };
+        window.APP.openLessonAssignment = function(id) { alert('جاري تحميل الواجب...'); };
+        window.APP.submitExam = function() { alert('جاري تسليم الامتحان...'); };
+        window.APP.submitQuiz = function() { alert('جاري تسليم الكويز...'); };
+        window.APP.exitExam = function() { window.APP.showHome(); };
+        window.APP.openExamSecurityModal = function(id, callback) { 
+            if (callback) callback(); 
+        };
+        window.APP.closeExamSecurityModal = function() {
+            document.getElementById('examSecurityModal')?.classList.remove('open');
+        };
+        window.APP.startExamAfterPledge = function() {
+            document.getElementById('examSecurityModal')?.classList.remove('open');
+        };
+        
+        // نعرض الصفحة الرئيسية
+        setTimeout(function() {
+            if (document.getElementById('mainContent')) {
+                window.APP.showHome();
+            }
+        }, 100);
+        
+        console.log('✅ Bootstrap loaded - Fallback functions ready');
+    })();
+</script>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
