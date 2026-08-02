@@ -2,7 +2,6 @@
 // EXAMS, QUIZZES & ASSIGNMENTS MODULE
 // ============================================================
 
-// ===== متغيرات خاصة بالامتحانات =====
 let examTimer = null;
 let examStartTime = null;
 let isExamActive = false;
@@ -14,6 +13,7 @@ let currentExamData = null;
 let currentQuizData = null;
 let pendingExamCallback = null;
 let isExamMode = false;
+let examFullscreen = false;
 
 // ============================================================
 // دوال الامتحانات والكويزات والواجبات
@@ -35,6 +35,45 @@ async function isAssessmentCompleted(lessonId, type) {
     return false;
 }
 
+// ===== منع الخروج من الامتحان =====
+function lockExamScreen() {
+    // تفعيل وضع ملء الشاشة
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+    }
+    examFullscreen = true;
+    
+    // منع التبديل بين التطبيقات (تلميح فقط)
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener('pagehide', handlePageHide);
+}
+
+function handleVisibilityChange() {
+    if (document.hidden && isExamActive && !examSubmitted) {
+        const overlay = document.getElementById('examBlurOverlay');
+        if (overlay) overlay.classList.add('open');
+        showToast('⚠️ تم اكتشاف محاولة خروج من الامتحان!', 'error');
+    }
+}
+
+function handlePageHide() {
+    if (isExamActive && !examSubmitted) {
+        alert('⚠️ لا يمكنك مغادرة الامتحان أثناء الحل!');
+    }
+}
+
+function unlockExamScreen() {
+    examFullscreen = false;
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
+    document.removeEventListener('pagehide', handlePageHide);
+    const overlay = document.getElementById('examBlurOverlay');
+    if (overlay) overlay.classList.remove('open');
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+    }
+}
+
+// ===== فتح امتحان الحصة مع منع الغش =====
 async function openLessonExam(lessonId) {
     if (!window.currentUser) { window.showLoginOverlay(); return; }
     if (await isAssessmentCompleted(lessonId, 'exam')) { window.showCompletedModal(); return; }
@@ -53,11 +92,15 @@ async function openLessonExam(lessonId) {
         snapshot.forEach(child => { exam = { id: child.key, ...child.val() }; });
         if (!exam) { window.showToast('⚠️ حدث خطأ في تحميل الامتحان', 'error'); return; }
         currentExamData = exam;
-        openExamSecurityModal(lessonId, function() { showExamUI(exam, true); }, 'exam');
+        openExamSecurityModal(lessonId, function() { 
+            lockExamScreen();
+            showExamUI(exam, true); 
+        }, 'exam');
     } catch (err) { console.error('openLessonExam error:', err);
         window.showToast('حدث خطأ في تحميل الامتحان: ' + err.message, 'error'); }
 }
 
+// ===== فتح كويز الحصة مع منع الغش =====
 async function openLessonQuiz(lessonId) {
     if (!window.currentUser) { window.showLoginOverlay(); return; }
     if (await isAssessmentCompleted(lessonId, 'quiz')) { window.showCompletedModal(); return; }
@@ -76,11 +119,15 @@ async function openLessonQuiz(lessonId) {
         snapshot.forEach(child => { quiz = { id: child.key, ...child.val() }; });
         if (!quiz) { window.showToast('⚠️ حدث خطأ في تحميل الكويز', 'error'); return; }
         currentQuizData = quiz;
-        openExamSecurityModal(lessonId, function() { showQuizUI(quiz, true); }, 'quiz');
+        openExamSecurityModal(lessonId, function() { 
+            lockExamScreen();
+            showQuizUI(quiz, true); 
+        }, 'quiz');
     } catch (err) { console.error('openLessonQuiz error:', err);
         window.showToast('حدث خطأ في تحميل الكويز: ' + err.message, 'error'); }
 }
 
+// ===== فتح واجب الحصة =====
 async function openLessonAssignment(lessonId) {
     if (!window.currentUser) { window.showLoginOverlay(); return; }
     const progressKey = 'assignment_' + lessonId;
@@ -118,6 +165,7 @@ async function openLessonAssignment(lessonId) {
         window.showToast('حدث خطأ في تحميل الواجب', 'error'); }
 }
 
+// ===== تسليم الواجب =====
 async function completeAssignment(lessonId) {
     if (!window.currentUser) return;
     const progressKey = 'assignment_' + lessonId;
@@ -153,6 +201,7 @@ async function completeAssignment(lessonId) {
         window.showToast('حدث خطأ في تسليم الواجب', 'error'); }
 }
 
+// ===== عرض واجهة الامتحان مع منع النسخ =====
 function showExamUI(exam, isSecure = false) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -172,6 +221,13 @@ function showExamUI(exam, isSecure = false) {
     let currentQuestion = 0;
     let answeredQuestions = new Set();
 
+    // إضافة class لمنع النسخ
+    main.className = 'exam-container';
+
+    // تفعيل منع الغش (حجب الخروج)
+    lockExamScreen();
+
+    // المؤقت
     if (duration > 0) {
         if (examTimer) clearInterval(examTimer);
         examTimer = setInterval(() => {
@@ -195,6 +251,7 @@ function showExamUI(exam, isSecure = false) {
         }, 1000);
     }
 
+    // دالة اختيار الإجابة
     window.selectExamAnswer = function(id, qIdx, oIdx, correct) {
         if (!isExamActive || examSubmitted) return;
         if (!examAnswers[id]) examAnswers[id] = {};
@@ -252,7 +309,6 @@ function showExamUI(exam, isSecure = false) {
 
     main.innerHTML = `
         <div style="max-width:800px;margin:0 auto;padding:16px;">
-            <button class="btn-outline btn-sm no-print" onclick="APP.exitExam()"><i class="fas fa-arrow-right"></i> الخروج</button>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">📝 ${window.escapeHtml(exam.title)}</h2>
                 ${duration > 0 ? `
@@ -276,12 +332,14 @@ function showExamUI(exam, isSecure = false) {
                 </div>
                 <button class="btn-primary" id="submitExamBtn" onclick="APP.submitExam('${exam.id}', ${exam.atomsReward || 10})" style="display:inline-flex;"><i class="fas fa-check"></i> تسليم الامتحان</button>
             </div>
+            <p style="text-align:center;font-size:0.7rem;color:var(--text2);margin-top:12px;">🔒 لا يمكنك الخروج من الامتحان حتى يتم التسليم</p>
         </div>
     `;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     examAnswers[exam.id] = {};
 }
 
+// ===== التنقل بين أسئلة الامتحان =====
 function navigateExamQuestion(direction) {
     const cards = document.querySelectorAll('.question-card');
     let current = 0;
@@ -293,6 +351,7 @@ function navigateExamQuestion(direction) {
     document.getElementById('nextQuestion').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
+// ===== تسليم الامتحان =====
 async function submitExam(id, maxAtoms, autoSubmit = false) {
     if (!window.currentUser) { window.showLoginOverlay(); return; }
     const progressKey = 'exam_' + (currentExamData?.lessonId || id);
@@ -311,6 +370,9 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
     isExamActive = false;
     examSubmitted = true;
     isExamMode = false;
+
+    // إلغاء قفل منع الغش
+    unlockExamScreen();
 
     try {
         const snapshot = await window.database.ref('exams/' + id).once('value');
@@ -379,6 +441,10 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
                 window.updateCache(); }
         }
 
+        // إزالة class منع النسخ
+        const main = document.getElementById('mainContent');
+        if (main) main.className = '';
+
         showExamResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
         await window.addNotification(window.currentUser.uid, '📝 تم إكمال امتحان!', `لقد أكملت امتحان "${data.title || 'الامتحان'}" وحصلت على ${earnedAtoms} ذرة.`, '📝');
     } catch (err) { console.error('submitExam error:', err);
@@ -388,6 +454,7 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
         isExamMode = true; }
 }
 
+// ===== عرض نتيجة الامتحان =====
 function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -461,7 +528,9 @@ function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== دوال الكويزات =====
+// ============================================================
+// دوال الكويزات (مع منع الغش)
+// ============================================================
 
 function showQuizUI(quiz, isSecure = false) {
     const main = document.getElementById('mainContent');
@@ -481,6 +550,10 @@ function showQuizUI(quiz, isSecure = false) {
 
     let currentQuestion = 0;
     let answeredQuestions = new Set();
+
+    // إضافة class لمنع النسخ
+    main.className = 'exam-container';
+    lockExamScreen();
 
     if (duration > 0) {
         if (examTimer) clearInterval(examTimer);
@@ -562,7 +635,6 @@ function showQuizUI(quiz, isSecure = false) {
 
     main.innerHTML = `
         <div style="max-width:800px;margin:0 auto;padding:16px;">
-            <button class="btn-outline btn-sm no-print" onclick="APP.exitExam()"><i class="fas fa-arrow-right"></i> الخروج</button>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">🧪 ${window.escapeHtml(quiz.title)}</h2>
                 ${duration > 0 ? `
@@ -586,6 +658,7 @@ function showQuizUI(quiz, isSecure = false) {
                 </div>
                 <button class="btn-primary" id="submitQuizBtn" onclick="APP.submitQuiz('${quiz.id}', ${quiz.atomsReward || 5})" style="display:inline-flex;"><i class="fas fa-check"></i> تسليم الكويز</button>
             </div>
+            <p style="text-align:center;font-size:0.7rem;color:var(--text2);margin-top:12px;">🔒 لا يمكنك الخروج من الكويز حتى يتم التسليم</p>
         </div>
     `;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -621,6 +694,8 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
     isExamActive = false;
     examSubmitted = true;
     isExamMode = false;
+
+    unlockExamScreen();
 
     try {
         const snapshot = await window.database.ref('quizzes/' + id).once('value');
@@ -680,6 +755,9 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
             if (window.cache) { window.cache.progress = window.userCourseProgress;
                 window.updateCache(); }
         }
+
+        const main = document.getElementById('mainContent');
+        if (main) main.className = '';
 
         showQuizResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
         await window.addNotification(window.currentUser.uid, '🧪 تم إكمال كويز!', `لقد أكملت كويز "${data.title || 'الكويز'}" وحصلت على ${earnedAtoms} ذرة.`, '🧪');
@@ -762,7 +840,9 @@ function showQuizResults(quizId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== دوال الأمان والعهد =====
+// ============================================================
+// دوال الأمان والعهد
+// ============================================================
 
 function openExamSecurityModal(examId, callback, type = 'exam') {
     const modal = document.getElementById('examSecurityModal');
@@ -797,6 +877,9 @@ function exitExam() {
     isExamMode = false;
     if (examTimer) { clearInterval(examTimer);
         examTimer = null; }
+    unlockExamScreen();
+    const main = document.getElementById('mainContent');
+    if (main) main.className = '';
     window.showHome();
 }
 
@@ -834,4 +917,4 @@ if (document.readyState === 'loading') {
     bindExamFunctions();
 }
 
-console.log('📦 Exams Module loaded successfully');
+console.log('📦 Exams Module loaded successfully with anti-cheat features');
