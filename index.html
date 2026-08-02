@@ -91,7 +91,7 @@
             background: transparent !important;
         }
 
-        /* ===== صورة الواجهة - تظهر كاملة ===== */
+        /* ===== صورة الواجهة ===== */
         .hero-image-container {
             width: 100%;
             border-radius: var(--radius-lg);
@@ -117,56 +117,6 @@
         }
         @media (max-width: 480px) {
             .hero-image-container img { max-height: 200px; aspect-ratio: 16/10; object-fit: contain; background: var(--bg); }
-        }
-
-        /* ===== حماية الفيديو ===== */
-        .video-protected {
-            position: relative;
-            cursor: default;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-        .video-protected iframe {
-            pointer-events: auto;
-            cursor: pointer;
-        }
-        .video-protected .video-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: transparent;
-            z-index: 1;
-            pointer-events: none;
-        }
-        .video-protected .video-watermark {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            z-index: 2;
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        /* ===== منع النسخ ===== */
-        .no-copy {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-        .no-copy * {
-            user-select: none;
-            -webkit-user-select: none;
         }
 
         .skeleton {
@@ -1604,7 +1554,7 @@
         }
         .study-time-display i { font-size: 1.2rem; }
 
-        /* ===== منع الغش في الامتحانات ===== */
+        /* ===== منع الغش ===== */
         .exam-container { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
         .exam-container * { user-select: none; -webkit-user-select: none; }
         .exam-container input, .exam-container textarea { user-select: text; -webkit-user-select: text; }
@@ -1637,21 +1587,6 @@
         }
         .exam-blur-overlay.open { display: flex; }
 
-        .student-rank-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            background: var(--primary);
-            color: #fff;
-        }
-        .student-rank-badge.top1 { background: var(--gold); color: #081B2C; }
-        .student-rank-badge.top2 { background: var(--silver); color: #081B2C; }
-        .student-rank-badge.top3 { background: var(--bronze); color: #fff; }
-
         .profile-photo-upload {
             position: relative;
             width: 100px;
@@ -1680,20 +1615,6 @@
         }
         .profile-photo-upload:hover .upload-overlay { opacity: 1; }
         .profile-photo-upload input[type="file"] { display: none; }
-
-        .rank-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.75rem;
-        }
-        .rank-badge.gold { background: var(--gold); color: #081B2C; }
-        .rank-badge.silver { background: var(--silver); color: #081B2C; }
-        .rank-badge.bronze { background: var(--bronze); color: #fff; }
-        .rank-badge.normal { background: var(--bg); color: var(--text2); }
     </style>
 </head>
 <body>
@@ -1851,25 +1772,132 @@
             <p style="font-size:0.75rem;color:var(--text2);">جميع الحقوق محفوظة © يلا كيمياء 2026</p>
         </div>
     </footer>
+
     <!-- ====== تحميل ملف الامتحانات ====== -->
     <script src="exams-module.js"></script>
 
-    <!-- ====== جافا سكريبت الرئيسية (المنصة) ====== -->
+    <!-- ====== BOOTSTRAP - ضمان ظهور المنصة فوراً ====== -->
     <script>
         // ============================================================
-        // 🔒 ANTI-DEBUGGING & SECURITY - بدون تعطيل الموقع
+        // 🚀 BOOTSTRAP - يضمن ظهور المنصة حتى لو فشل تحميل Firebase
+        // ============================================================
+        (function() {
+            console.log('🚀 Yalla Chemistry - Bootstrap loading...');
+            
+            // نعرف دوال أساسية
+            window.APP = window.APP || {};
+            
+            // دوال أساسية - تعمل فوراً
+            window.APP.showHome = function() {
+                const main = document.getElementById('mainContent');
+                if (!main) return;
+                main.innerHTML = `
+                    <div style="max-width:1280px;margin:0 auto;padding:40px 20px;text-align:center;">
+                        <div style="font-size:4rem;margin-bottom:20px;">🧪</div>
+                        <h1 style="font-family:'Lalezar',cursive;font-size:2.5rem;color:var(--text);">يلا كيمياء</h1>
+                        <p style="font-size:1.2rem;color:var(--text2);margin-bottom:20px;">منصة تعليم الكيمياء - مع مستر زياد مبروك</p>
+                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                            <a href="login.html" class="btn-primary">🚀 ابدأ التعلم الآن</a>
+                            <a href="login.html" class="btn-outline">⚪ تسجيل الدخول</a>
+                        </div>
+                        <div style="margin-top:30px;padding:20px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+                            <p style="color:var(--text2);">⏳ جاري تحميل المنصة بالكامل...</p>
+                            <div class="spinner" style="margin:10px auto;"></div>
+                        </div>
+                    </div>
+                `;
+            };
+            
+            window.APP.scrollToCourses = function() { window.APP.showHome(); };
+            window.APP.showLoginOverlay = function() { 
+                document.getElementById('loginOverlay')?.classList.add('open');
+            };
+            window.APP.closeLoginOverlay = function() {
+                document.getElementById('loginOverlay')?.classList.remove('open');
+            };
+            window.APP.toggleTheme = function() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+                localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            };
+            window.APP.logout = function() { alert('جاري تسجيل الخروج...'); };
+            window.APP.showDashboard = function() { alert('لوحة الطالب - قيد التحميل'); };
+            window.APP.showLeaderboard = function() { alert('المتصدرين - قيد التحميل'); };
+            window.APP.showAIInsights = function() { alert('تحليل المستوى - قيد التحميل'); };
+            window.APP.showErrorBank = function() { alert('بنك الأخطاء - قيد التحميل'); };
+            window.APP.showResults = function() { alert('النتائج - قيد التحميل'); };
+            window.APP.showCertificate = function() { alert('الشهادات - قيد التحميل'); };
+            window.APP.showStudentCard = function() { alert('بطاقة الطالب - قيد التحميل'); };
+            window.APP.showAchievements = function() { alert('الإنجازات - قيد التحميل'); };
+            window.APP.showNotificationsPage = function() { alert('الإشعارات - قيد التحميل'); };
+            window.APP.closeCompletedModal = function() {
+                document.getElementById('completedModal')?.classList.remove('open');
+            };
+            window.APP.showCompletedModal = function() {
+                document.getElementById('completedModal')?.classList.add('open');
+            };
+            window.APP.openImageZoom = function(src) {
+                const overlay = document.getElementById('imageOverlay');
+                const img = document.getElementById('zoomedImage');
+                if (overlay && img) { img.src = src; overlay.classList.add('open'); }
+            };
+            window.APP.closeImageZoom = function() {
+                document.getElementById('imageOverlay')?.classList.remove('open');
+            };
+            window.APP.share = function(platform) {
+                const url = encodeURIComponent(window.location.href);
+                const text = encodeURIComponent('🔥 منصة يلا كيمياء - اشرح الكيمياء ببساطة مع مستر زياد مبروك');
+                const links = {
+                    whatsapp: `https://wa.me/?text=${text}%20${url}`,
+                    telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+                    facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`
+                };
+                window.open(links[platform] || links.whatsapp, '_blank');
+            };
+            
+            window.APP.openLessonExam = function(id) { alert('جاري تحميل الامتحان...'); };
+            window.APP.openLessonQuiz = function(id) { alert('جاري تحميل الكويز...'); };
+            window.APP.openLessonAssignment = function(id) { alert('جاري تحميل الواجب...'); };
+            window.APP.submitExam = function() { alert('جاري تسليم الامتحان...'); };
+            window.APP.submitQuiz = function() { alert('جاري تسليم الكويز...'); };
+            window.APP.exitExam = function() { window.APP.showHome(); };
+            window.APP.openExamSecurityModal = function(id, callback) { 
+                if (callback) callback(); 
+            };
+            window.APP.closeExamSecurityModal = function() {
+                document.getElementById('examSecurityModal')?.classList.remove('open');
+            };
+            window.APP.startExamAfterPledge = function() {
+                document.getElementById('examSecurityModal')?.classList.remove('open');
+            };
+            
+            // عرض الصفحة الرئيسية فوراً
+            setTimeout(function() {
+                if (document.getElementById('mainContent')) {
+                    window.APP.showHome();
+                }
+            }, 100);
+            
+            console.log('✅ Bootstrap loaded - Fallback functions ready');
+        })();
+    </script>
+
+    <!-- ====== جافا سكريبت الرئيسية ====== -->
+    <script>
+        // ============================================================
+        // 🔒 ANTI-DEBUGGING & SECURITY
         // ============================================================
         (function() {
             'use strict';
             
-            // 1. قفل الكونسول بهدوء
+            // قفل الكونسول بهدوء
             const noop = () => {};
             const consoleMethods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd'];
             consoleMethods.forEach(method => {
                 console[method] = noop;
             });
             
-            // 2. منع F12 و Ctrl+Shift+I/J/C و Ctrl+U
+            // منع F12 و Ctrl+Shift+I/J/C و Ctrl+U
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'F12' || 
                     (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
@@ -1880,7 +1908,7 @@
                 }
             });
             
-            // 3. منع النقر بزر اليمين (فقط في الامتحانات)
+            // منع النقر بزر اليمين في الامتحانات فقط
             document.addEventListener('contextmenu', function(e) {
                 if (document.querySelector('.exam-container')) {
                     e.preventDefault();
@@ -1889,7 +1917,7 @@
                 }
             });
             
-            // 4. منع النسخ في الامتحانات فقط
+            // منع النسخ في الامتحانات فقط
             document.addEventListener('copy', function(e) {
                 if (document.querySelector('.exam-container')) {
                     e.preventDefault();
@@ -1914,16 +1942,7 @@
                 }
             });
             
-            // 5. منع تحديد النص في الامتحانات
-            document.addEventListener('selectstart', function(e) {
-                if (document.querySelector('.exam-container')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-            });
-            
-            // 6. منع مغادرة الصفحة أثناء الامتحان
+            // منع مغادرة الصفحة أثناء الامتحان
             window.addEventListener('beforeunload', function(e) {
                 if (document.querySelector('.exam-container') && !window.examSubmitted) {
                     e.preventDefault();
@@ -1932,7 +1951,7 @@
                 }
             });
             
-            console.log('🔒 Security: Console locked, DevTools blocked, Anti-cheat active');
+            console.log('🔒 Security: Console locked, DevTools blocked');
         })();
 
         // ============================================================
@@ -2337,7 +2356,7 @@
         }
 
         // ============================================================
-        // STUDY TIME TRACKING - حقيقي ومتتبع بدقة
+        // STUDY TIME TRACKING - حقيقي
         // ============================================================
         function startStudyTracking() {
             if (currentUser && !studyInterval) {
@@ -2496,7 +2515,7 @@
         }
 
         // ============================================================
-        // PREMIUM / SUBSCRIPTIONS - تبقى بعد الرفرش
+        // PREMIUM / SUBSCRIPTIONS
         // ============================================================
         function isPremiumCourse(courseId) {
             if (!currentUser || !userData) return false;
@@ -2643,7 +2662,7 @@
         }
 
         // ============================================================
-        // VIDEO TRACKING و حماية روابط يوتيوب
+        // VIDEO TRACKING
         // ============================================================
         function clearVideoTracking() {
             if (videoWatchInterval) { clearInterval(videoWatchInterval);
@@ -2671,7 +2690,6 @@
         async function openLessonVideo(lessonId) {
             if (!currentUser) { showLoginOverlay(); return; }
             
-            // التحقق من إكمال الحصة مسبقاً (مرة واحدة فقط)
             if (userCourseProgress[lessonId]?.watched) {
                 showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل', 'info');
                 return;
@@ -3052,7 +3070,6 @@
 
             main.innerHTML = `
                 <section style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
-                    <!-- صورة الواجهة -->
                     <div class="hero-image-container">
                         <img src="${HERO_IMAGE}" alt="مستر زياد مبروك" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
                     </div>
@@ -3185,7 +3202,6 @@
                         <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔄 هل يتم إضافة محتوى جديد باستمرار؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، يتم إضافة حصص وكورسات وامتحانات جديدة بشكل دوري.</div></div>
                         <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🏆 كيف يتم حساب الترتيب؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يتم ترتيب الطلاب حسب عدد الذرات التي جمعوها، ويتم تحديث الترتيب تلقائياً مع كل تغيير.</div></div>
                         <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>⚛️ ما هي الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">الذرات هي نظام المكافآت داخل المنصة، يحصل عليها الطالب من خلال حل الامتحانات والكويزات وإكمال الحصص والكورسات.</div></div>
-                        <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔒 هل الكورسات المدفوعة آمنة؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، جميع الكورسات المدفوعة محمية بشكل كامل، ولا يمكن الوصول إليها إلا بعد الاشتراك.</div></div>
                     </div>
                 </section>
 
@@ -3227,7 +3243,7 @@
         }
 
         // ============================================================
-        // LEADERBOARD - المتصدرين الخمسة
+        // LEADERBOARD
         // ============================================================
         function loadLeaderboard() {
             const container = document.getElementById('leaderboardContainer');
@@ -3310,10 +3326,10 @@
         }
 
         // ============================================================
-        // ⭐⭐⭐ الدوال المطورة - لوحة الطالب المتطورة ⭐⭐⭐
+        // ⭐⭐⭐ الدوال المطورة ⭐⭐⭐
         // ============================================================
 
-        // 1. لوحة الطالب Dashboard - مطورة جداً
+        // 1. لوحة الطالب Dashboard
         function showDashboard() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
@@ -3345,7 +3361,6 @@
                 <div style="max-width:1280px;margin:0 auto;padding:20px;">
                     <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
                     
-                    <!-- الهيدر -->
                     <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;background:var(--card);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border);margin:12px 0 24px;">
                         <div style="display:flex;align-items:center;gap:16px;">
                             <div class="profile-photo-upload" onclick="document.getElementById('photoInput').click()">
@@ -3369,7 +3384,6 @@
                         </div>
                     </div>
 
-                    <!-- إحصائيات متقدمة -->
                     <div class="dashboard-stats-grid">
                         <div class="dashboard-stat-card">
                             <span class="icon">📊</span>
@@ -3406,7 +3420,6 @@
                         </div>
                     </div>
 
-                    <!-- معلومات التواصل والإنجازات -->
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
                         <div class="card" style="padding:20px;">
                             <h4 style="font-weight:700;color:var(--text);margin-bottom:12px;font-size:1.1rem;">📞 معلومات التواصل</h4>
@@ -3428,7 +3441,6 @@
                         </div>
                     </div>
 
-                    <!-- أزرار سريعة -->
                     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
                         <button class="btn-primary btn-sm" onclick="APP.scrollToCourses()">📚 كورساتي</button>
                         <button class="btn-outline btn-sm" onclick="APP.showResults()">📊 نتائجي</button>
@@ -3439,7 +3451,6 @@
                         <button class="btn-outline btn-sm" onclick="APP.showAchievements()">🏅 إنجازاتي</button>
                     </div>
 
-                    <!-- نص تحفيزي -->
                     <div class="motivational-message" style="border:2px solid ${levelColor};">
                         <span class="emoji">${progressPercent >= 80 ? '🌟' : progressPercent >= 50 ? '💪' : '🚀'}</span>
                         ${progressPercent >= 80 ? 'أنت متميز جداً! استمر بنفس المستوى الرائع 🏆' : 
@@ -3480,7 +3491,7 @@
         }
 
         // ============================================================
-        // بنك الأخطاء - مع اختبار تصحيح الأخطاء
+        // بنك الأخطاء
         // ============================================================
         async function showErrorBank() {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3554,9 +3565,9 @@
                     question: err.question,
                     options: [
                         err.correctAnswer,
-                        generateWrongOption(err.correctAnswer),
-                        generateWrongOption(err.correctAnswer),
-                        generateWrongOption(err.correctAnswer)
+                        'إجابة بديلة 1',
+                        'إجابة بديلة 2',
+                        'إجابة بديلة 3'
                     ],
                     correctAnswer: 0,
                     explanation: `إجابتك السابقة كانت: ${err.userAnswer}، والإجابة الصحيحة هي: ${err.correctAnswer}`
@@ -3572,7 +3583,7 @@
                 const examData = {
                     id: 'error_exam_' + Date.now(),
                     title: '📝 اختبار تصحيح الأخطاء',
-                    description: `اختبار من ${questions.length} سؤال من أخطائك السابقة - جاوب صح عشان تشيل الخطأ`,
+                    description: `اختبار من ${questions.length} سؤال من أخطائك السابقة`,
                     questions: questions,
                     duration: 15,
                     atomsReward: 10,
@@ -3641,18 +3652,6 @@
                 }, 'exam');
             } catch (err) { console.error('Error creating error exam:', err);
                 showToast('حدث خطأ في إنشاء الاختبار', 'error'); }
-        }
-
-        function generateWrongOption(correct) {
-            const wrongs = [
-                'إجابة بديلة 1',
-                'إجابة بديلة 2',
-                'إجابة بديلة 3',
-                'خيار آخر',
-                'حل مختلف',
-                'إجابة مقترحة'
-            ];
-            return wrongs[Math.floor(Math.random() * wrongs.length)];
         }
 
         function showErrorExamResults(score, correct, total, results, atomsEarned) {
@@ -3757,12 +3756,10 @@
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
             if (!main) return;
-
             const name = userData?.name || 'مستخدم';
             const code = userData?.code || 'YK-XX-XX-XXX';
             const date = new Date().toLocaleDateString('ar');
             const atoms = userData?.atoms || 0;
-
             main.innerHTML = `
                 <div style="max-width:800px;margin:0 auto;padding:20px;">
                     <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
@@ -3804,7 +3801,6 @@
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
             if (!main) return;
-
             const name = userData?.name || 'مستخدم';
             const code = userData?.code || 'YK-XX-XX-XXX';
             const phone = formatPhoneNumber(userData?.phone);
@@ -3812,17 +3808,13 @@
             const atoms = userData?.atoms || 0;
             const studyTime = Math.round(userData?.studyTime || 0);
             const progress = allLessons.length > 0 ? Math.round((Object.keys(userCourseProgress).filter(k => userCourseProgress[k]?.watched).length / allLessons.length) * 100) : 0;
-
             main.innerHTML = `
                 <div style="max-width:500px;margin:0 auto;padding:20px;">
                     <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
                     <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">🪪 بطاقتي</h1>
                     <div class="student-card-preview" id="studentCardPreview">
                         <div class="watermark">يلا كيمياء</div>
-                        <div class="card-header">
-                            <span class="logo">🧪 يلا كيمياء</span>
-                            <span style="margin-right:auto;font-size:0.7rem;color:var(--text2);">${code}</span>
-                        </div>
+                        <div class="card-header"><span class="logo">🧪 يلا كيمياء</span><span style="margin-right:auto;font-size:0.7rem;color:var(--text2);">${code}</span></div>
                         <div class="card-avatar">${userData?.photoURL ? `<img src="${userData.photoURL}">` : (name[0] || '👤')}</div>
                         <div class="card-info">
                             <div class="name">${escapeHtml(name)}</div>
@@ -3861,7 +3853,6 @@
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
             if (!main) return;
-
             const atoms = userData?.atoms || 0;
             const examsPassed = userData?.examsPassed || 0;
             const quizzesPassed = userData?.quizzesPassed || 0;
@@ -3869,8 +3860,6 @@
             const streak = userData?.streak || 0;
             const lessonsCompleted = userData?.lessonsCompleted || 0;
             const studyTime = Math.round(userData?.studyTime || 0);
-            const videosWatched = userData?.videosWatched || 0;
-
             const achievements = [
                 { id: 'first_lesson', icon: '📚', name: 'البداية', desc: 'أكملت أول حصة', unlocked: lessonsCompleted >= 1 },
                 { id: 'first_exam', icon: '📝', name: 'أول امتحان', desc: 'حللت أول امتحان', unlocked: examsPassed >= 1 },
@@ -3878,24 +3867,14 @@
                 { id: 'perfect_exam', icon: '⭐', name: 'امتحان كامل', desc: 'حصلت على 100% في امتحان', unlocked: perfectExams >= 1 },
                 { id: 'streak_3', icon: '🔥', name: 'التزام 3 أيام', desc: 'درست 3 أيام متتالية', unlocked: streak >= 3 },
                 { id: 'streak_7', icon: '⚡', name: 'التزام أسبوع', desc: 'درست 7 أيام متتالية', unlocked: streak >= 7 },
-                { id: 'streak_14', icon: '🏆', name: 'الالتزام أسبوعين', desc: 'درست 14 يوم متتالية', unlocked: streak >= 14 },
                 { id: 'atoms_50', icon: '💎', name: 'جامع ذرات', desc: 'جمعت 50 ذرة', unlocked: atoms >= 50 },
                 { id: 'atoms_100', icon: '🏆', name: 'خبير ذرات', desc: 'جمعت 100 ذرة', unlocked: atoms >= 100 },
-                { id: 'atoms_500', icon: '👑', name: 'أسطورة ذرات', desc: 'جمعت 500 ذرة', unlocked: atoms >= 500 },
                 { id: 'lessons_5', icon: '📖', name: 'طالب مجتهد', desc: 'أكملت 5 حصص', unlocked: lessonsCompleted >= 5 },
                 { id: 'lessons_10', icon: '🎓', name: 'طالب متميز', desc: 'أكملت 10 حصص', unlocked: lessonsCompleted >= 10 },
-                { id: 'lessons_25', icon: '🌟', name: 'طالب ملتزم', desc: 'أكملت 25 حصة', unlocked: lessonsCompleted >= 25 },
                 { id: 'study_5h', icon: '⏱️', name: 'دراسة 5 ساعات', desc: 'سجلت 5 ساعات دراسة', unlocked: studyTime >= 5 },
                 { id: 'study_10h', icon: '🧠', name: 'دراسة 10 ساعات', desc: 'سجلت 10 ساعات دراسة', unlocked: studyTime >= 10 },
-                { id: 'study_50h', icon: '🎯', name: 'دراسة 50 ساعة', desc: 'سجلت 50 ساعة دراسة', unlocked: studyTime >= 50 },
-                { id: 'videos_10', icon: '🎥', name: 'مشاهد فيديوهات', desc: 'شاهدت 10 فيديوهات', unlocked: videosWatched >= 10 },
-                { id: 'videos_50', icon: '📺', name: 'مشاهد محترف', desc: 'شاهدت 50 فيديو', unlocked: videosWatched >= 50 },
-                { id: 'exams_5', icon: '📊', name: 'خبير امتحانات', desc: 'حللت 5 امتحانات', unlocked: examsPassed >= 5 },
-                { id: 'exams_10', icon: '🏅', name: 'محترف امتحانات', desc: 'حللت 10 امتحانات', unlocked: examsPassed >= 10 },
             ];
-
             const unlocked = achievements.filter(a => a.unlocked).length;
-
             main.innerHTML = `
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
                     <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
@@ -3916,12 +3895,10 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 7. تحليل المستوى AI (مطور جداً)
         function showAIInsights() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
             if (!main) return;
-
             const atoms = userData?.atoms || 0;
             const examsPassed = userData?.examsPassed || 0;
             const quizzesPassed = userData?.quizzesPassed || 0;
@@ -3932,81 +3909,42 @@
             const videosWatched = userData?.videosWatched || 0;
             const progress = allLessons.length > 0 ? Math.round((lessonsCompleted / allLessons.length) * 100) : 0;
             const rank = userData?.rank || '--';
-
-            let level = 'مبتدئ';
-            let levelColor = 'var(--text2)';
-            let levelEmoji = '🌱';
-            let detailedAnalysis = '';
-            let suggestions = [];
-            let strengths = [];
-            let weaknesses = [];
-
-            if (progress >= 80 && perfectExams >= 3) {
-                level = 'خبير جداً 🏆';
+            let level = 'مبتدئ', levelColor = 'var(--text2)', levelEmoji = '🌱', detailedAnalysis = '', suggestions = [], strengths = [], weaknesses = [];
+            if (progress >= 80 && perfectExams >= 3) { level = 'خبير جداً 🏆';
                 levelColor = 'var(--gold)';
                 levelEmoji = '👑';
-                detailedAnalysis = 'أنت من أفضل الطلاب! أداءك ممتاز في جميع المجالات، استمر في التفوق.';
-                suggestions = ['شارك معرفتك مع زملائك', 'حاول حل امتحانات من أعوام سابقة', 'كن قدوة للآخرين'];
-                strengths = ['فهم عميق للمادة', 'أداء ممتاز في الامتحانات', 'التزام عالي'];
-                weaknesses = ['لا توجد نقاط ضعف ملحوظة'];
-            } else if (progress >= 70) {
-                level = 'متقدم جداً 💪';
+                detailedAnalysis = 'أنت من أفضل الطلاب! أداءك ممتاز في جميع المجالات.';
+                suggestions = ['شارك معرفتك مع زملائك', 'حاول حل امتحانات من أعوام سابقة'];
+                strengths = ['فهم عميق للمادة', 'أداء ممتاز في الامتحانات'];
+                weaknesses = ['لا توجد نقاط ضعف ملحوظة']; } else if (progress >= 70) { level = 'متقدم جداً 💪';
                 levelColor = 'var(--success)';
                 levelEmoji = '⭐';
                 detailedAnalysis = 'أداءك ممتاز، أنت على بعد خطوات قليلة من الإتقان الكامل.';
-                suggestions = ['ركز على النقاط التي تجدها صعبة', 'حل المزيد من الامتحانات الشاملة', 'حاول تحسين وقت الحل'];
+                suggestions = ['ركز على النقاط التي تجدها صعبة', 'حل المزيد من الامتحانات الشاملة'];
                 strengths = ['فهم جيد للمادة', 'أداء مستقر'];
-                weaknesses = ['بعض النقاط تحتاج إلى تعزيز'];
-            } else if (progress >= 50) {
-                level = 'متقدم 📚';
+                weaknesses = ['بعض النقاط تحتاج إلى تعزيز']; } else if (progress >= 50) { level = 'متقدم 📚';
                 levelColor = 'var(--primary)';
                 levelEmoji = '📈';
                 detailedAnalysis = 'أنت في الطريق الصحيح، مع استمرارية التعلم ستصل إلى مستويات أعلى.';
-                suggestions = ['زود وقت مذاكرتك اليومية', 'راجع الدروس بانتظام', 'حل واجبات الحصص'];
+                suggestions = ['زود وقت مذاكرتك اليومية', 'راجع الدروس بانتظام'];
                 strengths = ['أساسيات قوية', 'التزام جيد'];
-                weaknesses = ['تحتاج إلى تعميق الفهم في بعض الأجزاء'];
-            } else if (progress >= 25) {
-                level = 'متوسط 🌟';
-                levelColor = 'var(--warning)';
-                levelEmoji = '📖';
-                detailedAnalysis = 'بداية جيدة، لكن تحتاج إلى بذل المزيد من الجهد للوصول إلى المستوى المطلوب.';
-                suggestions = ['ابدأ بالحصص من البداية', 'شاهد فيديوهات الشرح بتركيز', 'حل الكويزات البسيطة أولاً', 'حدد وقت يومي للمذاكرة'];
-                strengths = ['بداية جيدة', 'اهتمام بالتعلم'];
-                weaknesses = ['يحتاج إلى تنظيم وقت الدراسة', 'يحتاج إلى مراجعة الأساسيات'];
-            } else {
-                level = 'مبتدئ 🌱';
+                weaknesses = ['تحتاج إلى تعميق الفهم في بعض الأجزاء']; } else { level = 'مبتدئ 🌱';
                 levelColor = 'var(--primary)';
                 levelEmoji = '🌱';
                 detailedAnalysis = 'كل رحلة تبدأ بخطوة، أنت في بداية الطريق. استمر ولا تيأس!';
-                suggestions = ['ابدأ من البداية بثقة', 'خصص وقت يومي للمذاكرة', 'شاهد الفيديوهات التعليمية', 'حل الكويزات البسيطة'];
+                suggestions = ['ابدأ من البداية بثقة', 'خصص وقت يومي للمذاكرة', 'شاهد الفيديوهات التعليمية'];
                 strengths = ['حماس للتعلم', 'استعداد للتطوير'];
-                weaknesses = ['يحتاج إلى بناء الأساسيات', 'يحتاج إلى ممارسة أكثر'];
-            }
-
-            if (examsPassed > quizzesPassed * 1.5) {
-                strengths.push('تفوق في الامتحانات');
-            } else if (quizzesPassed > examsPassed * 1.5) {
-                strengths.push('تفوق في الكويزات');
-            }
+                weaknesses = ['يحتاج إلى بناء الأساسيات', 'يحتاج إلى ممارسة أكثر']; }
+            if (examsPassed > quizzesPassed * 1.5) strengths.push('تفوق في الامتحانات');
             if (streak > 7) strengths.push('التزام عالي جداً');
             if (perfectExams > 0) strengths.push(`حصلت على ${perfectExams} امتحانات كاملة`);
-            if (studyTime > 20) strengths.push('عدد ساعات دراسة ممتاز');
-            
             if (examsPassed < 2 && lessonsCompleted > 5) weaknesses.push('تحتاج إلى حل المزيد من الامتحانات');
-            if (quizzesPassed < 2 && lessonsCompleted > 5) weaknesses.push('تحتاج إلى حل المزيد من الكويزات');
             if (streak < 3) weaknesses.push('حاول زيادة أيام المذاكرة المتتالية');
-            if (studyTime < 5 && lessonsCompleted > 3) weaknesses.push('زود وقت مذاكرتك');
-
             main.innerHTML = `
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
                     <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
                     <div class="ai-report-container" id="aiReportContainer">
-                        <div class="report-header">
-                            <div class="logo">🧪 يلا كيمياء</div>
-                            <div class="title">📊 تحليل المستوى المتقدم - تقرير ذكي</div>
-                            <p style="color:var(--text2);">${new Date().toLocaleDateString('ar')} • ${new Date().toLocaleTimeString('ar')}</p>
-                        </div>
-
+                        <div class="report-header"><div class="logo">🧪 يلا كيمياء</div><div class="title">📊 تحليل المستوى المتقدم</div><p style="color:var(--text2);">${new Date().toLocaleDateString('ar')}</p></div>
                         <div class="report-section" style="text-align:center;border:3px solid ${levelColor};background:${levelColor}11;">
                             <div style="font-size:4rem;">${levelEmoji}</div>
                             <h4 style="font-size:1.5rem;color:${levelColor};">مستوى الطالب: ${escapeHtml(userData?.name || 'مستخدم')}</h4>
@@ -4014,56 +3952,23 @@
                             <div style="font-size:1rem;color:var(--text2);margin-top:4px;">🏅 الترتيب العام: ${rank}</div>
                             <p style="font-size:1.1rem;color:var(--text);margin-top:8px;">${detailedAnalysis}</p>
                         </div>
-
-                        <div class="report-section">
-                            <h4>📈 إحصائيات الأداء المتقدمة</h4>
-                            <div class="grid-2">
-                                <div class="stat-item"><div class="label">⚛️ الذرات</div><div class="value">${atoms}</div></div>
-                                <div class="stat-item"><div class="label">📊 نسبة الإنجاز</div><div class="value">${progress}%</div></div>
-                                <div class="stat-item"><div class="label">⏱ ساعات الدراسة</div><div class="value">${studyTime}</div></div>
-                                <div class="stat-item"><div class="label">🔥 أيام متتالية</div><div class="value">${streak}</div></div>
-                                <div class="stat-item"><div class="label">📝 امتحانات</div><div class="value">${examsPassed}</div></div>
-                                <div class="stat-item"><div class="label">🧪 كويزات</div><div class="value">${quizzesPassed}</div></div>
-                                <div class="stat-item"><div class="label">⭐ امتحانات كاملة</div><div class="value">${perfectExams}</div></div>
-                                <div class="stat-item"><div class="label">📚 حصص مكتملة</div><div class="value">${lessonsCompleted}</div></div>
-                                <div class="stat-item"><div class="label">🎥 فيديوهات شاهدتها</div><div class="value">${videosWatched}</div></div>
-                                <div class="stat-item"><div class="label">📚 نسبة إكمال الكورسات</div><div class="value">${Math.round((lessonsCompleted / (allLessons.length || 1)) * 100)}%</div></div>
-                            </div>
-                        </div>
-
+                        <div class="report-section"><h4>📈 إحصائيات الأداء</h4><div class="grid-2">
+                            <div class="stat-item"><div class="label">⚛️ الذرات</div><div class="value">${atoms}</div></div>
+                            <div class="stat-item"><div class="label">📊 نسبة الإنجاز</div><div class="value">${progress}%</div></div>
+                            <div class="stat-item"><div class="label">⏱ ساعات الدراسة</div><div class="value">${studyTime}</div></div>
+                            <div class="stat-item"><div class="label">🔥 أيام متتالية</div><div class="value">${streak}</div></div>
+                            <div class="stat-item"><div class="label">📝 امتحانات</div><div class="value">${examsPassed}</div></div>
+                            <div class="stat-item"><div class="label">🧪 كويزات</div><div class="value">${quizzesPassed}</div></div>
+                            <div class="stat-item"><div class="label">⭐ امتحانات كاملة</div><div class="value">${perfectExams}</div></div>
+                            <div class="stat-item"><div class="label">📚 حصص مكتملة</div><div class="value">${lessonsCompleted}</div></div>
+                        </div></div>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-                            <div class="report-section" style="border:2px solid var(--success);">
-                                <h4 style="color:var(--success);">✅ نقاط القوة</h4>
-                                <ul style="list-style:none;padding:0;text-align:right;">
-                                    ${strengths.map(s => `<li style="padding:4px 0;border-bottom:1px solid var(--border);">⭐ ${s}</li>`).join('')}
-                                    ${strengths.length === 0 ? '<li style="color:var(--text2);">لا توجد نقاط قوة مسجلة بعد</li>' : ''}
-                                </ul>
-                            </div>
-                            <div class="report-section" style="border:2px solid var(--danger);">
-                                <h4 style="color:var(--danger);">📌 نقاط الضعف</h4>
-                                <ul style="list-style:none;padding:0;text-align:right;">
-                                    ${weaknesses.map(w => `<li style="padding:4px 0;border-bottom:1px solid var(--border);">📌 ${w}</li>`).join('')}
-                                    ${weaknesses.length === 0 ? '<li style="color:var(--success);">🌟 لا توجد نقاط ضعف واضحة!</li>' : ''}
-                                </ul>
-                            </div>
+                            <div class="report-section" style="border:2px solid var(--success);"><h4 style="color:var(--success);">✅ نقاط القوة</h4><ul style="list-style:none;padding:0;text-align:right;">${strengths.map(s => `<li style="padding:4px 0;border-bottom:1px solid var(--border);">⭐ ${s}</li>`).join('')}${strengths.length === 0 ? '<li style="color:var(--text2);">لا توجد نقاط قوة مسجلة بعد</li>' : ''}</ul></div>
+                            <div class="report-section" style="border:2px solid var(--danger);"><h4 style="color:var(--danger);">📌 نقاط الضعف</h4><ul style="list-style:none;padding:0;text-align:right;">${weaknesses.map(w => `<li style="padding:4px 0;border-bottom:1px solid var(--border);">📌 ${w}</li>`).join('')}${weaknesses.length === 0 ? '<li style="color:var(--success);">🌟 لا توجد نقاط ضعف واضحة!</li>' : ''}</ul></div>
                         </div>
-
-                        <div class="report-section" style="border:2px solid var(--primary);">
-                            <h4>💡 نصائح مخصصة لتحسين المستوى</h4>
-                            <ul style="list-style:none;padding:0;text-align:right;">
-                                ${suggestions.map(s => `<li style="padding:6px 0;border-bottom:1px solid var(--border);">✅ ${s}</li>`).join('')}
-                            </ul>
-                            <p style="font-size:0.9rem;color:var(--text2);margin-top:12px;background:var(--bg);padding:12px;border-radius:var(--radius);">
-                                ${progress >= 70 ? '🌟 أداء ممتاز! استمر بنفس المستوى، أنت قدوة للآخرين.' : 
-                                  progress >= 50 ? '💪 أنت في الطريق الصحيح، استمر ولا تتوقف!' : 
-                                  '🚀 كل خبير كان مبتدئاً، استمر في التعلم وستصل بإذن الله.'}
-                            </p>
-                        </div>
-
-                        <div class="report-footer">
-                            تقرير تحليلي متكامل - يلا كيمياء ${new Date().getFullYear()}
-                            <br><span style="font-size:0.6rem;">تم إنشاؤه بواسطة نظام الذكاء الاصطناعي التعليمي</span>
-                        </div>
+                        <div class="report-section" style="border:2px solid var(--primary);"><h4>💡 نصائح مخصصة</h4><ul style="list-style:none;padding:0;text-align:right;">${suggestions.map(s => `<li style="padding:6px 0;border-bottom:1px solid var(--border);">✅ ${s}</li>`).join('')}</ul>
+                        <p style="font-size:0.9rem;color:var(--text2);margin-top:12px;background:var(--bg);padding:12px;border-radius:var(--radius);">${progress >= 70 ? '🌟 أداء ممتاز! استمر بنفس المستوى.' : progress >= 50 ? '💪 أنت في الطريق الصحيح، استمر ولا تتوقف!' : '🚀 كل خبير كان مبتدئاً، استمر في التعلم وستصل بإذن الله.'}</p></div>
+                        <div class="report-footer">تقرير تحليلي متكامل - يلا كيمياء ${new Date().getFullYear()}</div>
                         <div style="text-align:center;margin-top:12px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                             <button class="btn-primary btn-sm no-print" onclick="APP.printAIReport()">🖨️ طباعة التقرير</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()">📊 العودة للوحة</button>
@@ -4078,76 +3983,23 @@
             const el = document.getElementById('aiReportContainer');
             if (el) {
                 const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <html><head><title>تقرير تحليل المستوى</title>
-                    <style>
-                        body { font-family: 'Cairo', sans-serif; padding: 20px; direction: rtl; max-width: 900px; margin: 0 auto; }
-                        .report-section { margin-bottom: 16px; padding: 16px; border-radius: 12px; background: #f5f5f5; }
-                        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-                        .stat-item { padding: 6px 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
-                        .stat-item .label { font-size: 0.7rem; color: #666; }
-                        .stat-item .value { font-weight: 700; font-size: 1rem; }
-                    </style>
-                    </head><body>${el.outerHTML}</body></html>
-                `);
+                printWindow.document.write(`<html><head><title>تقرير تحليل المستوى</title><style>body{font-family:'Cairo',sans-serif;padding:20px;direction:rtl;max-width:900px;margin:0 auto;}.report-section{margin-bottom:16px;padding:16px;border-radius:12px;background:#f5f5f5;}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}.stat-item{padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;}.stat-item .label{font-size:0.7rem;color:#666;}.stat-item .value{font-weight:700;font-size:1rem;}</style></head><body>${el.outerHTML}</body></html>`);
                 printWindow.document.close();
                 printWindow.print();
             }
         }
 
-        // 8. سياسة الخصوصية
         function showPrivacy() {
             const main = document.getElementById('mainContent');
             if (!main) return;
-            main.innerHTML = `
-                <div style="max-width:800px;margin:0 auto;padding:20px;">
-                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                    <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">🔒 سياسة الخصوصية</h1>
-                    <div class="card" style="padding:24px;line-height:2;">
-                        <p>نحن في منصة يلا كيمياء نلتزم بحماية خصوصية بياناتك الشخصية.</p>
-                        <p><strong>ما هي البيانات التي نجمعها؟</strong></p>
-                        <p>• الاسم، البريد الإلكتروني، رقم الهاتف، الصف الدراسي</p>
-                        <p>• بيانات التقدم في التعلم (الحصص المكتملة، نتائج الامتحانات)</p>
-                        <p><strong>كيف نستخدم بياناتك؟</strong></p>
-                        <p>• لتقديم خدمات التعلم المخصصة</p>
-                        <p>• لتتبع تقدمك وتحسين تجربتك</p>
-                        <p>• لإرسال إشعارات متعلقة بالتعلم</p>
-                        <p><strong>هل نشارك بياناتك مع أطراف أخرى؟</strong></p>
-                        <p>لا، لا نشارك بياناتك الشخصية مع أي طرف ثالث.</p>
-                        <p style="color:var(--text2);font-size:0.9rem;">آخر تحديث: ${new Date().toLocaleDateString('ar')}</p>
-                    </div>
-                </div>
-            `;
+            main.innerHTML = `<div style="max-width:800px;margin:0 auto;padding:20px;"><button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button><h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">🔒 سياسة الخصوصية</h1><div class="card" style="padding:24px;line-height:2;"><p>نحن في منصة يلا كيمياء نلتزم بحماية خصوصية بياناتك الشخصية.</p><p><strong>ما هي البيانات التي نجمعها؟</strong></p><p>• الاسم، البريد الإلكتروني، رقم الهاتف، الصف الدراسي</p><p>• بيانات التقدم في التعلم (الحصص المكتملة، نتائج الامتحانات)</p><p><strong>كيف نستخدم بياناتك؟</strong></p><p>• لتقديم خدمات التعلم المخصصة</p><p>• لتتبع تقدمك وتحسين تجربتك</p><p>• لإرسال إشعارات متعلقة بالتعلم</p><p><strong>هل نشارك بياناتك مع أطراف أخرى؟</strong></p><p>لا، لا نشارك بياناتك الشخصية مع أي طرف ثالث.</p><p style="color:var(--text2);font-size:0.9rem;">آخر تحديث: ${new Date().toLocaleDateString('ar')}</p></div></div>`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 9. الشروط والأحكام
         function showTerms() {
             const main = document.getElementById('mainContent');
             if (!main) return;
-            main.innerHTML = `
-                <div style="max-width:800px;margin:0 auto;padding:20px;">
-                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                    <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">📜 الشروط والأحكام</h1>
-                    <div class="card" style="padding:24px;line-height:2;">
-                        <p><strong>1. استخدام المنصة</strong></p>
-                        <p>• المنصة مخصصة للأغراض التعليمية فقط.</p>
-                        <p>• يجب على الطالب الالتزام بالأمانة العلمية أثناء حل الاختبارات.</p>
-                        <p><strong>2. الحسابات</strong></p>
-                        <p>• كل طالب لديه حساب شخصي واحد فقط.</p>
-                        <p>• يجب حماية كلمة المرور وعدم مشاركتها مع الآخرين.</p>
-                        <p><strong>3. المحتوى</strong></p>
-                        <p>• جميع المواد التعليمية محمية بحقوق النشر.</p>
-                        <p>• لا يسمح بإعادة توزيع المحتوى دون إذن.</p>
-                        <p><strong>4. التقييم</strong></p>
-                        <p>• يتم تقييم الطلاب بناءً على أدائهم في الامتحانات والكويزات.</p>
-                        <p>• نظام الذرات هو نظام تحفيزي وليس له قيمة نقدية.</p>
-                        <p><strong>5. التعديلات</strong></p>
-                        <p>• يحق للمنصة تعديل الشروط في أي وقت.</p>
-                        <p style="color:var(--text2);font-size:0.9rem;">آخر تحديث: ${new Date().toLocaleDateString('ar')}</p>
-                    </div>
-                </div>
-            `;
+            main.innerHTML = `<div style="max-width:800px;margin:0 auto;padding:20px;"><button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button><h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">📜 الشروط والأحكام</h1><div class="card" style="padding:24px;line-height:2;"><p><strong>1. استخدام المنصة</strong></p><p>• المنصة مخصصة للأغراض التعليمية فقط.</p><p>• يجب على الطالب الالتزام بالأمانة العلمية أثناء حل الاختبارات.</p><p><strong>2. الحسابات</strong></p><p>• كل طالب لديه حساب شخصي واحد فقط.</p><p>• يجب حماية كلمة المرور وعدم مشاركتها مع الآخرين.</p><p><strong>3. المحتوى</strong></p><p>• جميع المواد التعليمية محمية بحقوق النشر.</p><p>• لا يسمح بإعادة توزيع المحتوى دون إذن.</p><p><strong>4. التقييم</strong></p><p>• يتم تقييم الطلاب بناءً على أدائهم في الامتحانات والكويزات.</p><p>• نظام الذرات هو نظام تحفيزي وليس له قيمة نقدية.</p><p><strong>5. التعديلات</strong></p><p>• يحق للمنصة تعديل الشروط في أي وقت.</p><p style="color:var(--text2);font-size:0.9rem;">آخر تحديث: ${new Date().toLocaleDateString('ar')}</p></div></div>`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -4208,7 +4060,7 @@
         function init() {
             setupScrollHandlers();
             showHome();
-            console.log('🚀 Yalla Chemistry Platform v34.0 - ULTIMATE SECURE EDITION');
+            console.log('🚀 Yalla Chemistry Platform v35.0 - ULTIMATE EDITION');
         }
 
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
@@ -4254,7 +4106,6 @@
             showCompletedModal,
             openImageZoom,
             closeImageZoom,
-            // سيتم ربط دوال الامتحانات من الملف الخارجي
             openLessonExam: null,
             openLessonQuiz: null,
             openLessonAssignment: null,
@@ -4277,4 +4128,3 @@
 
 </body>
 </html>
- 
