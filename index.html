@@ -156,23 +156,24 @@
             position: absolute;
             bottom: 15px;
             right: 15px;
-            color: rgba(255, 255, 255, 0.35);
+            color: rgba(255, 255, 255, 0.45);
             font-size: 13px;
             z-index: 15;
             pointer-events: none;
             font-weight: bold;
             font-family: 'Cairo', Arial, sans-serif;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             padding: 4px 12px;
             border-radius: 20px;
             backdrop-filter: blur(2px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        .video-watermark .gold-text { color: var(--gold); }
 
         /* علامة مائية متحركة */
         .dynamic-watermark {
             position: absolute;
-            color: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.12);
             font-size: 2.5rem;
             z-index: 15;
             pointer-events: none;
@@ -185,10 +186,7 @@
             top: 10px;
             left: 10px;
         }
-        .dynamic-watermark .gold-text {
-            color: var(--gold);
-            opacity: 0.6;
-        }
+        .dynamic-watermark .gold-text { color: var(--gold); opacity: 0.6; }
 
         /* شريط تقدم المشاهدة */
         .watch-progress-container {
@@ -3019,7 +3017,7 @@
                             
                             <!-- ===== علامة مائية ثابتة ===== -->
                             <div class="video-watermark" id="staticWatermark">
-                                👤 ${escapeHtml(studentName)} | كود: ${escapeHtml(studentCode)} | 🧪 يلا كيمياء
+                                👤 ${escapeHtml(studentName)} | كود: ${escapeHtml(studentCode)} | <span class="gold-text">🧪 يلا كيمياء</span>
                             </div>
                             
                             <!-- ===== علامة مائية متحركة ===== -->
@@ -3070,7 +3068,6 @@
                     const container = document.getElementById('videoContainer');
                     const dynamicWM = document.getElementById('dynamicWatermark');
                     if (container && dynamicWM) {
-                        // تحريك العلامة المائية كل 4 ثوانٍ
                         if (dynamicWatermarkTimer) clearInterval(dynamicWatermarkTimer);
                         dynamicWatermarkTimer = setInterval(() => {
                             if (!container || !dynamicWM) return;
