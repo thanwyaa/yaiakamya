@@ -19,96 +19,95 @@ let isExamMode = false;
 // دوال الامتحانات والكويزات والواجبات
 // ============================================================
 
-// ===== التحقق من إكمال الامتحان/الكويز =====
 async function isAssessmentCompleted(lessonId, type) {
     const key = type === 'exam' ? 'exam_' + lessonId : 'quiz_' + lessonId;
-    if (userCourseProgress[key]?.completed) return true;
-    const snapshot = await database.ref(`users/${currentUser.uid}/progress/${key}`).once('value');
+    if (window.userCourseProgress && window.userCourseProgress[key]?.completed) return true;
+    if (!window.currentUser) return false;
+    const snapshot = await window.database.ref(`users/${window.currentUser.uid}/progress/${key}`).once('value');
     if (snapshot.exists() && snapshot.val().completed) {
-        userCourseProgress[key] = snapshot.val();
-        cache.progress = userCourseProgress;
-        updateCache();
+        if (window.userCourseProgress) {
+            window.userCourseProgress[key] = snapshot.val();
+            if (window.cache) { window.cache.progress = window.userCourseProgress;
+                window.updateCache(); }
+        }
         return true;
     }
     return false;
 }
 
-// ===== فتح امتحان الحصة =====
 async function openLessonExam(lessonId) {
-    if (!currentUser) { showLoginOverlay(); return; }
-    if (await isAssessmentCompleted(lessonId, 'exam')) { showCompletedModal(); return; }
+    if (!window.currentUser) { window.showLoginOverlay(); return; }
+    if (await isAssessmentCompleted(lessonId, 'exam')) { window.showCompletedModal(); return; }
     try {
-        const lesson = allLessons.find(l => l.id === lessonId);
+        const lesson = window.allLessons.find(l => l.id === lessonId);
         if (lesson) {
-            const course = allCourses.find(c => c.id === lesson.courseId);
-            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
-                showSubscriptionPage(course.id);
+            const course = window.allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !window.isPremiumCourse(course.id)) {
+                window.showSubscriptionPage(course.id);
                 return;
             }
         }
-        const snapshot = await database.ref('exams').orderByChild('lessonId').equalTo(lessonId).once('value');
-        if (!snapshot.exists()) { showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning'); return; }
+        const snapshot = await window.database.ref('exams').orderByChild('lessonId').equalTo(lessonId).once('value');
+        if (!snapshot.exists()) { window.showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning'); return; }
         let exam = null;
         snapshot.forEach(child => { exam = { id: child.key, ...child.val() }; });
-        if (!exam) { showToast('⚠️ حدث خطأ في تحميل الامتحان', 'error'); return; }
+        if (!exam) { window.showToast('⚠️ حدث خطأ في تحميل الامتحان', 'error'); return; }
         currentExamData = exam;
         openExamSecurityModal(lessonId, function() { showExamUI(exam, true); }, 'exam');
     } catch (err) { console.error('openLessonExam error:', err);
-        showToast('حدث خطأ في تحميل الامتحان: ' + err.message, 'error'); }
+        window.showToast('حدث خطأ في تحميل الامتحان: ' + err.message, 'error'); }
 }
 
-// ===== فتح كويز الحصة =====
 async function openLessonQuiz(lessonId) {
-    if (!currentUser) { showLoginOverlay(); return; }
-    if (await isAssessmentCompleted(lessonId, 'quiz')) { showCompletedModal(); return; }
+    if (!window.currentUser) { window.showLoginOverlay(); return; }
+    if (await isAssessmentCompleted(lessonId, 'quiz')) { window.showCompletedModal(); return; }
     try {
-        const lesson = allLessons.find(l => l.id === lessonId);
+        const lesson = window.allLessons.find(l => l.id === lessonId);
         if (lesson) {
-            const course = allCourses.find(c => c.id === lesson.courseId);
-            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
-                showSubscriptionPage(course.id);
+            const course = window.allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !window.isPremiumCourse(course.id)) {
+                window.showSubscriptionPage(course.id);
                 return;
             }
         }
-        const snapshot = await database.ref('quizzes').orderByChild('lessonId').equalTo(lessonId).once('value');
-        if (!snapshot.exists()) { showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning'); return; }
+        const snapshot = await window.database.ref('quizzes').orderByChild('lessonId').equalTo(lessonId).once('value');
+        if (!snapshot.exists()) { window.showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning'); return; }
         let quiz = null;
         snapshot.forEach(child => { quiz = { id: child.key, ...child.val() }; });
-        if (!quiz) { showToast('⚠️ حدث خطأ في تحميل الكويز', 'error'); return; }
+        if (!quiz) { window.showToast('⚠️ حدث خطأ في تحميل الكويز', 'error'); return; }
         currentQuizData = quiz;
         openExamSecurityModal(lessonId, function() { showQuizUI(quiz, true); }, 'quiz');
     } catch (err) { console.error('openLessonQuiz error:', err);
-        showToast('حدث خطأ في تحميل الكويز: ' + err.message, 'error'); }
+        window.showToast('حدث خطأ في تحميل الكويز: ' + err.message, 'error'); }
 }
 
-// ===== فتح واجب الحصة =====
 async function openLessonAssignment(lessonId) {
-    if (!currentUser) { showLoginOverlay(); return; }
+    if (!window.currentUser) { window.showLoginOverlay(); return; }
     const progressKey = 'assignment_' + lessonId;
-    if (userCourseProgress[progressKey]?.completed) { showCompletedModal(); return; }
+    if (window.userCourseProgress && window.userCourseProgress[progressKey]?.completed) { window.showCompletedModal(); return; }
     try {
-        const lesson = allLessons.find(l => l.id === lessonId);
+        const lesson = window.allLessons.find(l => l.id === lessonId);
         if (lesson) {
-            const course = allCourses.find(c => c.id === lesson.courseId);
-            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
-                showSubscriptionPage(course.id);
+            const course = window.allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !window.isPremiumCourse(course.id)) {
+                window.showSubscriptionPage(course.id);
                 return;
             }
         }
-        const snapshot = await database.ref('assignments/' + lessonId).once('value');
-        if (!snapshot.exists()) { showToast('الواجب غير موجود', 'error'); return; }
+        const snapshot = await window.database.ref('assignments/' + lessonId).once('value');
+        if (!snapshot.exists()) { window.showToast('الواجب غير موجود', 'error'); return; }
         const assign = { id: lessonId, ...snapshot.val() };
         const main = document.getElementById('mainContent');
         if (!main) return;
         main.innerHTML = `
             <div style="max-width:800px;margin:0 auto;padding:20px;">
                 <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
-                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📚 ${escapeHtml(assign.title)}</h2>
-                <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(assign.description) || ''}</p>
+                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);margin:12px 0 4px;">📚 ${window.escapeHtml(assign.title)}</h2>
+                <p style="color:var(--text2);margin-bottom:12px;">${window.escapeHtml(assign.description) || ''}</p>
                 <div class="card" style="padding:16px;margin-bottom:12px;">
                     <p style="color:var(--text);"><strong>الدرجة:</strong> ${assign.grade || 10}</p>
                     <p style="color:var(--text);"><strong>الحالة:</strong> <span style="color:var(--warning);">⏳ في انتظار التقييم</span></p>
-                    ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);">${escapeHtml(assign.content)}</div>` : ''}
+                    ${assign.content ? `<div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:var(--radius);color:var(--text);">${window.escapeHtml(assign.content)}</div>` : ''}
                     <button class="btn-primary" style="margin-top:12px;width:100%;" onclick="APP.completeAssignment('${lessonId}')"><i class="fas fa-check"></i> تسليم الواجب</button>
                 </div>
                 <div style="text-align:center;"><button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button></div>
@@ -116,31 +115,30 @@ async function openLessonAssignment(lessonId) {
         `;
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) { console.error('openLessonAssignment error:', err);
-        showToast('حدث خطأ في تحميل الواجب', 'error'); }
+        window.showToast('حدث خطأ في تحميل الواجب', 'error'); }
 }
 
-// ===== تسليم الواجب =====
 async function completeAssignment(lessonId) {
-    if (!currentUser) return;
+    if (!window.currentUser) return;
     const progressKey = 'assignment_' + lessonId;
-    if (userCourseProgress[progressKey]?.completed) { showCompletedModal(); return; }
+    if (window.userCourseProgress && window.userCourseProgress[progressKey]?.completed) { window.showCompletedModal(); return; }
     try {
         const atomsReward = 10;
-        const userRef = database.ref('users/' + currentUser.uid);
+        const userRef = window.database.ref('users/' + window.currentUser.uid);
         const userSnap = await userRef.once('value');
         if (userSnap.exists()) {
             const currentAtoms = userSnap.val().atoms || 0;
-            await database.ref('users/' + currentUser.uid + '/progress/' + progressKey).set({ completed: true, completedAt: new Date().toISOString(), type: 'assignment', atomsAwarded: atomsReward });
-            const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
+            await window.database.ref('users/' + window.currentUser.uid + '/progress/' + progressKey).set({ completed: true, completedAt: new Date().toISOString(), type: 'assignment', atomsAwarded: atomsReward });
+            const resultRef = window.database.ref('users/' + window.currentUser.uid + '/results').push();
             await resultRef.set({ title: 'واجب الحصة', type: 'assignment', score: 100, totalQuestions: 1, correctAnswers: 1, wrongAnswers: 0, timeSpent: 0, atomsEarned: atomsReward, completedAt: new Date().toISOString(), lessonId: lessonId });
             await userRef.update({ atoms: currentAtoms + atomsReward });
-            if (userData) userData.atoms = currentAtoms + atomsReward;
-            cache.userData = userData;
-            updateCache();
-            animateAtoms('atomsCount', currentAtoms + atomsReward);
-            animateAtoms('userAtomsCount', currentAtoms + atomsReward);
-            await addNotification(currentUser.uid, '📝 تم تسليم الواجب!', `حصلت على ${atomsReward} ذرة لتسليم الواجب.`, '📝');
-            showToast(`🎉 +${atomsReward} ذرة! تم تسليم الواجب بنجاح.`, 'success');
+            if (window.userData) window.userData.atoms = currentAtoms + atomsReward;
+            if (window.cache) { window.cache.userData = window.userData;
+                window.updateCache(); }
+            window.animateAtoms('atomsCount', currentAtoms + atomsReward);
+            window.animateAtoms('userAtomsCount', currentAtoms + atomsReward);
+            await window.addNotification(window.currentUser.uid, '📝 تم تسليم الواجب!', `حصلت على ${atomsReward} ذرة لتسليم الواجب.`, '📝');
+            window.showToast(`🎉 +${atomsReward} ذرة! تم تسليم الواجب بنجاح.`, 'success');
             const main = document.getElementById('mainContent');
             if (main) {
                 main.innerHTML = `<div style="max-width:800px;margin:0 auto;padding:20px;text-align:center;">
@@ -152,16 +150,15 @@ async function completeAssignment(lessonId) {
             }
         }
     } catch (err) { console.error('Error completing assignment:', err);
-        showToast('حدث خطأ في تسليم الواجب', 'error'); }
+        window.showToast('حدث خطأ في تسليم الواجب', 'error'); }
 }
 
-// ===== عرض واجهة الامتحان =====
 function showExamUI(exam, isSecure = false) {
     const main = document.getElementById('mainContent');
     if (!main) return;
     const questions = exam.questions || [];
-    if (questions.length === 0) { showToast('لا توجد أسئلة في هذا الامتحان', 'warning'); return; }
-    if (userCourseProgress['exam_' + (exam.lessonId || exam.id)]?.completed) { showCompletedModal(); return; }
+    if (questions.length === 0) { window.showToast('لا توجد أسئلة في هذا الامتحان', 'warning'); return; }
+    if (window.userCourseProgress && window.userCourseProgress['exam_' + (exam.lessonId || exam.id)]?.completed) { window.showCompletedModal(); return; }
 
     examStartTime = Date.now();
     let duration = exam.duration || 0;
@@ -184,7 +181,7 @@ function showExamUI(exam, isSecure = false) {
                 examTimer = null;
                 isExamActive = false;
                 submitExam(exam.id, exam.atomsReward || 10, true);
-                showToast('⏰ انتهى الوقت! تم تسليم الامتحان تلقائياً.', 'warning');
+                window.showToast('⏰ انتهى الوقت! تم تسليم الامتحان تلقائياً.', 'warning');
                 return;
             }
             const mins = Math.floor(timeLeft / 60);
@@ -198,7 +195,6 @@ function showExamUI(exam, isSecure = false) {
         }, 1000);
     }
 
-    // دالة اختيار الإجابة (مربوطة بـ window مباشرة)
     window.selectExamAnswer = function(id, qIdx, oIdx, correct) {
         if (!isExamActive || examSubmitted) return;
         if (!examAnswers[id]) examAnswers[id] = {};
@@ -235,7 +231,7 @@ function showExamUI(exam, isSecure = false) {
         <div class="question-card" style="display:${idx === 0 ? 'block' : 'none'};">
             <div class="card" style="padding:16px;margin-bottom:10px;">
                 <p style="font-weight:700;color:var(--text);margin-bottom:12px;font-size:1.1rem;">
-                    ${idx + 1}. ${escapeHtml(q.question)}
+                    ${idx + 1}. ${window.escapeHtml(q.question)}
                     ${q.image ? `<br><div class="quiz-image-container" onclick="event.stopPropagation(); APP.openImageZoom('${q.image}')">
                         <img src="${q.image}" style="max-width:100%;max-height:200px;border-radius:var(--radius);margin-top:8px;cursor:pointer;" loading="lazy">
                         <span class="zoom-icon">🔍 تكبير</span>
@@ -243,10 +239,10 @@ function showExamUI(exam, isSecure = false) {
                 </p>
                 <div style="display:flex;flex-direction:column;gap:6px;">
                     ${q.options.map((opt, oIdx) => `
-                        <div class="quiz-option" onclick="window.selectExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                        <div class="quiz-option" onclick="APP.selectExamAnswer('${exam.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                             <input type="radio" name="exam_q${idx}" id="exam_q${idx}_${oIdx}" value="${oIdx}">
                             <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                            <span class="option-label">${escapeHtml(opt)}</span>
+                            <span class="option-label">${window.escapeHtml(opt)}</span>
                         </div>
                     `).join('')}
                 </div>
@@ -258,7 +254,7 @@ function showExamUI(exam, isSecure = false) {
         <div style="max-width:800px;margin:0 auto;padding:16px;">
             <button class="btn-outline btn-sm no-print" onclick="APP.exitExam()"><i class="fas fa-arrow-right"></i> الخروج</button>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0;">
-                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">📝 ${escapeHtml(exam.title)}</h2>
+                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">📝 ${window.escapeHtml(exam.title)}</h2>
                 ${duration > 0 ? `
                     <div class="exam-timer" id="examTimerWrapper">
                         <i class="fas fa-clock"></i> 
@@ -266,7 +262,7 @@ function showExamUI(exam, isSecure = false) {
                     </div>
                 ` : ''}
             </div>
-            <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(exam.description) || ''}</p>
+            <p style="color:var(--text2);margin-bottom:12px;">${window.escapeHtml(exam.description) || ''}</p>
             <p style="color:var(--gold);font-weight:700;margin-bottom:12px;">⭐ ${exam.atomsReward || 10} ذرة عند النجاح</p>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <span style="font-size:0.85rem;color:var(--text2);">السؤال <span id="questionProgress">1 / ${questions.length}</span></span>
@@ -286,7 +282,6 @@ function showExamUI(exam, isSecure = false) {
     examAnswers[exam.id] = {};
 }
 
-// ===== التنقل بين أسئلة الامتحان =====
 function navigateExamQuestion(direction) {
     const cards = document.querySelectorAll('.question-card');
     let current = 0;
@@ -298,27 +293,17 @@ function navigateExamQuestion(direction) {
     document.getElementById('nextQuestion').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
-// ===== تسليم الامتحان (مع إصلاح التحقق من الإجابة على كل الأسئلة) =====
 async function submitExam(id, maxAtoms, autoSubmit = false) {
-    if (!currentUser) { showLoginOverlay(); return; }
+    if (!window.currentUser) { window.showLoginOverlay(); return; }
     const progressKey = 'exam_' + (currentExamData?.lessonId || id);
-    if (userCourseProgress[progressKey]?.completed) { showCompletedModal(); return; }
-    if (examSubmitted) { showToast('تم تسليم الامتحان بالفعل', 'info'); return; }
+    if (window.userCourseProgress && window.userCourseProgress[progressKey]?.completed) { window.showCompletedModal(); return; }
+    if (examSubmitted) { window.showToast('تم تسليم الامتحان بالفعل', 'info'); return; }
 
     const answers = examAnswers[id] || {};
     const totalQuestions = currentExamData?.questions?.length || 0;
-
-    // التحقق من الإجابة على كل سؤال
-    if (!autoSubmit) {
-        let allAnswered = true;
-        for (let i = 0; i < totalQuestions; i++) {
-            if (!answers[i]) { allAnswered = false; break; }
-        }
-        if (!allAnswered) {
-            const answeredCount = Object.keys(answers).length;
-            showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - answeredCount} متبقي)`, 'error');
-            return;
-        }
+    if (Object.keys(answers).length < totalQuestions && !autoSubmit) {
+        window.showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - Object.keys(answers).length} متبقي)`, 'error');
+        return;
     }
 
     if (examTimer) { clearInterval(examTimer);
@@ -328,8 +313,8 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
     isExamMode = false;
 
     try {
-        const snapshot = await database.ref('exams/' + id).once('value');
-        if (!snapshot.exists()) { showToast('المحتوى غير موجود', 'error'); return; }
+        const snapshot = await window.database.ref('exams/' + id).once('value');
+        if (!snapshot.exists()) { window.showToast('المحتوى غير موجود', 'error'); return; }
         const data = snapshot.val();
         const questions = data.questions || [];
 
@@ -348,32 +333,32 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
         const earnedAtoms = Math.round((score / 100) * maxAtoms);
         const timeSpent = Math.floor((Date.now() - examStartTime) / 1000);
 
-        const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
+        const progressRef = window.database.ref('users/' + window.currentUser.uid + '/progress/' + progressKey);
         await progressRef.set({ completed: true, score: score, atomsAwarded: earnedAtoms, completedAt: new Date().toISOString(), type: 'exam', totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, timeSpent: timeSpent, title: data.title || 'امتحان', results: results });
 
-        const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
+        const resultRef = window.database.ref('users/' + window.currentUser.uid + '/results').push();
         await resultRef.set({ title: data.title || 'امتحان', type: 'exam', score: score, totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, timeSpent: timeSpent, atomsEarned: earnedAtoms, completedAt: new Date().toISOString(), lessonId: data.lessonId || id, examId: id });
 
         if (earnedAtoms > 0) {
-            const atomRef = database.ref('users/' + currentUser.uid + '/atoms');
+            const atomRef = window.database.ref('users/' + window.currentUser.uid + '/atoms');
             await atomRef.transaction((current) => { return (current || 0) + earnedAtoms; });
-            const userSnap = await database.ref('users/' + currentUser.uid + '/atoms').once('value');
+            const userSnap = await window.database.ref('users/' + window.currentUser.uid + '/atoms').once('value');
             const newAtoms = userSnap.val() || 0;
-            if (userData) userData.atoms = newAtoms;
-            cache.userData = userData;
-            updateCache();
-            animateAtoms('atomsCount', newAtoms);
-            animateAtoms('userAtomsCount', newAtoms);
+            if (window.userData) window.userData.atoms = newAtoms;
+            if (window.cache) { window.cache.userData = window.userData;
+                window.updateCache(); }
+            window.animateAtoms('atomsCount', newAtoms);
+            window.animateAtoms('userAtomsCount', newAtoms);
         }
 
         if (score === 100) {
-            const perfectRef = database.ref('users/' + currentUser.uid + '/perfectExams');
+            const perfectRef = window.database.ref('users/' + window.currentUser.uid + '/perfectExams');
             await perfectRef.transaction((current) => { return (current || 0) + 1; });
-            if (userData) userData.perfectExams = (userData.perfectExams || 0) + 1;
+            if (window.userData) window.userData.perfectExams = (window.userData.perfectExams || 0) + 1;
         }
 
         if (wrongQuestions.length > 0) {
-            const errorRef = database.ref('users/' + currentUser.uid + '/errorBank');
+            const errorRef = window.database.ref('users/' + window.currentUser.uid + '/errorBank');
             const existingErrors = await errorRef.once('value');
             let errors = existingErrors.val() || [];
             wrongQuestions.forEach(wq => {
@@ -386,22 +371,23 @@ async function submitExam(id, maxAtoms, autoSubmit = false) {
             await errorRef.set(errors);
         }
 
-        await database.ref(`users/${currentUser.uid}/examSessions/${id}`).remove();
+        await window.database.ref(`users/${window.currentUser.uid}/examSessions/${id}`).remove();
 
-        userCourseProgress[progressKey] = { completed: true, score: score, atomsAwarded: earnedAtoms, completedAt: new Date().toISOString(), type: 'exam', totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, results: results };
-        cache.progress = userCourseProgress;
-        updateCache();
+        if (window.userCourseProgress) {
+            window.userCourseProgress[progressKey] = { completed: true, score: score, atomsAwarded: earnedAtoms, completedAt: new Date().toISOString(), type: 'exam', totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, results: results };
+            if (window.cache) { window.cache.progress = window.userCourseProgress;
+                window.updateCache(); }
+        }
 
         showExamResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
-        await addNotification(currentUser.uid, '📝 تم إكمال امتحان!', `لقد أكملت امتحان "${data.title || 'الامتحان'}" وحصلت على ${earnedAtoms} ذرة.`, '📝');
+        await window.addNotification(window.currentUser.uid, '📝 تم إكمال امتحان!', `لقد أكملت امتحان "${data.title || 'الامتحان'}" وحصلت على ${earnedAtoms} ذرة.`, '📝');
     } catch (err) { console.error('submitExam error:', err);
-        showToast('حدث خطأ أثناء تصحيح الامتحان: ' + err.message, 'error');
+        window.showToast('حدث خطأ أثناء تصحيح الامتحان: ' + err.message, 'error');
         isExamActive = true;
         examSubmitted = false;
         isExamMode = true; }
 }
 
-// ===== عرض نتيجة الامتحان =====
 function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -455,14 +441,14 @@ function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
                 <h3 style="font-weight:700;font-size:1.2rem;color:var(--danger);margin:20px 0 12px;">❌ الأسئلة الخاطئة (${wrongResults.length})</h3>
                 ${wrongResults.map((r, idx) => `
                     <div class="exam-result-card" style="border-right:4px solid var(--danger);">
-                        <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
+                        <div class="question-text">${idx + 1}. ${window.escapeHtml(r.question)}</div>
                         <div class="answer-row">
                             <span class="wrong-icon">❌</span>
-                            <span>إجابتك: <span class="user-ans">${escapeHtml(r.userAnswer)}</span></span>
+                            <span>إجابتك: <span class="user-ans">${window.escapeHtml(r.userAnswer)}</span></span>
                             <span>→</span>
-                            <span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>
+                            <span>الإجابة الصحيحة: <span class="correct-ans">${window.escapeHtml(r.correctAnswer)}</span></span>
                         </div>
-                        ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
+                        ${r.explanation ? `<div class="explanation">💡 ${window.escapeHtml(r.explanation)}</div>` : ''}
                     </div>
                 `).join('')}
             ` : ''}
@@ -475,17 +461,14 @@ function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// دوال الكويزات (مع إصلاح الاختيار والتسليم)
-// ============================================================
+// ===== دوال الكويزات =====
 
-// ===== عرض واجهة الكويز =====
 function showQuizUI(quiz, isSecure = false) {
     const main = document.getElementById('mainContent');
     if (!main) return;
     const questions = quiz.questions || [];
-    if (questions.length === 0) { showToast('لا توجد أسئلة في هذا الكويز', 'warning'); return; }
-    if (userCourseProgress['quiz_' + (quiz.lessonId || quiz.id)]?.completed) { showCompletedModal(); return; }
+    if (questions.length === 0) { window.showToast('لا توجد أسئلة في هذا الكويز', 'warning'); return; }
+    if (window.userCourseProgress && window.userCourseProgress['quiz_' + (quiz.lessonId || quiz.id)]?.completed) { window.showCompletedModal(); return; }
 
     examStartTime = Date.now();
     let duration = quiz.duration || 0;
@@ -508,7 +491,7 @@ function showQuizUI(quiz, isSecure = false) {
                 examTimer = null;
                 isExamActive = false;
                 submitQuiz(quiz.id, quiz.atomsReward || 5, true);
-                showToast('⏰ انتهى الوقت! تم تسليم الكويز تلقائياً.', 'warning');
+                window.showToast('⏰ انتهى الوقت! تم تسليم الكويز تلقائياً.', 'warning');
                 return;
             }
             const mins = Math.floor(timeLeft / 60);
@@ -522,12 +505,8 @@ function showQuizUI(quiz, isSecure = false) {
         }, 1000);
     }
 
-    // دالة اختيار الإجابة (مربوطة بـ window مباشرة)
     window.selectQuizAnswer = function(id, qIdx, oIdx, correct) {
-        if (!isExamActive || examSubmitted) {
-            if (examSubmitted) showToast('تم تسليم الكويز بالفعل', 'info');
-            return;
-        }
+        if (!isExamActive || examSubmitted) return;
         if (!quizAnswers[id]) quizAnswers[id] = {};
         const container = document.getElementById('quizContainer');
         if (container) {
@@ -545,13 +524,9 @@ function showQuizUI(quiz, isSecure = false) {
         quizAnswers[id][qIdx] = { selected: oIdx, correct: correct };
         answeredQuestions.add(qIdx);
         const countEl = document.getElementById('quizAnsweredCount');
-        if (countEl) {
-            const total = questions.length;
-            countEl.textContent = `${answeredQuestions.size} / ${total} تمت الإجابة`;
-        }
+        if (countEl) countEl.textContent = `${answeredQuestions.size} / ${questions.length} تمت الإجابة`;
     };
 
-    // دالة التنقل بين الأسئلة
     const renderQuestion = (index) => {
         const q = questions[index];
         if (!q) return;
@@ -566,7 +541,7 @@ function showQuizUI(quiz, isSecure = false) {
         <div class="quiz-question-card" style="display:${idx === 0 ? 'block' : 'none'};">
             <div class="card" style="padding:16px;margin-bottom:10px;">
                 <p style="font-weight:700;color:var(--text);margin-bottom:12px;font-size:1.1rem;">
-                    ${idx + 1}. ${escapeHtml(q.question)}
+                    ${idx + 1}. ${window.escapeHtml(q.question)}
                     ${q.image ? `<br><div class="quiz-image-container" onclick="event.stopPropagation(); APP.openImageZoom('${q.image}')">
                         <img src="${q.image}" style="max-width:100%;max-height:200px;border-radius:var(--radius);margin-top:8px;cursor:pointer;" loading="lazy">
                         <span class="zoom-icon">🔍 تكبير</span>
@@ -574,10 +549,10 @@ function showQuizUI(quiz, isSecure = false) {
                 </p>
                 <div style="display:flex;flex-direction:column;gap:6px;">
                     ${q.options.map((opt, oIdx) => `
-                        <div class="quiz-option" onclick="window.selectQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
+                        <div class="quiz-option" onclick="APP.selectQuizAnswer('${quiz.id}', ${idx}, ${oIdx}, ${q.correctAnswer})">
                             <input type="radio" name="quiz_q${idx}" id="quiz_q${idx}_${oIdx}" value="${oIdx}">
                             <span style="width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text2);flex-shrink:0;">${String.fromCharCode(65 + oIdx)}</span>
-                            <span class="option-label">${escapeHtml(opt)}</span>
+                            <span class="option-label">${window.escapeHtml(opt)}</span>
                         </div>
                     `).join('')}
                 </div>
@@ -589,7 +564,7 @@ function showQuizUI(quiz, isSecure = false) {
         <div style="max-width:800px;margin:0 auto;padding:16px;">
             <button class="btn-outline btn-sm no-print" onclick="APP.exitExam()"><i class="fas fa-arrow-right"></i> الخروج</button>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0;">
-                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">🧪 ${escapeHtml(quiz.title)}</h2>
+                <h2 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--text);">🧪 ${window.escapeHtml(quiz.title)}</h2>
                 ${duration > 0 ? `
                     <div class="exam-timer" id="quizTimerWrapper">
                         <i class="fas fa-clock"></i> 
@@ -597,11 +572,11 @@ function showQuizUI(quiz, isSecure = false) {
                     </div>
                 ` : ''}
             </div>
-            <p style="color:var(--text2);margin-bottom:12px;">${escapeHtml(quiz.description) || ''}</p>
+            <p style="color:var(--text2);margin-bottom:12px;">${window.escapeHtml(quiz.description) || ''}</p>
             <p style="color:var(--gold);font-weight:700;margin-bottom:12px;">⭐ ${quiz.atomsReward || 5} ذرة عند النجاح</p>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                 <span style="font-size:0.85rem;color:var(--text2);">السؤال <span id="quizProgress">1 / ${questions.length}</span></span>
-                <span style="font-size:0.85rem;color:var(--text2);" id="quizAnsweredCount">0 / ${questions.length} تمت الإجابة</span>
+                <span style="font-size:0.85rem;color:var(--text2);" id="quizAnsweredCount">${answeredQuestions.size} / ${questions.length} تمت الإجابة</span>
             </div>
             <div id="quizContainer">${questionsHtml}</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;justify-content:space-between;">
@@ -617,7 +592,6 @@ function showQuizUI(quiz, isSecure = false) {
     quizAnswers[quiz.id] = {};
 }
 
-// ===== التنقل بين أسئلة الكويز =====
 function navigateQuizQuestion(direction) {
     const cards = document.querySelectorAll('.quiz-question-card');
     let current = 0;
@@ -629,37 +603,28 @@ function navigateQuizQuestion(direction) {
     document.getElementById('quizNext').style.display = next < cards.length - 1 ? 'inline-flex' : 'none';
 }
 
-// ===== تسليم الكويز (مع إصلاح التحقق من الإجابة على كل الأسئلة) =====
 async function submitQuiz(id, maxAtoms, autoSubmit = false) {
-    if (!currentUser) { showLoginOverlay(); return; }
+    if (!window.currentUser) { window.showLoginOverlay(); return; }
     const progressKey = 'quiz_' + (currentQuizData?.lessonId || id);
-    if (userCourseProgress[progressKey]?.completed) { showCompletedModal(); return; }
-    if (examSubmitted) { showToast('تم تسليم الكويز بالفعل', 'info'); return; }
+    if (window.userCourseProgress && window.userCourseProgress[progressKey]?.completed) { window.showCompletedModal(); return; }
+    if (examSubmitted) { window.showToast('تم تسليم الكويز بالفعل', 'info'); return; }
 
     const answers = quizAnswers[id] || {};
     const totalQuestions = currentQuizData?.questions?.length || 0;
-
-    // التحقق من الإجابة على كل سؤال
-    if (!autoSubmit) {
-        let allAnswered = true;
-        for (let i = 0; i < totalQuestions; i++) {
-            if (!answers[i]) { allAnswered = false; break; }
-        }
-        if (!allAnswered) {
-            const answeredCount = Object.keys(answers).length;
-            showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - answeredCount} متبقي)`, 'error');
-            return;
-        }
+    if (Object.keys(answers).length < totalQuestions && !autoSubmit) {
+        window.showToast(`⚠️ الرجاء الإجابة على جميع الأسئلة (${totalQuestions - Object.keys(answers).length} متبقي)`, 'error');
+        return;
     }
 
-    if (examTimer) { clearInterval(examTimer); examTimer = null; }
+    if (examTimer) { clearInterval(examTimer);
+        examTimer = null; }
     isExamActive = false;
     examSubmitted = true;
     isExamMode = false;
 
     try {
-        const snapshot = await database.ref('quizzes/' + id).once('value');
-        if (!snapshot.exists()) { showToast('المحتوى غير موجود', 'error'); return; }
+        const snapshot = await window.database.ref('quizzes/' + id).once('value');
+        if (!snapshot.exists()) { window.showToast('المحتوى غير موجود', 'error'); return; }
         const data = snapshot.val();
         const questions = data.questions || [];
 
@@ -678,26 +643,26 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
         const earnedAtoms = Math.round((score / 100) * maxAtoms);
         const timeSpent = Math.floor((Date.now() - examStartTime) / 1000);
 
-        const progressRef = database.ref('users/' + currentUser.uid + '/progress/' + progressKey);
+        const progressRef = window.database.ref('users/' + window.currentUser.uid + '/progress/' + progressKey);
         await progressRef.set({ completed: true, score: score, atomsAwarded: earnedAtoms, completedAt: new Date().toISOString(), type: 'quiz', totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, timeSpent: timeSpent, title: data.title || 'كويز', results: results });
 
-        const resultRef = database.ref('users/' + currentUser.uid + '/results').push();
+        const resultRef = window.database.ref('users/' + window.currentUser.uid + '/results').push();
         await resultRef.set({ title: data.title || 'كويز', type: 'quiz', score: score, totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, timeSpent: timeSpent, atomsEarned: earnedAtoms, completedAt: new Date().toISOString(), lessonId: data.lessonId || id, quizId: id });
 
         if (earnedAtoms > 0) {
-            const atomRef = database.ref('users/' + currentUser.uid + '/atoms');
+            const atomRef = window.database.ref('users/' + window.currentUser.uid + '/atoms');
             await atomRef.transaction((current) => { return (current || 0) + earnedAtoms; });
-            const userSnap = await database.ref('users/' + currentUser.uid + '/atoms').once('value');
+            const userSnap = await window.database.ref('users/' + window.currentUser.uid + '/atoms').once('value');
             const newAtoms = userSnap.val() || 0;
-            if (userData) userData.atoms = newAtoms;
-            cache.userData = userData;
-            updateCache();
-            animateAtoms('atomsCount', newAtoms);
-            animateAtoms('userAtomsCount', newAtoms);
+            if (window.userData) window.userData.atoms = newAtoms;
+            if (window.cache) { window.cache.userData = window.userData;
+                window.updateCache(); }
+            window.animateAtoms('atomsCount', newAtoms);
+            window.animateAtoms('userAtomsCount', newAtoms);
         }
 
         if (wrongQuestions.length > 0) {
-            const errorRef = database.ref('users/' + currentUser.uid + '/errorBank');
+            const errorRef = window.database.ref('users/' + window.currentUser.uid + '/errorBank');
             const existingErrors = await errorRef.once('value');
             let errors = existingErrors.val() || [];
             wrongQuestions.forEach(wq => {
@@ -710,32 +675,21 @@ async function submitQuiz(id, maxAtoms, autoSubmit = false) {
             await errorRef.set(errors);
         }
 
-        userCourseProgress[progressKey] = { completed: true, score: score, atomsAwarded: earnedAtoms, completedAt: new Date().toISOString(), type: 'quiz', totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, results: results };
-        cache.progress = userCourseProgress;
-        updateCache();
-
-        showQuizResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
-        await addNotification(currentUser.uid, '🧪 تم إكمال كويز!', `لقد أكملت كويز "${data.title || 'الكويز'}" وحصلت على ${earnedAtoms} ذرة.`, '🧪');
-
-        // ===== إعادة تحميل صفحة الكورس لإظهار علامة "مكتمل" =====
-        if (currentQuizData?.lessonId) {
-            setTimeout(() => {
-                const lesson = allLessons.find(l => l.id === currentQuizData.lessonId);
-                if (lesson) openCoursePage(lesson.courseId);
-                else showHome();
-            }, 2000);
+        if (window.userCourseProgress) {
+            window.userCourseProgress[progressKey] = { completed: true, score: score, atomsAwarded: earnedAtoms, completedAt: new Date().toISOString(), type: 'quiz', totalQuestions: total, correctAnswers: correct, wrongAnswers: wrongQuestions.length, results: results };
+            if (window.cache) { window.cache.progress = window.userCourseProgress;
+                window.updateCache(); }
         }
 
-    } catch (err) {
-        console.error('submitQuiz error:', err);
-        showToast('حدث خطأ أثناء تصحيح الكويز: ' + err.message, 'error');
+        showQuizResults(id, score, correct, wrongQuestions.length, results, earnedAtoms);
+        await window.addNotification(window.currentUser.uid, '🧪 تم إكمال كويز!', `لقد أكملت كويز "${data.title || 'الكويز'}" وحصلت على ${earnedAtoms} ذرة.`, '🧪');
+    } catch (err) { console.error('submitQuiz error:', err);
+        window.showToast('حدث خطأ أثناء تصحيح الكويز: ' + err.message, 'error');
         isExamActive = true;
         examSubmitted = false;
-        isExamMode = true;
-    }
+        isExamMode = true; }
 }
 
-// ===== عرض نتيجة الكويز =====
 function showQuizResults(quizId, score, correct, wrong, results, atomsEarned) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -789,14 +743,14 @@ function showQuizResults(quizId, score, correct, wrong, results, atomsEarned) {
                 <h3 style="font-weight:700;font-size:1.2rem;color:var(--danger);margin:20px 0 12px;">❌ الأسئلة الخاطئة (${wrongResults.length})</h3>
                 ${wrongResults.map((r, idx) => `
                     <div class="exam-result-card" style="border-right:4px solid var(--danger);">
-                        <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
+                        <div class="question-text">${idx + 1}. ${window.escapeHtml(r.question)}</div>
                         <div class="answer-row">
                             <span class="wrong-icon">❌</span>
-                            <span>إجابتك: <span class="user-ans">${escapeHtml(r.userAnswer)}</span></span>
+                            <span>إجابتك: <span class="user-ans">${window.escapeHtml(r.userAnswer)}</span></span>
                             <span>→</span>
-                            <span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>
+                            <span>الإجابة الصحيحة: <span class="correct-ans">${window.escapeHtml(r.correctAnswer)}</span></span>
                         </div>
-                        ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
+                        ${r.explanation ? `<div class="explanation">💡 ${window.escapeHtml(r.explanation)}</div>` : ''}
                     </div>
                 `).join('')}
             ` : ''}
@@ -808,9 +762,7 @@ function showQuizResults(quizId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// دوال الأمان والعهد
-// ============================================================
+// ===== دوال الأمان والعهد =====
 
 function openExamSecurityModal(examId, callback, type = 'exam') {
     const modal = document.getElementById('examSecurityModal');
@@ -834,19 +786,18 @@ function startExamAfterPledge() {
         pendingExamCallback = null;
         currentExamId = null;
         document.getElementById('examSecurityModal').classList.remove('open');
-        if (currentUser && examIdToSave) {
-            database.ref(`users/${currentUser.uid}/examPledges/${examIdToSave}`).set({ agreed: true, agreedAt: new Date().toISOString() }).catch(err => console.error('Error saving pledge:', err));
+        if (window.currentUser && examIdToSave) {
+            window.database.ref(`users/${window.currentUser.uid}/examPledges/${examIdToSave}`).set({ agreed: true, agreedAt: new Date().toISOString() }).catch(err => console.error('Error saving pledge:', err));
         }
-        if (typeof callback === 'function') { callback(); } else { showToast('حدث خطأ داخلي، يرجى المحاولة مرة أخرى.', 'error'); }
+        if (typeof callback === 'function') { callback(); } else { window.showToast('حدث خطأ داخلي، يرجى المحاولة مرة أخرى.', 'error'); }
     }
 }
 
-// ===== الخروج من الامتحان =====
 function exitExam() {
     isExamMode = false;
     if (examTimer) { clearInterval(examTimer);
         examTimer = null; }
-    showHome();
+    window.showHome();
 }
 
 // ============================================================
@@ -855,22 +806,21 @@ function exitExam() {
 
 function bindExamFunctions() {
     if (window.APP) {
-        APP.openLessonExam = openLessonExam;
-        APP.openLessonQuiz = openLessonQuiz;
-        APP.openLessonAssignment = openLessonAssignment;
-        APP.completeAssignment = completeAssignment;
-        APP.submitExam = submitExam;
-        APP.submitQuiz = submitQuiz;
-        APP.exitExam = exitExam;
-        APP.navigateExamQuestion = navigateExamQuestion;
-        APP.navigateQuizQuestion = navigateQuizQuestion;
-        // ربط دوال الاختيار من window إلى APP (احتياطي)
-        APP.selectExamAnswer = window.selectExamAnswer || function() {};
-        APP.selectQuizAnswer = window.selectQuizAnswer || function() {};
-        APP.openExamSecurityModal = openExamSecurityModal;
-        APP.closeExamSecurityModal = closeExamSecurityModal;
-        APP.startExamAfterPledge = startExamAfterPledge;
-        APP.isAssessmentCompleted = isAssessmentCompleted;
+        window.APP.openLessonExam = openLessonExam;
+        window.APP.openLessonQuiz = openLessonQuiz;
+        window.APP.openLessonAssignment = openLessonAssignment;
+        window.APP.completeAssignment = completeAssignment;
+        window.APP.submitExam = submitExam;
+        window.APP.submitQuiz = submitQuiz;
+        window.APP.exitExam = exitExam;
+        window.APP.navigateExamQuestion = navigateExamQuestion;
+        window.APP.navigateQuizQuestion = navigateQuizQuestion;
+        window.APP.selectExamAnswer = window.selectExamAnswer;
+        window.APP.selectQuizAnswer = window.selectQuizAnswer;
+        window.APP.openExamSecurityModal = openExamSecurityModal;
+        window.APP.closeExamSecurityModal = closeExamSecurityModal;
+        window.APP.startExamAfterPledge = startExamAfterPledge;
+        window.APP.isAssessmentCompleted = isAssessmentCompleted;
         console.log('✅ Exam module loaded and bound to APP');
     } else {
         console.warn('⚠️ APP not found, retrying...');
