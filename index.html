@@ -116,6 +116,7 @@
             .hero-image-container img { max-height: 200px; aspect-ratio: 16/10; object-fit: contain; background: var(--bg); }
         }
 
+        /* ===== حماية الفيديو ===== */
         .video-protected {
             position: relative;
             cursor: default;
@@ -128,15 +129,29 @@
             pointer-events: none !important;
             cursor: default !important;
         }
-        .video-protected .video-overlay {
+        /* الطبقة الحاجبة الرئيسية - تمنع أي تفاعل */
+        .video-protected .video-blocker {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            cursor: default;
             background: transparent;
-            z-index: 10;
-            pointer-events: none;
+            pointer-events: auto;
+        }
+        /* طبقة إضافية لمنع النقر المزدوج وفتح الرابط */
+        .video-protected .video-blocker-extra {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 16;
+            cursor: default;
+            background: transparent;
+            pointer-events: auto;
         }
         .video-protected .video-watermark {
             position: absolute;
@@ -148,19 +163,39 @@
             border-radius: 20px;
             font-size: 0.6rem;
             font-weight: 700;
-            z-index: 11;
+            z-index: 20;
             pointer-events: none;
             opacity: 0.6;
         }
-        .video-protected .video-blocker {
+        .video-protected .video-protection-notice {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            cursor: default;
-            background: transparent;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0.7;
+            white-space: nowrap;
+        }
+        /* منع تحديد النص داخل حاوية الفيديو */
+        .video-protected * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+
+        /* منع النقر بزر الماوس الأيمن */
+        .no-context-menu {
+            -webkit-touch-callout: none;
+        }
+        .no-context-menu * {
+            -webkit-touch-callout: none;
         }
 
         .no-copy {
@@ -1683,6 +1718,22 @@
         .rank-badge.silver { background: var(--silver); color: #081B2C; }
         .rank-badge.bronze { background: var(--bronze); color: #fff; }
         .rank-badge.normal { background: var(--bg); color: var(--text2); }
+        
+        /* منع تحديد النص في جميع أنحاء الصفحة */
+        body, .no-copy, .no-copy * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+        }
+        
+        /* السماح بتحديد النص في حقول الإدخال فقط */
+        input, textarea, select {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+        }
     </style>
 </head>
 <body>
@@ -2954,26 +3005,39 @@
                         </div>
                         <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text);margin-bottom:12px;">🎥 ${escapeHtml(lesson.title)}</h1>
                         <div style="margin-bottom:12px;position:relative;">
-                            <!-- ===== فيديو محمي بالكامل - يمنع فتح يوتيوب ===== -->
+                            <!-- ===== فيديو محمي بالكامل - يمنع فتح يوتيوب بأي طريقة ===== -->
                             <div class="video-protected" style="position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:var(--radius-lg);overflow:hidden;cursor:default;">
+
+                                <!-- إطار الفيديو - pointer-events: none يمنع أي تفاعل -->
                                 <iframe 
                                     id="videoFrame" 
                                     src="https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0&iv_load_policy=3&cc_load_policy=0&disablekb=1" 
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;pointer-events:none;"
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;pointer-events:none !important;cursor:default !important;"
                                     allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" 
                                     allowfullscreen>
                                 </iframe>
-                                <!-- ===== طبقة شفافة تمنع أي تفاعل مع الفيديو ===== -->
-                                <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;cursor:default;background:transparent;" 
-                                     onclick="event.preventDefault(); event.stopPropagation(); return false;">
+                                
+                                <!-- ===== الطبقة الحاجبة الرئيسية - تمنع أي تفاعل مع الفيديو ===== -->
+                                <div class="video-blocker" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:15;cursor:default;background:transparent;pointer-events:auto;"
+                                     onclick="event.preventDefault(); event.stopPropagation(); return false;"
+                                     oncontextmenu="event.preventDefault(); event.stopPropagation(); return false;"
+                                     onmousedown="event.preventDefault(); event.stopPropagation(); return false;"
+                                     onmouseup="event.preventDefault(); event.stopPropagation(); return false;"
+                                     ondblclick="event.preventDefault(); event.stopPropagation(); return false;">
                                 </div>
+                                
+                                <!-- ===== طبقة إضافية لمنع أي محاولة لفتح الرابط ===== -->
+                                <div class="video-blocker-extra" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:16;cursor:default;background:transparent;pointer-events:auto;">
+                                </div>
+                                
                                 <!-- ===== علامة مائية ===== -->
-                                <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 12px;border-radius:20px;font-size:0.6rem;font-weight:700;z-index:11;pointer-events:none;opacity:0.6;">
+                                <div class="video-watermark" style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 12px;border-radius:20px;font-size:0.6rem;font-weight:700;z-index:20;pointer-events:none;opacity:0.6;">
                                     🔒 يلا كيمياء
                                 </div>
+                                
                                 <!-- ===== إشعار للمستخدم ===== -->
-                                <div style="position:absolute;bottom:50px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:6px 16px;border-radius:20px;font-size:0.7rem;z-index:11;pointer-events:none;white-space:nowrap;opacity:0.7;">
-                                    ⛔ لا يمكن فتح الرابط - المحتوى محمي
+                                <div class="video-protection-notice" style="position:absolute;bottom:50px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:6px 16px;border-radius:20px;font-size:0.65rem;z-index:20;pointer-events:none;opacity:0.7;white-space:nowrap;">
+                                    ⛔ المحتوى محمي - لا يمكن فتح الرابط أو نسخه
                                 </div>
                             </div>
                         </div>
