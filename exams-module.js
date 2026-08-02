@@ -520,7 +520,10 @@ function showExamResults(examId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== دوال الكويزات (مختصرة مع نفس الحماية) =====
+// ============================================================
+// دوال الكويزات
+// ============================================================
+
 function showQuizUI(quiz, isSecure = false) {
     const main = document.getElementById('mainContent');
     if (!main) return;
@@ -837,7 +840,10 @@ function showQuizResults(quizId, score, correct, wrong, results, atomsEarned) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== دوال الأمان والعهد =====
+// ============================================================
+// دوال الأمان والعهد
+// ============================================================
+
 function openExamSecurityModal(examId, callback, type = 'exam') {
     const modal = document.getElementById('examSecurityModal');
     const titleEl = document.getElementById('examPledgeTitle');
@@ -880,6 +886,7 @@ function exitExam() {
 // ============================================================
 // ربط الدوال بـ APP
 // ============================================================
+
 function bindExamFunctions() {
     if (window.APP) {
         window.APP.openLessonExam = openLessonExam;
