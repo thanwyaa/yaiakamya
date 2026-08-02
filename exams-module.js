@@ -1,3 +1,123 @@
+<script>
+    // ============================================================
+    // FALLBACK - ضمان عمل الدوال الأساسية حتى لو فشل تحميل exams-module.js
+    // ============================================================
+    (function() {
+        // تعريف دوال أساسية في حالة فشل تحميل الملف
+        window.APP = window.APP || {};
+        
+        // دوال أساسية يجب أن تعمل دائماً
+        window.APP.showHome = window.APP.showHome || function() {
+            alert('جاري تحميل المنصة... يرجى تحديث الصفحة');
+            location.reload();
+        };
+        
+        window.APP.scrollToCourses = window.APP.scrollToCourses || function() {
+            alert('جاري تحميل الكورسات...');
+        };
+        
+        window.APP.showPrivacy = window.APP.showPrivacy || function() {
+            alert('سياسة الخصوصية - قيد التحميل');
+        };
+        
+        window.APP.showTerms = window.APP.showTerms || function() {
+            alert('الشروط والأحكام - قيد التحميل');
+        };
+        
+        window.APP.showLoginOverlay = window.APP.showLoginOverlay || function() {
+            document.getElementById('loginOverlay')?.classList.add('open');
+        };
+        
+        window.APP.closeLoginOverlay = window.APP.closeLoginOverlay || function() {
+            document.getElementById('loginOverlay')?.classList.remove('open');
+        };
+        
+        window.APP.toggleTheme = window.APP.toggleTheme || function() {
+            document.documentElement.setAttribute('data-theme', 
+                document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+        };
+        
+        window.APP.logout = window.APP.logout || function() {
+            alert('جاري تسجيل الخروج...');
+        };
+        
+        window.APP.showDashboard = window.APP.showDashboard || function() {
+            alert('لوحة الطالب - قيد التحميل');
+        };
+        
+        window.APP.showLeaderboard = window.APP.showLeaderboard || function() {
+            alert('المتصدرين - قيد التحميل');
+        };
+        
+        window.APP.showAIInsights = window.APP.showAIInsights || function() {
+            alert('تحليل المستوى - قيد التحميل');
+        };
+        
+        window.APP.showErrorBank = window.APP.showErrorBank || function() {
+            alert('بنك الأخطاء - قيد التحميل');
+        };
+        
+        window.APP.showResults = window.APP.showResults || function() {
+            alert('النتائج - قيد التحميل');
+        };
+        
+        window.APP.showCertificate = window.APP.showCertificate || function() {
+            alert('الشهادات - قيد التحميل');
+        };
+        
+        window.APP.showStudentCard = window.APP.showStudentCard || function() {
+            alert('بطاقة الطالب - قيد التحميل');
+        };
+        
+        window.APP.showAchievements = window.APP.showAchievements || function() {
+            alert('الإنجازات - قيد التحميل');
+        };
+        
+        window.APP.showNotificationsPage = window.APP.showNotificationsPage || function() {
+            alert('الإشعارات - قيد التحميل');
+        };
+        
+        window.APP.markAllNotificationsRead = window.APP.markAllNotificationsRead || function() {
+            alert('تم تحديد الكل كمقروء');
+        };
+        
+        window.APP.deleteAllNotifications = window.APP.deleteAllNotifications || function() {
+            alert('تم حذف جميع الإشعارات');
+        };
+        
+        window.APP.closeCompletedModal = window.APP.closeCompletedModal || function() {
+            document.getElementById('completedModal')?.classList.remove('open');
+        };
+        
+        window.APP.showCompletedModal = window.APP.showCompletedModal || function() {
+            document.getElementById('completedModal')?.classList.add('open');
+        };
+        
+        window.APP.openImageZoom = window.APP.openImageZoom || function(src) {
+            const overlay = document.getElementById('imageOverlay');
+            const img = document.getElementById('zoomedImage');
+            if (overlay && img) { img.src = src; overlay.classList.add('open'); }
+        };
+        
+        window.APP.closeImageZoom = window.APP.closeImageZoom || function() {
+            document.getElementById('imageOverlay')?.classList.remove('open');
+        };
+        
+        window.APP.share = window.APP.share || function(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('🔥 منصة يلا كيمياء - اشرح الكيمياء ببساطة مع مستر زياد مبروك');
+            const links = {
+                whatsapp: `https://wa.me/?text=${text}%20${url}`,
+                telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`
+            };
+            window.open(links[platform] || links.whatsapp, '_blank');
+        };
+        
+        console.log('✅ APP Fallback functions loaded');
+    })();
+</script>
 // ============================================================
 // EXAMS, QUIZZES & ASSIGNMENTS MODULE
 // ============================================================
