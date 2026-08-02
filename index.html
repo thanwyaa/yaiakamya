@@ -32,7 +32,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
     <style>
-        /* ===== جميع الأنماط ===== */
         :root {
             --bg: #EAF6FF;
             --card: #FFFFFF;
@@ -81,7 +80,6 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        /* ===== اللوجو بدون إطار ===== */
         .nav-logo img {
             width: 40px;
             height: 40px;
@@ -91,7 +89,6 @@
             background: transparent !important;
         }
 
-        /* ===== صورة الواجهة ===== */
         .hero-image-container {
             width: 100%;
             border-radius: var(--radius-lg);
@@ -117,6 +114,64 @@
         }
         @media (max-width: 480px) {
             .hero-image-container img { max-height: 200px; aspect-ratio: 16/10; object-fit: contain; background: var(--bg); }
+        }
+
+        .video-protected {
+            position: relative;
+            cursor: default;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .video-protected iframe {
+            pointer-events: none !important;
+            cursor: default !important;
+        }
+        .video-protected .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .video-protected .video-watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            z-index: 11;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .video-protected .video-blocker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            cursor: default;
+            background: transparent;
+        }
+
+        .no-copy {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .no-copy * {
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .skeleton {
@@ -1554,7 +1609,6 @@
         }
         .study-time-display i { font-size: 1.2rem; }
 
-        /* ===== منع الغش ===== */
         .exam-container { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
         .exam-container * { user-select: none; -webkit-user-select: none; }
         .exam-container input, .exam-container textarea { user-select: text; -webkit-user-select: text; }
@@ -1615,6 +1669,20 @@
         }
         .profile-photo-upload:hover .upload-overlay { opacity: 1; }
         .profile-photo-upload input[type="file"] { display: none; }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+        .rank-badge.gold { background: var(--gold); color: #081B2C; }
+        .rank-badge.silver { background: var(--silver); color: #081B2C; }
+        .rank-badge.bronze { background: var(--bronze); color: #fff; }
+        .rank-badge.normal { background: var(--bg); color: var(--text2); }
     </style>
 </head>
 <body>
@@ -1776,39 +1844,172 @@
     <!-- ====== تحميل ملف الامتحانات ====== -->
     <script src="exams-module.js"></script>
 
-    <!-- ====== BOOTSTRAP - ضمان ظهور المنصة فوراً ====== -->
+    <!-- ====== BOOTSTRAP ====== -->
     <script>
         // ============================================================
-        // 🚀 BOOTSTRAP - يضمن ظهور المنصة حتى لو فشل تحميل Firebase
+        // 🚀 BOOTSTRAP - يضمن ظهور المنصة فوراً
         // ============================================================
         (function() {
             console.log('🚀 Yalla Chemistry - Bootstrap loading...');
             
-            // نعرف دوال أساسية
             window.APP = window.APP || {};
             
-            // دوال أساسية - تعمل فوراً
             window.APP.showHome = function() {
                 const main = document.getElementById('mainContent');
                 if (!main) return;
                 main.innerHTML = `
-                    <div style="max-width:1280px;margin:0 auto;padding:40px 20px;text-align:center;">
-                        <div style="font-size:4rem;margin-bottom:20px;">🧪</div>
-                        <h1 style="font-family:'Lalezar',cursive;font-size:2.5rem;color:var(--text);">يلا كيمياء</h1>
-                        <p style="font-size:1.2rem;color:var(--text2);margin-bottom:20px;">منصة تعليم الكيمياء - مع مستر زياد مبروك</p>
+                <section style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
+                    <div class="hero-image-container">
+                        <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png" alt="مستر زياد مبروك" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
+                    </div>
+                    <div class="video-section-title">تفاصيل بداية المنهج وتفاصيل المنصة | خطة الكيمياء الكاملة لطلاب دفعة 2027 مع مستر زياد مبروك</div>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/0PFWAzIJTOQ?si=fFqTokTKwqo1ZHMz" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div style="text-align:center;">
+                        <h1 style="font-family:'Lalezar',cursive;font-size:clamp(2rem,5vw,3.5rem);color:var(--text);margin-bottom:12px;">ابدأ صح… وخلّي الكيمياء تبقى لعبتك 🔥</h1>
+                        <p style="font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text2);max-width:600px;margin:0 auto 20px;font-weight:600;">مهما كان مستواك، هنا هتبدأ من الأول خالص… وهتمشي خطوة خطوة لحد ما توصل للفهم الحقيقي 💪</p>
                         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                             <a href="login.html" class="btn-primary">🚀 ابدأ التعلم الآن</a>
-                            <a href="login.html" class="btn-outline">⚪ تسجيل الدخول</a>
-                        </div>
-                        <div style="margin-top:30px;padding:20px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
-                            <p style="color:var(--text2);">⏳ جاري تحميل المنصة بالكامل...</p>
-                            <div class="spinner" style="margin:10px auto;"></div>
+                            <a href="login.html" class="btn-outline">⚪ سجل دخول</a>
                         </div>
                     </div>
-                `;
+                </section>
+
+                <section style="max-width:1280px;margin:0 auto;padding:0 20px 24px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;background:var(--card);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);">
+                        <div style="text-align:center;"><i class="fab fa-youtube" style="font-size:2rem;color:var(--accent);display:block;margin-bottom:4px;"></i><span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">+88,000</span><span style="font-size:0.8rem;color:var(--text2);">🎥 مشاهدة</span></div>
+                        <div style="text-align:center;"><i class="fab fa-telegram-plane" style="font-size:2rem;color:var(--accent);display:block;margin-bottom:4px;"></i><span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">2,300+</span><span style="font-size:0.8rem;color:var(--text2);">📢 عضو</span></div>
+                        <div style="text-align:center;"><i class="fab fa-whatsapp" style="font-size:2rem;color:var(--accent);display:block;margin-bottom:4px;"></i><span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">1,000+</span><span style="font-size:0.8rem;color:var(--text2);">🟢 عضو</span></div>
+                    </div>
+                </section>
+
+                <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+                        <div style="order:2;">
+                            <img src="https://res.cloudinary.com/dwiovjdrb/image/upload/v1781445273/%D8%A7%D9%87%D9%84%D8%A7_%D8%A8%D8%B1%D8%AC%D9%88%D8%B9%D9%83_%D9%8A_%D8%A8%D9%8A%D9%87_e7j5jv.jpg" alt="أهلاً برجوعك" style="width:100%;height:auto;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/3;" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div style="order:1;">
+                            <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:900;color:var(--text);margin-bottom:12px;">👋 أهلاً برجوعك يا بيه</h2>
+                            <p style="font-size:1rem;color:var(--text2);margin-bottom:8px;font-weight:600;">أنت دلوقتي قدام فرصة تبدأ صح، سواء كنت في أولى ثانوي أو تانية ثانوي ولسه حاسس إن الكيمياء صعبة أو إن عليك أجزاء كتير.</p>
+                            <p style="font-size:0.95rem;color:var(--primary2);margin-bottom:8px;">دوري هنا إني أخليك تدخل تالتة ثانوي وأنت فاهم الأساسيات كويس جدًا، ويمكن تبقى أقوى من ناس بدأت قبلك بوقت كبير.</p>
+                            <p style="font-size:0.95rem;color:var(--text2);margin-bottom:16px;">كل اللي محتاجه منك هو الالتزام، وهتشوف بنفسك الفرق في مستواك خطوة بخطوة لحد ما الكيمياء تبقى من أسهل المواد بالنسبة لك.</p>
+                            <a href="login.html" class="btn-primary">ابدأ رحلتك الآن 🚀</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+                        <div>
+                            <img src="https://res.cloudinary.com/dwiovjdrb/image/upload/v1781444602/%D9%84%D9%8A%D9%87_%D8%AA%D8%AA%D8%AA%D8%A7%D8%A8%D8%B9_%D8%B2%D9%8A%D8%A7%D8%AF_mexro9.png" alt="ليه تتابع" style="width:100%;height:auto;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/3;" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div>
+                            <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,3vw,2.5rem);color:var(--text);margin-bottom:12px;">ليه تتابع منصة يلا كيمياء؟</h2>
+                            <p style="font-size:1rem;color:var(--text2);margin-bottom:8px;">المستر بيبدأ معاك من الصفر… واحدة واحدة… من غير تعقيد… لحد ما تبقى فاهم بجد 💡</p>
+                            <p style="font-size:1.5rem;font-weight:900;color:var(--primary);margin-bottom:8px;">من Zero ➝ Hero 🔥</p>
+                            <p style="font-style:italic;font-size:1rem;color:var(--primary2);margin-bottom:16px;">⚠️ تحذير: ممكن تدمن الكيمياء معانا 😏</p>
+                            <a href="login.html" class="btn-primary">خليني أفهم 🧠</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+                        <div style="order:2;">
+                            <img src="https://res.cloudinary.com/dwiovjdrb/image/upload/v1781445017/Gemini_Generated_Image_51u16a51u16a51u1_jzaejt.png" alt="مستر زياد مبروك" style="width:100%;height:auto;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/3;" loading="lazy" onerror="this.style.display='none'">
+                        </div>
+                        <div style="order:1;">
+                            <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,3vw,2.5rem);color:var(--text);margin-bottom:12px;">👨‍🏫 مستر زياد مبروك</h2>
+                            <p style="font-size:1rem;color:var(--text2);margin-bottom:12px;">🧪 شرح مبسط وسهل | 📚 محتوى منظم | 🚀 متابعة مستمرة</p>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <span style="padding:4px 14px;border-radius:50px;font-weight:600;font-size:0.8rem;background:var(--bg);color:var(--primary);">🧪 شرح مبسط</span>
+                                <span style="padding:4px 14px;border-radius:50px;font-weight:600;font-size:0.8rem;background:var(--bg);color:var(--primary);">📚 محتوى منظم</span>
+                                <span style="padding:4px 14px;border-radius:50px;font-weight:600;font-size:0.8rem;background:var(--bg);color:var(--primary);">🚀 متابعة مستمرة</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="coursesSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📚 الكورسات المتاحة</h2>
+                    <p style="text-align:center;color:var(--text2);margin-bottom:12px;">اختر صفك الدراسي وابدأ التعلم</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px;">
+                        <button class="btn-filter active" data-grade="all">📚 جميع الصفوف</button>
+                        <button class="btn-filter" data-grade="أولى ثانوي">📖 أولى ثانوي</button>
+                        <button class="btn-filter" data-grade="تانية ثانوي">📖 تانية ثانوي</button>
+                        <button class="btn-filter" data-grade="تالتة ثانوي">📖 تالتة ثانوي</button>
+                    </div>
+                    <div style="max-width:400px;margin:0 auto 16px;position:relative;">
+                        <input type="text" id="courseSearch" placeholder="🔍 ابحث عن كورس..." style="width:100%;padding:8px 16px;padding-right:40px;border-radius:50px;border:2px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:0.9rem;outline:none;">
+                        <i class="fas fa-search" style="position:absolute;top:50%;right:14px;transform:translateY(-50%);color:var(--text2);"></i>
+                    </div>
+                    <div class="grid-courses" id="coursesGrid">
+                        <div class="card skeleton" style="height:320px;"></div>
+                        <div class="card skeleton" style="height:320px;"></div>
+                        <div class="card skeleton" style="height:320px;"></div>
+                    </div>
+                </section>
+
+                <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">💬 آراء الطلاب</h2>
+                    <p style="text-align:center;color:var(--text2);margin-bottom:16px;">ماذا يقول طلابنا عن المنصة</p>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
+                        <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"شكراً يا مستر ❤️ امتحان الأزهر كله تقريباً جه من فيديو الـ150 سؤال"</p><div class="name">أحمد محمد</div></div>
+                        <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"المراجعة النهائية كانت جامدة جداً، لخصتلي المنهج كله"</p><div class="name">محمد خالد</div></div>
+                        <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"كنت بخاف من الكيمياء جداً، لكن طريقة الشرح خلت المادة أسهل"</p><div class="name">ملك أحمد</div></div>
+                        <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"الفضل بعد ربنا يرجع ليك يا مستر ❤️"</p><div class="name">فاطمة علي</div></div>
+                        <div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"الشرح بسيط ومنظم، وكل حصة بحس إني فاهمة أكتر"</p><div class="name">إسراء محمود</div></div>
+                    </div>
+                </section>
+
+                <section id="leaderboardSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">🏆 المتصدرين</h2>
+                    <p style="text-align:center;color:var(--text2);margin-bottom:12px;">أفضل الطلاب في منصة يلا كيمياء</p>
+                    <div id="leaderboardContainer"><div class="card skeleton" style="height:400px;"></div></div>
+                </section>
+
+                <section style="max-width:800px;margin:0 auto;padding:0 20px 32px;">
+                    <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">❓ أسئلة شائعة</h2>
+                    <p style="text-align:center;color:var(--text2);margin-bottom:16px;">كل اللي محتاج تعرفه عن المنصة</p>
+                    <div>
+                        <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>📝 كيف أسجل في المنصة؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يقوم الطالب بإدخال:<br>• الاسم بالكامل<br>• البريد الإلكتروني<br>• رقم الهاتف<br>• كلمة المرور<br><br>ثم يتم إنشاء الحساب مباشرة.</div></div>
+                        <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">قم بإدخال:<br>• البريد الإلكتروني<br>• كلمة المرور<br><br>ثم اضغط على تسجيل الدخول.</div></div>
+                        <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🎯 هل المنصة مناسبة للمبتدئين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.</div></div>
+                    </div>
+                </section>
+
+                <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📢 شارك المنصة مع أصحابك</h2>
+                    <p style="text-align:center;color:var(--text2);margin-bottom:16px;">انشر الرابط وساعد غيرك يتعلم الكيمياء بسهولة</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+                        <button class="btn-primary" style="background:#25D366;" onclick="APP.share('whatsapp')"><i class="fab fa-whatsapp"></i> واتساب</button>
+                        <button class="btn-primary" style="background:#229ED9;" onclick="APP.share('telegram')"><i class="fab fa-telegram-plane"></i> تيليجرام</button>
+                        <button class="btn-primary" style="background:#1877F2;" onclick="APP.share('facebook')"><i class="fab fa-facebook"></i> فيسبوك</button>
+                    </div>
+                </section>
+
+                <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                    <div class="card" style="padding:32px 24px;text-align:center;">
+                        <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,3vw,2.5rem);color:var(--text);margin-bottom:8px;">🚀 ابدأ رحلتك الآن</h2>
+                        <p style="color:var(--text2);margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto;">انضم إلى آلاف الطلاب الذين بدأوا رحلتهم في الكيمياء مع مستر زياد مبروك</p>
+                        <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+                            <a href="login.html" class="btn-primary">✨ إنشاء حساب مجاناً</a>
+                            <a href="login.html" class="btn-outline">🔑 تسجيل الدخول</a>
+                        </div>
+                    </div>
+                </section>
+            `;
             };
             
-            window.APP.scrollToCourses = function() { window.APP.showHome(); };
+            // ===== دوال أساسية أخرى =====
+            window.APP.scrollToCourses = function() { 
+                const section = document.getElementById('coursesSection');
+                if (section) { section.scrollIntoView({ behavior: 'smooth' }); } else {
+                    window.APP.showHome();
+                    setTimeout(() => { const sec = document.getElementById('coursesSection'); if (sec) sec.scrollIntoView({ behavior: 'smooth' }); }, 300);
+                }
+            };
             window.APP.showLoginOverlay = function() { 
                 document.getElementById('loginOverlay')?.classList.add('open');
             };
@@ -1822,7 +2023,14 @@
             };
             window.APP.logout = function() { alert('جاري تسجيل الخروج...'); };
             window.APP.showDashboard = function() { alert('لوحة الطالب - قيد التحميل'); };
-            window.APP.showLeaderboard = function() { alert('المتصدرين - قيد التحميل'); };
+            window.APP.showLeaderboard = function() { 
+                if (window.APP && window.APP.loadLeaderboard) {
+                    window.APP.showHome();
+                    setTimeout(() => { window.APP.loadLeaderboard(); }, 300);
+                } else {
+                    alert('المتصدرين - قيد التحميل');
+                }
+            };
             window.APP.showAIInsights = function() { alert('تحليل المستوى - قيد التحميل'); };
             window.APP.showErrorBank = function() { alert('بنك الأخطاء - قيد التحميل'); };
             window.APP.showResults = function() { alert('النتائج - قيد التحميل'); };
@@ -1855,15 +2063,14 @@
                 window.open(links[platform] || links.whatsapp, '_blank');
             };
             
+            // دوال الامتحانات
             window.APP.openLessonExam = function(id) { alert('جاري تحميل الامتحان...'); };
             window.APP.openLessonQuiz = function(id) { alert('جاري تحميل الكويز...'); };
             window.APP.openLessonAssignment = function(id) { alert('جاري تحميل الواجب...'); };
             window.APP.submitExam = function() { alert('جاري تسليم الامتحان...'); };
             window.APP.submitQuiz = function() { alert('جاري تسليم الكويز...'); };
             window.APP.exitExam = function() { window.APP.showHome(); };
-            window.APP.openExamSecurityModal = function(id, callback) { 
-                if (callback) callback(); 
-            };
+            window.APP.openExamSecurityModal = function(id, callback) { if (callback) callback(); };
             window.APP.closeExamSecurityModal = function() {
                 document.getElementById('examSecurityModal')?.classList.remove('open');
             };
@@ -1871,14 +2078,14 @@
                 document.getElementById('examSecurityModal')?.classList.remove('open');
             };
             
-            // عرض الصفحة الرئيسية فوراً
+            // عرض الصفحة فوراً
             setTimeout(function() {
                 if (document.getElementById('mainContent')) {
                     window.APP.showHome();
                 }
-            }, 100);
+            }, 50);
             
-            console.log('✅ Bootstrap loaded - Fallback functions ready');
+            console.log('✅ Bootstrap loaded');
         })();
     </script>
 
@@ -1951,7 +2158,7 @@
                 }
             });
             
-            console.log('🔒 Security: Console locked, DevTools blocked');
+            console.log('🔒 Security active');
         })();
 
         // ============================================================
@@ -2685,7 +2892,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO - محمي بالكامل
+        // LESSON VIDEO - محمي بالكامل (يمنع فتح رابط يوتيوب)
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -2746,24 +2953,35 @@
                             <span style="font-weight:600;color:var(--text);">${escapeHtml(lesson.title)}</span>
                         </div>
                         <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text);margin-bottom:12px;">🎥 ${escapeHtml(lesson.title)}</h1>
-                        <div style="margin-bottom:12px;">
-                            <div class="video-protected" style="position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:var(--radius-lg);overflow:hidden;">
+                        <div style="margin-bottom:12px;position:relative;">
+                            <!-- ===== فيديو محمي بالكامل - يمنع فتح يوتيوب ===== -->
+                            <div class="video-protected" style="position:relative;padding-bottom:56.25%;height:0;background:#000;border-radius:var(--radius-lg);overflow:hidden;cursor:default;">
                                 <iframe 
                                     id="videoFrame" 
-                                    src="https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0" 
-                                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+                                    src="https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0&iv_load_policy=3&cc_load_policy=0&disablekb=1" 
+                                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;pointer-events:none;"
                                     allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" 
                                     allowfullscreen>
                                 </iframe>
-                                <div class="video-overlay"></div>
-                                <div class="video-watermark">🔒 يلا كيمياء - للمشتركين فقط</div>
+                                <!-- ===== طبقة شفافة تمنع أي تفاعل مع الفيديو ===== -->
+                                <div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;cursor:default;background:transparent;" 
+                                     onclick="event.preventDefault(); event.stopPropagation(); return false;">
+                                </div>
+                                <!-- ===== علامة مائية ===== -->
+                                <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.7);color:#fff;padding:4px 12px;border-radius:20px;font-size:0.6rem;font-weight:700;z-index:11;pointer-events:none;opacity:0.6;">
+                                    🔒 يلا كيمياء
+                                </div>
+                                <!-- ===== إشعار للمستخدم ===== -->
+                                <div style="position:absolute;bottom:50px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:6px 16px;border-radius:20px;font-size:0.7rem;z-index:11;pointer-events:none;white-space:nowrap;opacity:0.7;">
+                                    ⛔ لا يمكن فتح الرابط - المحتوى محمي
+                                </div>
                             </div>
                         </div>
                         <div style="display:flex;gap:12px;flex-wrap:wrap;">
                             <button class="btn-outline btn-sm no-print" onclick="APP.handleVideoExit('${lessonId}')">📚 العودة للكورس</button>
                             <button class="btn-outline btn-sm no-print" onclick="APP.showHome()">🏠 الرئيسية</button>
                         </div>
-                        <p style="text-align:center;font-size:0.7rem;color:var(--text2);margin-top:12px;">🔒 هذا المحتوى محمي ولا يمكن مشاركته</p>
+                        <p style="text-align:center;font-size:0.7rem;color:var(--text2);margin-top:12px;">🔒 هذا المحتوى محمي ولا يمكن مشاركته أو فتحه خارج المنصة</p>
                     </div>
                 `;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3076,10 +3294,8 @@
                     
                     <div class="video-section-title">تفاصيل بداية المنهج وتفاصيل المنصة | خطة الكيمياء الكاملة لطلاب دفعة 2027 مع مستر زياد مبروك</div>
                     
-                    <div class="video-wrapper video-protected">
+                    <div class="video-wrapper">
                         <iframe src="${INTRO_VIDEO_URL}" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
-                        <div class="video-overlay"></div>
-                        <div class="video-watermark">🔒 يلا كيمياء</div>
                     </div>
                     
                     <div style="text-align:center;">
@@ -3202,6 +3418,7 @@
                         <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔄 هل يتم إضافة محتوى جديد باستمرار؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، يتم إضافة حصص وكورسات وامتحانات جديدة بشكل دوري.</div></div>
                         <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🏆 كيف يتم حساب الترتيب؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يتم ترتيب الطلاب حسب عدد الذرات التي جمعوها، ويتم تحديث الترتيب تلقائياً مع كل تغيير.</div></div>
                         <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>⚛️ ما هي الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">الذرات هي نظام المكافآت داخل المنصة، يحصل عليها الطالب من خلال حل الامتحانات والكويزات وإكمال الحصص والكورسات.</div></div>
+                        <div class="faq-item"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')"><span>🔒 هل الكورسات المدفوعة آمنة؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">نعم، جميع الكورسات المدفوعة محمية بشكل كامل، ولا يمكن الوصول إليها إلا بعد الاشتراك.</div></div>
                     </div>
                 </section>
 
@@ -3243,7 +3460,7 @@
         }
 
         // ============================================================
-        // LEADERBOARD
+        // LEADERBOARD - المتصدرين الخمسة
         // ============================================================
         function loadLeaderboard() {
             const container = document.getElementById('leaderboardContainer');
@@ -3750,7 +3967,7 @@
         }
 
         // ============================================================
-        // الشهادات، بطاقة الطالب، الإنجازات، تحليل المستوى، سياسة الخصوصية، الشروط
+        // الشهادات، بطاقة الطالب، الإنجازات، تحليل المستوى
         // ============================================================
         function showCertificate() {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3910,31 +4127,39 @@
             const progress = allLessons.length > 0 ? Math.round((lessonsCompleted / allLessons.length) * 100) : 0;
             const rank = userData?.rank || '--';
             let level = 'مبتدئ', levelColor = 'var(--text2)', levelEmoji = '🌱', detailedAnalysis = '', suggestions = [], strengths = [], weaknesses = [];
-            if (progress >= 80 && perfectExams >= 3) { level = 'خبير جداً 🏆';
+            if (progress >= 80 && perfectExams >= 3) {
+                level = 'خبير جداً 🏆';
                 levelColor = 'var(--gold)';
                 levelEmoji = '👑';
                 detailedAnalysis = 'أنت من أفضل الطلاب! أداءك ممتاز في جميع المجالات.';
                 suggestions = ['شارك معرفتك مع زملائك', 'حاول حل امتحانات من أعوام سابقة'];
                 strengths = ['فهم عميق للمادة', 'أداء ممتاز في الامتحانات'];
-                weaknesses = ['لا توجد نقاط ضعف ملحوظة']; } else if (progress >= 70) { level = 'متقدم جداً 💪';
+                weaknesses = ['لا توجد نقاط ضعف ملحوظة'];
+            } else if (progress >= 70) {
+                level = 'متقدم جداً 💪';
                 levelColor = 'var(--success)';
                 levelEmoji = '⭐';
                 detailedAnalysis = 'أداءك ممتاز، أنت على بعد خطوات قليلة من الإتقان الكامل.';
                 suggestions = ['ركز على النقاط التي تجدها صعبة', 'حل المزيد من الامتحانات الشاملة'];
                 strengths = ['فهم جيد للمادة', 'أداء مستقر'];
-                weaknesses = ['بعض النقاط تحتاج إلى تعزيز']; } else if (progress >= 50) { level = 'متقدم 📚';
+                weaknesses = ['بعض النقاط تحتاج إلى تعزيز'];
+            } else if (progress >= 50) {
+                level = 'متقدم 📚';
                 levelColor = 'var(--primary)';
                 levelEmoji = '📈';
                 detailedAnalysis = 'أنت في الطريق الصحيح، مع استمرارية التعلم ستصل إلى مستويات أعلى.';
                 suggestions = ['زود وقت مذاكرتك اليومية', 'راجع الدروس بانتظام'];
                 strengths = ['أساسيات قوية', 'التزام جيد'];
-                weaknesses = ['تحتاج إلى تعميق الفهم في بعض الأجزاء']; } else { level = 'مبتدئ 🌱';
+                weaknesses = ['تحتاج إلى تعميق الفهم في بعض الأجزاء'];
+            } else {
+                level = 'مبتدئ 🌱';
                 levelColor = 'var(--primary)';
                 levelEmoji = '🌱';
                 detailedAnalysis = 'كل رحلة تبدأ بخطوة، أنت في بداية الطريق. استمر ولا تيأس!';
                 suggestions = ['ابدأ من البداية بثقة', 'خصص وقت يومي للمذاكرة', 'شاهد الفيديوهات التعليمية'];
                 strengths = ['حماس للتعلم', 'استعداد للتطوير'];
-                weaknesses = ['يحتاج إلى بناء الأساسيات', 'يحتاج إلى ممارسة أكثر']; }
+                weaknesses = ['يحتاج إلى بناء الأساسيات', 'يحتاج إلى ممارسة أكثر'];
+            }
             if (examsPassed > quizzesPassed * 1.5) strengths.push('تفوق في الامتحانات');
             if (streak > 7) strengths.push('التزام عالي جداً');
             if (perfectExams > 0) strengths.push(`حصلت على ${perfectExams} امتحانات كاملة`);
@@ -4106,6 +4331,7 @@
             showCompletedModal,
             openImageZoom,
             closeImageZoom,
+            // سيتم ربط دوال الامتحانات من الملف الخارجي
             openLessonExam: null,
             openLessonQuiz: null,
             openLessonAssignment: null,
