@@ -116,7 +116,7 @@
             .hero-image-container img { max-height: 200px; aspect-ratio: 16/10; object-fit: contain; background: var(--bg); }
         }
 
-        /* ===== هيكل حماية الفيديو ===== */
+        /* ===== هيكل حماية الفيديو - مع الحفاظ على تشغيل الفيديو ===== */
         .video-protected {
             position: relative;
             width: 100%;
@@ -138,7 +138,7 @@
             display: block;
         }
 
-        /* ===== طبقة الحجب - تمنع النقر بزر الماوس الأيمن فقط ===== */
+        /* ===== طبقة الحجب - تمنع النقر بزر الماوس الأيمن فقط (pointer-events: none عشان الفيديو يشتغل) ===== */
         .video-blocker {
             position: absolute;
             top: 0;
@@ -148,7 +148,7 @@
             z-index: 10;
             background: transparent;
             cursor: default;
-            pointer-events: none; /* ← مهم جداً عشان الفيديو يشتغل */
+            pointer-events: none; /* ← ضروري عشان الفيديو يشتغل */
         }
 
         /* ===== علامة مائية ثابتة ===== */
@@ -1741,6 +1741,14 @@
         .rank-badge.silver { background: var(--silver); color: #081B2C; }
         .rank-badge.bronze { background: var(--bronze); color: #fff; }
         .rank-badge.normal { background: var(--bg); color: var(--text2); }
+        
+        /* منع نسخ الرابط */
+        .no-video-copy {
+            -webkit-touch-callout: none;
+        }
+        .no-video-copy * {
+            -webkit-touch-callout: none;
+        }
     </style>
 </head>
 <body>
@@ -2173,20 +2181,18 @@
                 }
             });
             
-            // منع النقر بزر الماوس الأيمن
+            // منع النقر بزر الماوس الأيمن في كل الصفحة لمنع فتح الرابط
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
             
-            // منع النسخ في الامتحانات فقط
+            // منع النسخ
             document.addEventListener('copy', function(e) {
-                if (document.querySelector('.exam-container')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             });
             
             document.addEventListener('paste', function(e) {
@@ -2954,7 +2960,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO - محمي بالكامل مع هيكل الحماية
+        // LESSON VIDEO - محمي بالكامل مع تشغيل الفيديو
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3012,7 +3018,7 @@
                         <!-- ===== هيكل حماية الفيديو ===== -->
                         <div class="video-protected" id="videoContainer">
                             
-                            <!-- ===== طبقة حجب - تمنع النقر بزر الماوس الأيمن فقط (pointer-events: none عشان الفيديو يشتغل) ===== -->
+                            <!-- ===== طبقة حجب - pointer-events: none عشان الفيديو يشتغل ===== -->
                             <div class="video-blocker" id="videoBlocker"></div>
                             
                             <!-- ===== علامة مائية ثابتة ===== -->
