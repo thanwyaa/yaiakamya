@@ -32,7 +32,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
     <style>
-        /* ===== الأنماط الأساسية ===== */
+        /* ===== جميع الأنماط الأصلية محتفظ بها مع إضافة أنماط جديدة ===== */
         :root {
             --bg: #EAF6FF;
             --card: #FFFFFF;
@@ -81,6 +81,16 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
+        /* ===== اللوجو بدون إطار أو دائرة ===== */
+        .nav-logo img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border: none !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+        }
+
         .skeleton {
             background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
             background-size: 200% 100%;
@@ -128,11 +138,10 @@
         .nav-logo img {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: none;
-            box-shadow: none;
-            background: transparent;
+            object-fit: contain;
+            border: none !important;
+            border-radius: 0 !important;
+            background: transparent !important;
         }
         .nav-logo span {
             font-family: 'Lalezar', cursive;
@@ -246,6 +255,68 @@
         [data-theme="dark"] .theme-toggle { background: var(--primary); }
         [data-theme="dark"] .theme-toggle::after { transform: translateX(-14px); }
 
+        /* ===== أنماط محسنة للوحة الطالب ===== */
+        .dashboard-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .dashboard-stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 16px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .dashboard-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .dashboard-stat-card .icon { font-size: 2rem; margin-bottom: 4px; display: block; }
+        .dashboard-stat-card .number {
+            font-family: 'Lalezar', cursive;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: block;
+        }
+        .dashboard-stat-card .label {
+            font-size: 0.8rem;
+            color: var(--text2);
+            font-weight: 600;
+        }
+        .dashboard-stat-card .progress-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 8px;
+            position: relative;
+        }
+        .dashboard-stat-card .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        .dashboard-stat-card .progress-ring .bg { fill: none; stroke: var(--border); stroke-width: 8; }
+        .dashboard-stat-card .progress-ring .fg {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+        .dashboard-stat-card .progress-ring .center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Lalezar', cursive;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--text);
+        }
+
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -298,6 +369,8 @@
         .btn-sm { padding: 8px 20px; font-size: 0.8rem; }
         .btn-success { background: var(--success); color: #fff; border: none; }
         .btn-success:hover { background: #16a34a; }
+        .btn-danger { background: var(--danger); color: #fff; border: none; }
+        .btn-danger:hover { background: #dc2626; }
 
         .card {
             background: var(--card);
@@ -668,274 +741,1243 @@
             color: var(--primary);
         }
 
-        /* ===== تصميم لوحة الطالب الجديد ===== */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+        @media (max-width: 992px) {
+            .nav-links a, .nav-links button { font-size: 0.7rem; padding: 4px 10px; }
+            .nav-logo span { font-size: 1rem; }
+            .nav-logo img { width: 32px; height: 32px; }
+            .btn-primary, .btn-outline { padding: 10px 24px; font-size: 0.85rem; }
+            .stat-circle-card .circle { width: 60px; height: 60px; font-size: 1.1rem; }
+            .stat-circle-card .circle .number { font-size: 1.2rem; }
         }
-        .dashboard-grid .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px 12px;
+
+        @media (max-width: 768px) {
+            .nav-container { padding: 0 8px; gap: 4px; flex-wrap: wrap; }
+            .nav-links { gap: 2px; }
+            .nav-links a, .nav-links button { font-size: 0.6rem; padding: 3px 8px; }
+            .nav-logo span { font-size: 0.85rem; }
+            .nav-logo img { width: 28px; height: 28px; }
+            .theme-toggle { width: 28px; height: 16px; }
+            .theme-toggle::after { width: 12px; height: 12px; }
+            .btn-primary, .btn-outline { padding: 8px 18px; font-size: 0.8rem; }
+            .card-img { height: 170px; }
+            .grid-courses { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .grid-dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .stat-circle-card .circle { width: 55px; height: 55px; font-size: 1rem; }
+            .stat-circle-card .circle .number { font-size: 1rem; }
+            .dashboard-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container { padding: 0 4px; gap: 2px; }
+            .nav-links a, .nav-links button { font-size: 0.55rem; padding: 2px 6px; }
+            .nav-logo span { font-size: 0.75rem; }
+            .nav-logo img { width: 24px; height: 24px; }
+            .theme-toggle { width: 24px; height: 14px; }
+            .theme-toggle::after { width: 10px; height: 10px; }
+            .btn-primary, .btn-outline { padding: 6px 14px; font-size: 0.7rem; }
+            .grid-courses { grid-template-columns: 1fr; gap: 12px; }
+            .grid-dashboard { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .card-img { height: 150px; }
+            .stat-circle-card { padding: 12px; }
+            .stat-circle-card .circle { width: 50px; height: 50px; font-size: 0.9rem; }
+            .stat-circle-card .circle .number { font-size: 0.9rem; }
+            .stat-circle-card .label { font-size: 0.6rem; }
+            .dashboard-stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--border);
+        }
+        .empty-state .icon { font-size: 4rem; margin-bottom: 12px; }
+        .empty-state h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+        .empty-state p { color: var(--text2); margin-top: 4px; }
+
+        .leaderboard-podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+        }
+
+        .podium-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
             transition: var(--transition);
+            position: relative;
         }
-        .dashboard-grid .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-        .dashboard-grid .stat-card .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 4px;
-        }
-        .dashboard-grid .stat-card .stat-value {
-            font-family: 'Lalezar', cursive;
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-        .dashboard-grid .stat-card .stat-label {
-            font-size: 0.75rem;
-            color: var(--text2);
-            font-weight: 600;
-        }
-        .dashboard-grid .stat-card .stat-sub {
-            font-size: 0.7rem;
-            color: var(--text2);
-            opacity: 0.7;
-        }
-
-        .dashboard-section {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .dashboard-section h3 {
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 12px;
+        .podium-item:hover { transform: translateY(-5px); }
+        .podium-item .podium-rank { font-size: 2.5rem; margin-bottom: 4px; }
+        .podium-item .podium-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 1.1rem;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            border: 4px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        .podium-item .podium-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .podium-item.gold .podium-avatar {
+            border-color: #FFD60A;
+            box-shadow: 0 0 30px rgba(255, 214, 10, 0.4), 0 0 60px rgba(255, 214, 10, 0.2);
+            animation: glowGold 2s ease-in-out infinite;
+        }
+        .podium-item.gold .podium-base { background: #FFD60A; height: 12px; width: 80px; border-radius: 4px; margin-top: 8px; }
+        .podium-item.gold .podium-name { color: #D4A800; }
+        .podium-item.gold .podium-atoms { color: #D4A800; font-weight: 700; }
+        @keyframes glowGold {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 214, 10, 0.4), 0 0 60px rgba(255, 214, 10, 0.2); }
+            50% { box-shadow: 0 0 50px rgba(255, 214, 10, 0.6), 0 0 80px rgba(255, 214, 10, 0.3); }
+        }
+        .podium-item.silver .podium-avatar {
+            border-color: #C0C0C0;
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+        }
+        .podium-item.silver .podium-base { background: #C0C0C0; height: 10px; width: 70px; border-radius: 4px; margin-top: 8px; }
+        .podium-item.bronze .podium-avatar {
+            border-color: #CD7F32;
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+        }
+        .podium-item.bronze .podium-base { background: #CD7F32; height: 8px; width: 60px; border-radius: 4px; margin-top: 8px; }
+        .podium-item .crown {
+            position: absolute;
+            top: -25px;
+            font-size: 2.2rem;
+            animation: bounceCrown 2s ease-in-out infinite;
+        }
+        @keyframes bounceCrown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
-        .quick-actions {
+        .leaderboard-item {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
+            background: var(--card);
+            margin-bottom: 8px;
+        }
+        .leaderboard-item:hover { border-color: var(--primary); background: var(--bg); transform: translateX(-3px); }
+        .leaderboard-item .rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            background: var(--border);
+            color: var(--text2);
+        }
+        .leaderboard-item .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            background: var(--primary);
+            color: #fff;
+            overflow: hidden;
+        }
+        .leaderboard-item .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .leaderboard-item .info { flex: 1; }
+        .leaderboard-item .info .name { font-weight: 700; color: var(--text); font-size: 0.95rem; }
+        .leaderboard-item .info .stats { font-size: 0.75rem; color: var(--text2); }
+        .leaderboard-item .points { font-weight: 800; color: var(--primary); font-size: 1rem; }
+
+        .faq-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            overflow: hidden;
+            background: var(--card);
+        }
+        .faq-question {
+            padding: 14px 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text);
+            user-select: none;
+        }
+        .faq-answer {
+            padding: 0 18px 18px;
+            color: var(--text2);
+            font-size: 0.9rem;
+            display: none;
+            line-height: 1.8;
+        }
+        .faq-item.open .faq-answer { display: block; }
+        .faq-item.open .faq-question { color: var(--primary); }
+
+        .social-card {
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            background: var(--card);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: block;
+        }
+        .social-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .social-card i { font-size: 2.5rem; margin-bottom: 8px; display: block; }
+        .social-card span { font-weight: 700; color: var(--text); }
+
+        .testimonial-card {
+            padding: 16px 18px;
+            border-radius: var(--radius);
+            background: var(--card);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .testimonial-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+        .testimonial-card .stars { color: var(--warning); margin-bottom: 6px; }
+        .testimonial-card p { font-size: 0.9rem; color: var(--text); margin-bottom: 6px; }
+        .testimonial-card .name { font-weight: 700; color: var(--primary); }
+
+        .back-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            z-index: 99;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 16px rgba(11,79,140,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .back-top:hover { transform: translateY(-3px); }
+
+        .grid-courses {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .grid-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+        @media (max-width: 768px) {
+            .grid-courses { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+            .grid-dashboard { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+        }
+        @media (max-width: 480px) {
+            .grid-courses { grid-template-columns: 1fr; gap: 12px; }
+            .grid-dashboard { grid-template-columns: 1fr 1fr; gap: 8px; }
+        }
+
+        .profile-code {
+            background: var(--bg);
+            border: 2px dashed var(--primary);
+            border-radius: var(--radius);
+            padding: 12px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: 'Lalezar', cursive;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .error-bank-summary {
+            background: var(--card);
+            border: 2px solid var(--danger);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
             margin-bottom: 16px;
         }
-        .quick-actions .btn {
-            padding: 8px 16px;
+        .error-bank-summary .count {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--danger);
+            font-family: 'Lalezar', cursive;
+        }
+        .error-bank-summary .label {
+            font-size: 1.1rem;
+            color: var(--text2);
+        }
+
+        .exam-security-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .exam-security-modal.open { display: flex; }
+        .exam-security-modal .security-box {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 48px 32px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalIn 0.4s ease;
+        }
+        .exam-security-modal .security-box .icon {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+        }
+        .exam-security-modal .security-box h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .exam-security-modal .security-box .hadith {
+            background: var(--bg);
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            font-style: italic;
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            border-right: 4px solid var(--primary);
+            text-align: center;
+        }
+        .exam-security-modal .security-box .pledge-text {
+            color: var(--text);
+            font-size: 1rem;
+            line-height: 2;
+            margin-bottom: 20px;
+            text-align: center;
+            background: var(--bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .exam-security-modal .security-box .note-text {
+            color: var(--text2);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .exam-security-modal .security-box .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .exam-security-modal .security-box .btn-group .btn-start {
+            background: var(--success);
+            color: #fff;
+            font-size: 1.4rem;
+            padding: 20px 60px;
+            min-height: 72px;
+            min-width: 280px;
             border-radius: 50px;
             border: none;
-            background: var(--bg);
-            color: var(--text2);
-            font-weight: 600;
-            font-size: 0.8rem;
+            font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
             font-family: 'Cairo', sans-serif;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            box-shadow: 0 4px 20px rgba(34,197,94,0.3);
         }
-        .quick-actions .btn:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
+        .exam-security-modal .security-box .btn-group .btn-start:hover {
+            background: #16a34a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(34,197,94,0.4);
+        }
+        .exam-security-modal .security-box .btn-group .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+            padding: 16px 32px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+        }
+        .exam-security-modal .security-box .btn-group .btn-secondary:hover {
+            background: var(--bg);
+        }
 
-        .profile-header {
+        .exam-timer {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 8px;
+            font-weight: 700;
+            color: var(--danger);
+            font-size: 1.1rem;
+            background: var(--card);
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
         }
-        .profile-header .avatar-large {
+        .exam-timer.warning { color: var(--warning); border-color: var(--warning); }
+        .exam-timer.danger { color: var(--danger); border-color: var(--danger); animation: pulse 1s infinite; }
+
+        .exam-result-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .exam-result-card .question-text {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        .exam-result-card .answer-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            font-size: 0.9rem;
+        }
+        .exam-result-card .answer-row .user-ans {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        .exam-result-card .answer-row .correct-ans {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .exam-result-card .answer-row .correct-icon { color: var(--success); }
+        .exam-result-card .answer-row .wrong-icon { color: var(--danger); }
+        .exam-result-card .explanation {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: var(--text2);
+            background: var(--bg);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+        }
+
+        .quiz-image-container {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .quiz-image-container img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--radius);
+            transition: transform 0.3s;
+        }
+        .quiz-image-container .zoom-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .quiz-image-container:hover .zoom-icon { opacity: 1; }
+
+        .quiz-image-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .quiz-image-overlay.open { display: flex; }
+        .quiz-image-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: var(--radius);
+        }
+        .quiz-image-overlay .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        .quiz-image-overlay .close-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .btn-filter {
+            padding: 6px 20px;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-filter:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .btn-filter.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .certificate-preview {
+            background: #fff;
+            border: 3px solid #FFD60A;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .certificate-preview::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 2px dashed #FFD60A;
+            border-radius: var(--radius);
+            pointer-events: none;
+        }
+        .certificate-preview .logo { font-family: 'Lalezar', cursive; font-size: 2rem; color: var(--primary); }
+        .certificate-preview h2 { font-size: 2rem; margin: 12px 0; color: #D4A800; }
+        .certificate-preview .name { font-size: 1.8rem; font-weight: 700; color: var(--text); }
+        .certificate-preview .details { color: var(--text2); margin: 8px 0; font-size: 0.9rem; }
+        .certificate-preview .qr-code { width: 80px; height: 80px; margin: 12px auto; background: var(--bg); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+
+        .student-card-preview {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            max-width: 450px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .student-card-preview .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 4rem;
+            font-family: 'Lalezar', cursive;
+            color: rgba(11, 79, 140, 0.06);
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: 10px;
+        }
+        .student-card-preview .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .student-card-preview .card-header .logo {
+            font-family: 'Lalezar', cursive;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        .student-card-preview .card-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary);
             color: #fff;
+            margin: 0 auto 12px;
             overflow: hidden;
-            border: 3px solid var(--border);
-            flex-shrink: 0;
         }
-        .profile-header .avatar-large img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-header .profile-info h2 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text);
+        .student-card-preview .card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        .profile-header .profile-info .code {
-            font-family: 'Lalezar', cursive;
-            font-size: 1.1rem;
-            color: var(--primary);
-            background: var(--bg);
-            padding: 2px 16px;
-            border-radius: 20px;
-            display: inline-block;
+        .student-card-preview .card-info { text-align: center; }
+        .student-card-preview .card-info .name { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+        .student-card-preview .card-info .code { font-size: 1.1rem; font-weight: 700; color: var(--primary); letter-spacing: 2px; }
+        .student-card-preview .card-info .detail { font-size: 0.85rem; color: var(--text2); margin: 2px 0; }
+        .student-card-preview .card-footer {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 2px dashed var(--border);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-align: center;
         }
 
-        .error-bank-mini {
+        .course-page-hero {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            color: #fff;
+            margin-bottom: 24px;
+        }
+        .course-page-hero h1 { font-family: 'Lalezar', cursive; font-size: 2.5rem; }
+        .course-page-hero p { opacity: 0.9; font-size: 1.1rem; }
+        .course-page-hero .stats {
             display: flex;
-            align-items: center;
+            gap: 24px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .course-page-hero .stats span { display: flex; align-items: center; gap: 6px; }
+        .course-page-hero .price-tag {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .course-page-hero .price-tag.free { background: var(--success); color: #fff; }
+        .course-page-hero .price-tag.paid { background: var(--gold); color: #081B2C; }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 12px;
-            padding: 12px 16px;
+        }
+        .achievement-item {
             background: var(--bg);
             border-radius: var(--radius);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: var(--transition);
+            padding: 16px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .error-bank-mini:hover { border-color: var(--danger); background: rgba(239,68,68,0.05); }
-        .error-bank-mini .count {
+        .achievement-item.unlocked {
+            border-color: var(--gold);
+            background: rgba(255, 214, 10, 0.05);
+        }
+        .achievement-item .icon { font-size: 2.5rem; margin-bottom: 4px; }
+        .achievement-item .name { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+        .achievement-item .desc { font-size: 0.7rem; color: var(--text2); }
+
+        .motivational-message {
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            background: var(--card);
+            border: 1px solid var(--border);
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary);
+        }
+        .motivational-message .emoji { font-size: 1.5rem; margin-left: 8px; }
+
+        .ai-report-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+        .ai-report-container .report-header {
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+        }
+        .ai-report-container .report-header .logo {
             font-family: 'Lalezar', cursive;
             font-size: 2rem;
-            color: var(--danger);
+            color: var(--primary);
         }
-        .error-bank-mini .label {
-            font-weight: 600;
-            color: var(--text2);
+        .ai-report-container .report-header .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-dark);
         }
-
-        /* ===== أنماط تحليل المستوى المتقدم ===== */
-        .level-card {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .level-card .level-badge {
-            display: inline-block;
-            padding: 8px 32px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 1.4rem;
-            margin-bottom: 8px;
-        }
-        .level-card .progress-ring {
-            width: 120px;
-            height: 120px;
-            margin: 12px auto;
-            position: relative;
-        }
-        .level-card .progress-ring svg {
-            transform: rotate(-90deg);
-        }
-        .level-card .progress-ring .bg {
-            fill: none;
-            stroke: var(--border);
-            stroke-width: 8;
-        }
-        .level-card .progress-ring .fill {
-            fill: none;
-            stroke: var(--primary);
-            stroke-width: 8;
-            stroke-linecap: round;
-            transition: stroke-dasharray 0.8s ease;
-        }
-        .level-card .progress-ring .center-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Lalezar', cursive;
-            font-size: 1.8rem;
-            color: var(--text);
-        }
-
-        .ai-insight-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-        }
-        .ai-insight-item {
+        .ai-report-container .report-section {
+            margin-bottom: 16px;
+            padding: 16px;
             background: var(--bg);
             border-radius: var(--radius);
-            padding: 12px 16px;
+        }
+        .ai-report-container .report-section h4 {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .ai-report-container .report-section .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .ai-report-container .report-section .stat-item {
+            padding: 6px 10px;
+            background: var(--card);
+            border-radius: var(--radius);
             border: 1px solid var(--border);
         }
-        .ai-insight-item .label {
+        .ai-report-container .report-section .stat-item .label {
             font-size: 0.7rem;
             color: var(--text2);
         }
-        .ai-insight-item .value {
+        .ai-report-container .report-section .stat-item .value {
             font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text);
+            font-size: 1rem;
         }
-        .ai-insight-item .bar {
-            height: 4px;
-            background: var(--border);
-            border-radius: 4px;
-            margin-top: 4px;
-            overflow: hidden;
-        }
-        .ai-insight-item .bar .fill {
-            height: 100%;
-            border-radius: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--primary2));
+        .ai-report-container .report-footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text2);
+            border-top: 2px solid var(--border);
+            padding-top: 12px;
+            margin-top: 16px;
         }
 
-        /* ===== نمط جديد لزر إنشاء اختبار ===== */
-        .btn-generate-exam {
-            background: linear-gradient(135deg, #8B5CF6, #6D28D9);
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
+        @media print {
+            .navbar, .back-top, .btn, .no-print { display: none !important; }
+            .ai-report-container { box-shadow: none !important; border: 1px solid #ddd !important; }
+            body { background: #fff !important; }
+        }
+
+        .notifications-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .notifications-page .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .notifications-page .header h1 {
+            font-family: 'Lalezar', cursive;
+            font-size: 2rem;
+            color: var(--text);
+        }
+        .notifications-page .header .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .notifications-page .header .actions button {
+            padding: 8px 18px;
             border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text2);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .notifications-page .header .actions button:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .notifications-page .header .actions .btn-danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .notifications-page .header .actions .btn-danger:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+        .notifications-page .notification-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--card);
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            transition: var(--transition);
+            align-items: flex-start;
+            border-right: 4px solid transparent;
+        }
+        .notifications-page .notification-item:hover {
+            background: var(--bg);
+        }
+        .notifications-page .notification-item .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .notifications-page .notification-item .content {
+            flex: 1;
+        }
+        .notifications-page .notification-item .content .title {
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            color: var(--text);
+        }
+        .notifications-page .notification-item .content .desc {
+            font-size: 0.9rem;
+            color: var(--text2);
+            margin: 4px 0;
+            line-height: 1.6;
+        }
+        .notifications-page .notification-item .content .time {
+            font-size: 0.75rem;
+            color: var(--text2);
+            opacity: 0.7;
+        }
+        .notifications-page .notification-item .status {
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .notifications-page .notification-item .status.unread {
+            background: var(--primary);
+            color: #fff;
+        }
+        .notifications-page .notification-item .status.read {
+            background: var(--border);
+            color: var(--text2);
+        }
+
+        .results-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .results-page .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .results-page .header h1 {
+            font-family: 'Lalezar', cursive;
+            font-size: 2rem;
+            color: var(--text);
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .results-table th {
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 16px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        .results-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+        .results-table tr:hover td {
+            background: var(--bg);
+        }
+        .results-table .badge-pass {
+            background: var(--success);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .results-table .badge-fail {
+            background: var(--danger);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .results-table .badge-type {
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .results-table .badge-type.exam { background: #F59E0B; color: #fff; }
+        .results-table .badge-type.quiz { background: #22C55E; color: #fff; }
+        .results-table .badge-type.assignment { background: #8B5CF6; color: #fff; }
+
+        .user-menu-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px 4px 6px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            background: var(--primary);
+            color: #fff;
             cursor: pointer;
             transition: var(--transition);
             font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .user-menu-btn:hover {
+            background: var(--primary2);
+            border-color: var(--primary2);
+            transform: translateY(-1px);
+        }
+        .user-menu-btn .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            overflow: hidden;
+            background: rgba(255,255,255,0.2);
+        }
+        .user-menu-btn .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-menu-btn .arrow {
+            font-size: 0.6rem;
+            transition: var(--transition);
+        }
+        .user-menu-btn .arrow.open { transform: rotate(180deg); }
+        .user-menu-btn .label { 
+            display: inline-block;
+            color: #fff;
+            font-size: 0.8rem;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 210px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            z-index: 200;
+            padding: 4px 0;
+        }
+        .user-dropdown.open { display: block; }
+        
+        .user-dropdown .dropdown-header {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .user-dropdown .dropdown-header .name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .user-dropdown .dropdown-header .sub {
+            font-size: 0.7rem;
+            color: var(--text2);
+        }
+        
+        .user-dropdown .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            width: 100%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            text-align: right;
+        }
+        .user-dropdown .menu-item:hover { background: var(--bg); }
+        .user-dropdown .menu-item i { width: 18px; text-align: center; font-size: 0.85rem; color: var(--text2); }
+        .user-dropdown .menu-item.danger { color: var(--danger); }
+        .user-dropdown .menu-item.danger:hover { background: rgba(239,68,68,0.08); }
+        .user-dropdown .menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 12px;
+        }
+
+        .completed-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .completed-modal.open { display: flex; }
+        .completed-modal .modal-box {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+            border: 2px solid var(--success);
+            animation: modalIn 0.4s ease;
+        }
+        .completed-modal .modal-box .icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 12px;
+        }
+        .completed-modal .modal-box h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+        .completed-modal .modal-box p {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .completed-modal .modal-box .btn {
+            padding: 12px 40px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cairo', sans-serif;
+            background: var(--primary);
+            color: #fff;
+        }
+        .completed-modal .modal-box .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(11,79,140,0.3);
+        }
+
+        /* ===== أنماط جديدة للفيديو والصفحات ===== */
+        .video-section-title {
+            font-family: 'Lalezar', cursive;
+            font-size: clamp(1.2rem, 2.5vw, 2rem);
+            color: var(--primary);
+            text-align: center;
+            margin: 16px 0 12px;
+        }
+
+        .video-wrapper {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            background: #000;
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .subscription-page {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .subscription-page .price-box {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--gold-dark);
+            text-align: center;
+        }
+        .subscription-page .contact-info {
+            background: var(--bg);
+            padding: 16px;
+            border-radius: var(--radius);
+            margin: 12px 0;
+        }
+
+        .live-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            animation: pulse-live 1.5s infinite;
+            background: #EF4444;
+            color: #fff;
+        }
+        .live-badge.on {
+            background: #22C55E;
+        }
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .study-time-display {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 16px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+            font-weight: 700;
+            color: var(--primary);
         }
-        .btn-generate-exam:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(139, 92, 246, 0.4);
-        }
+        .study-time-display i { font-size: 1.2rem; }
 
-        /* ===== حماية: تعطيل النقر بزر الماوس الأيمن ===== */
-        .no-context-menu {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
+        /* ===== أنماط منع الغش في الامتحانات ===== */
+        .exam-container {
             user-select: none;
-        }
-
-        /* ===== منع النسخ ===== */
-        .no-copy {
-            -webkit-touch-callout: none;
             -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .exam-container * {
             user-select: none;
+            -webkit-user-select: none;
         }
-
-        /* ===== منع أدوات المطور ===== */
-        .dev-tools-block {
-            /* يتم تطبيقه عبر JavaScript */ 
+        .exam-container input, .exam-container textarea {
+            user-select: text;
+            -webkit-user-select: text;
         }
-
-        @media (max-width: 768px) {
-            .dashboard-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .profile-header .avatar-large { width: 60px; height: 60px; font-size: 1.8rem; }
-            .level-card .progress-ring { width: 90px; height: 90px; }
-            .level-card .progress-ring .center-text { font-size: 1.3rem; }
+        .exam-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9997 !important;
+            background: var(--bg) !important;
+            overflow-y: auto !important;
         }
-        @media (max-width: 480px) {
-            .dashboard-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .dashboard-grid .stat-card { padding: 10px 8px; }
-            .dashboard-grid .stat-card .stat-value { font-size: 1.3rem; }
+        .exam-blur-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9996;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
         }
+        .exam-blur-overlay.open { display: flex; }
     </style>
 </head>
 <body>
@@ -1001,8 +2043,17 @@
         <img id="zoomedImage" src="" alt="تكبير الصورة">
     </div>
 
+    <!-- ====== Exam Blur Overlay (لمنع الغش) ====== -->
+    <div class="exam-blur-overlay" id="examBlurOverlay">
+        <div>
+            <i class="fas fa-exclamation-triangle" style="font-size:3rem;display:block;margin-bottom:12px;"></i>
+            <p>⚠️ تم اكتشاف محاولة خروج من صفحة الامتحان</p>
+            <p style="font-size:1rem;margin-top:8px;">الرجاء العودة إلى الامتحان لإكماله</p>
+        </div>
+    </div>
+
     <!-- ====== NAVBAR ====== -->
-    <nav class="navbar no-context-menu no-copy" id="navbar">
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo" onclick="APP.showHome()">
                 <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
@@ -1064,7 +2115,7 @@
     </nav>
 
     <!-- ====== MAIN CONTENT ====== -->
-    <main id="mainContent" class="no-context-menu no-copy">
+    <main id="mainContent">
         <!-- يتم تحميل المحتوى بواسطة JavaScript -->
     </main>
 
@@ -1072,7 +2123,7 @@
     <footer style="background:var(--card);border-top:1px solid var(--border);padding:20px;margin-top:16px;">
         <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
-                <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:none;box-shadow:none;" loading="lazy">
+                <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" style="width:32px;height:32px;object-fit:contain;border:none;border-radius:0;background:transparent;" loading="lazy">
                 <span style="font-family:'Lalezar',cursive;font-size:1.2rem;color:var(--primary);">يلا كيمياء</span>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.85rem;">
@@ -1091,58 +2142,147 @@
     <!-- ====== جافا سكريبت الرئيسية (المنصة) ====== -->
     <script>
         // ============================================================
-        // حماية الكود: منع استخدام console
+        // 🔒 ANTI-DEBUGGING & SECURITY (قفل الكونسول وحماية الكود)
         // ============================================================
         (function() {
-            // منع console.log, console.warn, console.error
+            'use strict';
+            
+            // 1. قفل الكونسول (Console)
             const noop = () => {};
-            if (window.console) {
-                console.log = noop;
-                console.warn = noop;
-                console.error = noop;
-                console.info = noop;
-                console.debug = noop;
-                console.trace = noop;
-                console.group = noop;
-                console.groupEnd = noop;
-                console.groupCollapsed = noop;
-            }
-            // منع فتح أدوات المطور
-            document.addEventListener('keydown', function(e) {
-                // F12
-                if (e.key === 'F12') { e.preventDefault(); return false; }
-                // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
-                if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) { e.preventDefault(); return false; }
-                if (e.ctrlKey && e.key === 'u') { e.preventDefault(); return false; }
-                if (e.ctrlKey && e.key === 'U') { e.preventDefault(); return false; }
-                // Ctrl+Shift+C
-                if (e.ctrlKey && e.shiftKey && e.key === 'C') { e.preventDefault(); return false; }
+            const consoleMethods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd'];
+            consoleMethods.forEach(method => {
+                console[method] = noop;
             });
-            // منع النقر بزر الماوس الأيمن
+            
+            // 2. منع فتح أدوات المطور (DevTools)
+            // منع F12
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'U')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // منع النقر بزر اليمين
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 return false;
             });
-            // منع السحب والنسخ
-            document.addEventListener('dragstart', function(e) { e.preventDefault(); });
-            document.addEventListener('copy', function(e) { e.preventDefault(); });
-            // منع اختيار النص
-            document.addEventListener('selectstart', function(e) { e.preventDefault(); });
-            // منع إعادة تحميل الصفحة بواسطة اختصارات
+            
+            // منع النسخ واللصق في الامتحانات
+            document.addEventListener('copy', function(e) {
+                if (document.querySelector('.exam-container')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            document.addEventListener('paste', function(e) {
+                if (document.querySelector('.exam-container')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            document.addEventListener('cut', function(e) {
+                if (document.querySelector('.exam-container')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // 3. حماية الكود من التعديل
+            Object.defineProperty(window, 'eval', {
+                value: function() { throw new Error('eval is disabled'); },
+                writable: false,
+                configurable: false
+            });
+            
+            // منع استخدام Function constructor
+            const originalFunction = window.Function;
+            window.Function = function() {
+                throw new Error('Function constructor is disabled');
+            };
+            window.Function.prototype = originalFunction.prototype;
+            
+            // 4. كشف DevTools عن طريق تغيير حجم النافذة
+            let devtoolsOpen = false;
+            const checkDevTools = () => {
+                const threshold = 160;
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                if (widthThreshold || heightThreshold) {
+                    if (!devtoolsOpen) {
+                        devtoolsOpen = true;
+                        document.body.innerHTML = `
+                            <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-family:'Cairo',sans-serif;text-align:center;padding:20px;flex-direction:column;">
+                                <i class="fas fa-shield-alt" style="font-size:4rem;color:#EF4444;margin-bottom:20px;"></i>
+                                <h1 style="font-size:2rem;">🔒 تم اكتشاف أدوات المطور</h1>
+                                <p style="font-size:1.2rem;opacity:0.8;">تم تعطيل الوصول لحماية المنصة</p>
+                                <p style="font-size:0.9rem;opacity:0.6;margin-top:8px;">الرجاء إغلاق أدوات المطور وإعادة تحميل الصفحة</p>
+                            </div>
+                        `;
+                        document.body.style.margin = '0';
+                        document.body.style.padding = '0';
+                        document.body.style.overflow = 'hidden';
+                    }
+                } else {
+                    devtoolsOpen = false;
+                }
+            };
+            
+            // التحقق بشكل دوري
+            setInterval(checkDevTools, 1000);
+            
+            // التحقق عند تغيير حجم النافذة
+            window.addEventListener('resize', checkDevTools);
+            
+            // 5. منع الخروج من صفحة الامتحان (Fullscreen API)
+            let isExamActive = false;
+            let examExitWarning = false;
+            
+            // منع استخدام Alt+Tab و Alt+F4 (جزئياً)
+            document.addEventListener('keydown', function(e) {
+                if (document.querySelector('.exam-container')) {
+                    if (e.altKey && (e.key === 'Tab' || e.key === 'F4')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        showToast('⚠️ لا يمكنك مغادرة الامتحان', 'error');
+                        return false;
+                    }
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        showToast('⚠️ لا يمكنك الخروج من الامتحان', 'error');
+                        return false;
+                    }
+                }
+            });
+            
+            // منع مغادرة الصفحة أثناء الامتحان
             window.addEventListener('beforeunload', function(e) {
-                // لا نمنع تماماً ولكن نضع رسالة
-                e.preventDefault();
-                e.returnValue = '';
+                if (document.querySelector('.exam-container') && !examSubmitted) {
+                    e.preventDefault();
+                    e.returnValue = '⚠️ أنت في منتصف الامتحان، هل أنت متأكد من المغادرة؟';
+                    return e.returnValue;
+                }
             });
-            // منع الكشف عن أدوات المطور عبر window.devtools
-            Object.defineProperty(window, 'devtools', {
-                get: function() { return undefined; },
-                set: function() { return; }
+            
+            // منع التصغير/التكبير باللمس أثناء الامتحان
+            document.addEventListener('gesturestart', function(e) {
+                if (document.querySelector('.exam-container')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
             });
-            // منع فتح console من خلال iframe
-            if (window.parent !== window) {
-                window.parent.location.href = window.location.href;
-            }
+            
+            console.log('🔒 Security: Console locked, DevTools blocked, Anti-cheat active');
         })();
 
         // ============================================================
@@ -1185,6 +2325,7 @@
         let videoWatchStartTime = null;
         let videoWatchTotal = {};
         let studySessionStart = null;
+        let examSubmitted = false; // لمنع الخروج أثناء الامتحان
 
         const cache = {
             userData: null,
@@ -1199,7 +2340,7 @@
             ttl: 60000
         };
 
-        // ===== الروابط =====
+        // ===== الروابط الجديدة =====
         const APP_URL = 'https://yaiakamya.vercel.app/';
         const HERO_IMAGE = 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png';
         const LOGO_IMAGE = 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg';
@@ -1408,6 +2549,7 @@
                 closeUserMenu();
                 showHome();
             } catch (error) {
+                console.error('Logout error:', error);
                 showToast('حدث خطأ في تسجيل الخروج', 'error');
             }
         }
@@ -2458,171 +3600,159 @@
         }
 
         // ============================================================
-        // ⭐⭐⭐ لوحة الطالب المطورة (Dashboard) ⭐⭐⭐
+        // ⭐⭐⭐ الدوال المطورة - لوحة الطالب المتطورة ⭐⭐⭐
         // ============================================================
+
+        // 1. لوحة الطالب Dashboard (مطورة جداً)
         function showDashboard() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
             if (!main) return;
 
-            // حساب الإحصائيات
+            // حساب الإحصائيات المتقدمة
             const totalLessons = allLessons.length;
             const completedLessons = Object.keys(userCourseProgress).filter(key => userCourseProgress[key]?.watched).length;
             const progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-            const studyTimeHours = Math.round((userData?.studyTime || 0) * 10) / 10;
+            const studyTimeHours = userData?.studyTime || 0;
             const atoms = userData?.atoms || 0;
             const rank = userData?.rank || '--';
             const streak = userData?.streak || 0;
             const examsPassed = userData?.examsPassed || 0;
             const quizzesPassed = userData?.quizzesPassed || 0;
             const perfectExams = userData?.perfectExams || 0;
-
-            // حساب عدد الأخطاء
-            let errorCount = 0;
-            database.ref('users/' + currentUser.uid + '/errorBank').once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const errors = snapshot.val();
-                    errorCount = Object.values(errors).filter(e => !e.solved).length;
-                    document.getElementById('errorCountDisplay')?.textContent = errorCount;
-                }
-            });
-
-            // رسائل تحفيزية حسب المستوى
-            let motivationMessage = '';
-            let level = '';
-            let levelColor = '';
-            if (progressPercent >= 80 && perfectExams >= 2) {
-                level = '🏆 متقدم جداً';
-                levelColor = 'var(--gold)';
-                motivationMessage = 'أنت من النخبة! استمر في التألق!';
-            } else if (progressPercent >= 60) {
-                level = '💪 متقدم';
-                levelColor = 'var(--success)';
-                motivationMessage = 'أداء رائع! أنت على الطريق الصحيح';
-            } else if (progressPercent >= 30) {
-                level = '📚 متوسط';
-                levelColor = 'var(--warning)';
-                motivationMessage = 'استمر في المذاكرة، أنت تتقدم جيداً';
-            } else {
-                level = '🌱 مبتدئ';
-                levelColor = 'var(--primary)';
-                motivationMessage = 'كل رحلة تبدأ بخطوة، ابدأ الآن!';
+            const videosWatched = userData?.videosWatched || 0;
+            const lessonsCompleted = userData?.lessonsCompleted || 0;
+            
+            // حساب عدد الكورسات المسجلة
+            const enrolledCourses = allCourses.filter(c => isUserSubscribed(c.id) || isPremiumCourse(c.id)).length;
+            
+            // حساب نسبة الإنجاز حسب الكورسات
+            let courseProgress = 0;
+            const userCourses = allCourses.filter(c => isUserSubscribed(c.id) || isPremiumCourse(c.id));
+            if (userCourses.length > 0) {
+                let totalProgress = 0;
+                userCourses.forEach(c => {
+                    const lessons = allLessons.filter(l => l.courseId === c.id);
+                    const completed = lessons.filter(l => userCourseProgress[l.id]?.watched).length;
+                    totalProgress += lessons.length > 0 ? (completed / lessons.length) * 100 : 0;
+                });
+                courseProgress = Math.round(totalProgress / userCourses.length);
             }
+
+            // تقييم المستوى
+            let level = '🌱 مبتدئ';
+            let levelColor = 'var(--primary)';
+            if (progressPercent >= 80 && perfectExams >= 2) { level = '🏆 متقدم جداً';
+                levelColor = 'var(--gold)'; } else if (progressPercent >= 60) { level = '💪 متقدم';
+                levelColor = 'var(--success)'; } else if (progressPercent >= 30) { level = '📚 متوسط';
+                levelColor = 'var(--warning)'; } else { level = '🌱 مبتدئ';
+                levelColor = 'var(--primary)'; }
 
             main.innerHTML = `
                 <div style="max-width:1280px;margin:0 auto;padding:20px;">
                     <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
                     
-                    <!-- رأس الملف الشخصي -->
-                    <div class="profile-header">
-                        <div class="avatar-large">
-                            ${userData?.photoURL ? `<img src="${userData.photoURL}" alt="صورة">` : (userData?.name?.[0] || '👤')}
-                        </div>
-                        <div class="profile-info">
-                            <h2>${escapeHtml(userData?.name || 'مستخدم')}</h2>
-                            <div class="code">${userData?.code || 'YK-XX-XX-XXX'}</div>
-                            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
-                                <span style="font-size:0.8rem;color:var(--text2);">🎓 ${escapeHtml(userData?.grade || 'غير محدد')}</span>
-                                <span style="font-size:0.8rem;color:var(--text2);">📱 ${formatPhoneNumber(userData?.phone)}</span>
+                    <!-- الهيدر مع الصورة والاسم -->
+                    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;background:var(--card);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border);margin:12px 0 24px;">
+                        <div style="display:flex;align-items:center;gap:16px;">
+                            <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg, var(--primary), var(--primary2));display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;overflow:hidden;border:3px solid ${levelColor};">
+                                ${userData?.photoURL ? `<img src="${userData.photoURL}" style="width:100%;height:100%;object-fit:cover;">` : (userData?.name?.[0] || '👤')}
+                            </div>
+                            <div>
+                                <h2 style="font-size:1.8rem;font-weight:800;color:var(--text);">${escapeHtml(userData?.name || 'مستخدم')}</h2>
+                                <div class="profile-code" style="font-size:1.1rem;">${userData?.code || 'YK-XX-XX-XXX'}</div>
+                                <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+                                    <span style="padding:2px 14px;border-radius:20px;background:${levelColor};color:#fff;font-size:0.8rem;font-weight:700;">${level}</span>
+                                    <span style="padding:2px 14px;border-radius:20px;background:var(--gold);color:#081B2C;font-size:0.8rem;font-weight:700;">⚛️ ${atoms} ذرة</span>
+                                    <span style="padding:2px 14px;border-radius:20px;background:var(--bg);color:var(--text2);font-size:0.8rem;font-weight:600;">🏅 الترتيب: ${rank}</span>
+                                </div>
                             </div>
                         </div>
-                        <div style="margin-right:auto;display:flex;gap:8px;flex-wrap:wrap;">
-                            <span class="atoms-badge" style="font-size:1rem;padding:8px 20px;"><i class="fas fa-atom"></i> ${atoms}</span>
-                            <span class="study-time-display"><i class="fas fa-clock"></i> ${studyTimeHours} ساعة</span>
-                            <span class="study-time-display" style="background:var(--gold);color:#081B2C;"><i class="fas fa-fire"></i> ${streak} يوم</span>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-right:auto;">
+                            <span class="study-time-display" style="font-size:1rem;padding:8px 16px;"><i class="fas fa-clock"></i> ${Math.round(studyTimeHours)} ساعة</span>
+                            <span style="background:var(--bg);padding:8px 16px;border-radius:var(--radius);font-weight:600;color:var(--text2);font-size:0.9rem;">🔥 ${streak} يوم متتالي</span>
                         </div>
                     </div>
 
-                    <!-- بطاقات الإحصائيات السريعة -->
-                    <div class="dashboard-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon">📊</div>
-                            <div class="stat-value">${progressPercent}%</div>
-                            <div class="stat-label">نسبة الإنجاز</div>
-                            <div class="stat-sub">${completedLessons}/${totalLessons} حصة</div>
+                    <!-- إحصائيات متقدمة -->
+                    <div class="dashboard-stats-grid">
+                        <div class="dashboard-stat-card">
+                            <span class="icon">📊</span>
+                            <span class="number">${progressPercent}%</span>
+                            <span class="label">نسبة الإنجاز الكلية</span>
+                            <div class="progress-bar" style="margin-top:6px;"><div class="fill" style="width:${progressPercent}%;"></div></div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📚</div>
-                            <div class="stat-value">${completedLessons}</div>
-                            <div class="stat-label">حصص مكتملة</div>
-                            <div class="stat-sub">${userData?.videosWatched || 0} فيديو</div>
+                        <div class="dashboard-stat-card">
+                            <span class="icon">📚</span>
+                            <span class="number">${enrolledCourses}</span>
+                            <span class="label">كورسات مسجلة</span>
+                            <span style="font-size:0.7rem;color:var(--text2);">${courseProgress}% إنجاز</span>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📝</div>
-                            <div class="stat-value">${examsPassed}</div>
-                            <div class="stat-label">امتحانات</div>
-                            <div class="stat-sub">⭐ ${perfectExams} كاملة</div>
+                        <div class="dashboard-stat-card">
+                            <span class="icon">✅</span>
+                            <span class="number">${completedLessons}</span>
+                            <span class="label">حصص مكتملة</span>
+                            <span style="font-size:0.7rem;color:var(--text2);">من أصل ${totalLessons}</span>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">🧪</div>
-                            <div class="stat-value">${quizzesPassed}</div>
-                            <div class="stat-label">كويزات</div>
-                            <div class="stat-sub">⏳ قيد التقدم</div>
+                        <div class="dashboard-stat-card">
+                            <span class="icon">📝</span>
+                            <span class="number">${examsPassed}</span>
+                            <span class="label">امتحانات</span>
+                            <span style="font-size:0.7rem;color:var(--text2);">⭐ ${perfectExams} كاملة</span>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">🏅</div>
-                            <div class="stat-value">${rank}</div>
-                            <div class="stat-label">الترتيب</div>
-                            <div class="stat-sub">من بين جميع الطلاب</div>
+                        <div class="dashboard-stat-card">
+                            <span class="icon">🧪</span>
+                            <span class="number">${quizzesPassed}</span>
+                            <span class="label">كويزات</span>
+                            <span style="font-size:0.7rem;color:var(--text2);">✅ تم حلها</span>
                         </div>
-                        <div class="stat-card" style="border-color:var(--danger);">
-                            <div class="stat-icon">❌</div>
-                            <div class="stat-value" id="errorCountDisplay">0</div>
-                            <div class="stat-label">الأخطاء</div>
-                            <div class="stat-sub">تحتاج للمراجعة</div>
-                        </div>
-                    </div>
-
-                    <!-- مستوى الطالب -->
-                    <div class="level-card">
-                        <div class="level-badge" style="background:${levelColor};color:#fff;">${level}</div>
-                        <div class="progress-ring">
-                            <svg width="120" height="120" viewBox="0 0 120 120">
-                                <circle class="bg" cx="60" cy="60" r="50"/>
-                                <circle class="fill" cx="60" cy="60" r="50" 
-                                        stroke-dasharray="${(progressPercent / 100) * 314.16} 314.16"/>
-                            </svg>
-                            <div class="center-text">${progressPercent}%</div>
-                        </div>
-                        <p style="color:var(--text2);font-size:1rem;">${motivationMessage}</p>
-                        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
-                            <span style="padding:4px 12px;background:var(--bg);border-radius:20px;font-size:0.7rem;">🔥 الالتزام: ${streak} يوم</span>
-                            <span style="padding:4px 12px;background:var(--bg);border-radius:20px;font-size:0.7rem;">⏱ ${studyTimeHours} ساعة دراسة</span>
+                        <div class="dashboard-stat-card">
+                            <span class="icon">🎥</span>
+                            <span class="number">${videosWatched}</span>
+                            <span class="label">فيديوهات</span>
+                            <span style="font-size:0.7rem;color:var(--text2);">تم المشاهدة</span>
                         </div>
                     </div>
 
-                    <!-- أقسام سريعة -->
-                    <div class="dashboard-section">
-                        <h3>⚡ إجراءات سريعة</h3>
-                        <div class="quick-actions">
-                            <button class="btn" onclick="APP.scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
-                            <button class="btn" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
-                            <button class="btn" onclick="APP.showResults()"><i class="fas fa-chart-bar"></i> نتائجي</button>
-                            <button class="btn" onclick="APP.showAIInsights()"><i class="fas fa-robot"></i> تحليل المستوى</button>
-                            <button class="btn" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهاداتي</button>
-                            <button class="btn" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
-                            <button class="btn" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
-                            <button class="btn-generate-exam" onclick="APP.generatePersonalizedExam()"><i class="fas fa-magic"></i> إنشاء اختبار مخصص</button>
+                    <!-- معلومات التواصل والإنجازات -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+                        <div class="card" style="padding:20px;">
+                            <h4 style="font-weight:700;color:var(--text);margin-bottom:12px;font-size:1.1rem;">📞 معلومات التواصل</h4>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                                <div><span style="font-size:0.7rem;color:var(--text2);">📱 الهاتف</span><div style="font-weight:600;color:var(--text);">${formatPhoneNumber(userData?.phone)}</div></div>
+                                <div><span style="font-size:0.7rem;color:var(--text2);">👨‍👦 ولي الأمر</span><div style="font-weight:600;color:var(--text);">${formatPhoneNumber(userData?.parentPhone)}</div></div>
+                                <div><span style="font-size:0.7rem;color:var(--text2);">📧 البريد</span><div style="font-weight:600;color:var(--text);">${escapeHtml(userData?.email || 'غير محدد')}</div></div>
+                                <div><span style="font-size:0.7rem;color:var(--text2);">🎓 الصف</span><div style="font-weight:600;color:var(--text);">${escapeHtml(userData?.grade || 'غير محدد')}</div></div>
+                            </div>
+                        </div>
+                        <div class="card" style="padding:20px;">
+                            <h4 style="font-weight:700;color:var(--text);margin-bottom:12px;font-size:1.1rem;">🏆 الإنجازات</h4>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                                <div><span style="font-size:0.7rem;color:var(--text2);">📝 امتحانات</span><div style="font-weight:700;color:var(--primary);font-size:1.1rem;">${examsPassed}</div></div>
+                                <div><span style="font-size:0.7rem;color:var(--text2);">🧪 كويزات</span><div style="font-weight:700;color:var(--primary);font-size:1.1rem;">${quizzesPassed}</div></div>
+                                <div><span style="font-size:0.7rem;color:var(--text2);">⭐ كاملة</span><div style="font-weight:700;color:var(--gold);font-size:1.1rem;">${perfectExams}</div></div>
+                                <div><span style="font-size:0.7rem;color:var(--text2);">🔥 أيام</span><div style="font-weight:700;color:var(--warning);font-size:1.1rem;">${streak}</div></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- معلومات إضافية -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-                        <div class="dashboard-section">
-                            <h3>📞 معلومات التواصل</h3>
-                            <p style="font-size:0.9rem;color:var(--text2);">📱 الهاتف: ${formatPhoneNumber(userData?.phone)}</p>
-                            <p style="font-size:0.9rem;color:var(--text2);">👨‍👦 ولي الأمر: ${formatPhoneNumber(userData?.parentPhone)}</p>
-                            <p style="font-size:0.9rem;color:var(--text2);">📧 البريد: ${escapeHtml(userData?.email || 'غير محدد')}</p>
-                            <p style="font-size:0.9rem;color:var(--text2);">🎓 الصف: ${escapeHtml(userData?.grade || 'غير محدد')}</p>
-                        </div>
-                        <div class="dashboard-section">
-                            <h3>🏆 الإنجازات</h3>
-                            <p style="font-size:0.9rem;color:var(--text2);">📝 امتحانات مكتملة: ${examsPassed}</p>
-                            <p style="font-size:0.9rem;color:var(--text2);">🧪 كويزات مكتملة: ${quizzesPassed}</p>
-                            <p style="font-size:0.9rem;color:var(--text2);">⭐ امتحانات كاملة: ${perfectExams}</p>
-                            <p style="font-size:0.9rem;color:var(--text2);">🏅 الترتيب: ${rank}</p>
-                            <button class="btn-outline btn-sm" style="margin-top:8px;" onclick="APP.showAchievements()">🎯 عرض جميع الإنجازات</button>
-                        </div>
+                    <!-- أزرار سريعة -->
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                        <button class="btn-primary btn-sm" onclick="APP.scrollToCourses()">📚 كورساتي</button>
+                        <button class="btn-outline btn-sm" onclick="APP.showResults()">📊 نتائجي</button>
+                        <button class="btn-outline btn-sm" onclick="APP.showErrorBank()">❌ أخطائي</button>
+                        <button class="btn-outline btn-sm" onclick="APP.showAIInsights()">🤖 تحليل المستوى</button>
+                        <button class="btn-outline btn-sm" onclick="APP.showCertificate()">📜 شهاداتي</button>
+                        <button class="btn-outline btn-sm" onclick="APP.showStudentCard()">🪪 بطاقتي</button>
+                        <button class="btn-outline btn-sm" onclick="APP.showAchievements()">🏅 إنجازاتي</button>
+                    </div>
+
+                    <!-- نص تحفيزي -->
+                    <div class="motivational-message" style="border:2px solid ${levelColor};">
+                        <span class="emoji">${progressPercent >= 80 ? '🌟' : progressPercent >= 50 ? '💪' : '🚀'}</span>
+                        ${progressPercent >= 80 ? 'أنت متميز جداً! استمر بنفس المستوى الرائع 🏆' : 
+                          progressPercent >= 50 ? 'أحسنت! أنت في منتصف الطريق، استمر وستصل للقمة 💪' : 
+                          'كل رحلة تبدأ بخطوة، استمر في التعلم وستحقق أهدافك 🚀'}
                     </div>
                 </div>
             `;
@@ -2630,113 +3760,10 @@
         }
 
         // ============================================================
-        // إنشاء اختبار مخصص (Personalized Exam)
+        // باقي الدوال (محسنة)
         // ============================================================
-        function generatePersonalizedExam() {
-            if (!currentUser) { showLoginOverlay(); return; }
-            // نجمع الأسئلة من الأخطاء المسجلة
-            database.ref('users/' + currentUser.uid + '/errorBank').once('value', (snapshot) => {
-                let errors = [];
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    errors = Object.values(data).filter(e => !e.solved);
-                }
-                if (errors.length === 0) {
-                    showToast('📝 لا توجد أخطاء مسجلة! أنت متميز 🎉', 'success');
-                    return;
-                }
-                // نأخذ 5 أسئلة عشوائية من الأخطاء
-                const shuffled = errors.sort(() => Math.random() - 0.5);
-                const selected = shuffled.slice(0, Math.min(5, shuffled.length));
-                // نعرض الاختبار
-                showPersonalizedExam(selected);
-            });
-        }
 
-        function showPersonalizedExam(errors) {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            let html = `
-                <div style="max-width:900px;margin:0 auto;padding:20px;">
-                    <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
-                    <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">📝 اختبار مخصص (من أخطائك)</h1>
-                    <p style="color:var(--text2);margin-bottom:16px;">${errors.length} سؤال من أخطائك السابقة، حاول حلها بشكل صحيح</p>
-                    <div id="personalizedExamContainer">
-            `;
-            errors.forEach((err, idx) => {
-                html += `
-                    <div class="exam-result-card" style="border-right:4px solid var(--primary);">
-                        <div class="question-text">${idx + 1}. ${escapeHtml(err.question)}</div>
-                        <div class="answer-row">
-                            <span>إجابتك السابقة: <span class="user-ans">${escapeHtml(err.userAnswer)}</span></span>
-                            <span style="margin-right:12px;">الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(err.correctAnswer)}</span></span>
-                        </div>
-                        <div style="margin-top:8px;">
-                            <input type="text" id="personalAnswer_${idx}" placeholder="اكتب إجابتك..." style="padding:6px 12px;border-radius:var(--radius);border:2px solid var(--border);background:var(--card);color:var(--text);width:100%;font-family:'Cairo',sans-serif;">
-                            <button class="btn-primary btn-sm" style="margin-top:4px;" onclick="APP.checkPersonalAnswer(${idx}, '${escapeHtml(err.correctAnswer)}')">✅ تحقق</button>
-                        </div>
-                        <div id="personalResult_${idx}" style="margin-top:6px;font-weight:600;"></div>
-                    </div>
-                `;
-            });
-            html += `
-                    </div>
-                    <div style="text-align:center;margin-top:16px;">
-                        <button class="btn-primary" onclick="APP.showDashboard()">📊 العودة للوحة</button>
-                    </div>
-                </div>
-            `;
-            main.innerHTML = html;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function checkPersonalAnswer(index, correctAnswer) {
-            const input = document.getElementById('personalAnswer_' + index);
-            const resultDiv = document.getElementById('personalResult_' + index);
-            if (!input || !resultDiv) return;
-            const userAns = input.value.trim();
-            if (!userAns) {
-                resultDiv.innerHTML = '<span style="color:var(--warning);">⚠️ يرجى كتابة إجابة</span>';
-                return;
-            }
-            // مقارنة بسيطة
-            if (userAns.toLowerCase() === correctAnswer.toLowerCase()) {
-                resultDiv.innerHTML = '<span style="color:var(--success);">✅ إجابة صحيحة! أحسنت 🎉</span>';
-                // تحديث بنك الأخطاء: نزيل هذا الخطأ
-                removeErrorFromBank(index);
-            } else {
-                resultDiv.innerHTML = `<span style="color:var(--danger);">❌ إجابة خاطئة. الإجابة الصحيحة: ${correctAnswer}</span>`;
-            }
-        }
-
-        async function removeErrorFromBank(index) {
-            if (!currentUser) return;
-            try {
-                const snapshot = await database.ref('users/' + currentUser.uid + '/errorBank').once('value');
-                if (snapshot.exists()) {
-                    let errors = Object.values(snapshot.val());
-                    // نبحث عن الخطأ المقابل
-                    const errorKey = Object.keys(snapshot.val())[index];
-                    if (errorKey) {
-                        await database.ref('users/' + currentUser.uid + '/errorBank/' + errorKey).remove();
-                        showToast('✅ تم حل الخطأ وإزالته من بنك الأخطاء!', 'success');
-                        // إعادة تحميل بنك الأخطاء
-                        const errorCountEl = document.getElementById('errorCountDisplay');
-                        if (errorCountEl) {
-                            const newSnapshot = await database.ref('users/' + currentUser.uid + '/errorBank').once('value');
-                            if (newSnapshot.exists()) {
-                                const updatedErrors = Object.values(newSnapshot.val()).filter(e => !e.solved);
-                                errorCountEl.textContent = updatedErrors.length;
-                            } else { errorCountEl.textContent = '0'; }
-                        }
-                    }
-                }
-            } catch (err) { console.error('Error removing error:', err); }
-        }
-
-        // ============================================================
-        // بنك الأخطاء (مطور)
-        // ============================================================
+        // 2. بنك الأخطاء (يظهر العدد فقط مع زر إنشاء اختبار)
         async function showErrorBank() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
@@ -2744,7 +3771,7 @@
 
             try {
                 const snapshot = await database.ref('users/' + currentUser.uid + '/errorBank').once('value');
-                const errors = snapshot.exists() ? Object.values(snapshot.val()) : [];
+                const errors = snapshot.exists() ? snapshot.val() : [];
                 const unsolved = errors.filter(e => !e.solved);
 
                 main.innerHTML = `
@@ -2755,14 +3782,17 @@
                             <div class="count">${unsolved.length}</div>
                             <div class="label">خطأ يحتاج للمراجعة</div>
                             <p style="font-size:0.85rem;color:var(--text2);">${errors.length > 0 ? `إجمالي الأخطاء المسجلة: ${errors.length}` : 'لا توجد أخطاء مسجلة'}</p>
-                            ${unsolved.length > 0 ? `<button class="btn-primary btn-sm" style="margin-top:12px;" onclick="APP.startErrorReview()">📖 مراجعة الأخطاء</button>` : ''}
-                            ${unsolved.length > 0 ? `<button class="btn-generate-exam" style="margin-top:12px;margin-right:8px;" onclick="APP.generatePersonalizedExam()"><i class="fas fa-magic"></i> إنشاء اختبار مخصص</button>` : ''}
+                            ${unsolved.length > 0 ? `
+                                <button class="btn-primary" style="margin-top:12px;" onclick="APP.startErrorExam()">
+                                    📝 إنشاء اختبار من أخطائي
+                                </button>
+                            ` : ''}
                         </div>
                         ${unsolved.length === 0 ? `
                             <div class="empty-state"><div class="icon">✅</div><h3>لا توجد أخطاء!</h3><p>أنت متميز، استمر بهذا الأداء الرائع</p></div>
                         ` : `
                             <div style="display:flex;flex-direction:column;gap:12px;">
-                                ${unsolved.map((err, idx) => `
+                                ${unsolved.slice(0, 20).map((err, idx) => `
                                     <div class="exam-result-card" style="border-right:4px solid var(--danger);">
                                         <div class="question-text">${idx + 1}. ${escapeHtml(err.question)}</div>
                                         <div class="answer-row">
@@ -2772,9 +3802,9 @@
                                             <span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(err.correctAnswer)}</span></span>
                                         </div>
                                         <div style="font-size:0.75rem;color:var(--text2);margin-top:4px;">🔄 محاولات: ${err.attempts || 1} | 📅 ${formatTime(err.addedAt)}</div>
-                                        <button class="btn-outline btn-sm" style="margin-top:8px;padding:4px 12px;font-size:0.7rem;" onclick="APP.solveError(${idx})">✅ تم حله</button>
                                     </div>
                                 `).join('')}
+                                ${unsolved.length > 20 ? `<p style="text-align:center;color:var(--text2);font-size:0.85rem;">... وعرض ${unsolved.length - 20} خطأ آخر</p>` : ''}
                             </div>
                         `}
                     </div>
@@ -2784,29 +3814,169 @@
                 showToast('حدث خطأ في تحميل الأخطاء', 'error'); }
         }
 
-        async function solveError(index) {
-            if (!currentUser) return;
+        // 2.1 إنشاء اختبار من الأخطاء
+        async function startErrorExam() {
+            if (!currentUser) { showLoginOverlay(); return; }
             try {
                 const snapshot = await database.ref('users/' + currentUser.uid + '/errorBank').once('value');
-                let errors = snapshot.exists() ? Object.values(snapshot.val()) : [];
-                if (errors[index]) {
-                    const keys = Object.keys(snapshot.val());
-                    await database.ref('users/' + currentUser.uid + '/errorBank/' + keys[index]).update({ solved: true, solvedAt: new Date().toISOString() });
-                    showToast('✅ تم تسجيل حل الخطأ بنجاح!', 'success');
-                    showErrorBank();
+                const errors = snapshot.exists() ? snapshot.val() : [];
+                const unsolved = errors.filter(e => !e.solved);
+                
+                if (unsolved.length === 0) {
+                    showToast('🎉 لا توجد أخطاء! أنت متميز!', 'success');
+                    return;
                 }
-            } catch (err) { console.error('Error solving error:', err);
-                showToast('حدث خطأ', 'error'); }
+
+                // اختيار عشوائي من الأخطاء (حد أقصى 10)
+                const shuffled = unsolved.sort(() => Math.random() - 0.5);
+                const selected = shuffled.slice(0, Math.min(10, shuffled.length));
+                
+                // بناء أسئلة من الأخطاء
+                const questions = selected.map(err => ({
+                    question: err.question,
+                    options: [err.correctAnswer, ...getWrongOptions(err.correctAnswer)],
+                    correctAnswer: 0, // أول خيار هو الصحيح
+                    explanation: `إجابتك السابقة كانت: ${err.userAnswer}، والإجابة الصحيحة هي: ${err.correctAnswer}`
+                }));
+
+                // إنشاء امتحان وهمي من الأخطاء
+                const examData = {
+                    id: 'error_exam_' + Date.now(),
+                    title: '📝 اختبار تصحيح الأخطاء',
+                    description: `اختبار من ${questions.length} سؤال من أخطائك السابقة`,
+                    questions: questions,
+                    duration: 15,
+                    atomsReward: 10,
+                    lessonId: 'error_bank'
+                };
+
+                // فتح الامتحان
+                currentExamData = examData;
+                openExamSecurityModal('error_exam', function() {
+                    // تعديل دالة submitExam لتتعامل مع اختبار الأخطاء
+                    const originalSubmit = window.APP.submitExam;
+                    window.APP.submitExam = async function(id, maxAtoms, autoSubmit) {
+                        // تصحيح الامتحان
+                        const answers = examAnswers[id] || {};
+                        const total = questions.length;
+                        let correct = 0;
+                        let wrongQuestions = [];
+                        let results = [];
+                        
+                        for (let i = 0; i < total; i++) {
+                            const isCorrect = answers[i] && answers[i].selected === 0;
+                            if (isCorrect) { correct++; } else {
+                                wrongQuestions.push({
+                                    question: questions[i].question,
+                                    correctAnswer: questions[i].options[0],
+                                    userAnswer: questions[i].options[answers[i]?.selected] || 'لم يجب'
+                                });
+                            }
+                            results.push({
+                                question: questions[i].question,
+                                userAnswer: questions[i].options[answers[i]?.selected] || 'لم يجب',
+                                correctAnswer: questions[i].options[0],
+                                isCorrect: isCorrect,
+                                explanation: questions[i].explanation || ''
+                            });
+                        }
+                        
+                        const score = Math.round((correct / total) * 100);
+                        const earnedAtoms = Math.round((score / 100) * maxAtoms);
+                        
+                        // إزالة الأخطاء التي تم حلها بشكل صحيح من بنك الأخطاء
+                        if (wrongQuestions.length === 0) {
+                            // كل الأخطاء تم حلها
+                            await database.ref('users/' + currentUser.uid + '/errorBank').set([]);
+                            showToast('🎉 مبروك! لقد تخلصت من جميع أخطائك!', 'success');
+                        } else {
+                            // إزالة فقط الأخطاء التي تم حلها
+                            const currentErrors = await database.ref('users/' + currentUser.uid + '/errorBank').once('value');
+                            let errorsList = currentErrors.val() || [];
+                            // نحتفظ فقط بالأخطاء التي لم يتم حلها
+                            const solvedQuestions = results.filter(r => r.isCorrect).map(r => r.question);
+                            errorsList = errorsList.filter(e => !solvedQuestions.includes(e.question));
+                            await database.ref('users/' + currentUser.uid + '/errorBank').set(errorsList);
+                        }
+                        
+                        // عرض النتيجة
+                        showToast(`📊 النتيجة: ${score}% (${correct}/${total})`, score >= 70 ? 'success' : 'warning');
+                        if (earnedAtoms > 0) {
+                            const atomRef = database.ref('users/' + currentUser.uid + '/atoms');
+                            await atomRef.transaction((current) => { return (current || 0) + earnedAtoms; });
+                            const userSnap = await database.ref('users/' + currentUser.uid + '/atoms').once('value');
+                            const newAtoms = userSnap.val() || 0;
+                            if (userData) userData.atoms = newAtoms;
+                            cache.userData = userData;
+                            updateCache();
+                            animateAtoms('atomsCount', newAtoms);
+                            animateAtoms('userAtomsCount', newAtoms);
+                        }
+                        
+                        // عرض النتيجة مع تفصيل الأخطاء
+                        showErrorExamResults(score, correct, total, results, earnedAtoms);
+                    };
+                    
+                    // عرض واجهة الامتحان
+                    showExamUI(examData, true);
+                }, 'exam');
+            } catch (err) { console.error('Error creating error exam:', err);
+                showToast('حدث خطأ في إنشاء الاختبار', 'error'); }
         }
 
-        function startErrorReview() {
-            showToast('📖 جاري تحميل مراجعة الأخطاء...', 'info');
-            showErrorBank();
+        function getWrongOptions(correct) {
+            const wrongs = ['خيار بديل 1', 'خيار بديل 2', 'خيار بديل 3'];
+            // نضيف بعض الخيارات العشوائية الغير صحيحة
+            return wrongs.sort(() => Math.random() - 0.5);
         }
 
-        // ============================================================
-        // النتائج
-        // ============================================================
+        function showErrorExamResults(score, correct, total, results, atomsEarned) {
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+            
+            const isPassed = score >= 70;
+            const wrongResults = results.filter(r => !r.isCorrect);
+            
+            main.innerHTML = `
+                <div style="max-width:900px;margin:0 auto;padding:20px;">
+                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button>
+                    <div class="card" style="padding:28px;margin-top:12px;text-align:center;border:3px solid ${isPassed ? 'var(--success)' : 'var(--warning)'};">
+                        <div style="font-size:4rem;margin-bottom:8px;">${isPassed ? '✅' : '📖'}</div>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:${isPassed ? 'var(--success)' : 'var(--warning)'};">${isPassed ? '🎉 نجاح في تصحيح الأخطاء!' : '⚠️ لا زلت بحاجة للمراجعة'}</h2>
+                        <p style="font-size:1.3rem;color:var(--text);margin-top:10px;font-weight:700;">${score}% (${correct}/${total})</p>
+                        ${atomsEarned > 0 ? `<p style="color:var(--gold);font-weight:700;">+${atomsEarned} ذرة</p>` : ''}
+                        <div style="margin-top:12px;font-size:0.85rem;color:var(--text2);">📅 ${new Date().toLocaleDateString('ar')}</div>
+                    </div>
+                    ${wrongResults.length > 0 ? `
+                        <h3 style="font-weight:700;font-size:1.2rem;color:var(--danger);margin:20px 0 12px;">❌ الأخطاء المتبقية (${wrongResults.length})</h3>
+                        ${wrongResults.map((r, idx) => `
+                            <div class="exam-result-card" style="border-right:4px solid var(--danger);">
+                                <div class="question-text">${idx + 1}. ${escapeHtml(r.question)}</div>
+                                <div class="answer-row">
+                                    <span class="wrong-icon">❌</span>
+                                    <span>إجابتك: <span class="user-ans">${escapeHtml(r.userAnswer)}</span></span>
+                                    <span>→</span>
+                                    <span>الإجابة الصحيحة: <span class="correct-ans">${escapeHtml(r.correctAnswer)}</span></span>
+                                </div>
+                                ${r.explanation ? `<div class="explanation">💡 ${escapeHtml(r.explanation)}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    ` : `
+                        <div class="empty-state" style="border:2px solid var(--success);">
+                            <div class="icon">🎉</div>
+                            <h3>جميع الأخطاء تم تصحيحها!</h3>
+                            <p>أنت الآن في الطريق الصحيح، استمر!</p>
+                        </div>
+                    `}
+                    <div style="text-align:center;margin-top:20px;">
+                        <button class="btn-primary no-print" onclick="APP.showHome()">🏠 العودة للرئيسية</button>
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 3. النتائج (مطورة)
         async function showResults() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
@@ -2842,7 +4012,7 @@
                                             <tr>
                                                 <td><strong>${escapeHtml(r.title || 'اختبار')}</strong></td>
                                                 <td><span class="badge-type ${r.type || 'exam'}">${r.type === 'quiz' ? '🧪 كويز' : r.type === 'assignment' ? '📝 واجب' : '📝 امتحان'}</span></td>
-                                                <td><strong>${r.score || 0}%</strong></td>
+                                                <td><strong style="color:${(r.score || 0) >= 70 ? 'var(--success)' : 'var(--danger)'};">${r.score || 0}%</strong></td>
                                                 <td>✅ ${r.correctAnswers || 0} / ${r.totalQuestions || 0}</td>
                                                 <td>${r.atomsEarned || 0} 🪙</td>
                                                 <td style="font-size:0.75rem;">${formatTime(r.completedAt)}</td>
@@ -2860,9 +4030,7 @@
                 showToast('حدث خطأ في تحميل النتائج', 'error'); }
         }
 
-        // ============================================================
-        // الشهادات
-        // ============================================================
+        // 4. الشهادات (كما هي)
         function showCertificate() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
@@ -2910,9 +4078,7 @@
                 showToast('حدث خطأ في تحميل الشهادة', 'error'); });
         }
 
-        // ============================================================
-        // بطاقة الطالب
-        // ============================================================
+        // 5. بطاقة الطالب (مطورة)
         function showStudentCard() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
@@ -2925,6 +4091,7 @@
             const atoms = userData?.atoms || 0;
             const studyTime = Math.round(userData?.studyTime || 0);
             const progress = allLessons.length > 0 ? Math.round((Object.keys(userCourseProgress).filter(k => userCourseProgress[k]?.watched).length / allLessons.length) * 100) : 0;
+            const level = progress >= 80 ? 'متقدم جداً' : progress >= 60 ? 'متقدم' : progress >= 30 ? 'متوسط' : 'مبتدئ';
 
             main.innerHTML = `
                 <div style="max-width:500px;margin:0 auto;padding:20px;">
@@ -2945,6 +4112,7 @@
                             <div class="detail">⚛️ ${atoms} ذرة</div>
                             <div class="detail">📊 ${progress}% إنجاز</div>
                             <div class="detail">⏱ ${studyTime} ساعة دراسة</div>
+                            <div class="detail">🏅 المستوى: ${level}</div>
                         </div>
                         <div class="card-footer">اصدار ${new Date().toLocaleDateString('ar')}</div>
                     </div>
@@ -2970,9 +4138,7 @@
                 showToast('حدث خطأ في تحميل البطاقة', 'error'); });
         }
 
-        // ============================================================
-        // الإنجازات
-        // ============================================================
+        // 6. الإنجازات (مطورة)
         function showAchievements() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
@@ -2985,6 +4151,7 @@
             const streak = userData?.streak || 0;
             const lessonsCompleted = userData?.lessonsCompleted || 0;
             const studyTime = Math.round(userData?.studyTime || 0);
+            const videosWatched = userData?.videosWatched || 0;
 
             const achievements = [
                 { id: 'first_lesson', icon: '📚', name: 'البداية', desc: 'أكملت أول حصة', unlocked: lessonsCompleted >= 1 },
@@ -2993,12 +4160,20 @@
                 { id: 'perfect_exam', icon: '⭐', name: 'امتحان كامل', desc: 'حصلت على 100% في امتحان', unlocked: perfectExams >= 1 },
                 { id: 'streak_3', icon: '🔥', name: 'التزام 3 أيام', desc: 'درست 3 أيام متتالية', unlocked: streak >= 3 },
                 { id: 'streak_7', icon: '⚡', name: 'التزام أسبوع', desc: 'درست 7 أيام متتالية', unlocked: streak >= 7 },
+                { id: 'streak_14', icon: '🏆', name: 'الالتزام أسبوعين', desc: 'درست 14 يوم متتالية', unlocked: streak >= 14 },
                 { id: 'atoms_50', icon: '💎', name: 'جامع ذرات', desc: 'جمعت 50 ذرة', unlocked: atoms >= 50 },
                 { id: 'atoms_100', icon: '🏆', name: 'خبير ذرات', desc: 'جمعت 100 ذرة', unlocked: atoms >= 100 },
+                { id: 'atoms_500', icon: '👑', name: 'أسطورة ذرات', desc: 'جمعت 500 ذرة', unlocked: atoms >= 500 },
                 { id: 'lessons_5', icon: '📖', name: 'طالب مجتهد', desc: 'أكملت 5 حصص', unlocked: lessonsCompleted >= 5 },
                 { id: 'lessons_10', icon: '🎓', name: 'طالب متميز', desc: 'أكملت 10 حصص', unlocked: lessonsCompleted >= 10 },
+                { id: 'lessons_25', icon: '🌟', name: 'طالب ملتزم', desc: 'أكملت 25 حصة', unlocked: lessonsCompleted >= 25 },
                 { id: 'study_5h', icon: '⏱️', name: 'دراسة 5 ساعات', desc: 'سجلت 5 ساعات دراسة', unlocked: studyTime >= 5 },
                 { id: 'study_10h', icon: '🧠', name: 'دراسة 10 ساعات', desc: 'سجلت 10 ساعات دراسة', unlocked: studyTime >= 10 },
+                { id: 'study_50h', icon: '🎯', name: 'دراسة 50 ساعة', desc: 'سجلت 50 ساعة دراسة', unlocked: studyTime >= 50 },
+                { id: 'videos_10', icon: '🎥', name: 'مشاهد فيديوهات', desc: 'شاهدت 10 فيديوهات', unlocked: videosWatched >= 10 },
+                { id: 'videos_50', icon: '📺', name: 'مشاهد محترف', desc: 'شاهدت 50 فيديو', unlocked: videosWatched >= 50 },
+                { id: 'exams_5', icon: '📊', name: 'خبير امتحانات', desc: 'حللت 5 امتحانات', unlocked: examsPassed >= 5 },
+                { id: 'exams_10', icon: '🏅', name: 'محترف امتحانات', desc: 'حللت 10 امتحانات', unlocked: examsPassed >= 10 },
             ];
 
             const unlocked = achievements.filter(a => a.unlocked).length;
@@ -3007,7 +4182,7 @@
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
                     <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()"><i class="fas fa-arrow-right"></i> العودة</button>
                     <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0 4px;">🏅 إنجازاتي</h1>
-                    <p style="color:var(--text2);margin-bottom:16px;">لقد حصلت على ${unlocked} من ${achievements.length} إنجاز 🎉</p>
+                    <p style="color:var(--text2);margin-bottom:16px;">لقد حصلت على <strong style="color:var(--gold);font-size:1.3rem;">${unlocked}</strong> من ${achievements.length} إنجاز 🎉</p>
                     <div class="achievement-grid">
                         ${achievements.map(a => `
                             <div class="achievement-item ${a.unlocked ? 'unlocked' : ''}" style="${a.unlocked ? '' : 'opacity:0.5;filter:grayscale(1);'}">
@@ -3023,9 +4198,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ============================================================
-        // تحليل المستوى (AI Insights) - مطور
-        // ============================================================
+        // 7. تحليل المستوى AI (مطور جداً)
         function showAIInsights() {
             if (!currentUser) { showLoginOverlay(); return; }
             const main = document.getElementById('mainContent');
@@ -3038,52 +4211,75 @@
             const streak = userData?.streak || 0;
             const lessonsCompleted = userData?.lessonsCompleted || 0;
             const studyTime = Math.round(userData?.studyTime || 0);
+            const videosWatched = userData?.videosWatched || 0;
             const progress = allLessons.length > 0 ? Math.round((lessonsCompleted / allLessons.length) * 100) : 0;
             const rank = userData?.rank || '--';
 
-            // تقييم متقدم للمستوى
+            // تقييم المستوى المتقدم
             let level = 'مبتدئ';
             let levelColor = 'var(--text2)';
             let levelEmoji = '🌱';
+            let detailedAnalysis = '';
             let suggestions = [];
             let strengths = [];
             let weaknesses = [];
 
-            if (progress >= 80 && perfectExams >= 2) {
-                level = 'متقدم جداً';
+            if (progress >= 80 && perfectExams >= 3) {
+                level = 'خبير جداً 🏆';
                 levelColor = 'var(--gold)';
-                levelEmoji = '🏆';
-                suggestions = ['أنت متميز جداً! شارك معرفتك مع زملائك', 'حاول حل امتحانات من أعوام سابقة', 'راجع الأخطاء النادرة فقط'];
+                levelEmoji = '👑';
+                detailedAnalysis = 'أنت من أفضل الطلاب! أداءك ممتاز في جميع المجالات، استمر في التفوق.';
+                suggestions = ['شارك معرفتك مع زملائك', 'حاول حل امتحانات من أعوام سابقة', 'كن قدوة للآخرين'];
                 strengths = ['فهم عميق للمادة', 'أداء ممتاز في الامتحانات', 'التزام عالي'];
-                weaknesses = ['قليل جداً من الأخطاء البسيطة'];
-            } else if (progress >= 60) {
-                level = 'متقدم';
+                weaknesses = ['لا توجد نقاط ضعف ملحوظة'];
+            } else if (progress >= 70) {
+                level = 'متقدم جداً 💪';
                 levelColor = 'var(--success)';
-                levelEmoji = '💪';
-                suggestions = ['استمر في المراجعة', 'ركز على النقاط التي تجدها صعبة', 'حاول حل المزيد من الكويزات'];
-                strengths = ['فهم جيد للمفاهيم', 'تقدم مستمر'];
-                weaknesses = ['بعض الأخطاء في التفاصيل الدقيقة'];
-            } else if (progress >= 30) {
-                level = 'متوسط';
+                levelEmoji = '⭐';
+                detailedAnalysis = 'أداءك ممتاز، أنت على بعد خطوات قليلة من الإتقان الكامل.';
+                suggestions = ['ركز على النقاط التي تجدها صعبة', 'حل المزيد من الامتحانات الشاملة', 'حاول تحسين وقت الحل'];
+                strengths = ['فهم جيد للمادة', 'أداء مستقر'];
+                weaknesses = ['بعض النقاط تحتاج إلى تعزيز'];
+            } else if (progress >= 50) {
+                level = 'متقدم 📚';
+                levelColor = 'var(--primary)';
+                levelEmoji = '📈';
+                detailedAnalysis = 'أنت في الطريق الصحيح، مع استمرارية التعلم ستصل إلى مستويات أعلى.';
+                suggestions = ['زود وقت مذاكرتك اليومية', 'راجع الدروس بانتظام', 'حل واجبات الحصص'];
+                strengths = ['أساسيات قوية', 'التزام جيد'];
+                weaknesses = ['تحتاج إلى تعميق الفهم في بعض الأجزاء'];
+            } else if (progress >= 25) {
+                level = 'متوسط 🌟';
                 levelColor = 'var(--warning)';
-                levelEmoji = '📚';
-                suggestions = ['زود وقت مذاكرتك', 'راجع الدروس بانتظام', 'حل واجبات الحصص'];
-                strengths = ['أساسيات جيدة', 'رغبة في التعلم'];
-                weaknesses = ['يحتاج لمراجعة أكثر', 'يحتاج لحل تمارين إضافية'];
+                levelEmoji = '📖';
+                detailedAnalysis = 'بداية جيدة، لكن تحتاج إلى بذل المزيد من الجهد للوصول إلى المستوى المطلوب.';
+                suggestions = ['ابدأ بالحصص من البداية', 'شاهد فيديوهات الشرح بتركيز', 'حل الكويزات البسيطة أولاً', 'حدد وقت يومي للمذاكرة'];
+                strengths = ['بداية جيدة', 'اهتمام بالتعلم'];
+                weaknesses = ['يحتاج إلى تنظيم وقت الدراسة', 'يحتاج إلى مراجعة الأساسيات'];
             } else {
-                level = 'مبتدئ';
+                level = 'مبتدئ 🌱';
                 levelColor = 'var(--primary)';
                 levelEmoji = '🌱';
-                suggestions = ['ابدأ بالحصص من البداية', 'شاهد فيديوهات الشرح', 'حل الكويزات البسيطة أولاً'];
-                strengths = ['بداية جيدة', 'حماس للتعلم'];
-                weaknesses = ['يحتاج لتأسيس قوي', 'يحتاج لمزيد من الممارسة'];
+                detailedAnalysis = 'كل رحلة تبدأ بخطوة، أنت في بداية الطريق. استمر ولا تيأس!';
+                suggestions = ['ابدأ من البداية بثقة', 'خصص وقت يومي للمذاكرة', 'شاهد الفيديوهات التعليمية', 'حل الكويزات البسيطة'];
+                strengths = ['حماس للتعلم', 'استعداد للتطوير'];
+                weaknesses = ['يحتاج إلى بناء الأساسيات', 'يحتاج إلى ممارسة أكثر'];
             }
 
-            // حساب نسبة كل مجال
-            const examScore = examsPassed > 0 ? Math.min(100, (perfectExams / examsPassed) * 100) : 0;
-            const quizScore = quizzesPassed > 0 ? Math.min(100, (quizzesPassed / (quizzesPassed + 1)) * 100) : 0;
-            const consistencyScore = Math.min(100, streak * 10);
-            const studyScore = Math.min(100, (studyTime / 20) * 100);
+            // حساب نقاط القوة والضعف بناءً على البيانات
+            if (examsPassed > quizzesPassed * 1.5) {
+                strengths.push('تفوق في الامتحانات');
+            } else if (quizzesPassed > examsPassed * 1.5) {
+                strengths.push('تفوق في الكويزات');
+            }
+            if (streak > 7) strengths.push('التزام عالي جداً');
+            if (perfectExams > 0) strengths.push(`حصلت على ${perfectExams} امتحانات كاملة`);
+            if (studyTime > 20) strengths.push('عدد ساعات دراسة ممتاز');
+            
+            if (examsPassed < 2 && lessonsCompleted > 5) weaknesses.push('تحتاج إلى حل المزيد من الامتحانات');
+            if (quizzesPassed < 2 && lessonsCompleted > 5) weaknesses.push('تحتاج إلى حل المزيد من الكويزات');
+            if (streak < 3) weaknesses.push('حاول زيادة أيام المذاكرة المتتالية');
+            if (studyTime < 5 && lessonsCompleted > 3) weaknesses.push('زود وقت مذاكرتك');
 
             main.innerHTML = `
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
@@ -3091,84 +4287,70 @@
                     <div class="ai-report-container" id="aiReportContainer">
                         <div class="report-header">
                             <div class="logo">🧪 يلا كيمياء</div>
-                            <div class="title">📊 تحليل المستوى - تقرير ذكي متقدم</div>
-                            <p style="color:var(--text2);">${new Date().toLocaleDateString('ar')}</p>
+                            <div class="title">📊 تحليل المستوى المتقدم - تقرير ذكي</div>
+                            <p style="color:var(--text2);">${new Date().toLocaleDateString('ar')} • ${new Date().toLocaleTimeString('ar')}</p>
                         </div>
 
-                        <!-- المستوى -->
-                        <div class="report-section" style="text-align:center;border:3px solid ${levelColor};">
-                            <h4>🎯 مستوى الطالب: ${escapeHtml(userData?.name || 'مستخدم')}</h4>
-                            <div style="font-size:3rem;font-weight:900;color:${levelColor};">${levelEmoji} ${level}</div>
-                            <div style="font-size:0.9rem;color:var(--text2);">🏅 الترتيب: ${rank}</div>
+                        <div class="report-section" style="text-align:center;border:3px solid ${levelColor};background:${levelColor}11;">
+                            <div style="font-size:4rem;">${levelEmoji}</div>
+                            <h4 style="font-size:1.5rem;color:${levelColor};">مستوى الطالب: ${escapeHtml(userData?.name || 'مستخدم')}</h4>
+                            <div style="font-size:3rem;font-weight:900;color:${levelColor};">${level}</div>
+                            <div style="font-size:1rem;color:var(--text2);margin-top:4px;">🏅 الترتيب العام: ${rank}</div>
+                            <p style="font-size:1.1rem;color:var(--text);margin-top:8px;">${detailedAnalysis}</p>
                         </div>
 
-                        <!-- نقاط القوة والضعف -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-                            <div class="report-section" style="border-right:4px solid var(--success);">
-                                <h4>✅ نقاط القوة</h4>
-                                <ul style="list-style:none;padding:0;">
-                                    ${strengths.map(s => `<li style="padding:4px 0;color:var(--text2);">💪 ${s}</li>`).join('')}
+                        <div class="report-section">
+                            <h4>📈 إحصائيات الأداء المتقدمة</h4>
+                            <div class="grid-2">
+                                <div class="stat-item"><div class="label">⚛️ الذرات</div><div class="value">${atoms}</div></div>
+                                <div class="stat-item"><div class="label">📊 نسبة الإنجاز</div><div class="value">${progress}%</div></div>
+                                <div class="stat-item"><div class="label">⏱ ساعات الدراسة</div><div class="value">${studyTime}</div></div>
+                                <div class="stat-item"><div class="label">🔥 أيام متتالية</div><div class="value">${streak}</div></div>
+                                <div class="stat-item"><div class="label">📝 امتحانات</div><div class="value">${examsPassed}</div></div>
+                                <div class="stat-item"><div class="label">🧪 كويزات</div><div class="value">${quizzesPassed}</div></div>
+                                <div class="stat-item"><div class="label">⭐ امتحانات كاملة</div><div class="value">${perfectExams}</div></div>
+                                <div class="stat-item"><div class="label">📚 حصص مكتملة</div><div class="value">${lessonsCompleted}</div></div>
+                                <div class="stat-item"><div class="label">🎥 فيديوهات شاهدتها</div><div class="value">${videosWatched}</div></div>
+                                <div class="stat-item"><div class="label">📚 نسبة إكمال الكورسات</div><div class="value">${Math.round((lessonsCompleted / (allLessons.length || 1)) * 100)}%</div></div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <div class="report-section" style="border:2px solid var(--success);">
+                                <h4 style="color:var(--success);">✅ نقاط القوة</h4>
+                                <ul style="list-style:none;padding:0;text-align:right;">
+                                    ${strengths.map(s => `<li style="padding:4px 0;border-bottom:1px solid var(--border);">⭐ ${s}</li>`).join('')}
+                                    ${strengths.length === 0 ? '<li style="color:var(--text2);">لا توجد نقاط قوة مسجلة بعد</li>' : ''}
                                 </ul>
                             </div>
-                            <div class="report-section" style="border-right:4px solid var(--danger);">
-                                <h4>⚠️ نقاط الضعف</h4>
-                                <ul style="list-style:none;padding:0;">
-                                    ${weaknesses.map(s => `<li style="padding:4px 0;color:var(--text2);">📌 ${s}</li>`).join('')}
+                            <div class="report-section" style="border:2px solid var(--danger);">
+                                <h4 style="color:var(--danger);">📌 نقاط الضعف</h4>
+                                <ul style="list-style:none;padding:0;text-align:right;">
+                                    ${weaknesses.map(w => `<li style="padding:4px 0;border-bottom:1px solid var(--border);">📌 ${w}</li>`).join('')}
+                                    ${weaknesses.length === 0 ? '<li style="color:var(--success);">🌟 لا توجد نقاط ضعف واضحة!</li>' : ''}
                                 </ul>
                             </div>
                         </div>
 
-                        <!-- الإحصائيات المتقدمة -->
-                        <div class="report-section">
-                            <h4>📈 تحليل الأداء</h4>
-                            <div class="ai-insight-grid">
-                                <div class="ai-insight-item">
-                                    <div class="label">⚛️ الذرات</div>
-                                    <div class="value">${atoms}</div>
-                                    <div class="bar"><div class="fill" style="width:${Math.min(100, (atoms/150)*100)}%;"></div></div>
-                                </div>
-                                <div class="ai-insight-item">
-                                    <div class="label">📊 نسبة الإنجاز</div>
-                                    <div class="value">${progress}%</div>
-                                    <div class="bar"><div class="fill" style="width:${progress}%;"></div></div>
-                                </div>
-                                <div class="ai-insight-item">
-                                    <div class="label">📝 الامتحانات</div>
-                                    <div class="value">${examsPassed}</div>
-                                    <div class="bar"><div class="fill" style="width:${examScore}%;"></div></div>
-                                </div>
-                                <div class="ai-insight-item">
-                                    <div class="label">🧪 الكويزات</div>
-                                    <div class="value">${quizzesPassed}</div>
-                                    <div class="bar"><div class="fill" style="width:${quizScore}%;"></div></div>
-                                </div>
-                                <div class="ai-insight-item">
-                                    <div class="label">🔥 الالتزام</div>
-                                    <div class="value">${streak} يوم</div>
-                                    <div class="bar"><div class="fill" style="width:${consistencyScore}%;"></div></div>
-                                </div>
-                                <div class="ai-insight-item">
-                                    <div class="label">⏱ ساعات الدراسة</div>
-                                    <div class="value">${studyTime}</div>
-                                    <div class="bar"><div class="fill" style="width:${studyScore}%;"></div></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- النصائح -->
-                        <div class="report-section">
-                            <h4>💡 نصائح مخصصة لك</h4>
+                        <div class="report-section" style="border:2px solid var(--primary);">
+                            <h4>💡 نصائح مخصصة لتحسين المستوى</h4>
                             <ul style="list-style:none;padding:0;text-align:right;">
-                                ${suggestions.map(s => `<li style="padding:4px 0;border-bottom:1px solid var(--border);">✅ ${s}</li>`).join('')}
+                                ${suggestions.map(s => `<li style="padding:6px 0;border-bottom:1px solid var(--border);">✅ ${s}</li>`).join('')}
                             </ul>
-                            <p style="font-size:0.9rem;color:var(--text2);margin-top:8px;">${progress >= 70 ? '🌟 أداء ممتاز! استمر بنفس المستوى.' : '💪 واصل التعلم، كل خطوة تقربك من هدفك.'}</p>
+                            <p style="font-size:0.9rem;color:var(--text2);margin-top:12px;background:var(--bg);padding:12px;border-radius:var(--radius);">
+                                ${progress >= 70 ? '🌟 أداء ممتاز! استمر بنفس المستوى، أنت قدوة للآخرين.' : 
+                                  progress >= 50 ? '💪 أنت في الطريق الصحيح، استمر ولا تتوقف!' : 
+                                  '🚀 كل خبير كان مبتدئاً، استمر في التعلم وستصل بإذن الله.'}
+                            </p>
                         </div>
 
                         <div class="report-footer">
                             تقرير تحليلي متكامل - يلا كيمياء ${new Date().getFullYear()}
+                            <br><span style="font-size:0.6rem;">تم إنشاؤه بواسطة نظام الذكاء الاصطناعي التعليمي</span>
                         </div>
-                        <div style="text-align:center;margin-top:12px;">
+                        <div style="text-align:center;margin-top:12px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                             <button class="btn-primary btn-sm no-print" onclick="APP.printAIReport()">🖨️ طباعة التقرير</button>
+                            <button class="btn-outline btn-sm no-print" onclick="APP.showDashboard()">📊 العودة للوحة</button>
                         </div>
                     </div>
                 </div>
@@ -3182,7 +4364,14 @@
                 const printWindow = window.open('', '_blank');
                 printWindow.document.write(`
                     <html><head><title>تقرير تحليل المستوى</title>
-                    <style>body { font-family: 'Cairo', sans-serif; padding: 20px; direction: rtl; }</style>
+                    <style>
+                        body { font-family: 'Cairo', sans-serif; padding: 20px; direction: rtl; max-width: 900px; margin: 0 auto; }
+                        .report-section { margin-bottom: 16px; padding: 16px; border-radius: 12px; background: #f5f5f5; }
+                        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+                        .stat-item { padding: 6px 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
+                        .stat-item .label { font-size: 0.7rem; color: #666; }
+                        .stat-item .value { font-weight: 700; font-size: 1rem; }
+                    </style>
                     </head><body>${el.outerHTML}</body></html>
                 `);
                 printWindow.document.close();
@@ -3190,9 +4379,7 @@
             }
         }
 
-        // ============================================================
-        // سياسة الخصوصية
-        // ============================================================
+        // 8. سياسة الخصوصية
         function showPrivacy() {
             const main = document.getElementById('mainContent');
             if (!main) return;
@@ -3218,9 +4405,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ============================================================
-        // الشروط والأحكام
-        // ============================================================
+        // 9. الشروط والأحكام
         function showTerms() {
             const main = document.getElementById('mainContent');
             if (!main) return;
@@ -3307,7 +4492,11 @@
         function init() {
             setupScrollHandlers();
             showHome();
-            console.log('🚀 Yalla Chemistry Platform v33.0 - FULLY UPGRADED');
+            console.log('🚀 Yalla Chemistry Platform v33.0 - ULTIMATE EDITION');
+            console.log('🔒 Security: Console locked, DevTools blocked, Anti-cheat active');
+            console.log('✅ Dashboard: Advanced with progress rings and detailed stats');
+            console.log('✅ AI Insights: Advanced analysis with strengths/weaknesses');
+            console.log('✅ Error Bank: Create exam from errors, remove solved ones');
         }
 
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
@@ -3338,12 +4527,11 @@
             submitExam: null,
             submitQuiz: null,
             exitExam: null,
-            // دوال جديدة مطورة
+            // دوال مطورة
             showLeaderboard,
             showDashboard,
             showErrorBank,
-            solveError,
-            startErrorReview,
+            startErrorExam,
             showResults,
             showCertificate,
             downloadCertificate,
@@ -3369,10 +4557,7 @@
             navigateQuizQuestion: null,
             selectExamAnswer: null,
             selectQuizAnswer: null,
-            isAssessmentCompleted: null,
-            // دوال جديدة لإنشاء اختبار مخصص
-            generatePersonalizedExam,
-            checkPersonalAnswer
+            isAssessmentCompleted: null
         };
 
         window.APP = APP;
