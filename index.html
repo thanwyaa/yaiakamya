@@ -22,9 +22,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -116,7 +118,7 @@
             .hero-image-container img { max-height: 200px; aspect-ratio: 16/10; object-fit: contain; background: var(--bg); }
         }
 
-        /* ===== هيكل حماية الفيديو - مع الحفاظ على تشغيل الفيديو ===== */
+        /* ===== مشغل الفيديو المحمي ===== */
         .video-protected {
             position: relative;
             width: 100%;
@@ -131,14 +133,15 @@
             -ms-user-select: none;
         }
 
-        .video-protected iframe, .video-protected video {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
+        .video-protected .plyr {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .video-protected .plyr__video-wrapper {
+            background: #000;
         }
 
-        /* ===== طبقة الحجب - تمنع النقر بزر الماوس الأيمن فقط (pointer-events: none عشان الفيديو يشتغل) ===== */
+        /* ===== طبقة الحماية ===== */
         .video-blocker {
             position: absolute;
             top: 0;
@@ -148,47 +151,47 @@
             z-index: 10;
             background: transparent;
             cursor: default;
-            pointer-events: none; /* ← ضروري عشان الفيديو يشتغل */
+            pointer-events: none;
         }
 
-        /* ===== علامة مائية ثابتة ===== */
+        /* ===== علامات مائية ===== */
         .video-watermark {
             position: absolute;
             bottom: 15px;
             right: 15px;
-            color: rgba(255, 255, 255, 0.45);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 13px;
             z-index: 15;
             pointer-events: none;
             font-weight: bold;
             font-family: 'Cairo', Arial, sans-serif;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             padding: 4px 12px;
             border-radius: 20px;
             backdrop-filter: blur(2px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
         .video-watermark .gold-text { color: var(--gold); }
 
-        /* ===== علامة مائية متحركة ===== */
         .dynamic-watermark {
             position: absolute;
-            color: rgba(255, 255, 255, 0.12);
-            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 2rem;
             z-index: 15;
             pointer-events: none;
-            transition: all 2.5s ease-in-out;
+            transition: all 3s ease-in-out;
             font-family: 'Lalezar', cursive;
             text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
             font-weight: 900;
             letter-spacing: 4px;
-            opacity: 0.4;
+            opacity: 0.3;
             top: 10px;
             left: 10px;
         }
-        .dynamic-watermark .gold-text { color: var(--gold); opacity: 0.6; }
+        .dynamic-watermark .gold-text { color: var(--gold); opacity: 0.5; }
 
-        /* شريط تقدم المشاهدة */
+        /* ===== شريط التقدم ===== */
         .watch-progress-container {
             margin-top: 16px;
             padding: 0 4px;
@@ -1742,12 +1745,48 @@
         .rank-badge.bronze { background: var(--bronze); color: #fff; }
         .rank-badge.normal { background: var(--bg); color: var(--text2); }
         
-        /* منع نسخ الرابط */
+        /* منع النسخ */
         .no-video-copy {
             -webkit-touch-callout: none;
         }
         .no-video-copy * {
             -webkit-touch-callout: none;
+        }
+        
+        /* تنسيق مشغل Plyr */
+        .plyr--video {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .plyr__controls {
+            direction: ltr;
+        }
+        .plyr__menu__container {
+            direction: rtl;
+        }
+        .plyr__controls .plyr__control {
+            color: #fff !important;
+        }
+        .plyr__controls .plyr__control:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+        .plyr__controls .plyr__control--overlaid {
+            background: var(--primary) !important;
+        }
+        .plyr__controls .plyr__control--overlaid:hover {
+            background: var(--primary2) !important;
+        }
+        .plyr--video .plyr__progress__buffer {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        .plyr--video .plyr__progress__played {
+            background: var(--primary) !important;
+        }
+        .plyr__menu__container .plyr__control--forward {
+            padding-right: 24px !important;
+        }
+        .plyr__menu__container .plyr__control--back {
+            padding-right: 24px !important;
         }
     </style>
 </head>
@@ -2181,14 +2220,14 @@
                 }
             });
             
-            // منع النقر بزر الماوس الأيمن في كل الصفحة لمنع فتح الرابط
+            // منع النقر بزر الماوس الأيمن في كل الصفحة
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
             
-            // منع النسخ
+            // منع النسخ في كل الصفحة
             document.addEventListener('copy', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -2196,19 +2235,15 @@
             });
             
             document.addEventListener('paste', function(e) {
-                if (document.querySelector('.exam-container')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             });
             
             document.addEventListener('cut', function(e) {
-                if (document.querySelector('.exam-container')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             });
             
             // منع مغادرة الصفحة أثناء الامتحان
@@ -2960,7 +2995,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO - محمي بالكامل مع تشغيل الفيديو
+        // LESSON VIDEO - محمي بالكامل مع مشغل Plyr
         // ============================================================
         async function openLessonVideo(lessonId) {
             if (!currentUser) { showLoginOverlay(); return; }
@@ -3001,7 +3036,7 @@
                 const studentCode = userData?.code || 'YK-XXXX-XXXX';
                 const studentId = currentUser?.uid?.slice(0, 6) || '000000';
 
-                // رابط الفيديو مع إعدادات الحماية والتشغيل التلقائي
+                // رابط الفيديو مع إعدادات الحماية - نستخدم embed مع autoplay
                 const embedUrl = `https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&autoplay=1`;
 
                 main.innerHTML = `
@@ -3018,27 +3053,26 @@
                         <!-- ===== هيكل حماية الفيديو ===== -->
                         <div class="video-protected" id="videoContainer">
                             
-                            <!-- ===== طبقة حجب - pointer-events: none عشان الفيديو يشتغل ===== -->
+                            <!-- ===== طبقة حجب - تمنع التفاعل الضار ولكن تسمح بتشغيل الفيديو ===== -->
                             <div class="video-blocker" id="videoBlocker"></div>
                             
-                            <!-- ===== علامة مائية ثابتة ===== -->
+                            <!-- ===== علامة مائية ثابتة مع اسم الطالب ===== -->
                             <div class="video-watermark" id="staticWatermark">
                                 👤 ${escapeHtml(studentName)} | كود: ${escapeHtml(studentCode)} | <span class="gold-text">🧪 يلا كيمياء</span>
                             </div>
                             
-                            <!-- ===== علامة مائية متحركة ===== -->
+                            <!-- ===== علامة مائية متحركة مع كود الطالب ===== -->
                             <div class="dynamic-watermark" id="dynamicWatermark">
                                 <span class="gold-text">🧪</span> ${escapeHtml(studentCode)} <span class="gold-text">🧪</span>
                             </div>
 
-                            <!-- ===== مشغل الفيديو ===== -->
-                            <iframe 
-                                id="videoFrame"
-                                src="${embedUrl}" 
-                                title="${escapeHtml(lesson.title)}"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
+                            <!-- ===== مشغل الفيديو باستخدام Plyr ===== -->
+                            <div id="plyrContainer">
+                                <video id="player" playsinline controls crossorigin>
+                                    <source src="${embedUrl}" type="video/mp4">
+                                    <p>⚠️ متصفحك لا يدعم تشغيل الفيديو.</p>
+                                </video>
+                            </div>
                         </div>
                         
                         <!-- ===== شريط تقدم المشاهدة ===== -->
