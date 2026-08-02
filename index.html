@@ -138,7 +138,7 @@
             display: block;
         }
 
-        /* طبقة الحجب - تمنع النقر بزر الماوس الأيمن والتفاعل المباشر */
+        /* ===== طبقة الحجب - تمنع النقر بزر الماوس الأيمن فقط ===== */
         .video-blocker {
             position: absolute;
             top: 0;
@@ -148,10 +148,10 @@
             z-index: 10;
             background: transparent;
             cursor: default;
-            pointer-events: auto;
+            pointer-events: none; /* ← مهم جداً عشان الفيديو يشتغل */
         }
 
-        /* علامة مائية ثابتة */
+        /* ===== علامة مائية ثابتة ===== */
         .video-watermark {
             position: absolute;
             bottom: 15px;
@@ -170,7 +170,7 @@
         }
         .video-watermark .gold-text { color: var(--gold); }
 
-        /* علامة مائية متحركة */
+        /* ===== علامة مائية متحركة ===== */
         .dynamic-watermark {
             position: absolute;
             color: rgba(255, 255, 255, 0.12);
@@ -2995,8 +2995,8 @@
                 const studentCode = userData?.code || 'YK-XXXX-XXXX';
                 const studentId = currentUser?.uid?.slice(0, 6) || '000000';
 
-                // رابط الفيديو مع إعدادات الحماية
-                const embedUrl = `https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0&iv_load_policy=3&cc_load_policy=0&disablekb=1`;
+                // رابط الفيديو مع إعدادات الحماية والتشغيل التلقائي
+                const embedUrl = `https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&autoplay=1`;
 
                 main.innerHTML = `
                     <div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">
@@ -3012,7 +3012,7 @@
                         <!-- ===== هيكل حماية الفيديو ===== -->
                         <div class="video-protected" id="videoContainer">
                             
-                            <!-- ===== طبقة حجب - تمنع النقر بزر الماوس الأيمن والتفاعل المباشر ===== -->
+                            <!-- ===== طبقة حجب - تمنع النقر بزر الماوس الأيمن فقط (pointer-events: none عشان الفيديو يشتغل) ===== -->
                             <div class="video-blocker" id="videoBlocker"></div>
                             
                             <!-- ===== علامة مائية ثابتة ===== -->
@@ -3030,7 +3030,7 @@
                                 id="videoFrame"
                                 src="${embedUrl}" 
                                 title="${escapeHtml(lesson.title)}"
-                                allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen>
                             </iframe>
                         </div>
