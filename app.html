@@ -2094,6 +2094,14 @@
     // ============================================================
     // PWA - تحميل التطبيق (مدمج مع الوظائف الجديدة)
     // ============================================================
+    
+    // دالة للكشف عن دعم PWA في المتصفح
+    function isPwaSupported() {
+        return 'serviceWorker' in navigator && 
+               'PushManager' in window &&
+               window.matchMedia('(display-mode: standalone)').matches === false;
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -2134,6 +2142,10 @@
             btn.classList.add('installed');
             btn.innerHTML = '✅ تم تثبيت التطبيق';
             btn.disabled = true;
+        }
+        const navBtn = document.getElementById('installAppBtn');
+        if (navBtn) {
+            navBtn.style.display = 'none';
         }
     }
 
@@ -2179,6 +2191,49 @@
             </div>
         `;
         document.body.appendChild(helpModal);
+    }
+
+    // دالة للتحقق من توفر التثبيت وعرض الشريط
+    function checkAndShowPwaBanner() {
+        // إذا كان التطبيق مثبتاً بالفعل، لا نعرض الشريط
+        if (isAppInstalled()) {
+            hidePwaBanner();
+            return;
+        }
+
+        // إذا كان هناك حدث deferredPrompt محفوظ، نعرض الشريط
+        if (deferredPrompt) {
+            showPwaBanner();
+            return;
+        }
+
+        // في بعض المتصفحات، قد لا يظهر beforeinstallprompt إلا بعد تفاعل المستخدم
+        // نتحقق من دعم PWA ونعرض الشريط بشكل استباقي
+        if (isPwaSupported()) {
+            // نعرض الشريط بعد 1.5 ثانية من تحميل الصفحة
+            setTimeout(() => {
+                // نتحقق مجدداً من عدم وجود deferredPrompt
+                if (!deferredPrompt && !isAppInstalled()) {
+                    showPwaBanner();
+                    // نضيف مستمع للحدث لتحديث الزر لاحقاً
+                    const btn = document.getElementById('pwaInstallBtn');
+                    if (btn) {
+                        btn.innerHTML = '📲 حمل التطبيق الآن <span class="install-dot"></span>';
+                        btn.classList.remove('installed');
+                        btn.disabled = false;
+                        btn.onclick = function() {
+                            // إذا لم يكن هناك deferredPrompt، نعرض رسالة مساعدة
+                            if (!deferredPrompt) {
+                                showToast('📱 اضغط على زر "تثبيت" في شريط العنوان', 'info');
+                                showInstallHelp();
+                            } else {
+                                installApp();
+                            }
+                        };
+                    }
+                }
+            }, 1500);
+        }
     }
 
     // ============================================================
@@ -4473,10 +4528,20 @@
         
         // عرض شريط التثبيت إذا كان المتصفح يدعم PWA ولم يتم التثبيت
         setTimeout(() => {
-            if (deferredPrompt && !isAppInstalled()) {
-                showPwaBanner();
+            if (!isAppInstalled()) {
+                // إذا كان هناك deferredPrompt محفوظ أو المتصفح يدعم PWA
+                if (deferredPrompt || isPwaSupported()) {
+                    showPwaBanner();
+                }
+                // نتحقق مرة أخرى بعد 3 ثوانٍ
+                setTimeout(() => {
+                    if (!isAppInstalled() && !deferredPrompt) {
+                        // نحاول إظهار الشريط كحل بديل
+                        showPwaBanner();
+                    }
+                }, 3000);
             }
-        }, 500);
+        }, 1000);
     }
 
     // ============================================================
@@ -4537,6 +4602,12 @@
         setupScrollHandlers();
         initTheme();
         showHome();
+        // التحقق من دعم PWA وعرض الشريط
+        setTimeout(() => {
+            if (!isAppInstalled()) {
+                checkAndShowPwaBanner();
+            }
+        }, 2000);
         console.log('🚀 Yalla Chemistry Platform v38.0 - ULTIMATE PRO');
     }
 
@@ -4602,7 +4673,9 @@
         // PWA functions
         showPwaBanner,
         hidePwaBanner,
-        isAppInstalled
+        isAppInstalled,
+        checkAndShowPwaBanner,
+        isPwaSupported
     };
 
     window.APP = APP;
