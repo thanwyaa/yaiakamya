@@ -1433,6 +1433,164 @@
             .ai-report-container { box-shadow: none !important; border: 1px solid #ddd !important; }
             body { background: #fff !important; }
         }
+
+        /* ====== إضافات شريط التثبيت ====== */
+        .install-banner {
+            background: #0B4F8C;
+            padding: 16px 20px;
+            border-radius: var(--radius-lg);
+            margin: 16px 0 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(11, 79, 140, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        [data-theme="dark"] .install-banner {
+            background: #1E3A6F;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 200px;
+        }
+        .install-banner-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: 4px;
+        }
+        .install-banner-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .install-banner-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .install-banner-text .title {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+        .install-banner-text .desc {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.85rem;
+        }
+        .install-banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .install-banner-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #FFD60A, #F0C000);
+            color: #0B1E30;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.3);
+        }
+        .install-banner-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(255, 214, 10, 0.4);
+        }
+        .install-banner-btn:active {
+            transform: scale(0.97);
+        }
+        .install-banner-btn i {
+            font-size: 1.2rem;
+        }
+        .install-banner-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #EF4444;
+            border-radius: 50%;
+            margin-left: 4px;
+            animation: blink-dot 1.2s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        }
+        @keyframes blink-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+        .install-banner-installed {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .install-banner-installed i {
+            color: #22C55E;
+            font-size: 1.2rem;
+        }
+        .install-banner.hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .install-banner {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 14px 16px;
+            }
+            .install-banner-content {
+                min-width: unset;
+            }
+            .install-banner-actions {
+                justify-content: center;
+                margin-top: 4px;
+            }
+            .install-banner-btn {
+                padding: 8px 18px;
+                font-size: 0.85rem;
+                width: 100%;
+                justify-content: center;
+            }
+            .install-banner-text .title {
+                font-size: 0.9rem;
+            }
+            .install-banner-text .desc {
+                font-size: 0.75rem;
+            }
+            .install-banner-logo {
+                width: 40px;
+                height: 40px;
+            }
+            .install-banner-dot {
+                width: 10px;
+                height: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1792,6 +1950,7 @@
     let videoProgressTimer = null;
     let dynamicWatermarkTimer = null;
     let deferredPrompt = null;
+    let isAppInstalled = false;
 
     const cache = {
         userData: null,
@@ -1917,13 +2076,50 @@
         deferredPrompt = e;
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) installBtn.style.display = 'flex';
+        const banner = document.getElementById('installBanner');
+        if (banner) {
+            banner.classList.remove('hidden');
+            const btn = banner.querySelector('.install-banner-btn');
+            if (btn) btn.style.display = 'inline-flex';
+            const installedMsg = banner.querySelector('.install-banner-installed');
+            if (installedMsg) installedMsg.style.display = 'none';
+        }
     });
 
     window.addEventListener('appinstalled', () => {
+        isAppInstalled = true;
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) installBtn.style.display = 'none';
+        const banner = document.getElementById('installBanner');
+        if (banner) {
+            const btn = banner.querySelector('.install-banner-btn');
+            if (btn) btn.style.display = 'none';
+            const installedMsg = banner.querySelector('.install-banner-installed');
+            if (installedMsg) installedMsg.style.display = 'flex';
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 5000);
+        }
         showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
     });
+
+    function checkIfInstalled() {
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            isAppInstalled = true;
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) installBtn.style.display = 'none';
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                const btn = banner.querySelector('.install-banner-btn');
+                if (btn) btn.style.display = 'none';
+                const installedMsg = banner.querySelector('.install-banner-installed');
+                if (installedMsg) installedMsg.style.display = 'flex';
+                setTimeout(() => {
+                    banner.classList.add('hidden');
+                }, 3000);
+            }
+        }
+    }
 
     function installApp() {
         if (deferredPrompt) {
@@ -1937,6 +2133,16 @@
                 deferredPrompt = null;
                 const installBtn = document.getElementById('installAppBtn');
                 if (installBtn) installBtn.style.display = 'none';
+                const banner = document.getElementById('installBanner');
+                if (banner) {
+                    const btn = banner.querySelector('.install-banner-btn');
+                    if (btn) btn.style.display = 'none';
+                    const installedMsg = banner.querySelector('.install-banner-installed');
+                    if (installedMsg) installedMsg.style.display = 'flex';
+                    setTimeout(() => {
+                        banner.classList.add('hidden');
+                    }, 5000);
+                }
             });
         } else {
             showToast('📱 يمكنك تثبيت التطبيق من خلال قائمة المتصفح', 'info');
@@ -3983,10 +4189,36 @@
         if (!main) return;
         const isUser = currentUser !== null;
 
+        // تحديد ما إذا كان التطبيق مثبتاً
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const showInstallBanner = !isStandalone && !isAppInstalled;
+
         main.innerHTML = `
             <section style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
                 <div class="hero-image-container" style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;position:relative;background:var(--bg);">
                     <img src="${HERO_IMAGE}" alt="مستر زياد مبروك" loading="eager" fetchpriority="high" onerror="this.style.display='none'" style="width:100%;height:auto;max-height:450px;object-fit:cover;display:block;aspect-ratio:16/7;">
+                </div>
+                
+                <!-- ====== شريط تثبيت التطبيق الجديد ====== -->
+                <div class="install-banner ${showInstallBanner ? '' : 'hidden'}" id="installBanner">
+                    <div class="install-banner-content">
+                        <div class="install-banner-logo">
+                            <img src="${LOGO_IMAGE}" alt="يلا كيمياء" loading="lazy">
+                        </div>
+                        <div class="install-banner-text">
+                            <div class="title">📱 ثبت تطبيق يلا كيمياء على جهازك الآن.</div>
+                            <div class="desc">ذاكر في أي وقت مباشرة من الشاشة الرئيسية بدون فتح المتصفح.</div>
+                        </div>
+                    </div>
+                    <div class="install-banner-actions">
+                        <button class="install-banner-btn" onclick="APP.installApp()" style="display:${showInstallBanner ? 'inline-flex' : 'none'};">
+                            <i class="fas fa-download"></i> 📲 حمل التطبيق الآن
+                            <span class="install-banner-dot"></span>
+                        </button>
+                        <div class="install-banner-installed" style="display:${showInstallBanner ? 'none' : 'flex'};">
+                            <i class="fas fa-check-circle"></i> ✅ تم تثبيت التطبيق
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="video-section-title">تفاصيل بداية المنهج وتفاصيل المنصة | خطة الكيمياء الكاملة لطلاب دفعة 2027 مع مستر زياد مبروك</div>
@@ -4295,6 +4527,7 @@
     function init() {
         setupScrollHandlers();
         initTheme();
+        checkIfInstalled();
         showHome();
         console.log('🚀 Yalla Chemistry Platform v38.0 - ULTIMATE PRO');
     }
@@ -4361,6 +4594,108 @@
     };
 
     window.APP = APP;
+    </script>
+
+    <!-- ====== خدمة الـ Service Worker ====== -->
+    <script>
+        // إنشاء Service Worker ديناميكياً
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'yalla-chem-v1';
+                const urlsToCache = [
+                    '/',
+                    '/index.html',
+                    '/manifest.json',
+                    '${HERO_IMAGE}',
+                    '${LOGO_IMAGE}',
+                    'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap',
+                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
+                ];
+
+                self.addEventListener('install', function(event) {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then(function(cache) {
+                                return cache.addAll(urlsToCache);
+                            })
+                    );
+                });
+
+                self.addEventListener('activate', function(event) {
+                    event.waitUntil(
+                        caches.keys().then(function(cacheNames) {
+                            return Promise.all(
+                                cacheNames.map(function(cacheName) {
+                                    if (cacheName !== CACHE_NAME) {
+                                        return caches.delete(cacheName);
+                                    }
+                                })
+                            );
+                        })
+                    );
+                });
+
+                self.addEventListener('fetch', function(event) {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then(function(response) {
+                                return response || fetch(event.request);
+                            })
+                    );
+                });
+            `;
+
+            try {
+                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(swBlob);
+                navigator.serviceWorker.register(swUrl, { scope: '/' })
+                    .then(() => console.log('✅ Service Worker registered'))
+                    .catch(err => console.warn('⚠️ SW registration failed:', err));
+            } catch(e) {
+                console.warn('⚠️ SW creation error:', e);
+            }
+        }
+
+        // ====== Manifest ديناميكي ======
+        (function() {
+            const manifest = {
+                "name": "يلا كيمياء",
+                "short_name": "يلا كيمياء",
+                "description": "منصة تعليمية متكاملة لشرح الكيمياء ببساطة مع مستر زياد مبروك",
+                "start_url": "/",
+                "display": "standalone",
+                "orientation": "portrait",
+                "background_color": "#0B4F8C",
+                "theme_color": "#0B4F8C",
+                "lang": "ar",
+                "dir": "rtl",
+                "icons": [
+                    {
+                        "src": "https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg",
+                        "sizes": "192x192",
+                        "type": "image/jpeg",
+                        "purpose": "any maskable"
+                    },
+                    {
+                        "src": "https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg",
+                        "sizes": "512x512",
+                        "type": "image/jpeg",
+                        "purpose": "any maskable"
+                    }
+                ]
+            };
+
+            // التحقق من وجود manifest
+            const existingLink = document.querySelector('link[rel="manifest"]');
+            if (!existingLink) {
+                const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+                const manifestUrl = URL.createObjectURL(blob);
+                const link = document.createElement('link');
+                link.rel = 'manifest';
+                link.href = manifestUrl;
+                document.head.appendChild(link);
+            }
+        })();
     </script>
 </body>
 </html>
