@@ -1433,6 +1433,188 @@
             .ai-report-container { box-shadow: none !important; border: 1px solid #ddd !important; }
             body { background: #fff !important; }
         }
+
+        /* ====== PWA Install Banner Styles ====== */
+        #pwaInstallBanner {
+            background: linear-gradient(135deg, #0B4F8C, #1E81CE);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin: -4px 20px 20px;
+            display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(11, 79, 140, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        [data-theme="dark"] #pwaInstallBanner {
+            background: linear-gradient(135deg, #1a3a5c, #0B4F8C);
+        }
+        #pwaInstallBanner .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 200px;
+        }
+        #pwaInstallBanner .banner-content .banner-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        #pwaInstallBanner .banner-content .banner-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #pwaInstallBanner .banner-text h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            line-height: 1.3;
+        }
+        #pwaInstallBanner .banner-text p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            margin: 2px 0 0;
+            line-height: 1.4;
+        }
+        #pwaInstallBanner .banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        #pwaInstallBtn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 28px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #FFD60A, #F5A623);
+            color: #081B2C;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.3);
+            position: relative;
+            white-space: nowrap;
+        }
+        #pwaInstallBtn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 28px rgba(255, 214, 10, 0.4);
+        }
+        #pwaInstallBtn:active {
+            transform: scale(0.97);
+        }
+        #pwaInstallBtn .install-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #EF4444;
+            border-radius: 50%;
+            animation: blink-dot 1s ease-in-out infinite;
+            flex-shrink: 0;
+            margin-right: -4px;
+        }
+        @keyframes blink-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+        #pwaInstallBtn.installed {
+            background: var(--success);
+            color: #fff;
+            cursor: default;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+        }
+        #pwaInstallBtn.installed:hover {
+            transform: none;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+        }
+        #pwaInstallBtn.installed .install-dot {
+            display: none;
+        }
+
+        .pwa-banner-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: rgba(255,255,255,0.7);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .pwa-banner-close:hover {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            #pwaInstallBanner {
+                padding: 12px 16px;
+                margin: -4px 8px 16px;
+                border-radius: var(--radius);
+            }
+            #pwaInstallBanner .banner-content .banner-logo {
+                width: 38px;
+                height: 38px;
+            }
+            #pwaInstallBanner .banner-text h3 {
+                font-size: 0.8rem;
+            }
+            #pwaInstallBanner .banner-text p {
+                font-size: 0.7rem;
+            }
+            #pwaInstallBtn {
+                padding: 8px 18px;
+                font-size: 0.75rem;
+                gap: 6px;
+            }
+            #pwaInstallBtn .install-dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            #pwaInstallBanner {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px;
+                margin: -4px 4px 12px;
+            }
+            #pwaInstallBanner .banner-content {
+                gap: 10px;
+            }
+            #pwaInstallBanner .banner-actions {
+                justify-content: center;
+                margin-top: 4px;
+            }
+            #pwaInstallBtn {
+                padding: 10px 20px;
+                font-size: 0.8rem;
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1910,27 +2092,59 @@
     }
 
     // ============================================================
-    // PWA - تحميل التطبيق
+    // PWA - تحميل التطبيق (مدمج مع الوظائف الجديدة)
     // ============================================================
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) installBtn.style.display = 'flex';
+        showPwaBanner();
     });
 
     window.addEventListener('appinstalled', () => {
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) installBtn.style.display = 'none';
+        hidePwaBanner();
         showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
     });
 
+    // كشف وضع التطبيق المثبت
+    function isAppInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches || 
+               window.navigator.standalone === true;
+    }
+
+    // إظهار شريط التثبيت
+    function showPwaBanner() {
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner && !isAppInstalled()) {
+            banner.style.display = 'flex';
+        }
+    }
+
+    // إخفاء شريط التثبيت
+    function hidePwaBanner() {
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner) {
+            banner.style.display = 'none';
+        }
+        const btn = document.getElementById('pwaInstallBtn');
+        if (btn) {
+            btn.classList.add('installed');
+            btn.innerHTML = '✅ تم تثبيت التطبيق';
+            btn.disabled = true;
+        }
+    }
+
+    // وظيفة تثبيت التطبيق المحسنة
     function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     showToast('✅ تم تثبيت التطبيق!', 'success');
+                    hidePwaBanner();
                 } else {
                     showToast('تم إلغاء تثبيت التطبيق', 'info');
                 }
@@ -2288,152 +2502,4 @@
             quizzesPassed: 0,
             studyTime: 0,
             videosWatched: 0,
-            lessonsCompleted: 0,
-            rank: '--',
-            perfectExams: 0,
-            lastStudyDate: new Date().toDateString(),
-            premiumCourses: {}
-        };
-        await database.ref('users/' + uid).set(newUser);
-        userData = newUser;
-        cache.userData = newUser;
-        updateCache();
-        updateUserUI(newUser);
-        if (currentUser) updateUIForAuth(currentUser);
-        await addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
-        calculateUserRank(uid, 0);
-    }
-
-    // ============================================================
-    // STUDY TIME TRACKING
-    // ============================================================
-    function startStudyTracking() {
-        if (currentUser && !studyInterval) {
-            studySessionStart = Date.now();
-            studyInterval = setInterval(async () => {
-                if (studySessionStart && currentUser) {
-                    const elapsedSeconds = (Date.now() - studySessionStart) / 1000;
-                    if (elapsedSeconds >= 60) {
-                        const hours = elapsedSeconds / 3600;
-                        try {
-                            await database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
-                                return (current || 0) + hours;
-                            });
-                            if (userData) {
-                                userData.studyTime = (userData.studyTime || 0) + hours;
-                                cache.userData = userData;
-                                updateCache();
-                            }
-                            studySessionStart = Date.now();
-                        } catch (err) {
-                            console.error('Study time update error:', err);
-                        }
-                    }
-                }
-            }, 30000);
-        }
-    }
-
-    function stopStudyTracking() {
-        if (studyInterval) {
-            clearInterval(studyInterval);
-            studyInterval = null;
-        }
-        if (studySessionStart && currentUser) {
-            const elapsedSeconds = (Date.now() - studySessionStart) / 1000;
-            if (elapsedSeconds > 10) {
-                const hours = elapsedSeconds / 3600;
-                database.ref('users/' + currentUser.uid + '/studyTime').transaction((current) => {
-                    return (current || 0) + hours;
-                });
-                if (userData) {
-                    userData.studyTime = (userData.studyTime || 0) + hours;
-                    cache.userData = userData;
-                    updateCache();
-                }
-            }
-            studySessionStart = null;
-        }
-    }
-
-    // ============================================================
-    // NOTIFICATIONS
-    // ============================================================
-    function loadNotifications(uid) {
-        database.ref('users/' + uid + '/notifications').on('value', (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                notifications = Object.values(data).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            } else { notifications = []; }
-            updateNotificationBadge();
-            cache.notifications = notifications;
-        });
-    }
-
-    function updateNotificationBadge() {
-        const badge = document.getElementById('notificationBadge');
-        if (!badge) return;
-        const unread = notifications.filter(n => !n.read).length;
-        if (unread > 0) {
-            badge.style.display = 'flex';
-            badge.textContent = unread > 99 ? '99+' : unread;
-        } else { badge.style.display = 'none'; }
-    }
-
-    async function addNotification(uid, title, description, icon = '📢') {
-        try {
-            const ref = database.ref(`users/${uid}/notifications`).push();
-            await ref.set({ id: ref.key, title, description, icon, read: false, createdAt: new Date().toISOString() });
-        } catch (err) { console.error('Error adding notification:', err); }
-    }
-
-    async function markNotificationRead(id) {
-        if (!currentUser) return;
-        try {
-            await database.ref(`users/${currentUser.uid}/notifications/${id}/read`).set(true);
-            const notif = notifications.find(n => n.id === id);
-            if (notif) notif.read = true;
-            updateNotificationBadge();
-            showNotificationsPage();
-        } catch (err) { console.error('Error marking notification read:', err); }
-    }
-
-    async function markAllNotificationsRead() {
-        if (!currentUser) return;
-        try {
-            const updates = {};
-            notifications.forEach(n => {
-                if (!n.read) { updates[`users/${currentUser.uid}/notifications/${n.id}/read`] = true; n.read = true; }
-            });
-            if (Object.keys(updates).length > 0) { await database.ref().update(updates); }
-            updateNotificationBadge();
-            showNotificationsPage();
-            showToast('✅ تم تحديد الكل كمقروء', 'success');
-        } catch (err) { console.error('Error marking all read:', err); showToast('حدث خطأ', 'error'); }
-    }
-
-    async function deleteAllNotifications() {
-        if (!currentUser) return;
-        if (!confirm('⚠️ هل أنت متأكد من حذف جميع الإشعارات؟')) return;
-        try {
-            await database.ref(`users/${currentUser.uid}/notifications`).remove();
-            notifications = [];
-            updateNotificationBadge();
-            showNotificationsPage();
-            showToast('🗑️ تم حذف جميع الإشعارات', 'success');
-        } catch (err) { console.error('Error deleting notifications:', err); showToast('حدث خطأ', 'error'); }
-    }
-
-    function showNotificationsPage() {
-        if (!currentUser) { showLoginOverlay(); return; }
-        const main = document.getElementById('mainContent');
-        if (!main) return;
-        const unreadCount = notifications.filter(n => !n.read).length;
-        main.innerHTML = `
-            <div class="notifications-page">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-                    <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);">🔔 الإشعارات</h1>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <button onclick="APP.markAllNotificationsRead()" class="btn-outline btn-sm">📖 تحديد الكل كمقروء</button>
-                        <button onclick="APP.deleteAllNotifications()" class="btn-outline btn-sm" style="border-color:var(--danger);color:var(--danger);">🗑️ حذف الكل</button>
-                        <button onclick="APP.showDashboard()" cla
+            lessonsC
