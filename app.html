@@ -1397,164 +1397,6 @@
             font-weight: 700;
         }
 
-        /* ====== إضافات شريط التثبيت ====== */
-        .install-banner {
-            background: #0B4F8C;
-            padding: 16px 20px;
-            border-radius: var(--radius-lg);
-            margin: 16px 0 24px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            box-shadow: 0 4px 20px rgba(11, 79, 140, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        [data-theme="dark"] .install-banner {
-            background: #1E3A6F;
-            border-color: rgba(255, 255, 255, 0.05);
-        }
-        .install-banner-content {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex: 1;
-            min-width: 200px;
-        }
-        .install-banner-logo {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            padding: 4px;
-        }
-        .install-banner-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        .install-banner-text {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .install-banner-text .title {
-            color: #fff;
-            font-weight: 700;
-            font-size: 1rem;
-            line-height: 1.3;
-        }
-        .install-banner-text .desc {
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 0.85rem;
-        }
-        .install-banner-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .install-banner-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 24px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #FFD60A, #F0C000);
-            color: #0B1E30;
-            font-weight: 700;
-            font-size: 0.95rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: 'Cairo', sans-serif;
-            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.3);
-        }
-        .install-banner-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(255, 214, 10, 0.4);
-        }
-        .install-banner-btn:active {
-            transform: scale(0.97);
-        }
-        .install-banner-btn i {
-            font-size: 1.2rem;
-        }
-        .install-banner-dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            background: #EF4444;
-            border-radius: 50%;
-            margin-left: 4px;
-            animation: blink-dot 1.2s ease-in-out infinite;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
-        }
-        @keyframes blink-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
-        }
-        .install-banner-installed {
-            display: none;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .install-banner-installed i {
-            color: #22C55E;
-            font-size: 1.2rem;
-        }
-        .install-banner.hidden {
-            display: none !important;
-        }
-
-        @media (max-width: 600px) {
-            .install-banner {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 14px 16px;
-            }
-            .install-banner-content {
-                min-width: unset;
-            }
-            .install-banner-actions {
-                justify-content: center;
-                margin-top: 4px;
-            }
-            .install-banner-btn {
-                padding: 8px 18px;
-                font-size: 0.85rem;
-                width: 100%;
-                justify-content: center;
-            }
-            .install-banner-text .title {
-                font-size: 0.9rem;
-            }
-            .install-banner-text .desc {
-                font-size: 0.75rem;
-            }
-            .install-banner-logo {
-                width: 40px;
-                height: 40px;
-            }
-            .install-banner-dot {
-                width: 10px;
-                height: 10px;
-            }
-        }
-
         @media (max-width: 992px) {
             .nav-links a, .nav-links button { font-size: 0.7rem; padding: 4px 10px; }
             .nav-logo span { font-size: 1rem; }
@@ -1590,6 +1432,188 @@
             .navbar, .back-top, .btn, .no-print { display: none !important; }
             .ai-report-container { box-shadow: none !important; border: 1px solid #ddd !important; }
             body { background: #fff !important; }
+        }
+
+        /* ====== PWA Install Banner Styles ====== */
+        #pwaInstallBanner {
+            background: linear-gradient(135deg, #0B4F8C, #1E81CE);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin: -4px 20px 20px;
+            display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(11, 79, 140, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        [data-theme="dark"] #pwaInstallBanner {
+            background: linear-gradient(135deg, #1a3a5c, #0B4F8C);
+        }
+        #pwaInstallBanner .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 200px;
+        }
+        #pwaInstallBanner .banner-content .banner-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        #pwaInstallBanner .banner-content .banner-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #pwaInstallBanner .banner-text h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            line-height: 1.3;
+        }
+        #pwaInstallBanner .banner-text p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.8);
+            margin: 2px 0 0;
+            line-height: 1.4;
+        }
+        #pwaInstallBanner .banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        #pwaInstallBtn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 28px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #FFD60A, #F5A623);
+            color: #081B2C;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.3);
+            position: relative;
+            white-space: nowrap;
+        }
+        #pwaInstallBtn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 28px rgba(255, 214, 10, 0.4);
+        }
+        #pwaInstallBtn:active {
+            transform: scale(0.97);
+        }
+        #pwaInstallBtn .install-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #EF4444;
+            border-radius: 50%;
+            animation: blink-dot 1s ease-in-out infinite;
+            flex-shrink: 0;
+            margin-right: -4px;
+        }
+        @keyframes blink-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
+        }
+        #pwaInstallBtn.installed {
+            background: var(--success);
+            color: #fff;
+            cursor: default;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+        }
+        #pwaInstallBtn.installed:hover {
+            transform: none;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+        }
+        #pwaInstallBtn.installed .install-dot {
+            display: none;
+        }
+
+        .pwa-banner-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: rgba(255,255,255,0.7);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .pwa-banner-close:hover {
+            background: rgba(255,255,255,0.25);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            #pwaInstallBanner {
+                padding: 12px 16px;
+                margin: -4px 8px 16px;
+                border-radius: var(--radius);
+            }
+            #pwaInstallBanner .banner-content .banner-logo {
+                width: 38px;
+                height: 38px;
+            }
+            #pwaInstallBanner .banner-text h3 {
+                font-size: 0.8rem;
+            }
+            #pwaInstallBanner .banner-text p {
+                font-size: 0.7rem;
+            }
+            #pwaInstallBtn {
+                padding: 8px 18px;
+                font-size: 0.75rem;
+                gap: 6px;
+            }
+            #pwaInstallBtn .install-dot {
+                width: 8px;
+                height: 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            #pwaInstallBanner {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px;
+                margin: -4px 4px 12px;
+            }
+            #pwaInstallBanner .banner-content {
+                gap: 10px;
+            }
+            #pwaInstallBanner .banner-actions {
+                justify-content: center;
+                margin-top: 4px;
+            }
+            #pwaInstallBtn {
+                padding: 10px 20px;
+                font-size: 0.8rem;
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -2068,27 +2092,59 @@
     }
 
     // ============================================================
-    // PWA - تحميل التطبيق
+    // PWA - تحميل التطبيق (مدمج مع الوظائف الجديدة)
     // ============================================================
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) installBtn.style.display = 'flex';
+        showPwaBanner();
     });
 
     window.addEventListener('appinstalled', () => {
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) installBtn.style.display = 'none';
+        hidePwaBanner();
         showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
     });
 
+    // كشف وضع التطبيق المثبت
+    function isAppInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches || 
+               window.navigator.standalone === true;
+    }
+
+    // إظهار شريط التثبيت
+    function showPwaBanner() {
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner && !isAppInstalled()) {
+            banner.style.display = 'flex';
+        }
+    }
+
+    // إخفاء شريط التثبيت
+    function hidePwaBanner() {
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner) {
+            banner.style.display = 'none';
+        }
+        const btn = document.getElementById('pwaInstallBtn');
+        if (btn) {
+            btn.classList.add('installed');
+            btn.innerHTML = '✅ تم تثبيت التطبيق';
+            btn.disabled = true;
+        }
+    }
+
+    // وظيفة تثبيت التطبيق المحسنة
     function installApp() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     showToast('✅ تم تثبيت التطبيق!', 'success');
+                    hidePwaBanner();
                 } else {
                     showToast('تم إلغاء تثبيت التطبيق', 'info');
                 }
@@ -4141,35 +4197,29 @@
         if (!main) return;
         const isUser = currentUser !== null;
 
-        // التحقق من تثبيت التطبيق
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        const showBanner = !isStandalone && deferredPrompt !== null;
-
         main.innerHTML = `
             <section style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
                 <div class="hero-image-container" style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;position:relative;background:var(--bg);">
                     <img src="${HERO_IMAGE}" alt="مستر زياد مبروك" loading="eager" fetchpriority="high" onerror="this.style.display='none'" style="width:100%;height:auto;max-height:450px;object-fit:cover;display:block;aspect-ratio:16/7;">
                 </div>
-                
-                <!-- ====== شريط تثبيت التطبيق الجديد ====== -->
-                <div class="install-banner ${showBanner ? '' : 'hidden'}" id="installBanner">
-                    <div class="install-banner-content">
-                        <div class="install-banner-logo">
+
+                <!-- ====== PWA INSTALL BANNER ====== -->
+                <div id="pwaInstallBanner" style="display:none;">
+                    <div class="banner-content">
+                        <div class="banner-logo">
                             <img src="${LOGO_IMAGE}" alt="يلا كيمياء" loading="lazy">
                         </div>
-                        <div class="install-banner-text">
-                            <div class="title">📱 ثبت تطبيق يلا كيمياء على جهازك الآن.</div>
-                            <div class="desc">ذاكر في أي وقت مباشرة من الشاشة الرئيسية بدون فتح المتصفح.</div>
+                        <div class="banner-text">
+                            <h3>📲 ثبت تطبيق يلا كيمياء على جهازك الآن</h3>
+                            <p>ذاكر في أي وقت مباشرة من الشاشة الرئيسية بدون فتح المتصفح</p>
                         </div>
                     </div>
-                    <div class="install-banner-actions">
-                        <button class="install-banner-btn" onclick="APP.installApp()">
-                            <i class="fas fa-download"></i> 📲 حمل التطبيق الآن
-                            <span class="install-banner-dot"></span>
+                    <div class="banner-actions">
+                        <button id="pwaInstallBtn" onclick="APP.installApp()">
+                            📲 حمل التطبيق الآن
+                            <span class="install-dot"></span>
                         </button>
-                        <div class="install-banner-installed">
-                            <i class="fas fa-check-circle"></i> ✅ تم تثبيت التطبيق
-                        </div>
+                        <button class="pwa-banner-close" onclick="APP.hidePwaBanner()" aria-label="إغلاق">✕</button>
                     </div>
                 </div>
                 
@@ -4420,6 +4470,13 @@
         `;
         loadCourses();
         loadLeaderboard();
+        
+        // عرض شريط التثبيت إذا كان المتصفح يدعم PWA ولم يتم التثبيت
+        setTimeout(() => {
+            if (deferredPrompt && !isAppInstalled()) {
+                showPwaBanner();
+            }
+        }, 500);
     }
 
     // ============================================================
@@ -4479,14 +4536,8 @@
     function init() {
         setupScrollHandlers();
         initTheme();
-        // تسجيل Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(() => console.log('✅ Service Worker registered'))
-                .catch(err => console.warn('⚠️ SW registration failed:', err));
-        }
         showHome();
-        console.log('🚀 Yalla Chemistry Platform v39.0 - ULTIMATE PRO');
+        console.log('🚀 Yalla Chemistry Platform v38.0 - ULTIMATE PRO');
     }
 
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
@@ -4548,286 +4599,13 @@
         openExamSecurityModal,
         closeExamSecurityModal,
         startExamAfterPledge,
-        checkCourseAccess,
-        isUserSubscribed
+        // PWA functions
+        showPwaBanner,
+        hidePwaBanner,
+        isAppInstalled
     };
 
     window.APP = APP;
     </script>
-    
-    <!-- ====== إضافات PWA ====== -->
-    <script>
-    // ============================================================
-    // 🚀 زر التثبيت الحقيقي - PWA Install
-    // ============================================================
-
-    let deferredPrompt = null;
-    let isAppInstalled = false;
-
-    // 1️⃣ حدث التثبيت - المتصفح بيبعته لما التطبيق جاهز للتثبيت
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // منع النافذة المنبثقة التلقائية
-        e.preventDefault();
-        
-        // حفظ الحدث عشان نستخدمه بعدين
-        deferredPrompt = e;
-        
-        console.log('✅ beforeinstallprompt - التطبيق جاهز للتثبيت');
-        
-        // إظهار زر التثبيت
-        showInstallButton(true);
-    });
-
-    // 2️⃣ حدث نجاح التثبيت
-    window.addEventListener('appinstalled', () => {
-        console.log('✅ appinstalled - تم تثبيت التطبيق بنجاح');
-        isAppInstalled = true;
-        deferredPrompt = null;
-        
-        // إخفاء زر التثبيت
-        showInstallButton(false);
-        
-        // رسالة نجاح
-        showToast('🎉 تم تثبيت التطبيق بنجاح!', 'success');
-    });
-
-    // 3️⃣ التحقق من أن التطبيق مثبت بالفعل
-    function checkIfInstalled() {
-        // طريقة 1: display-mode
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            isAppInstalled = true;
-            showInstallButton(false);
-            console.log('✅ التطبيق يعمل في وضع standalone');
-            return true;
-        }
-        
-        // طريقة 2: navigator.standalone (للـ iOS)
-        if (window.navigator.standalone === true) {
-            isAppInstalled = true;
-            showInstallButton(false);
-            console.log('✅ التطبيق يعمل في وضع standalone (iOS)');
-            return true;
-        }
-        
-        return false;
-    }
-
-    // 4️⃣ إظهار/إخفاء زر التثبيت
-    function showInstallButton(show) {
-        // زر في النافبار
-        const installBtn = document.getElementById('installAppBtn');
-        if (installBtn) {
-            installBtn.style.display = show ? 'flex' : 'none';
-        }
-        
-        // شريط التثبيت (Banner)
-        const banner = document.getElementById('installBanner');
-        if (banner) {
-            if (show && !isAppInstalled) {
-                banner.classList.remove('hidden');
-                const btn = banner.querySelector('.install-banner-btn');
-                if (btn) btn.style.display = 'flex';
-                const installedMsg = banner.querySelector('.install-banner-installed');
-                if (installedMsg) installedMsg.style.display = 'none';
-            } else {
-                banner.classList.add('hidden');
-            }
-        }
-    }
-
-    // 5️⃣ دالة التثبيت - دي اللي بتشتغل عند الضغط على الزر
-    function installApp() {
-        if (deferredPrompt) {
-            // ✅ الزر الحقيقي - بيفتح نافذة التثبيت الرسمية
-            deferredPrompt.prompt();
-            
-            // انتظار قرار المستخدم
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('✅ المستخدم وافق على التثبيت');
-                    showToast('✅ تم تثبيت التطبيق!', 'success');
-                    // إخفاء الزر فوراً
-                    showInstallButton(false);
-                } else {
-                    console.log('❌ المستخدم رفض التثبيت');
-                    showToast('❌ تم إلغاء التثبيت', 'info');
-                }
-                deferredPrompt = null;
-            });
-        } else {
-            // إذا لم يكن هناك beforeinstallprompt
-            // نعرض رسالة للمستخدم
-            showToast('📱 استخدم قائمة المتصفح لتثبيت التطبيق', 'info');
-        }
-    }
-
-    // 6️⃣ التحقق عند تحميل الصفحة
-    document.addEventListener('DOMContentLoaded', function() {
-        // التحقق من التثبيت
-        checkIfInstalled();
-        
-        console.log('🔧 PWA Install System Ready');
-    });
-
-    // 7️⃣ تسجيل Service Worker (إذا لم يتم تسجيله بالفعل)
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(() => {
-                console.log('✅ Service Worker registered successfully');
-            })
-            .catch((err) => {
-                console.warn('⚠️ Service Worker registration failed:', err);
-            });
-    }
-
-    // 8️⃣ ربط الدوال بالـ window عشان تكون متاحة في HTML
-    window.installApp = installApp;
-
-    console.log('🚀 PWA Install Ready - الزر حقيقي 100%');
-    </script>
 </body>
-    <script>
-// ============================================================
-// 🚀 زر التثبيت - حل سريع
-// ============================================================
-
-(function() {
-    'use strict';
-    
-    let deferredPrompt = null;
-    let isAppInstalled = false;
-    
-    // 1️⃣ استقبال حدث التثبيت
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        console.log('✅ beforeinstallprompt - جاهز للتثبيت');
-        
-        // إظهار الزر في النافبار
-        const btn = document.getElementById('installAppBtn');
-        if (btn) btn.style.display = 'flex';
-        
-        // إظهار الشريط
-        const banner = document.getElementById('installBanner');
-        if (banner) {
-            banner.classList.remove('hidden');
-            const bannerBtn = banner.querySelector('.install-banner-btn');
-            if (bannerBtn) bannerBtn.style.display = 'flex';
-            const installedMsg = banner.querySelector('.install-banner-installed');
-            if (installedMsg) installedMsg.style.display = 'none';
-        }
-    });
-    
-    // 2️⃣ حدث نجاح التثبيت
-    window.addEventListener('appinstalled', () => {
-        console.log('✅ تم تثبيت التطبيق');
-        isAppInstalled = true;
-        deferredPrompt = null;
-        
-        const btn = document.getElementById('installAppBtn');
-        if (btn) btn.style.display = 'none';
-        
-        const banner = document.getElementById('installBanner');
-        if (banner) {
-            const bannerBtn = banner.querySelector('.install-banner-btn');
-            if (bannerBtn) bannerBtn.style.display = 'none';
-            const installedMsg = banner.querySelector('.install-banner-installed');
-            if (installedMsg) installedMsg.style.display = 'flex';
-            setTimeout(() => banner.classList.add('hidden'), 3000);
-        }
-    });
-    
-    // 3️⃣ التحقق من التثبيت
-    function checkInstalled() {
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-            isAppInstalled = true;
-            const btn = document.getElementById('installAppBtn');
-            if (btn) btn.style.display = 'none';
-            
-            const banner = document.getElementById('installBanner');
-            if (banner) {
-                const bannerBtn = banner.querySelector('.install-banner-btn');
-                if (bannerBtn) bannerBtn.style.display = 'none';
-                const installedMsg = banner.querySelector('.install-banner-installed');
-                if (installedMsg) installedMsg.style.display = 'flex';
-                banner.classList.add('hidden');
-            }
-            return true;
-        }
-        return false;
-    }
-    
-    // 4️⃣ دالة التثبيت
-    window.installApp = function() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('✅ تم التثبيت');
-                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-                } else {
-                    console.log('❌ تم الإلغاء');
-                    showToast('❌ تم إلغاء التثبيت', 'info');
-                }
-                deferredPrompt = null;
-            });
-        } else {
-            showToast('📱 استخدم قائمة المتصفح للتثبيت', 'info');
-            // محاولة فتح قائمة التثبيت
-            if (window.navigator && window.navigator.share) {
-                window.navigator.share({
-                    title: 'يلا كيمياء',
-                    text: 'منصة تعليمية متكاملة لشرح الكيمياء',
-                    url: window.location.href
-                }).catch(() => {});
-            }
-        }
-    };
-    
-    // 5️⃣ دالة Toast
-    function showToast(msg, type = 'success') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        const el = document.createElement('div');
-        el.className = `toast toast-${type}`;
-        el.textContent = msg;
-        container.appendChild(el);
-        setTimeout(() => el.remove(), 3500);
-    }
-    
-    // 6️⃣ التحقق عند التحميل
-    document.addEventListener('DOMContentLoaded', function() {
-        checkInstalled();
-        console.log('🔧 PWA Install Ready');
-        
-        // لو الزر مش ظاهر بعد 5 ثواني، جرب تظهره
-        setTimeout(() => {
-            const btn = document.getElementById('installAppBtn');
-            if (btn && btn.style.display === 'none') {
-                // لو في deferredPrompt ولسه مخفي
-                if (deferredPrompt) {
-                    btn.style.display = 'flex';
-                    const banner = document.getElementById('installBanner');
-                    if (banner) {
-                        banner.classList.remove('hidden');
-                        const bannerBtn = banner.querySelector('.install-banner-btn');
-                        if (bannerBtn) bannerBtn.style.display = 'flex';
-                        const installedMsg = banner.querySelector('.install-banner-installed');
-                        if (installedMsg) installedMsg.style.display = 'none';
-                    }
-                }
-            }
-        }, 3000);
-    });
-    
-    // 7️⃣ تسجيل Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then(() => console.log('✅ Service Worker registered'))
-            .catch((err) => console.warn('⚠️ SW registration failed:', err));
-    }
-    
-    console.log('🚀 PWA Install - جاهز 100%');
-})();
-</script>
 </html>
