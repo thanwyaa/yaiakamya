@@ -1,41 +1,26 @@
-// إنشاء manifest.json ديناميكياً
-(function() {
-    const manifest = {
-        "name": "يلا كيمياء",
-        "short_name": "يلا كيمياء",
-        "description": "منصة تعليمية متكاملة لشرح الكيمياء ببساطة",
-        "start_url": "/",
-        "display": "standalone",
-        "orientation": "portrait",
-        "background_color": "#0B4F8C",
-        "theme_color": "#0B4F8C",
-        "lang": "ar",
-        "dir": "rtl",
-        "icons": [
-            {
-                "src": "https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg",
-                "sizes": "192x192",
-                "type": "image/jpeg",
-                "purpose": "any maskable"
-            },
-            {
-                "src": "https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg",
-                "sizes": "512x512",
-                "type": "image/jpeg",
-                "purpose": "any maskable"
-            }
-        ]
-    };
-    
-    // التحقق من وجود manifest
-    const existingLink = document.querySelector('link[rel="manifest"]');
-    if (!existingLink) {
-        const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-        const manifestUrl = URL.createObjectURL(blob);
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = manifestUrl;
-        document.head.appendChild(link);
-        console.log('✅ تم إنشاء manifest.json ديناميكياً');
+{
+  "name": "يلا كيمياء",
+  "short_name": "يلا كيمياء",
+  "description": "منصة تعليمية متكاملة لشرح الكيمياء ببساطة",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B4F8C",
+  "theme_color": "#0B4F8C",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
-})();
+  ]
+}
