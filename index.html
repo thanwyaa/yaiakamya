@@ -83,6 +83,47 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
+        /* ===== تحسين زر الليل والنهار ===== */
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            width: 48px;
+            height: 24px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+        .theme-toggle .slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--gold);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        [data-theme="dark"] .theme-toggle .slider {
+            transform: translateX(24px);
+            background: #38BDF8;
+        }
+        .theme-toggle .slider i { display: none; }
+        .theme-toggle .slider i.fa-sun { display: block; }
+        [data-theme="dark"] .theme-toggle .slider i.fa-sun { display: none; }
+        [data-theme="dark"] .theme-toggle .slider i.fa-moon { display: block; }
+
         .nav-logo img {
             width: 40px;
             height: 40px;
@@ -92,7 +133,6 @@
             background: transparent !important;
         }
 
-        /* ===== حماية الفيديو ===== */
         .video-protected {
             position: relative;
             width: 100%;
@@ -146,22 +186,22 @@
 
         .dynamic-watermark {
             position: absolute;
-            color: rgba(255, 255, 255, 0.12);
-            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 2.2rem;
             z-index: 15;
             pointer-events: none;
-            transition: all 2.5s ease-in-out;
+            transition: all 3s ease-in-out;
             font-family: 'Lalezar', cursive;
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
             font-weight: 900;
             letter-spacing: 4px;
-            opacity: 0.4;
+            opacity: 0.6;
             top: 10px;
             left: 10px;
+            white-space: nowrap;
         }
-        .dynamic-watermark .gold-text { color: var(--gold); opacity: 0.6; }
+        .dynamic-watermark .gold-text { color: var(--gold); opacity: 0.8; }
 
-        /* ===== باقي الستايلات ===== */
         .watch-progress-container {
             margin-top: 16px;
             padding: 0 4px;
@@ -212,7 +252,6 @@
             100% { background-position: -200% 0; }
         }
 
-        /* ===== نافبار ===== */
         .navbar {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -296,7 +335,6 @@
             transform: translateY(-1px);
         }
 
-        /* ===== زر تحميل التطبيق ===== */
         .install-app-btn {
             display: inline-flex;
             align-items: center;
@@ -323,7 +361,6 @@
         }
         .install-app-btn i { font-size: 1.1rem; }
 
-        /* ===== باقي الكلاسات ===== */
         .btn-primary {
             display: inline-flex;
             align-items: center;
@@ -377,7 +414,6 @@
         .btn-success { background: var(--success); color: #fff; border: none; }
         .btn-success:hover { background: #16a34a; }
 
-        /* ===== بطاقات ===== */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -1238,7 +1274,30 @@
     </style>
 </head>
 <body>
-
+    <!-- ====== Pop-up Window for Admin ====== -->
+    <div id="adminPopup" style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:modalIn 0.5s ease;">
+        <div style="background:var(--card);border-radius:var(--radius-lg);padding:24px;max-width:550px;width:100%;position:relative;border:2px solid var(--gold);box-shadow:0 20px 60px rgba(0,0,0,0.5);text-align:center;max-height:95vh;overflow-y:auto;">
+            
+            <button onclick="document.getElementById('adminPopup').style.display='none'" style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(0,0,0,0.1);color:var(--text);font-size:1.2rem;cursor:pointer;font-weight:700;transition:var(--transition);display:flex;align-items:center;justify-content:center;">✕</button>
+            
+            <div style="font-size:2.5rem;margin-bottom:8px;">🧪</div>
+            <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--primary);margin-bottom:8px;">📢 إعلان هام من الإدارة</h2>
+            
+            <!-- هنا ممكن تحط صورتك أو شعارك -->
+            <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" style="width:100px;height:100px;object-fit:contain;border-radius:50%;border:3px solid var(--gold);margin:0 auto 12px;display:block;background:transparent;">
+            
+            <p style="font-size:1.1rem;color:var(--text);line-height:1.8;margin-bottom:8px;">
+                مرحباً بكم في منصة <strong>يلا كيمياء</strong>! 🚀<br>
+                نتمنى لكم رحلة تعليمية ممتعة ومفيدة.<br>
+                <span style="color:var(--primary);font-weight:700;">ابدأ رحلتك الآن مع مستر زياد مبروك.</span>
+            </p>
+            
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+                <a href="login.html" class="btn-primary" style="width:100%;justify-content:center;">🚀 ابدأ التعلم الآن</a>
+                <button onclick="document.getElementById('adminPopup').style.display='none'" class="btn-outline" style="width:100%;justify-content:center;">🔒 إغلاق النافذة</button>
+            </div>
+        </div>
+    </div>
     <!-- ====== Toast Container ====== -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -1337,7 +1396,10 @@
                     <i class="fas fa-download"></i> حمل التطبيق
                 </button>
 
-                <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر"></button>
+                <!-- زر الليل والنهار الجديد -->
+                <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر">
+                    <span class="slider"><i class="fas fa-sun"></i><i class="fas fa-moon"></i></span>
+                </button>
                 
                 <span class="user-only atoms-badge" style="display:none;font-size:0.7rem;padding:2px 10px;" id="atomsBadge">
                     <i class="fas fa-atom"></i> <span id="atomsCount">0</span>
@@ -2305,7 +2367,7 @@
                             </div>
                             
                             <div class="dynamic-watermark" id="dynamicWatermark">
-                                <span class="gold-text">🧪</span> ${escapeHtml(studentCode)} <span class="gold-text">🧪</span>
+                                <span class="gold-text">🧪 خلط</span> ${escapeHtml(studentCode)} <span class="gold-text">🧪 خلط</span>
                             </div>
 
                             <iframe 
