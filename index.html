@@ -91,12 +91,75 @@
             width: 100%;
             height: 100vh;
             background: #fff;
+            position: relative;
         }
         #mainApp iframe {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
+        }
+        
+        /* ====== زر التثبيت ====== */
+        #installBtn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FFD60A, #F59E0B);
+            color: #081B2C;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 214, 10, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pulse-install 2s infinite;
+        }
+        #installBtn:hover {
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 32px rgba(255, 214, 10, 0.55);
+        }
+        #installBtn:active {
+            transform: scale(0.96);
+        }
+        #installBtn .icon {
+            font-size: 1.4rem;
+        }
+        #installBtn .blink-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #EF4444;
+            border-radius: 50%;
+            animation: blink-animation 1.2s ease-in-out infinite;
+            margin-right: 4px;
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+        }
+        #installBtn.installed {
+            background: #22C55E;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+            animation: none;
+        }
+        #installBtn.installed:hover {
+            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.5);
+        }
+        
+        @keyframes pulse-install {
+            0%, 100% { box-shadow: 0 4px 20px rgba(255, 214, 10, 0.4); }
+            50% { box-shadow: 0 4px 40px rgba(255, 214, 10, 0.25); }
+        }
+        @keyframes blink-animation {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.7); }
         }
         
         /* زر إعادة المحاولة */
@@ -121,6 +184,25 @@
             #loaderScreen .logo { font-size: 3rem; }
             #loaderScreen h1 { font-size: 1.6rem; }
             #loaderScreen p { font-size: 0.9rem; }
+            #installBtn {
+                bottom: 16px;
+                right: 16px;
+                padding: 10px 18px;
+                font-size: 0.8rem;
+            }
+            #installBtn .icon { font-size: 1.1rem; }
+            #installBtn .blink-dot { width: 8px; height: 8px; }
+        }
+        
+        @media (max-width: 400px) {
+            #installBtn {
+                bottom: 12px;
+                right: 12px;
+                padding: 8px 14px;
+                font-size: 0.7rem;
+            }
+            #installBtn .icon { font-size: 0.9rem; }
+            #installBtn .blink-dot { width: 6px; height: 6px; }
         }
     </style>
 </head>
@@ -141,6 +223,13 @@
         <iframe id="appFrame" src="/index.html" title="يلا كيمياء"></iframe>
     </div>
 
+    <!-- ====== زر التثبيت (PWA) ====== -->
+    <button id="installBtn">
+        <span class="blink-dot"></span>
+        <span class="icon">📲</span>
+        <span class="text">حمل التطبيق</span>
+    </button>
+
     <script>
         (function() {
             'use strict';
@@ -160,7 +249,7 @@
             
             // محاكاة التحميل (0% -> 90%)
             var interval = setInterval(function() {
-                progress += Math.random() * 8 + 2; // زيادة أسرع قليلاً
+                progress += Math.random() * 8 + 2;
                 if (progress > 90) {
                     clearInterval(interval);
                     progress = 90;
@@ -177,18 +266,18 @@
                     progressFill.style.width = '100%';
                 }
                 
-                // إخفاء شاشة التحميل وإظهار التطبيق
                 setTimeout(function() {
                     if (loaderScreen) loaderScreen.style.opacity = '0';
                     if (mainApp) mainApp.style.display = 'block';
                     
                     setTimeout(function() {
                         if (loaderScreen) loaderScreen.style.display = 'none';
+                        // إظهار زر التثبيت بعد التحميل
+                        checkAndShowInstallButton();
                     }, 500);
                 }, 400);
             }
             
-            // مستمع حدث تحميل الـ iframe
             if (appFrame) {
                 appFrame.addEventListener('load', onFrameLoaded);
             }
@@ -197,32 +286,25 @@
             // 3. مهلة أمان (في حالة تعطل التحميل)
             // ============================================================
             setTimeout(function() {
-                // إذا لم يتم إخفاء شاشة التحميل خلال 12 ثانية
                 if (loaderScreen && loaderScreen.style.display !== 'none') {
-                    // محاولة التحقق مما إذا كان الـ iframe قد تم تحميله
                     try {
                         var frameDoc = appFrame && appFrame.contentDocument;
                         if (frameDoc && frameDoc.body && frameDoc.body.innerHTML.length > 0) {
-                            // الـ iframe محمول فعلاً ولكن الحدث لم يُطلق
                             onFrameLoaded();
                             return;
                         }
-                    } catch(e) {
-                        // لا يمكن الوصول إلى محتوى الـ iframe (مشكلة أمان أو تحميل)
-                    }
+                    } catch(e) {}
                     
-                    // عرض رسالة خطأ
                     loaderScreen.innerHTML = `
                         <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
                         <h1 style="font-family:'Cairo',sans-serif;color:#FFD60A;font-size:2rem;font-weight:900;">حدث خطأ</h1>
                         <p style="color:#fff;font-size:1.1rem;margin-top:4px;">لم نتمكن من تحميل المنصة</p>
                         <button onclick="location.reload()" class="retry-btn">🔄 إعادة المحاولة</button>
                     `;
-                    // إعادة تعيين الأنماط
                     loaderScreen.style.display = 'flex';
                     loaderScreen.style.opacity = '1';
                 }
-            }, 12000); // 12 ثانية مهلة
+            }, 12000);
             
             // ============================================================
             // 4. Service Worker (PWA)
@@ -240,10 +322,185 @@
             }
             
             // ============================================================
-            // 5. منع حفظ الصفحة (Ctrl+S) - تم تنفيذه في الـ head
+            // 5. زر التثبيت (PWA Native Install)
             // ============================================================
+            var installBtn = document.getElementById('installBtn');
+            var deferredPrompt = null;
             
-            console.log('🚀 Yalla Chemistry Platform Loader v2.0');
+            // التحقق من تثبيت التطبيق بالفعل
+            function isAppInstalled() {
+                return window.matchMedia('(display-mode: standalone)').matches || 
+                       window.navigator.standalone === true;
+            }
+            
+            function checkAndShowInstallButton() {
+                if (isAppInstalled()) {
+                    if (installBtn) {
+                        installBtn.innerHTML = '✅ تم التثبيت';
+                        installBtn.classList.add('installed');
+                        installBtn.style.display = 'flex';
+                        installBtn.disabled = true;
+                        installBtn.style.cursor = 'default';
+                    }
+                    return;
+                }
+                
+                // إذا كان الحدث محفوظاً، أظهر الزر
+                if (deferredPrompt) {
+                    if (installBtn) {
+                        installBtn.style.display = 'flex';
+                        installBtn.disabled = false;
+                    }
+                }
+            }
+            
+            // التقاط حدث beforeinstallprompt
+            window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // إذا لم يكن التطبيق مثبتاً، أظهر الزر
+                if (!isAppInstalled()) {
+                    if (installBtn) {
+                        installBtn.style.display = 'flex';
+                        installBtn.disabled = false;
+                        // إعادة تعيين النص
+                        installBtn.innerHTML = `
+                            <span class="blink-dot"></span>
+                            <span class="icon">📲</span>
+                            <span class="text">حمل التطبيق</span>
+                        `;
+                        installBtn.classList.remove('installed');
+                    }
+                }
+            });
+            
+            // عند تثبيت التطبيق بنجاح
+            window.addEventListener('appinstalled', function() {
+                console.log('✅ تم تثبيت التطبيق بنجاح');
+                if (installBtn) {
+                    installBtn.innerHTML = '✅ تم التثبيت';
+                    installBtn.classList.add('installed');
+                    installBtn.disabled = true;
+                    installBtn.style.cursor = 'default';
+                }
+                deferredPrompt = null;
+                showToast('✅ تم تثبيت التطبيق بنجاح!');
+            });
+            
+            // زر التثبيت - استدعاء نافذة التثبيت الرسمية
+            if (installBtn) {
+                installBtn.addEventListener('click', async function() {
+                    if (isAppInstalled()) {
+                        showToast('✅ التطبيق مثبت بالفعل');
+                        return;
+                    }
+                    
+                    if (!deferredPrompt) {
+                        showToast('📱 يمكنك تثبيت التطبيق من قائمة المتصفح', 'info');
+                        showInstallHelp();
+                        return;
+                    }
+                    
+                    try {
+                        // عرض نافذة التثبيت الرسمية
+                        deferredPrompt.prompt();
+                        var result = await deferredPrompt.userChoice;
+                        
+                        if (result.outcome === 'accepted') {
+                            console.log('✅ تم تثبيت التطبيق');
+                            // سيتم التعامل معه في حدث appinstalled
+                        } else {
+                            console.log('❌ تم إلغاء التثبيت');
+                            showToast('تم إلغاء تثبيت التطبيق', 'info');
+                        }
+                        
+                        deferredPrompt = null;
+                        // إخفاء الزر مؤقتاً حتى يتم التحقق من التثبيت
+                        if (installBtn) {
+                            installBtn.style.display = 'none';
+                        }
+                    } catch (err) {
+                        console.error('Install error:', err);
+                        showToast('حدث خطأ أثناء التثبيت', 'error');
+                    }
+                });
+            }
+            
+            // دالة عرض مساعدة التثبيت
+            function showInstallHelp() {
+                var helpModal = document.createElement('div');
+                helpModal.style.cssText = `
+                    position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);
+                    z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;
+                `;
+                helpModal.innerHTML = `
+                    <div style="background:#fff;border-radius:24px;padding:32px;max-width:420px;width:100%;text-align:center;border:3px solid #FFD60A;box-shadow:0 20px 60px rgba(0,0,0,0.5);direction:rtl;">
+                        <div style="font-size:3.5rem;margin-bottom:12px;">📱</div>
+                        <h3 style="font-weight:700;color:#081B2C;margin-bottom:8px;font-size:1.3rem;">كيفية تثبيت التطبيق</h3>
+                        <div style="text-align:right;line-height:2.4;font-size:0.95rem;color:#555;margin:16px 0;">
+                            <p>1. اضغط على <strong>القائمة</strong> (⋮) في المتصفح</p>
+                            <p>2. اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"Install App"</strong></p>
+                            <p>3. اضغط على <strong>"تثبيت"</strong></p>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" style="padding:12px 40px;border-radius:50px;border:none;background:linear-gradient(135deg,#FFD60A,#F59E0B);color:#081B2C;font-weight:700;font-size:1rem;cursor:pointer;font-family:'Cairo',sans-serif;width:100%;">
+                            ✅ فهمت
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(helpModal);
+            }
+            
+            // دالة Toast بسيطة
+            function showToast(msg, type) {
+                var toast = document.createElement('div');
+                toast.textContent = msg;
+                toast.style.cssText = `
+                    position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+                    padding:12px 28px;border-radius:16px;font-weight:600;font-family:'Cairo',sans-serif;
+                    background:${type === 'error' ? '#EF4444' : type === 'info' ? '#0B4F8C' : '#22C55E'};
+                    color:#fff;z-index:99999;font-size:0.95rem;
+                    box-shadow:0 8px 32px rgba(0,0,0,0.2);
+                    animation:slideUp 0.4s ease;
+                `;
+                document.body.appendChild(toast);
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.4s ease';
+                    setTimeout(function() { toast.remove(); }, 500);
+                }, 3500);
+            }
+            
+            // إضافة الـ keyframes للـ Toast
+            var styleSheet = document.createElement('style');
+            styleSheet.textContent = `
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+            
+            // ============================================================
+            // 6. التحقق الدوري من حالة التثبيت
+            // ============================================================
+            // في حالة تم تثبيت التطبيق من خارج الزر (مثلاً من شريط المتصفح)
+            setInterval(function() {
+                if (isAppInstalled()) {
+                    if (installBtn && !installBtn.classList.contains('installed')) {
+                        installBtn.innerHTML = '✅ تم التثبيت';
+                        installBtn.classList.add('installed');
+                        installBtn.disabled = true;
+                        installBtn.style.cursor = 'default';
+                    }
+                    deferredPrompt = null;
+                }
+            }, 3000);
+            
+            // التحقق الفوري بعد تحميل الصفحة
+            setTimeout(checkAndShowInstallButton, 1000);
+            
+            console.log('🚀 Yalla Chemistry Platform Loader v2.1 - مع زر التثبيت');
             
         })();
     </script>
