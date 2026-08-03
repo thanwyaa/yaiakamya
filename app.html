@@ -4619,5 +4619,119 @@
 
     window.APP = APP;
     </script>
+    // ============================================================
+// 🔧 إظهار زر التثبيت يدوياً (في حالة عدم ظهوره)
+// ============================================================
+(function() {
+    'use strict';
+    
+    // التحقق من توفر beforeinstallprompt
+    let deferredPrompt = null;
+    
+    // الاستماع للحدث
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log('✅ beforeinstallprompt تم استقباله');
+        
+        // إظهار زر التثبيت في الشريط
+        const banner = document.getElementById('installBanner');
+        if (banner) {
+            banner.classList.remove('hidden');
+            const btn = banner.querySelector('.install-banner-btn');
+            if (btn) btn.style.display = 'flex';
+            const installedMsg = banner.querySelector('.install-banner-installed');
+            if (installedMsg) installedMsg.style.display = 'none';
+        }
+        
+        // إظهار زر التثبيت في النافبار
+        const installBtn = document.getElementById('installAppBtn');
+        if (installBtn) installBtn.style.display = 'flex';
+    });
+    
+    // الاستماع لحدث التثبيت
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ تم تثبيت التطبيق');
+        const banner = document.getElementById('installBanner');
+        if (banner) {
+            const btn = banner.querySelector('.install-banner-btn');
+            if (btn) btn.style.display = 'none';
+            const installedMsg = banner.querySelector('.install-banner-installed');
+            if (installedMsg) installedMsg.style.display = 'flex';
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 5000);
+        }
+        const installBtn = document.getElementById('installAppBtn');
+        if (installBtn) installBtn.style.display = 'none';
+    });
+    
+    // التحقق من وضع التثبيت
+    function checkInstalled() {
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            console.log('✅ التطبيق مثبت بالفعل');
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                const btn = banner.querySelector('.install-banner-btn');
+                if (btn) btn.style.display = 'none';
+                const installedMsg = banner.querySelector('.install-banner-installed');
+                if (installedMsg) installedMsg.style.display = 'flex';
+                setTimeout(() => {
+                    banner.classList.add('hidden');
+                }, 3000);
+            }
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) installBtn.style.display = 'none';
+        }
+    }
+    
+    // التحقق بعد تحميل الصفحة
+    if (document.readyState === 'complete') {
+        checkInstalled();
+    } else {
+        window.addEventListener('load', checkInstalled);
+    }
+    
+    // زر التثبيت
+    window.installApp = function() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('✅ تم تثبيت التطبيق');
+                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
+                } else {
+                    console.log('❌ تم إلغاء التثبيت');
+                }
+                deferredPrompt = null;
+            });
+        } else {
+            // إذا لم يكن هناك beforeinstallprompt
+            showToast('📱 استخدم قائمة المتصفح لتثبيت التطبيق', 'info');
+            // محاولة فتح قائمة التثبيت عبر زر المتصفح
+            if (window.navigator && window.navigator.share) {
+                // محاولة مشاركة التطبيق
+                window.navigator.share({
+                    title: 'يلا كيمياء',
+                    text: 'منصة تعليمية متكاملة لشرح الكيمياء',
+                    url: window.location.href
+                });
+            }
+        }
+    };
+    
+    // دالة Toast مساعدة
+    function showToast(msg, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const el = document.createElement('div');
+        el.className = `toast toast-${type}`;
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+    }
+    
+    console.log('🔧 PWA Install Helper Loaded');
+})();
 </body>
 </html>
