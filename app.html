@@ -3978,7 +3978,113 @@
     // ============================================================
     // HOME PAGE
     // ============================================================
-    function showHome() {
+    function showHome() {// ====== الصورة الرئيسية ======
+<div class="hero-image-container" style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;position:relative;background:var(--bg);">
+    <img src="${HERO_IMAGE}" alt="مستر زياد مبروك" loading="eager" fetchpriority="high" onerror="this.style.display='none'" style="width:100%;height:auto;max-height:450px;object-fit:cover;display:block;aspect-ratio:16/7;">
+</div>
+
+<!-- ====== شريط التحميل تحت الصورة الرئيسية ====== -->
+<div style="
+    background: linear-gradient(135deg, #0B4F8C, #1E81CE);
+    border-radius: var(--radius-lg);
+    padding: 16px 24px;
+    margin: 16px 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    border: 2px solid rgba(255, 214, 10, 0.3);
+    box-shadow: 0 4px 30px rgba(11, 79, 140, 0.3);
+    position: relative;
+    overflow: hidden;
+">
+    <!-- تأثير الخلفية المتحركة -->
+    <div style="
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,215,0,0.05), transparent);
+        animation: shimmer-banner 3s infinite;
+        pointer-events: none;
+    "></div>
+
+    <!-- النقطة الحمراء الوامضة -->
+    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+        <div style="
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #EF4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+            animation: blink-dot 1.2s ease-in-out infinite;
+            flex-shrink: 0;
+        "></div>
+        <span style="
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: 'Cairo', sans-serif;
+        ">
+            🔥 متاح الآن
+        </span>
+    </div>
+
+    <!-- النص الرئيسي -->
+    <div style="
+        flex: 1;
+        text-align: center;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        font-family: 'Cairo', sans-serif;
+        min-width: 150px;
+    ">
+        <span style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+            <span>📱 حمل تطبيق</span>
+            <span style="color:#FFD60A;font-weight:800;">يلا كيمياء</span>
+            <span style="font-size:0.7rem;opacity:0.7;">على كل الأجهزة</span>
+        </span>
+    </div>
+
+    <!-- زر التحميل الذهبي -->
+    <button onclick="APP.installApp()" style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 24px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #FFD60A, #D4A800);
+        color: #081B2C;
+        font-weight: 800;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Cairo', sans-serif;
+        box-shadow: 0 4px 20px rgba(255, 214, 10, 0.4);
+        animation: pulse-install 2s infinite;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+    " onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 8px 30px rgba(255,214,10,0.6)'" 
+    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(255,214,10,0.4)'">
+        <i class="fas fa-download" style="font-size:1.1rem;"></i>
+        <span>تحميل التطبيق</span>
+        <i class="fas fa-mobile-alt" style="font-size:1rem;"></i>
+        <span style="
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            animation: shimmer-install 2.5s infinite;
+            pointer-events: none;
+        "></span>
+    </button>
+</div>
+
+<!-- باقي المحتوى -->
+<div class="video-section-title">...</div>
         const main = document.getElementById('mainContent');
         if (!main) return;
         const isUser = currentUser !== null;
