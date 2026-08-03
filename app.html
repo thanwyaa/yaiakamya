@@ -27,7 +27,171 @@
 
     <link rel="icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
     <title>يلا كيمياء | المنصة التعليمية المتكاملة</title>
+<!-- ====== شريط التحميل تحت الصورة الرئيسية ====== -->
+<div style="
+    background: linear-gradient(135deg, #0B4F8C, #1E81CE);
+    border-radius: var(--radius-lg);
+    padding: 16px 24px;
+    margin: 16px 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    border: 2px solid rgba(255, 214, 10, 0.3);
+    box-shadow: 0 4px 30px rgba(11, 79, 140, 0.3);
+    position: relative;
+    overflow: hidden;
+">
 
+    <!-- تأثير الخلفية المتحركة -->
+    <div style="
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,215,0,0.05), transparent);
+        animation: shimmer-banner 3s infinite;
+        pointer-events: none;
+    "></div>
+
+    <!-- النقطة الحمراء الوامضة -->
+    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+        <div style="
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #EF4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+            animation: blink-dot 1.2s ease-in-out infinite;
+            flex-shrink: 0;
+        "></div>
+        <span style="
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: 'Cairo', sans-serif;
+        ">
+            🔥 متاح الآن
+        </span>
+    </div>
+
+    <!-- النص الرئيسي -->
+    <div style="
+        flex: 1;
+        text-align: center;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        font-family: 'Cairo', sans-serif;
+        min-width: 150px;
+    ">
+        <span style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+            <span>📱 حمل تطبيق</span>
+            <span style="color:#FFD60A;font-weight:800;">يلا كيمياء</span>
+            <span style="font-size:0.7rem;opacity:0.7;">على كل الأجهزة</span>
+        </span>
+    </div>
+
+    <!-- زر التحميل الذهبي -->
+    <button onclick="APP.installApp()" style="
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 24px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #FFD60A, #D4A800);
+        color: #081B2C;
+        font-weight: 800;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Cairo', sans-serif;
+        box-shadow: 0 4px 20px rgba(255, 214, 10, 0.4);
+        animation: pulse-install 2s infinite;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+    " onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 8px 30px rgba(255,214,10,0.6)'" 
+    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(255,214,10,0.4)'">
+        <i class="fas fa-download" style="font-size:1.1rem;"></i>
+        <span>تحميل التطبيق</span>
+        <i class="fas fa-mobile-alt" style="font-size:1rem;"></i>
+        <!-- تأثير الموجة -->
+        <span style="
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            animation: shimmer-install 2.5s infinite;
+            pointer-events: none;
+        "></span>
+    </button>
+</div>
+
+<style>
+    /* ====== تأثيرات الشريط ====== */
+    @keyframes blink-dot {
+        0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+        }
+        50% { 
+            opacity: 0.3; 
+            transform: scale(0.8);
+            box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+        }
+    }
+
+    @keyframes shimmer-banner {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    @keyframes pulse-install {
+        0%, 100% { box-shadow: 0 4px 20px rgba(255, 214, 10, 0.4); }
+        50% { box-shadow: 0 4px 40px rgba(255, 214, 10, 0.7); }
+    }
+
+    @keyframes shimmer-install {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* للشاشات الصغيرة */
+    @media (max-width: 768px) {
+        .hero-banner {
+            flex-direction: column;
+            text-align: center;
+            padding: 14px 16px;
+        }
+        .hero-banner .text-center {
+            font-size: 0.85rem;
+        }
+        .hero-banner .btn-download {
+            padding: 8px 18px;
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-banner {
+            padding: 12px 14px;
+        }
+        .hero-banner .text-center {
+            font-size: 0.75rem;
+        }
+        .hero-banner .btn-download {
+            padding: 6px 14px;
+            font-size: 0.7rem;
+        }
+        .hero-banner .dot {
+            width: 10px;
+            height: 10px;
+        }
+    }
+</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
