@@ -3,429 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0B4F8C">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="يلا كيمياء">
+    <title>يلا كيمياء | المنصة التعليمية</title>
     
-    <link rel="icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
-    <link rel="icon" sizes="192x192" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
-    <link rel="icon" sizes="512x512" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
-    <link rel="manifest" href="manifest.json">
-    
-    <title>يلا كيمياء</title>
-    
+    <!-- منع التحميل المزدوج والإطارات -->
     <script>
-        // ============================================================
-// 🚀 زر التثبيت الحقيقي - PWA Install
-// ============================================================
-
-let deferredPrompt = null;
-let isAppInstalled = false;
-
-// 1️⃣ حدث التثبيت - المتصفح بيبعته لما التطبيق جاهز للتثبيت
-window.addEventListener('beforeinstallprompt', (e) => {
-    // منع النافذة المنبثقة التلقائية
-    e.preventDefault();
-    
-    // حفظ الحدث عشان نستخدمه بعدين
-    deferredPrompt = e;
-    
-    console.log('✅ beforeinstallprompt - التطبيق جاهز للتثبيت');
-    
-    // إظهار زر التثبيت
-    showInstallButton(true);
-});
-
-// 2️⃣ حدث نجاح التثبيت
-window.addEventListener('appinstalled', () => {
-    console.log('✅ appinstalled - تم تثبيت التطبيق بنجاح');
-    isAppInstalled = true;
-    deferredPrompt = null;
-    
-    // إخفاء زر التثبيت
-    showInstallButton(false);
-    
-    // رسالة نجاح
-    showToast('🎉 تم تثبيت التطبيق بنجاح!', 'success');
-});
-
-// 3️⃣ التحقق من أن التطبيق مثبت بالفعل
-function checkIfInstalled() {
-    // طريقة 1: display-mode
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        isAppInstalled = true;
-        showInstallButton(false);
-        console.log('✅ التطبيق يعمل في وضع standalone');
-        return true;
-    }
-    
-    // طريقة 2: navigator.standalone (للـ iOS)
-    if (window.navigator.standalone === true) {
-        isAppInstalled = true;
-        showInstallButton(false);
-        console.log('✅ التطبيق يعمل في وضع standalone (iOS)');
-        return true;
-    }
-    
-    return false;
-}
-
-// 4️⃣ إظهار/إخفاء زر التثبيت
-function showInstallButton(show) {
-    // زر في النافبار
-    const installBtn = document.getElementById('installAppBtn');
-    if (installBtn) {
-        installBtn.style.display = show ? 'flex' : 'none';
-    }
-    
-    // شريط التثبيت (Banner)
-    const banner = document.getElementById('installBanner');
-    if (banner) {
-        if (show && !isAppInstalled) {
-            banner.classList.remove('hidden');
-            const btn = banner.querySelector('.install-banner-btn');
-            if (btn) btn.style.display = 'flex';
-            const installedMsg = banner.querySelector('.install-banner-installed');
-            if (installedMsg) installedMsg.style.display = 'none';
-        } else {
-            banner.classList.add('hidden');
-        }
-    }
-}
-
-// 5️⃣ دالة التثبيت - دي اللي بتشتغل عند الضغط على الزر
-function installApp() {
-    if (deferredPrompt) {
-        // ✅ الزر الحقيقي - بيفتح نافذة التثبيت الرسمية
-        deferredPrompt.prompt();
-        
-        // انتظار قرار المستخدم
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('✅ المستخدم وافق على التثبيت');
-                showToast('✅ تم تثبيت التطبيق!', 'success');
-                // إخفاء الزر فوراً
-                showInstallButton(false);
-            } else {
-                console.log('❌ المستخدم رفض التثبيت');
-                showToast('❌ تم إلغاء التثبيت', 'info');
+        (function() {
+            // منع تحميل الصفحة داخل إطار iframe
+            if (window.top !== window.self) {
+                window.top.location = window.self.location;
             }
-            deferredPrompt = null;
-        });
-    } else {
-        // إذا لم يكن هناك beforeinstallprompt
-        // نعرض رسالة للمستخدم
-        showToast('📱 استخدم قائمة المتصفح لتثبيت التطبيق', 'info');
-        
-        // محاولة فتح قائمة التثبيت عبر زر المتصفح
-        showInstallHelp();
-    }
-}
-
-// 6️⃣ مساعدة المستخدم في حالة عدم ظهور الزر
-function showInstallHelp() {
-    // نتحقق إذا كان المتصفح يدعم التثبيت من القائمة
-    if (window.navigator && window.navigator.share) {
-        // مشاركة التطبيق
-        window.navigator.share({
-            title: 'يلا كيمياء',
-            text: 'منصة تعليمية متكاملة لشرح الكيمياء',
-            url: window.location.href
-        }).catch(() => {});
-    }
-    
-    // عرض نافذة مساعدة
-    const helpModal = document.createElement('div');
-    helpModal.style.cssText = `
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.85);
-        backdrop-filter: blur(8px);
-        z-index: 999999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    `;
-    helpModal.innerHTML = `
-        <div style="
-            background: var(--card, #fff);
-            border-radius: 24px;
-            padding: 32px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            border: 3px solid var(--gold, #FFD60A);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        ">
-            <div style="font-size: 4rem; margin-bottom: 12px;">📱</div>
-            <h3 style="font-weight: 700; font-size: 1.5rem; color: var(--text, #081B2C); margin-bottom: 8px;">
-                ثبت التطبيق على جهازك
-            </h3>
-            <p style="color: var(--text2, #0B4F8C); margin-bottom: 16px; line-height: 1.8;">
-                اضغط على زر <strong>"القائمة"</strong> (⋮) في المتصفح،
-                ثم اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"Install App"</strong>
-            </p>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-                <button onclick="this.parentElement.parentElement.parentElement.remove()" 
-                        style="
-                            padding: 10px 32px;
-                            border-radius: 50px;
-                            background: var(--gold, #FFD60A);
-                            color: #081B2C;
-                            border: none;
-                            font-weight: 700;
-                            font-size: 1rem;
-                            cursor: pointer;
-                        ">
-                    ✅ فهمت
-                </button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(helpModal);
-}
-
-// 7️⃣ التحقق عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-    // التحقق من التثبيت
-    checkIfInstalled();
-    
-    console.log('🔧 PWA Install System Ready');
-});
-
-// 8️⃣ تسجيل Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-        .then(() => {
-            console.log('✅ Service Worker registered successfully');
-        })
-        .catch((err) => {
-            console.warn('⚠️ Service Worker registration failed:', err);
-        });
-}
-
-// 9️⃣ ربط الدوال بالـ window عشان تكون متاحة في HTML
-window.installApp = installApp;
-window.showInstallHelp = showInstallHelp;
-
-// 🔟 Toast مساعد (إذا مش موجود)
-if (typeof showToast === 'undefined') {
-    window.showToast = function(msg, type = 'success') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        const el = document.createElement('div');
-        el.className = `toast toast-${type}`;
-        el.textContent = msg;
-        container.appendChild(el);
-        setTimeout(() => el.remove(), 3500);
-    };
-}
-
-console.log('🚀 PWA Install Ready - الزر حقيقي 100%');
-        if (window.location.href.includes('view-source')) {
-            window.location.href = window.location.href.replace('view-source:', '');
-        }
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || (e.ctrlKey && e.key === 'u') || 
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i'))) {
-                e.preventDefault();
-                alert('🚫 غير مسموح');
-                return false;
+            
+            // منع التحميل المزدوج (إذا تم تحميل الصفحة مرتين)
+            if (window.location.search.includes('_r=')) {
+                history.replaceState({}, '', window.location.pathname);
             }
-        });
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            alert('🚫 النقر الأيمن غير مسموح');
-            return false;
-        });
-        console.log = console.warn = console.error = function() {};
+            
+            // منع حفظ الصفحة (Ctrl+S)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+        })();
     </script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #0B4F8C, #1E81CE);
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            background: #0B4F8C;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            font-family: 'Cairo', sans-serif;
-            direction: rtl;
         }
-        .loader {
+        
+        /* شاشة التحميل */
+        #loaderScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #0B4F8C, #1E81CE);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            color: #fff;
-            animation: fadeInUp 0.8s ease;
+            padding: 20px;
+            transition: opacity 0.5s ease;
         }
-        .loader .logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: block;
-            border: 4px solid rgba(255,255,255,0.2);
-            box-shadow: 0 0 40px rgba(255,214,10,0.2);
-            animation: pulseLogo 2s ease-in-out infinite;
-            object-fit: cover;
+        #loaderScreen .logo {
+            font-size: 4rem;
+            margin-bottom: 8px;
         }
-        @keyframes pulseLogo {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(255,214,10,0.2); }
-            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(255,214,10,0.4); }
-        }
-        .loader h1 {
-            font-size: 2.5rem;
-            margin-bottom: 4px;
-            font-family: 'Lalezar', cursive;
+        #loaderScreen h1 {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 900;
             color: #FFD60A;
-            text-shadow: 0 0 30px rgba(255,214,10,0.3);
-        }
-        .loader .subtitle {
-            font-size: 1.3rem;
-            opacity: 0.9;
+            font-size: 2.2rem;
             margin-bottom: 4px;
-            font-weight: 600;
-            color: #fff;
         }
-        .loader .welcome {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            margin-bottom: 16px;
-            color: rgba(255,255,255,0.9);
+        #loaderScreen p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            margin-bottom: 24px;
         }
-        .loader .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: #FFD60A;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .loader .progress-bar {
-            width: 200px;
-            height: 4px;
+        #loaderScreen .progress-container {
+            width: 280px;
+            max-width: 80%;
+            height: 6px;
             background: rgba(255,255,255,0.2);
             border-radius: 10px;
-            margin: 12px auto 0;
             overflow: hidden;
         }
-        .loader .progress-bar .fill {
+        #loaderScreen .progress-container .fill {
             height: 100%;
             width: 0%;
             background: #FFD60A;
             border-radius: 10px;
-            transition: width 0.5s ease;
+            transition: width 0.3s ease;
         }
-        .loader .version {
-            margin-top: 12px;
-            font-size: 0.7rem;
-            opacity: 0.4;
-        }
+        
+        /* التطبيق الرئيسي */
         #mainApp {
-            width: 100%;
-            min-height: 100vh;
             display: none;
+            width: 100%;
+            height: 100vh;
+            background: #fff;
         }
         #mainApp iframe {
             width: 100%;
-            min-height: 100vh;
+            height: 100%;
             border: none;
             display: block;
         }
-        .no-select {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+        
+        /* زر إعادة المحاولة */
+        .retry-btn {
+            margin-top: 16px;
+            padding: 10px 32px;
+            border-radius: 50px;
+            border: none;
+            background: #FFD60A;
+            color: #081B2C;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: transform 0.2s ease;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .retry-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 600px) {
+            #loaderScreen .logo { font-size: 3rem; }
+            #loaderScreen h1 { font-size: 1.6rem; }
+            #loaderScreen p { font-size: 0.9rem; }
         }
     </style>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="loader no-select" id="loaderScreen">
-        <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" class="logo">
-        <h1>🧪 يلا كيمياء</h1>
-        <div class="subtitle">👋 أهلاً بك يا صديقي</div>
-        <div class="welcome">⏳ استني ثواني.. بنحضرلك المنصة</div>
-        <div class="spinner"></div>
-        <div class="progress-bar">
+
+    <!-- ====== شاشة التحميل ====== -->
+    <div id="loaderScreen">
+        <div class="logo">🧪</div>
+        <h1>يلا كيمياء</h1>
+        <p>جاري تجهيز المنصة التعليمية...</p>
+        <div class="progress-container">
             <div class="fill" id="progressFill"></div>
         </div>
-        <div class="version">v3.0</div>
     </div>
-    
+
+    <!-- ====== التطبيق الرئيسي ====== -->
     <div id="mainApp">
-        <iframe id="appFrame" src="app.html" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+        <iframe id="appFrame" src="/index.html" title="يلا كيمياء"></iframe>
     </div>
 
     <script>
         (function() {
-            if (window.top !== window.self) {
-                window.top.location = window.self.location;
-            }
-            window.addEventListener('beforeunload', function(e) {
-                e.preventDefault();
-                e.returnValue = '';
-            });
-        })();
-        
-        var progress = 0;
-        var progressFill = document.getElementById('progressFill');
-        var interval = setInterval(function() {
-            progress += Math.random() * 10;
-            if (progress > 90) {
+            'use strict';
+            
+            // ============================================================
+            // 1. منع التحميل المزدوج (تم تنفيذه في الـ head)
+            // ============================================================
+            
+            // ============================================================
+            // 2. شاشة التحميل المتقدمة
+            // ============================================================
+            var progress = 0;
+            var progressFill = document.getElementById('progressFill');
+            var loaderScreen = document.getElementById('loaderScreen');
+            var mainApp = document.getElementById('mainApp');
+            var appFrame = document.getElementById('appFrame');
+            
+            // محاكاة التحميل (0% -> 90%)
+            var interval = setInterval(function() {
+                progress += Math.random() * 8 + 2; // زيادة أسرع قليلاً
+                if (progress > 90) {
+                    clearInterval(interval);
+                    progress = 90;
+                }
+                if (progressFill) {
+                    progressFill.style.width = Math.min(progress, 90) + '%';
+                }
+            }, 250);
+            
+            // عند تحميل الـ iframe بالكامل
+            function onFrameLoaded() {
                 clearInterval(interval);
-                progress = 90;
+                if (progressFill) {
+                    progressFill.style.width = '100%';
+                }
+                
+                // إخفاء شاشة التحميل وإظهار التطبيق
+                setTimeout(function() {
+                    if (loaderScreen) loaderScreen.style.opacity = '0';
+                    if (mainApp) mainApp.style.display = 'block';
+                    
+                    setTimeout(function() {
+                        if (loaderScreen) loaderScreen.style.display = 'none';
+                    }, 500);
+                }, 400);
             }
-            progressFill.style.width = progress + '%';
-        }, 200);
-        
-        document.getElementById('appFrame').addEventListener('load', function() {
-            clearInterval(interval);
-            progressFill.style.width = '100%';
+            
+            // مستمع حدث تحميل الـ iframe
+            if (appFrame) {
+                appFrame.addEventListener('load', onFrameLoaded);
+            }
+            
+            // ============================================================
+            // 3. مهلة أمان (في حالة تعطل التحميل)
+            // ============================================================
             setTimeout(function() {
-                document.getElementById('loaderScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-            }, 500);
-        });
-        
-        setTimeout(function() {
-            var frame = document.getElementById('appFrame');
-            var loader = document.getElementById('loaderScreen');
-            if (!frame.contentDocument || !frame.contentDocument.body) {
-                loader.innerHTML = `
-                    <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
-                    <h1 style="font-family:'Lalezar',cursive;color:#FFD60A;font-size:2rem;">حدث خطأ</h1>
-                    <p style="color:#fff;font-size:1.1rem;">لم نتمكن من تحميل المنصة</p>
-                    <button onclick="location.reload()" style="margin-top:16px;padding:10px 32px;border-radius:50px;border:none;background:#FFD60A;color:#081B2C;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;font-size:1rem;">🔄 إعادة المحاولة</button>
-                `;
+                // إذا لم يتم إخفاء شاشة التحميل خلال 12 ثانية
+                if (loaderScreen && loaderScreen.style.display !== 'none') {
+                    // محاولة التحقق مما إذا كان الـ iframe قد تم تحميله
+                    try {
+                        var frameDoc = appFrame && appFrame.contentDocument;
+                        if (frameDoc && frameDoc.body && frameDoc.body.innerHTML.length > 0) {
+                            // الـ iframe محمول فعلاً ولكن الحدث لم يُطلق
+                            onFrameLoaded();
+                            return;
+                        }
+                    } catch(e) {
+                        // لا يمكن الوصول إلى محتوى الـ iframe (مشكلة أمان أو تحميل)
+                    }
+                    
+                    // عرض رسالة خطأ
+                    loaderScreen.innerHTML = `
+                        <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
+                        <h1 style="font-family:'Cairo',sans-serif;color:#FFD60A;font-size:2rem;font-weight:900;">حدث خطأ</h1>
+                        <p style="color:#fff;font-size:1.1rem;margin-top:4px;">لم نتمكن من تحميل المنصة</p>
+                        <button onclick="location.reload()" class="retry-btn">🔄 إعادة المحاولة</button>
+                    `;
+                    // إعادة تعيين الأنماط
+                    loaderScreen.style.display = 'flex';
+                    loaderScreen.style.opacity = '1';
+                }
+            }, 12000); // 12 ثانية مهلة
+            
+            // ============================================================
+            // 4. Service Worker (PWA)
+            // ============================================================
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then(function(registration) {
+                            console.log('✅ Service Worker registered:', registration);
+                        })
+                        .catch(function(error) {
+                            console.log('❌ Service Worker registration failed:', error);
+                        });
+                });
             }
-        }, 15000);
-        
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(function(registration) {
-                        console.log('Service Worker registered:', registration);
-                    })
-                    .catch(function(error) {
-                        console.log('Service Worker registration failed:', error);
-                    });
-            });
-        }
+            
+            // ============================================================
+            // 5. منع حفظ الصفحة (Ctrl+S) - تم تنفيذه في الـ head
+            // ============================================================
+            
+            console.log('🚀 Yalla Chemistry Platform Loader v2.0');
+            
+        })();
     </script>
 </body>
 </html>
