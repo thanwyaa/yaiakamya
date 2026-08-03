@@ -8,17 +8,12 @@
     <!-- منع التحميل المزدوج والإطارات -->
     <script>
         (function() {
-            // منع تحميل الصفحة داخل إطار iframe
             if (window.top !== window.self) {
                 window.top.location = window.self.location;
             }
-            
-            // منع التحميل المزدوج (إذا تم تحميل الصفحة مرتين)
             if (window.location.search.includes('_r=')) {
                 history.replaceState({}, '', window.location.pathname);
             }
-            
-            // منع حفظ الصفحة (Ctrl+S)
             document.addEventListener('keydown', function(e) {
                 if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
                     e.preventDefault();
@@ -53,10 +48,7 @@
             padding: 20px;
             transition: opacity 0.5s ease;
         }
-        #loaderScreen .logo {
-            font-size: 4rem;
-            margin-bottom: 8px;
-        }
+        #loaderScreen .logo { font-size: 4rem; margin-bottom: 8px; }
         #loaderScreen h1 {
             font-family: 'Cairo', sans-serif;
             font-weight: 900;
@@ -100,66 +92,88 @@
             display: block;
         }
         
-        /* ====== زر التثبيت ====== */
+        /* ====== زر التثبيت البارز ====== */
         #installBtn {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 9998;
             display: none;
             align-items: center;
-            gap: 10px;
-            padding: 12px 24px;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 32px;
             background: linear-gradient(135deg, #FFD60A, #F59E0B);
             color: #081B2C;
             border: none;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1.1rem;
             font-family: 'Cairo', sans-serif;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(255, 214, 10, 0.4);
+            box-shadow: 0 8px 30px rgba(255, 214, 10, 0.5);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: pulse-install 2s infinite;
+            min-width: 220px;
+            border: 2px solid rgba(255,255,255,0.3);
         }
         #installBtn:hover {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 8px 32px rgba(255, 214, 10, 0.55);
+            transform: translateX(-50%) translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 40px rgba(255, 214, 10, 0.6);
         }
         #installBtn:active {
-            transform: scale(0.96);
+            transform: translateX(-50%) scale(0.97);
         }
         #installBtn .icon {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
+            line-height: 1;
         }
         #installBtn .blink-dot {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background: #EF4444;
             border-radius: 50%;
-            animation: blink-animation 1.2s ease-in-out infinite;
-            margin-right: 4px;
+            animation: blink-animation 1s ease-in-out infinite;
             flex-shrink: 0;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+            box-shadow: 0 0 16px rgba(239, 68, 68, 0.7);
+        }
+        #installBtn .text {
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+        #installBtn .badge {
+            background: #EF4444;
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-right: 4px;
         }
         #installBtn.installed {
             background: #22C55E;
             color: #fff;
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+            box-shadow: 0 8px 30px rgba(34, 197, 94, 0.4);
             animation: none;
+            border-color: rgba(255,255,255,0.2);
         }
         #installBtn.installed:hover {
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.5);
+            box-shadow: 0 12px 40px rgba(34, 197, 94, 0.5);
+            transform: translateX(-50%) translateY(-2px);
+        }
+        #installBtn.installed .blink-dot {
+            display: none;
         }
         
         @keyframes pulse-install {
-            0%, 100% { box-shadow: 0 4px 20px rgba(255, 214, 10, 0.4); }
-            50% { box-shadow: 0 4px 40px rgba(255, 214, 10, 0.25); }
+            0%, 100% { box-shadow: 0 8px 30px rgba(255, 214, 10, 0.5); }
+            50% { box-shadow: 0 8px 50px rgba(255, 214, 10, 0.3); }
         }
         @keyframes blink-animation {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.7); }
+            50% { opacity: 0.2; transform: scale(0.6); }
         }
         
         /* زر إعادة المحاولة */
@@ -176,8 +190,40 @@
             font-size: 1rem;
             transition: transform 0.2s ease;
         }
-        .retry-btn:hover {
-            transform: scale(1.05);
+        .retry-btn:hover { transform: scale(1.05); }
+        
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            width: 90%;
+            max-width: 450px;
+            pointer-events: none;
+        }
+        .toast {
+            pointer-events: auto;
+            padding: 14px 24px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-family: 'Cairo', sans-serif;
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            animation: slideUp 0.4s ease;
+            text-align: center;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+        .toast-success { background: #22C55E; }
+        .toast-error { background: #EF4444; }
+        .toast-info { background: #0B4F8C; }
+        .toast-warning { background: #F59E0B; color: #081B2C; }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @media (max-width: 600px) {
@@ -185,24 +231,31 @@
             #loaderScreen h1 { font-size: 1.6rem; }
             #loaderScreen p { font-size: 0.9rem; }
             #installBtn {
-                bottom: 16px;
-                right: 16px;
-                padding: 10px 18px;
-                font-size: 0.8rem;
+                bottom: 20px;
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                min-width: 180px;
+                gap: 8px;
             }
-            #installBtn .icon { font-size: 1.1rem; }
-            #installBtn .blink-dot { width: 8px; height: 8px; }
+            #installBtn .icon { font-size: 1.3rem; }
+            #installBtn .blink-dot { width: 10px; height: 10px; }
+            #installBtn .text { font-size: 0.9rem; }
+            .toast { font-size: 0.85rem; padding: 12px 18px; }
+            .toast-container { bottom: 100px; }
         }
         
         @media (max-width: 400px) {
             #installBtn {
-                bottom: 12px;
-                right: 12px;
-                padding: 8px 14px;
-                font-size: 0.7rem;
+                bottom: 16px;
+                padding: 10px 16px;
+                font-size: 0.8rem;
+                min-width: 150px;
+                gap: 6px;
             }
-            #installBtn .icon { font-size: 0.9rem; }
-            #installBtn .blink-dot { width: 6px; height: 6px; }
+            #installBtn .icon { font-size: 1.1rem; }
+            #installBtn .blink-dot { width: 8px; height: 8px; }
+            #installBtn .text { font-size: 0.8rem; }
+            .toast-container { bottom: 80px; }
         }
     </style>
 </head>
@@ -223,11 +276,15 @@
         <iframe id="appFrame" src="/index.html" title="يلا كيمياء"></iframe>
     </div>
 
-    <!-- ====== زر التثبيت (PWA) ====== -->
+    <!-- ====== حاوية الـ Toast ====== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ====== زر التثبيت (PWA) - بارز وجذاب ====== -->
     <button id="installBtn">
         <span class="blink-dot"></span>
         <span class="icon">📲</span>
-        <span class="text">حمل التطبيق</span>
+        <span class="text">حمل التطبيق الآن</span>
+        <span class="badge">جديد</span>
     </button>
 
     <script>
@@ -247,7 +304,6 @@
             var mainApp = document.getElementById('mainApp');
             var appFrame = document.getElementById('appFrame');
             
-            // محاكاة التحميل (0% -> 90%)
             var interval = setInterval(function() {
                 progress += Math.random() * 8 + 2;
                 if (progress > 90) {
@@ -259,20 +315,16 @@
                 }
             }, 250);
             
-            // عند تحميل الـ iframe بالكامل
             function onFrameLoaded() {
                 clearInterval(interval);
                 if (progressFill) {
                     progressFill.style.width = '100%';
                 }
-                
                 setTimeout(function() {
                     if (loaderScreen) loaderScreen.style.opacity = '0';
                     if (mainApp) mainApp.style.display = 'block';
-                    
                     setTimeout(function() {
                         if (loaderScreen) loaderScreen.style.display = 'none';
-                        // إظهار زر التثبيت بعد التحميل
                         checkAndShowInstallButton();
                     }, 500);
                 }, 400);
@@ -283,7 +335,7 @@
             }
             
             // ============================================================
-            // 3. مهلة أمان (في حالة تعطل التحميل)
+            // 3. مهلة أمان
             // ============================================================
             setTimeout(function() {
                 if (loaderScreen && loaderScreen.style.display !== 'none') {
@@ -322,21 +374,41 @@
             }
             
             // ============================================================
-            // 5. زر التثبيت (PWA Native Install)
+            // 5. زر التثبيت (PWA Native Install) - المحور الرئيسي
             // ============================================================
             var installBtn = document.getElementById('installBtn');
+            var toastContainer = document.getElementById('toastContainer');
             var deferredPrompt = null;
             
-            // التحقق من تثبيت التطبيق بالفعل
+            // دالة عرض Toast
+            function showToast(msg, type) {
+                if (!toastContainer) return;
+                var toast = document.createElement('div');
+                toast.className = 'toast toast-' + (type || 'success');
+                toast.textContent = msg;
+                toastContainer.appendChild(toast);
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.4s ease';
+                    setTimeout(function() { toast.remove(); }, 500);
+                }, 3500);
+            }
+            
+            // التحقق من تثبيت التطبيق
             function isAppInstalled() {
                 return window.matchMedia('(display-mode: standalone)').matches || 
                        window.navigator.standalone === true;
             }
             
+            // إظهار/إخفاء زر التثبيت
             function checkAndShowInstallButton() {
+                // إذا كان التطبيق مثبتاً، أظهر الزر كـ "تم التثبيت"
                 if (isAppInstalled()) {
                     if (installBtn) {
-                        installBtn.innerHTML = '✅ تم التثبيت';
+                        installBtn.innerHTML = `
+                            <span class="icon">✅</span>
+                            <span class="text">تم تثبيت التطبيق</span>
+                        `;
                         installBtn.classList.add('installed');
                         installBtn.style.display = 'flex';
                         installBtn.disabled = true;
@@ -350,6 +422,29 @@
                     if (installBtn) {
                         installBtn.style.display = 'flex';
                         installBtn.disabled = false;
+                        installBtn.innerHTML = `
+                            <span class="blink-dot"></span>
+                            <span class="icon">📲</span>
+                            <span class="text">حمل التطبيق الآن</span>
+                            <span class="badge">جديد</span>
+                        `;
+                        installBtn.classList.remove('installed');
+                    }
+                } else {
+                    // إذا لم يكن هناك حدث، حاول إظهار الزر مع رسالة توجيهية
+                    if (installBtn && !isAppInstalled()) {
+                        // في بعض المتصفحات قد لا يعمل beforeinstallprompt
+                        // نعرض الزر مع رسالة توجيهية
+                        installBtn.style.display = 'flex';
+                        installBtn.disabled = false;
+                        installBtn.innerHTML = `
+                            <span class="icon">📲</span>
+                            <span class="text">تثبيت التطبيق</span>
+                            <span class="badge">📌</span>
+                        `;
+                        installBtn.classList.remove('installed');
+                        // إزالة الـ blink-dot لأننا لا نعرف إذا كان التثبيت متاحاً
+                        // لكننا نعرض الزر كخيار
                     }
                 }
             }
@@ -358,76 +453,84 @@
             window.addEventListener('beforeinstallprompt', function(e) {
                 e.preventDefault();
                 deferredPrompt = e;
+                console.log('📱 beforeinstallprompt captured');
                 
-                // إذا لم يكن التطبيق مثبتاً، أظهر الزر
                 if (!isAppInstalled()) {
                     if (installBtn) {
                         installBtn.style.display = 'flex';
                         installBtn.disabled = false;
-                        // إعادة تعيين النص
                         installBtn.innerHTML = `
                             <span class="blink-dot"></span>
                             <span class="icon">📲</span>
-                            <span class="text">حمل التطبيق</span>
+                            <span class="text">حمل التطبيق الآن</span>
+                            <span class="badge">جديد</span>
                         `;
                         installBtn.classList.remove('installed');
                     }
                 }
             });
             
-            // عند تثبيت التطبيق بنجاح
+            // عند تثبيت التطبيق
             window.addEventListener('appinstalled', function() {
                 console.log('✅ تم تثبيت التطبيق بنجاح');
                 if (installBtn) {
-                    installBtn.innerHTML = '✅ تم التثبيت';
+                    installBtn.innerHTML = `
+                        <span class="icon">✅</span>
+                        <span class="text">تم تثبيت التطبيق</span>
+                    `;
                     installBtn.classList.add('installed');
                     installBtn.disabled = true;
                     installBtn.style.cursor = 'default';
                 }
                 deferredPrompt = null;
-                showToast('✅ تم تثبيت التطبيق بنجاح!');
+                showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
             });
             
-            // زر التثبيت - استدعاء نافذة التثبيت الرسمية
+            // حدث النقر على زر التثبيت
             if (installBtn) {
                 installBtn.addEventListener('click', async function() {
+                    // إذا كان التطبيق مثبتاً
                     if (isAppInstalled()) {
-                        showToast('✅ التطبيق مثبت بالفعل');
+                        showToast('✅ التطبيق مثبت بالفعل', 'info');
                         return;
                     }
                     
-                    if (!deferredPrompt) {
-                        showToast('📱 يمكنك تثبيت التطبيق من قائمة المتصفح', 'info');
-                        showInstallHelp();
+                    // إذا كان هناك حدث beforeinstallprompt محفوظ
+                    if (deferredPrompt) {
+                        try {
+                            // عرض نافذة التثبيت الرسمية
+                            deferredPrompt.prompt();
+                            var result = await deferredPrompt.userChoice;
+                            
+                            if (result.outcome === 'accepted') {
+                                console.log('✅ تم تثبيت التطبيق');
+                                showToast('✅ جاري تثبيت التطبيق...', 'success');
+                            } else {
+                                console.log('❌ تم إلغاء التثبيت');
+                                showToast('تم إلغاء تثبيت التطبيق', 'info');
+                            }
+                            
+                            deferredPrompt = null;
+                            // إخفاء الزر مؤقتاً
+                            if (installBtn) {
+                                installBtn.style.display = 'none';
+                            }
+                        } catch (err) {
+                            console.error('Install error:', err);
+                            showToast('حدث خطأ أثناء التثبيت', 'error');
+                        }
                         return;
                     }
                     
-                    try {
-                        // عرض نافذة التثبيت الرسمية
-                        deferredPrompt.prompt();
-                        var result = await deferredPrompt.userChoice;
-                        
-                        if (result.outcome === 'accepted') {
-                            console.log('✅ تم تثبيت التطبيق');
-                            // سيتم التعامل معه في حدث appinstalled
-                        } else {
-                            console.log('❌ تم إلغاء التثبيت');
-                            showToast('تم إلغاء تثبيت التطبيق', 'info');
-                        }
-                        
-                        deferredPrompt = null;
-                        // إخفاء الزر مؤقتاً حتى يتم التحقق من التثبيت
-                        if (installBtn) {
-                            installBtn.style.display = 'none';
-                        }
-                    } catch (err) {
-                        console.error('Install error:', err);
-                        showToast('حدث خطأ أثناء التثبيت', 'error');
-                    }
+                    // إذا لم يكن هناك حدث (المتصفح لا يدعم أو تم الرفض سابقاً)
+                    // نعرض تعليمات التثبيت اليدوي
+                    showInstallHelp();
                 });
             }
             
-            // دالة عرض مساعدة التثبيت
+            // ============================================================
+            // 6. تعليمات التثبيت اليدوي (عند عدم توفر beforeinstallprompt)
+            // ============================================================
             function showInstallHelp() {
                 var helpModal = document.createElement('div');
                 helpModal.style.cssText = `
@@ -437,13 +540,16 @@
                 helpModal.innerHTML = `
                     <div style="background:#fff;border-radius:24px;padding:32px;max-width:420px;width:100%;text-align:center;border:3px solid #FFD60A;box-shadow:0 20px 60px rgba(0,0,0,0.5);direction:rtl;">
                         <div style="font-size:3.5rem;margin-bottom:12px;">📱</div>
-                        <h3 style="font-weight:700;color:#081B2C;margin-bottom:8px;font-size:1.3rem;">كيفية تثبيت التطبيق</h3>
-                        <div style="text-align:right;line-height:2.4;font-size:0.95rem;color:#555;margin:16px 0;">
-                            <p>1. اضغط على <strong>القائمة</strong> (⋮) في المتصفح</p>
-                            <p>2. اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"Install App"</strong></p>
-                            <p>3. اضغط على <strong>"تثبيت"</strong></p>
+                        <h3 style="font-weight:800;color:#081B2C;margin-bottom:8px;font-size:1.4rem;">كيفية تثبيت التطبيق</h3>
+                        <div style="text-align:right;line-height:2.6;font-size:0.95rem;color:#555;margin:16px 0;padding:0 8px;">
+                            <p>📍 1. اضغط على <strong style="color:#0B4F8C;">القائمة</strong> (⋮) في المتصفح</p>
+                            <p>📍 2. اختر <strong style="color:#0B4F8C;">"تثبيت التطبيق"</strong> أو <strong style="color:#0B4F8C;">"Install App"</strong></p>
+                            <p>📍 3. اضغط على <strong style="color:#0B4F8C;">"تثبيت"</strong></p>
                         </div>
-                        <button onclick="this.parentElement.parentElement.remove()" style="padding:12px 40px;border-radius:50px;border:none;background:linear-gradient(135deg,#FFD60A,#F59E0B);color:#081B2C;font-weight:700;font-size:1rem;cursor:pointer;font-family:'Cairo',sans-serif;width:100%;">
+                        <div style="background:#f0f7ff;padding:10px;border-radius:12px;margin:8px 0 16px;font-size:0.85rem;color:#0B4F8C;">
+                            💡 أو اضغط على زر <strong>"حمل التطبيق"</strong> مرة أخرى بعد التثبيت
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" style="padding:14px 40px;border-radius:50px;border:none;background:linear-gradient(135deg,#FFD60A,#F59E0B);color:#081B2C;font-weight:700;font-size:1rem;cursor:pointer;font-family:'Cairo',sans-serif;width:100%;transition:transform 0.2s;">
                             ✅ فهمت
                         </button>
                     </div>
@@ -451,44 +557,16 @@
                 document.body.appendChild(helpModal);
             }
             
-            // دالة Toast بسيطة
-            function showToast(msg, type) {
-                var toast = document.createElement('div');
-                toast.textContent = msg;
-                toast.style.cssText = `
-                    position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
-                    padding:12px 28px;border-radius:16px;font-weight:600;font-family:'Cairo',sans-serif;
-                    background:${type === 'error' ? '#EF4444' : type === 'info' ? '#0B4F8C' : '#22C55E'};
-                    color:#fff;z-index:99999;font-size:0.95rem;
-                    box-shadow:0 8px 32px rgba(0,0,0,0.2);
-                    animation:slideUp 0.4s ease;
-                `;
-                document.body.appendChild(toast);
-                setTimeout(function() {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'opacity 0.4s ease';
-                    setTimeout(function() { toast.remove(); }, 500);
-                }, 3500);
-            }
-            
-            // إضافة الـ keyframes للـ Toast
-            var styleSheet = document.createElement('style');
-            styleSheet.textContent = `
-                @keyframes slideUp {
-                    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-                    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-                }
-            `;
-            document.head.appendChild(styleSheet);
-            
             // ============================================================
-            // 6. التحقق الدوري من حالة التثبيت
+            // 7. التحقق الدوري من حالة التثبيت
             // ============================================================
-            // في حالة تم تثبيت التطبيق من خارج الزر (مثلاً من شريط المتصفح)
             setInterval(function() {
                 if (isAppInstalled()) {
                     if (installBtn && !installBtn.classList.contains('installed')) {
-                        installBtn.innerHTML = '✅ تم التثبيت';
+                        installBtn.innerHTML = `
+                            <span class="icon">✅</span>
+                            <span class="text">تم تثبيت التطبيق</span>
+                        `;
                         installBtn.classList.add('installed');
                         installBtn.disabled = true;
                         installBtn.style.cursor = 'default';
@@ -497,10 +575,27 @@
                 }
             }, 3000);
             
-            // التحقق الفوري بعد تحميل الصفحة
-            setTimeout(checkAndShowInstallButton, 1000);
+            // ============================================================
+            // 8. إظهار الزر بشكل افتراضي بعد التحميل
+            // ============================================================
+            // في حالة عدم وجود beforeinstallprompt (مثل بعض المتصفحات)
+            // نظهر الزر مع خيار التثبيت اليدوي
+            setTimeout(function() {
+                if (installBtn && installBtn.style.display === 'none' && !isAppInstalled()) {
+                    installBtn.style.display = 'flex';
+                    installBtn.disabled = false;
+                    installBtn.innerHTML = `
+                        <span class="icon">📲</span>
+                        <span class="text">تثبيت التطبيق</span>
+                        <span class="badge">📌</span>
+                    `;
+                }
+            }, 3000);
             
-            console.log('🚀 Yalla Chemistry Platform Loader v2.1 - مع زر التثبيت');
+            // التحقق الفوري بعد تحميل الصفحة
+            setTimeout(checkAndShowInstallButton, 1500);
+            
+            console.log('🚀 Yalla Chemistry Platform Loader v2.2 - زر التثبيت البارز');
             
         })();
     </script>
