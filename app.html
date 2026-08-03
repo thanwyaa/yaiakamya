@@ -2060,14 +2060,13 @@
     }
 
     // ============================================================
-    // PWA - تحميل التطبيق
+    // PWA - تحميل التطبيق (Native Install)
     // ============================================================
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) installBtn.style.display = 'flex';
-        // إظهار زر التثبيت في البانر أيضاً
         const bannerBtn = document.getElementById('bannerInstallBtn');
         if (bannerBtn) bannerBtn.style.display = 'inline-flex';
     });
@@ -2082,13 +2081,12 @@
             bannerBtn.disabled = true;
             bannerBtn.onclick = null;
         }
-        showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-        // إخفاء البانر بعد التثبيت
         const banner = document.getElementById('installBanner');
         if (banner) banner.style.display = 'none';
+        showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
+        deferredPrompt = null;
     });
 
-    // التحقق من وضع التشغيل المستقل
     function checkIfInstalled() {
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                             window.navigator.standalone === true;
@@ -2649,19 +2647,29 @@
     }
 
     // ============================================================
-    // PREMIUM / SUBSCRIPTIONS
+    // PREMIUM / SUBSCRIPTIONS (مع منطق الاشتراك الجديد)
     // ============================================================
     function isPremiumCourse(courseId) {
         if (!currentUser || !userData) return false;
         return userData.premiumCourses && userData.premiumCourses[courseId] === true;
     }
 
+    // دالة التحقق من الوصول للكورس (يتم استدعاؤها عند محاولة الدخول)
     async function checkCourseAccess(courseId) {
         if (!currentUser) { showLoginOverlay(); return false; }
         const course = allCourses.find(c => c.id === courseId);
         if (!course) { showToast('الكورس غير موجود', 'error'); return false; }
-        if (isPremiumCourse(courseId)) return true;
-        // إذا لم يكن مشتركاً، نطلب الاشتراك
+        
+        // التحقق من وجود اشتراك
+        const subRef = database.ref('users/' + currentUser.uid + '/premiumCourses/' + courseId);
+        const subSnap = await subRef.once('value');
+        const isSubscribed = subSnap.exists() && subSnap.val() === true;
+        
+        if (isSubscribed) {
+            return true; // مشترك ويمكنه الدخول
+        }
+        
+        // غير مشترك - عرض صفحة الاشتراك
         showCourseWithSubscribeButton(course);
         return false;
     }
@@ -2706,7 +2714,10 @@
         const course = allCourses.find(c => c.id === courseId);
         if (!course) { showToast('⚠️ الكورس غير موجود', 'error'); return; }
         
-        if (isPremiumCourse(courseId)) {
+        // التحقق من الاشتراك الحالي
+        const subRef = database.ref('users/' + currentUser.uid + '/premiumCourses/' + courseId);
+        const subSnap = await subRef.once('value');
+        if (subSnap.exists() && subSnap.val() === true) {
             showToast('✅ أنت مشترك بالفعل', 'info');
             openCoursePage(courseId);
             return;
@@ -2715,7 +2726,7 @@
         if (course.isFree !== false) {
             // ✅ كورس مجاني - تفعيل فوري
             try {
-                await database.ref('users/' + currentUser.uid + '/premiumCourses/' + courseId).set(true);
+                await subRef.set(true);
                 if (userData) {
                     if (!userData.premiumCourses) userData.premiumCourses = {};
                     userData.premiumCourses[courseId] = true;
@@ -2732,8 +2743,16 @@
             }
         } else {
             // 🔒 كورس مدفوع - يحتاج تفعيل من الإدارة
-            showToast('🔒 هذا الكورس مدفوع، يرجى التواصل مع الإدارة للتفعيل', 'warning');
-            showSubscriptionRequired(course);
+            try {
+                await subRef.set('pending');
+                showToast('🔒 تم إرسال طلب الاشتراك، بانتظار تفعيل الإدارة', 'warning');
+                await addNotification(currentUser.uid, '💰 طلب اشتراك كورس مدفوع', `تم إرسال طلب الاشتراك في كورس "${course.title}"، بانتظار التفعيل من الإدارة.`, '💰');
+                renderCourses(allCourses);
+                showSubscriptionRequired(course);
+            } catch (err) {
+                console.error('Subscription error:', err);
+                showToast('❌ حدث خطأ أثناء الاشتراك', 'error');
+            }
         }
     }
 
@@ -2743,11 +2762,14 @@
         main.innerHTML = `
             <div style="max-width:600px;margin:0 auto;padding:20px;text-align:center;">
                 <div style="font-size:4rem;margin-bottom:16px;">🔒</div>
-                <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);">هذا الكورس مدفوع</h2>
+                <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);">طلب اشتراك قيد المراجعة</h2>
                 <div class="card" style="padding:24px;margin:16px 0;">
                     <h3 style="font-weight:700;color:var(--text);">${escapeHtml(course.title)}</h3>
                     <p style="color:var(--text2);margin:8px 0;">💰 السعر: ${course.price || 'غير محدد'} جنيه</p>
-                    <p style="color:var(--text2);font-size:0.9rem;">للاشتراك في هذا الكورس، يرجى التواصل مع الإدارة</p>
+                    <div style="background:var(--success);color:#fff;padding:12px;border-radius:var(--radius);margin:12px 0;">
+                        <i class="fas fa-clock"></i> بانتظار تفعيل الإدارة
+                    </div>
+                    <p style="color:var(--text2);font-size:0.9rem;">سيتم إعلامك عند تفعيل اشتراكك</p>
                     <div style="background:var(--bg);padding:16px;border-radius:var(--radius);margin:12px 0;">
                         <p><i class="fas fa-phone"></i> للتواصل مع الإدارة:</p>
                         <p>📱 واتساب: <a href="https://wa.me/201234567890" target="_blank" style="color:var(--primary);font-weight:700;">اضغط هنا</a></p>
@@ -2928,10 +2950,15 @@
         if (!lesson) { showToast('الحصة غير موجودة', 'error'); return; }
         
         const course = allCourses.find(c => c.id === lesson.courseId);
-        if (course && !isPremiumCourse(course.id)) {
-            showToast('📝 يجب الاشتراك أولاً للدخول إلى هذا الكورس', 'warning');
-            showCourseWithSubscribeButton(course);
-            return;
+        if (course) {
+            const subRef = database.ref('users/' + currentUser.uid + '/premiumCourses/' + course.id);
+            const subSnap = await subRef.once('value');
+            const isSubscribed = subSnap.exists() && subSnap.val() === true;
+            if (!isSubscribed) {
+                showToast('📝 يجب الاشتراك أولاً للدخول إلى هذا الكورس', 'warning');
+                showCourseWithSubscribeButton(course);
+                return;
+            }
         }
         
         if (userCourseProgress[lessonId]?.watched) {
