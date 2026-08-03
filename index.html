@@ -17,6 +17,214 @@
     <title>يلا كيمياء</title>
     
     <script>
+        // ============================================================
+// 🚀 زر التثبيت الحقيقي - PWA Install
+// ============================================================
+
+let deferredPrompt = null;
+let isAppInstalled = false;
+
+// 1️⃣ حدث التثبيت - المتصفح بيبعته لما التطبيق جاهز للتثبيت
+window.addEventListener('beforeinstallprompt', (e) => {
+    // منع النافذة المنبثقة التلقائية
+    e.preventDefault();
+    
+    // حفظ الحدث عشان نستخدمه بعدين
+    deferredPrompt = e;
+    
+    console.log('✅ beforeinstallprompt - التطبيق جاهز للتثبيت');
+    
+    // إظهار زر التثبيت
+    showInstallButton(true);
+});
+
+// 2️⃣ حدث نجاح التثبيت
+window.addEventListener('appinstalled', () => {
+    console.log('✅ appinstalled - تم تثبيت التطبيق بنجاح');
+    isAppInstalled = true;
+    deferredPrompt = null;
+    
+    // إخفاء زر التثبيت
+    showInstallButton(false);
+    
+    // رسالة نجاح
+    showToast('🎉 تم تثبيت التطبيق بنجاح!', 'success');
+});
+
+// 3️⃣ التحقق من أن التطبيق مثبت بالفعل
+function checkIfInstalled() {
+    // طريقة 1: display-mode
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        isAppInstalled = true;
+        showInstallButton(false);
+        console.log('✅ التطبيق يعمل في وضع standalone');
+        return true;
+    }
+    
+    // طريقة 2: navigator.standalone (للـ iOS)
+    if (window.navigator.standalone === true) {
+        isAppInstalled = true;
+        showInstallButton(false);
+        console.log('✅ التطبيق يعمل في وضع standalone (iOS)');
+        return true;
+    }
+    
+    return false;
+}
+
+// 4️⃣ إظهار/إخفاء زر التثبيت
+function showInstallButton(show) {
+    // زر في النافبار
+    const installBtn = document.getElementById('installAppBtn');
+    if (installBtn) {
+        installBtn.style.display = show ? 'flex' : 'none';
+    }
+    
+    // شريط التثبيت (Banner)
+    const banner = document.getElementById('installBanner');
+    if (banner) {
+        if (show && !isAppInstalled) {
+            banner.classList.remove('hidden');
+            const btn = banner.querySelector('.install-banner-btn');
+            if (btn) btn.style.display = 'flex';
+            const installedMsg = banner.querySelector('.install-banner-installed');
+            if (installedMsg) installedMsg.style.display = 'none';
+        } else {
+            banner.classList.add('hidden');
+        }
+    }
+}
+
+// 5️⃣ دالة التثبيت - دي اللي بتشتغل عند الضغط على الزر
+function installApp() {
+    if (deferredPrompt) {
+        // ✅ الزر الحقيقي - بيفتح نافذة التثبيت الرسمية
+        deferredPrompt.prompt();
+        
+        // انتظار قرار المستخدم
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('✅ المستخدم وافق على التثبيت');
+                showToast('✅ تم تثبيت التطبيق!', 'success');
+                // إخفاء الزر فوراً
+                showInstallButton(false);
+            } else {
+                console.log('❌ المستخدم رفض التثبيت');
+                showToast('❌ تم إلغاء التثبيت', 'info');
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        // إذا لم يكن هناك beforeinstallprompt
+        // نعرض رسالة للمستخدم
+        showToast('📱 استخدم قائمة المتصفح لتثبيت التطبيق', 'info');
+        
+        // محاولة فتح قائمة التثبيت عبر زر المتصفح
+        showInstallHelp();
+    }
+}
+
+// 6️⃣ مساعدة المستخدم في حالة عدم ظهور الزر
+function showInstallHelp() {
+    // نتحقق إذا كان المتصفح يدعم التثبيت من القائمة
+    if (window.navigator && window.navigator.share) {
+        // مشاركة التطبيق
+        window.navigator.share({
+            title: 'يلا كيمياء',
+            text: 'منصة تعليمية متكاملة لشرح الكيمياء',
+            url: window.location.href
+        }).catch(() => {});
+    }
+    
+    // عرض نافذة مساعدة
+    const helpModal = document.createElement('div');
+    helpModal.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(8px);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    `;
+    helpModal.innerHTML = `
+        <div style="
+            background: var(--card, #fff);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border: 3px solid var(--gold, #FFD60A);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        ">
+            <div style="font-size: 4rem; margin-bottom: 12px;">📱</div>
+            <h3 style="font-weight: 700; font-size: 1.5rem; color: var(--text, #081B2C); margin-bottom: 8px;">
+                ثبت التطبيق على جهازك
+            </h3>
+            <p style="color: var(--text2, #0B4F8C); margin-bottom: 16px; line-height: 1.8;">
+                اضغط على زر <strong>"القائمة"</strong> (⋮) في المتصفح،
+                ثم اختر <strong>"تثبيت التطبيق"</strong> أو <strong>"Install App"</strong>
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                        style="
+                            padding: 10px 32px;
+                            border-radius: 50px;
+                            background: var(--gold, #FFD60A);
+                            color: #081B2C;
+                            border: none;
+                            font-weight: 700;
+                            font-size: 1rem;
+                            cursor: pointer;
+                        ">
+                    ✅ فهمت
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(helpModal);
+}
+
+// 7️⃣ التحقق عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    // التحقق من التثبيت
+    checkIfInstalled();
+    
+    console.log('🔧 PWA Install System Ready');
+});
+
+// 8️⃣ تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(() => {
+            console.log('✅ Service Worker registered successfully');
+        })
+        .catch((err) => {
+            console.warn('⚠️ Service Worker registration failed:', err);
+        });
+}
+
+// 9️⃣ ربط الدوال بالـ window عشان تكون متاحة في HTML
+window.installApp = installApp;
+window.showInstallHelp = showInstallHelp;
+
+// 🔟 Toast مساعد (إذا مش موجود)
+if (typeof showToast === 'undefined') {
+    window.showToast = function(msg, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const el = document.createElement('div');
+        el.className = `toast toast-${type}`;
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+    };
+}
+
+console.log('🚀 PWA Install Ready - الزر حقيقي 100%');
         if (window.location.href.includes('view-source')) {
             window.location.href = window.location.href.replace('view-source:', '');
         }
