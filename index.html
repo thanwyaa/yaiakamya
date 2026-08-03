@@ -3931,15 +3931,107 @@
                           `<div style="text-align:center;margin-top:16px;"><a href="login.html" class="btn-primary">🚀 انضم وكن من المتصدرين</a></div>`}
             </section>
 
-            <section style="max-width:800px;margin:0 auto;padding:0 20px 32px;">
-                <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">❓ أسئلة شائعة</h2>
-                <p style="text-align:center;color:var(--text2);margin-bottom:16px;">كل اللي محتاج تعرفه عن المنصة</p>
-                <div>
-                    <div class="faq-item" style="border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;background:var(--card);"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')" style="padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:0.95rem;color:var(--text);user-select:none;"><span>📝 كيف أسجل في المنصة؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer" style="padding:0 18px 18px;color:var(--text2);font-size:0.9rem;display:none;line-height:1.8;">يقوم الطالب بإدخال:<br>• الاسم بالكامل<br>• البريد الإلكتروني<br>• رقم الهاتف<br>• كلمة المرور<br><br>ثم يتم إنشاء الحساب مباشرة.</div></div>
-                    <div class="faq-item" style="border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;background:var(--card);"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')" style="padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:0.95rem;color:var(--text);user-select:none;"><span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer" style="padding:0 18px 18px;color:var(--text2);font-size:0.9rem;display:none;line-height:1.8;">قم بإدخال:<br>• البريد الإلكتروني<br>• كلمة المرور<br><br>ثم اضغط على تسجيل الدخول.</div></div>
-                    <div class="faq-item" style="border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;background:var(--card);"><div class="faq-question" onclick="this.parentElement.classList.toggle('open')" style="padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:0.95rem;color:var(--text);user-select:none;"><span>🎯 هل المنصة مناسبة للمبتدئين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer" style="padding:0 18px 18px;color:var(--text2);font-size:0.9rem;display:none;line-height:1.8;">نعم، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.</div></div>
-                </div>
-            </section>
+           <section style="max-width:800px;margin:0 auto;padding:0 20px 32px;">
+    <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">❓ أسئلة شائعة</h2>
+    <p style="text-align:center;color:var(--text2);margin-bottom:16px;">كل اللي محتاج تعرفه عن المنصة</p>
+    <div id="faqContainer">
+        <!-- السؤال 1 -->
+        <div class="faq-item">
+            <div class="faq-question" onclick="APP.toggleFaq(this)">
+                <span>📝 كيف أسجل في المنصة؟</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                يقوم الطالب بإدخال:<br>
+                <ul>
+                    <li><strong>الاسم بالكامل</strong></li>
+                    <li><strong>البريد الإلكتروني</strong></li>
+                    <li><strong>رقم الهاتف</strong></li>
+                    <li><strong>كلمة المرور</strong></li>
+                </ul>
+                ثم يتم إنشاء الحساب مباشرة.
+            </div>
+        </div>
+
+        <!-- السؤال 2 -->
+        <div class="faq-item">
+            <div class="faq-question" onclick="APP.toggleFaq(this)">
+                <span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                قم بإدخال:<br>
+                <ul>
+                    <li><strong>البريد الإلكتروني</strong></li>
+                    <li><strong>كلمة المرور</strong></li>
+                </ul>
+                ثم اضغط على <span class="highlight">تسجيل الدخول</span>.
+            </div>
+        </div>
+
+        <!-- السؤال 3 -->
+        <div class="faq-item">
+            <div class="faq-question" onclick="APP.toggleFaq(this)">
+                <span>🎯 هل المنصة مناسبة للمبتدئين؟</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <strong>نعم</strong>، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.
+                <br><br>
+                📚 نبدأ معك من <strong>أساسيات الكيمياء</strong> ونمشي معاك لحد ما توصل لـ <strong>المستوى المتقدم</strong>.
+            </div>
+        </div>
+
+        <!-- السؤال 4 -->
+        <div class="faq-item">
+            <div class="faq-question" onclick="APP.toggleFaq(this)">
+                <span>💰 هل المنصة مجانية؟</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                المنصة تحتوي على <strong>كورسات مجانية</strong> و <strong>كورسات مدفوعة</strong>.
+                <br><br>
+                🆓 الكورسات المجانية متاحة للجميع.<br>
+                💰 الكورسات المدفوعة توفر محتوى إضافي وامتحانات شاملة.
+            </div>
+        </div>
+
+        <!-- السؤال 5 -->
+        <div class="faq-item">
+            <div class="faq-question" onclick="APP.toggleFaq(this)">
+                <span>📱 هل المنصة تعمل على الموبايل؟</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <strong>نعم</strong>، المنصة متوافقة تماماً مع جميع الأجهزة:
+                <ul>
+                    <li>📱 <strong>الهواتف الذكية</strong> (Android & iPhone)</li>
+                    <li>💻 <strong>أجهزة الكمبيوتر</strong> (Windows & Mac)</li>
+                    <li>📟 <strong>الأجهزة اللوحية</strong> (iPad & Android Tablets)</li>
+                </ul>
+                يمكنك تحميل التطبيق من خلال زر <span class="highlight">"حمل التطبيق"</span> في الأعلى.
+            </div>
+        </div>
+
+        <!-- السؤال 6 -->
+        <div class="faq-item">
+            <div class="faq-question" onclick="APP.toggleFaq(this)">
+                <span>🏆 كيف أحصل على الذرات؟</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                تحصل على الذرات من خلال:
+                <ul>
+                    <li>🎥 <strong>مشاهدة الحصص</strong> (تحصل على ذرات عند إكمال المشاهدة)</li>
+                    <li>📝 <strong>حل الامتحانات</strong> (كل امتحان يمنحك ذرات حسب درجتك)</li>
+                    <li>🧪 <strong>حل الكويزات</strong> (كويزات الحصص تمنحك ذرات إضافية)</li>
+                    <li>⭐ <strong>التفوق في الامتحانات</strong> (الحصول على 100% يمنحك ذرات إضافية)</li>
+                </ul>
+                كلما زادت ذراتك، زاد <strong>ترتيبك</strong> في قائمة المتصدرين! 🏆
+            </div>
+        </div>
+    </div>
+</section>
 
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📢 شارك المنصة مع أصحابك</h2>
