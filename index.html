@@ -8,36 +8,62 @@
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
     <title>يلا كيمياء</title>
     
-    <!-- حماية فورية -->
+    <!-- 🔒 حماية فورية -->
     <script>
         (function() {
             'use strict';
             
-            // منع view-source
             if (window.location.href.includes('view-source')) {
                 window.location.href = window.location.href.replace('view-source:', '');
             }
             
-            // منع F12, Ctrl+U, Ctrl+Shift+I
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'F12' || 
                     (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
-                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i'))) {
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))) {
+                    e.preventDefault();
+                    alert('🚫 غير مسموح');
+                    return false;
+                }
+                
+                if (e.ctrlKey && (e.key === 't' || e.key === 'T' || e.key === 'n' || e.key === 'N')) {
                     e.preventDefault();
                     alert('🚫 غير مسموح');
                     return false;
                 }
             });
             
-            // منع النقر الأيمن
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 alert('🚫 النقر الأيمن غير مسموح');
                 return false;
             });
             
-            // إخفاء الكونسول
-            console.log = console.warn = console.error = function() {};
+            var noop = function() {};
+            var methods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd', 'table'];
+            methods.forEach(function(method) {
+                console[method] = noop;
+            });
+            
+            var originalEval = window.eval;
+            window.eval = function(code) {
+                if (code.includes('view-source') || code.includes('outerHTML') || code.includes('document.documentElement')) {
+                    alert('🚫 هذا الأمر غير مسموح');
+                    return null;
+                }
+                return originalEval(code);
+            };
+            
+            var lastUrl = window.location.href;
+            setInterval(function() {
+                if (window.location.href !== lastUrl) {
+                    if (window.location.href.includes('view-source')) {
+                        window.location.href = window.location.href.replace('view-source:', '');
+                        alert('🚫 عرض المصدر غير مسموح');
+                    }
+                    lastUrl = window.location.href;
+                }
+            }, 500);
         })();
     </script>
     
@@ -69,7 +95,7 @@
             to { transform: rotate(360deg); }
         }
         .loader h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: 8px;
             font-family: 'Lalezar', cursive;
         }
@@ -121,7 +147,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- شاشة التحميل -->
     <div class="loader no-select" id="loaderScreen">
         <div class="spinner"></div>
         <h1>🧪 يلا كيمياء</h1>
@@ -132,13 +157,11 @@
         <div class="version">v3.0</div>
     </div>
     
-    <!-- حاوية التطبيق -->
     <div id="mainApp">
         <iframe id="appFrame" src="app.html" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <script>
-        // حماية إضافية
         (function() {
             if (window.top !== window.self) {
                 window.top.location = window.self.location;
@@ -150,10 +173,9 @@
             });
         })();
         
-        // محاكاة التحميل
-        let progress = 0;
-        const progressFill = document.getElementById('progressFill');
-        const interval = setInterval(() => {
+        var progress = 0;
+        var progressFill = document.getElementById('progressFill');
+        var interval = setInterval(function() {
             progress += Math.random() * 10;
             if (progress > 90) {
                 clearInterval(interval);
@@ -162,20 +184,18 @@
             progressFill.style.width = progress + '%';
         }, 200);
         
-        // تحميل التطبيق
         document.getElementById('appFrame').addEventListener('load', function() {
             clearInterval(interval);
             progressFill.style.width = '100%';
-            setTimeout(() => {
+            setTimeout(function() {
                 document.getElementById('loaderScreen').style.display = 'none';
-                this.parentElement.style.display = 'block';
+                document.getElementById('mainApp').style.display = 'block';
             }, 500);
         });
         
-        // لو فشل التحميل
         setTimeout(function() {
-            const frame = document.getElementById('appFrame');
-            const loader = document.getElementById('loaderScreen');
+            var frame = document.getElementById('appFrame');
+            var loader = document.getElementById('loaderScreen');
             if (!frame.contentDocument || !frame.contentDocument.body) {
                 loader.innerHTML = `
                     <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
