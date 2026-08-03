@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0B4F8C">
-    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="يلا كيمياء">
+    
+    <!-- أيقونات لكل الأجهزة -->
+    <link rel="icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
+    <link rel="apple-touch-icon" sizes="167x167" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
+    <link rel="icon" sizes="192x192" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
+    <link rel="icon" sizes="512x512" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
+    <link rel="manifest" href="manifest.json">
+    
     <title>يلا كيمياء</title>
     
     <!-- 🔒 حماية فورية -->
@@ -81,6 +93,42 @@
         .loader {
             text-align: center;
             color: #fff;
+            animation: fadeInUp 0.8s ease;
+        }
+        .loader .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 40px rgba(255, 214, 10, 0.2);
+            animation: pulseLogo 2s ease-in-out infinite;
+            object-fit: cover;
+        }
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(255, 214, 10, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(255, 214, 10, 0.4); }
+        }
+        .loader h1 {
+            font-size: 2.5rem;
+            margin-bottom: 4px;
+            font-family: 'Lalezar', cursive;
+            color: #FFD60A;
+            text-shadow: 0 0 30px rgba(255, 214, 10, 0.3);
+        }
+        .loader .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .loader .welcome {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.9);
         }
         .loader .spinner {
             width: 50px;
@@ -94,26 +142,12 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        .loader h1 {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            font-family: 'Lalezar', cursive;
-        }
-        .loader p {
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
-        .loader .version {
-            margin-top: 12px;
-            font-size: 0.7rem;
-            opacity: 0.5;
-        }
         .loader .progress-bar {
             width: 200px;
             height: 4px;
             background: rgba(255,255,255,0.2);
             border-radius: 10px;
-            margin: 16px auto 0;
+            margin: 12px auto 0;
             overflow: hidden;
         }
         .loader .progress-bar .fill {
@@ -122,6 +156,11 @@
             background: #FFD60A;
             border-radius: 10px;
             transition: width 0.5s ease;
+        }
+        .loader .version {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            opacity: 0.4;
         }
         #mainApp {
             width: 100%;
@@ -140,6 +179,11 @@
             -moz-user-select: none;
             -ms-user-select: none;
         }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -147,21 +191,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- شاشة التحميل -->
     <div class="loader no-select" id="loaderScreen">
-        <div class="spinner"></div>
+        <!-- اللوجو -->
+        <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" class="logo">
+        
+        <!-- اسم المنصة -->
         <h1>🧪 يلا كيمياء</h1>
-        <p>جاري تحميل المنصة...</p>
+        
+        <!-- رسالة الترحيب -->
+        <div class="subtitle">👋 أهلاً بك يا صديقي</div>
+        <div class="welcome">⏳ استني ثواني.. بنحضرلك المنصة</div>
+        
+        <!-- سبينر التحميل -->
+        <div class="spinner"></div>
+        
+        <!-- شريط التقدم -->
         <div class="progress-bar">
             <div class="fill" id="progressFill"></div>
         </div>
+        
         <div class="version">v3.0</div>
     </div>
     
+    <!-- حاوية التطبيق -->
     <div id="mainApp">
         <iframe id="appFrame" src="app.html" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <script>
+        // حماية إضافية
         (function() {
             if (window.top !== window.self) {
                 window.top.location = window.self.location;
@@ -173,6 +232,7 @@
             });
         })();
         
+        // محاكاة التحميل
         var progress = 0;
         var progressFill = document.getElementById('progressFill');
         var interval = setInterval(function() {
@@ -184,6 +244,7 @@
             progressFill.style.width = progress + '%';
         }, 200);
         
+        // تحميل التطبيق
         document.getElementById('appFrame').addEventListener('load', function() {
             clearInterval(interval);
             progressFill.style.width = '100%';
@@ -193,18 +254,32 @@
             }, 500);
         });
         
+        // لو فشل التحميل
         setTimeout(function() {
             var frame = document.getElementById('appFrame');
             var loader = document.getElementById('loaderScreen');
             if (!frame.contentDocument || !frame.contentDocument.body) {
                 loader.innerHTML = `
                     <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
-                    <h1 style="font-family:'Lalezar',cursive;">حدث خطأ</h1>
-                    <p>لم نتمكن من تحميل المنصة</p>
-                    <button onclick="location.reload()" style="margin-top:16px;padding:8px 24px;border-radius:50px;border:none;background:#FFD60A;color:#081B2C;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;">🔄 إعادة المحاولة</button>
+                    <h1 style="font-family:'Lalezar',cursive;color:#FFD60A;font-size:2rem;">حدث خطأ</h1>
+                    <p style="color:#fff;font-size:1.1rem;">لم نتمكن من تحميل المنصة</p>
+                    <button onclick="location.reload()" style="margin-top:16px;padding:10px 32px;border-radius:50px;border:none;background:#FFD60A;color:#081B2C;font-weight:700;cursor:pointer;font-family:'Cairo',sans-serif;font-size:1rem;">🔄 إعادة المحاولة</button>
                 `;
             }
         }, 15000);
+        
+        // تسجيل Service Worker للتثبيت
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function(registration) {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
