@@ -4242,6 +4242,49 @@
     };
 
     window.APP = APP;
+        // ============================================================
+// 🔥 زر التثبيت - يظهر دايماً
+// ============================================================
+
+// خلي الزر يظهر فوراً
+document.addEventListener('DOMContentLoaded', function() {
+    const installBtn = document.getElementById('installAppBtn');
+    if (installBtn) {
+        installBtn.style.display = 'flex';
+        installBtn.style.fontSize = '1.1rem';
+        installBtn.style.padding = '10px 20px';
+        installBtn.style.background = 'linear-gradient(135deg, #FFD60A, #F59E0B)';
+        installBtn.style.color = '#081B2C';
+        installBtn.style.border = '3px solid #fff';
+        installBtn.style.borderRadius = '50px';
+        installBtn.style.boxShadow = '0 0 30px rgba(255, 214, 10, 0.5)';
+        installBtn.style.animation = 'pulse-install 1.5s infinite';
+        installBtn.innerHTML = '<i class="fas fa-download"></i> 📲 حمل التطبيق';
+    }
+    
+    const banner = document.getElementById('pwaInstallBanner');
+    if (banner) {
+        banner.style.display = 'flex';
+        banner.classList.add('visible');
+    }
+});
+
+// ربط دالة التثبيت
+window.installApp = function() {
+    if (typeof APP !== 'undefined' && APP.installApp) {
+        APP.installApp();
+    } else if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((result) => {
+            if (result.outcome === 'accepted') {
+                showToast('✅ تم التثبيت بنجاح!', 'success');
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        showToast('📲 اضغط على القائمة (⋮) ثم اختر "تثبيت التطبيق"', 'info');
+    }
+};
     </script>
 </body>
 </html>
