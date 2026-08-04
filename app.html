@@ -2051,26 +2051,16 @@
     });
 
     // ============================================================
-    // 🔥 PWA - التثبيت الرسمي
+    // 🔥 دالة التثبيت الشاملة - تعمل على جميع الأجهزة والمتصفحات
     // ============================================================
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        const installBtn = document.getElementById('installAppBtn');
-        if (installBtn) installBtn.style.display = 'flex';
-        const banner = document.getElementById('pwaInstallBanner');
-        if (banner) {
-            banner.style.display = 'flex';
-            banner.classList.add('visible');
-        }
-    });
-
     function installApp() {
+        // المحاولة الأولى: التثبيت التلقائي عبر متصفح PWA
         if (deferredPrompt) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
+                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
+                    // إخفاء أزرار التثبيت بعد التثبيت
                     const installBtn = document.getElementById('installAppBtn');
                     if (installBtn) installBtn.style.display = 'none';
                     const banner = document.getElementById('pwaInstallBanner');
@@ -2081,10 +2071,126 @@
                 }
                 deferredPrompt = null;
             });
+            return;
+        }
+        
+        // المحاولة الثانية: تثبيت عبر Safari (iOS)
+        if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('CriOS')) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'يلا كيمياء',
+                    text: '📱 ثبّت التطبيق على جهازك الآن!\nاضغط على زر المشاركة ⬆ ثم اختر "إضافة للشاشة الرئيسية"',
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                showToast('📱 اضغط على ⬆ ثم "إضافة للشاشة الرئيسية"', 'info');
+            }
+            return;
+        }
+
+        // المحاولة الثالثة: تثبيت عبر متصفحات سطح المكتب (Chrome, Edge, Firefox)
+        if (window.navigator && window.navigator.share) {
+            window.navigator.share({
+                title: 'يلا كيمياء',
+                text: '🚀 المنصة التعليمية المتكاملة للكيمياء',
+                url: window.location.href
+            }).catch((err) => {
+                // إذا فشل المشاركة، نعرض تعليمات التثبيت
+                showInstallInstructions();
+            });
+            return;
+        }
+
+        // المحاولة الرابعة: تعليمات تثبيت مخصصة حسب الجهاز
+        showInstallInstructions();
+    }
+
+    // دالة مساعدة لعرض تعليمات التثبيت حسب الجهاز
+    function showInstallInstructions() {
+        const userAgent = navigator.userAgent;
+        let instructions = '';
+
+        if (/android/i.test(userAgent)) {
+            instructions = '📱 لتثبيت التطبيق على Android:\n\n' +
+                          '1️⃣ افتح المتصفح (Chrome أو Edge)\n' +
+                          '2️⃣ اضغط على القائمة (⋮) في أعلى يمين الشاشة\n' +
+                          '3️⃣ اختر "تثبيت التطبيق" أو "Add to Home Screen"\n' +
+                          '4️⃣ اضغط على "تثبيت" لتأكيد التثبيت';
+        } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+            instructions = '📱 لتثبيت التطبيق على iPhone/iPad:\n\n' +
+                          '1️⃣ افتح المتصفح (Safari)\n' +
+                          '2️⃣ اضغط على زر المشاركة ⬆ في أسفل الشاشة\n' +
+                          '3️⃣ انتقل لليسار واختر "إضافة للشاشة الرئيسية"\n' +
+                          '4️⃣ اضغط على "إضافة" لتأكيد التثبيت';
+        } else if (/windows|mac/i.test(userAgent)) {
+            instructions = '💻 لتثبيت التطبيق على الكمبيوتر:\n\n' +
+                          '• Chrome/Edge: اضغط على أيقونة التثبيت 📲 في شريط العنوان\n' +
+                          '• أو اضغط على "Install" في قائمة المتصفح\n' +
+                          '• يمكنك أيضاً إضافة الموقع إلى المفضلة';
+        } else {
+            instructions = '📲 لتثبيت التطبيق:\n\n' +
+                          '• Android: اضغط على ⋮ ثم "تثبيت التطبيق"\n' +
+                          '• iPhone: اضغط على ⬆ ثم "إضافة للشاشة الرئيسية"\n' +
+                          '• كمبيوتر: اضغط على + أو 📲 في شريط العنوان';
+        }
+
+        alert(instructions);
+    }
+
+    // تفعيل زر التثبيت من البانر
+    function installFromBanner() {
+        installApp();
+    }
+
+    // تحديث حالة زر التثبيت بناءً على قدرات المتصفح
+    function updateInstallButtonVisibility() {
+        const installBtn = document.getElementById('installAppBtn');
+        if (!installBtn) return;
+
+        // إذا كان التطبيق مثبتاً بالفعل، نخفي الزر
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'none';
+            return;
+        }
+
+        // إذا كان لدينا deferredPrompt، نظهر الزر
+        if (deferredPrompt) {
+            installBtn.style.display = 'flex';
+            return;
+        }
+
+        // في المتصفحات التي تدعم PWA ولكن لم يتم تفعيلها بعد
+        if ('serviceWorker' in navigator && 'Notification' in window) {
+            installBtn.style.display = 'flex';
         }
     }
 
-    window.installApp = installApp;
+    // الاستماع لتغيير وضع العرض (Standalone vs Browser)
+    window.addEventListener('DOMContentLoaded', function() {
+        updateInstallButtonVisibility();
+
+        // مراقبة التغيير في وضع العرض
+        window.matchMedia('(display-mode: standalone)').addEventListener('change', function(e) {
+            if (e.matches) {
+                const installBtn = document.getElementById('installAppBtn');
+                if (installBtn) installBtn.style.display = 'none';
+                const banner = document.getElementById('pwaInstallBanner');
+                if (banner) {
+                    banner.classList.remove('visible');
+                    banner.style.display = 'none';
+                }
+            } else {
+                updateInstallButtonVisibility();
+            }
+        });
+    });
+
+    // تحديث الزر عند تغيير حالة الموقع (للتحقق من PWA)
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            updateInstallButtonVisibility();
+        }
+    });
 
     // ============================================================
     // THEME
