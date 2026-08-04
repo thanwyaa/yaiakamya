@@ -2050,50 +2050,41 @@
         console.log('✅ beforeinstallprompt triggered - PWA install available');
     });
 
-    // دالة التثبيت الرئيسية - تشتغل على كل الأجهزة
     // ============================================================
-// 🔥 PWA - التثبيت الرسمي
-// ============================================================
+    // 🔥 PWA - التثبيت الرسمي
+    // ============================================================
 
-let deferredPrompt = null;
-
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/service-worker.js');
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installBtn = document.getElementById('installAppBtn');
+        if (installBtn) installBtn.style.display = 'flex';
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner) {
+            banner.style.display = 'flex';
+            banner.classList.add('visible');
+        }
     });
-}
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const installBtn = document.getElementById('installAppBtn');
-    if (installBtn) installBtn.style.display = 'flex';
-    const banner = document.getElementById('pwaInstallBanner');
-    if (banner) {
-        banner.style.display = 'flex';
-        banner.classList.add('visible');
-    }
-});
-
-function installApp() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                const installBtn = document.getElementById('installAppBtn');
-                if (installBtn) installBtn.style.display = 'none';
-                const banner = document.getElementById('pwaInstallBanner');
-                if (banner) {
-                    banner.classList.remove('visible');
-                    banner.style.display = 'none';
+    function installApp() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    const installBtn = document.getElementById('installAppBtn');
+                    if (installBtn) installBtn.style.display = 'none';
+                    const banner = document.getElementById('pwaInstallBanner');
+                    if (banner) {
+                        banner.classList.remove('visible');
+                        banner.style.display = 'none';
+                    }
                 }
-            }
-            deferredPrompt = null;
-        });
+                deferredPrompt = null;
+            });
+        }
     }
-}
 
-window.installApp = installApp;
+    window.installApp = installApp;
 
     // ============================================================
     // THEME
@@ -3933,67 +3924,52 @@ window.installApp = installApp;
         if (!main) return;
         const isUser = currentUser !== null;
 
+        // ====== زر التثبيت الضخم ======
+        const installBtnHTML = `
+            <div style="text-align:center;padding:10px 20px;margin:10px auto;max-width:600px;">
+                <button onclick="installApp()" style="
+                    background:linear-gradient(135deg,#FFD60A,#F59E0B);
+                    color:#081B2C;
+                    border:none;
+                    padding:18px 50px;
+                    border-radius:60px;
+                    font-size:1.4rem;
+                    font-weight:900;
+                    font-family:'Cairo',sans-serif;
+                    cursor:pointer;
+                    box-shadow:0 8px 32px rgba(255,214,10,0.5);
+                    transition:all 0.3s ease;
+                    display:inline-flex;
+                    align-items:center;
+                    gap:14px;
+                    animation:pulse-install 2s infinite;
+                    border:3px solid rgba(255,255,255,0.3);
+                    width:100%;
+                    justify-content:center;
+                    max-width:500px;
+                "
+                onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 12px 48px rgba(255,214,10,0.7)';"
+                onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 32px rgba(255,214,10,0.5)';">
+                    <i class="fas fa-download" style="font-size:1.8rem;"></i>
+                    📲 ثبّت التطبيق على جهازك الآن
+                    <span style="background:#EF4444;color:#fff;padding:2px 14px;border-radius:20px;font-size:0.8rem;animation:blinkPulse 1.2s infinite;">جديد</span>
+                </button>
+                <p style="font-size:0.85rem;color:var(--text2);margin-top:8px;">
+                    <i class="fas fa-check-circle" style="color:var(--success);"></i> 
+                    متوافق مع Android • iPhone • كمبيوتر
+                </p>
+            </div>
+        `;
+
         main.innerHTML = `
+            <!-- HERO -->
             <section style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
                 <div class="hero-image-container" style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;position:relative;background:var(--bg);">
                     <img src="${HERO_IMAGE}" alt="مستر زياد مبروك" loading="eager" fetchpriority="high" onerror="this.style.display='none'" style="width:100%;height:auto;max-height:450px;object-fit:cover;display:block;aspect-ratio:16/7;">
                 </div>
 
-                <!-- ====== زر التثبيت الضخم ====== -->
-                <div style="text-align:center;padding:10px 20px;margin:10px auto;max-width:600px;">
-                    <button onclick="installApp()" style="
-                        background:linear-gradient(135deg,#FFD60A,#F59E0B);
-                        color:#081B2C;
-                        border:none;
-                        padding:18px 50px;
-                        border-radius:60px;
-                        font-size:1.4rem;
-                        font-weight:900;
-                        font-family:'Cairo',sans-serif;
-                        cursor:pointer;
-                        box-shadow:0 8px 32px rgba(255,214,10,0.5);
-                        transition:all 0.3s ease;
-                        display:inline-flex;
-                        align-items:center;
-                        gap:14px;
-                        animation:pulse-install 2s infinite;
-                        border:3px solid rgba(255,255,255,0.3);
-                        width:100%;
-                        justify-content:center;
-                        max-width:500px;
-                    "
-                    onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 12px 48px rgba(255,214,10,0.7)';"
-                    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 32px rgba(255,214,10,0.5)';">
-                        <i class="fas fa-download" style="font-size:1.8rem;"></i>
-                        📲 ثبّت التطبيق على جهازك الآن
-                        <span style="background:#EF4444;color:#fff;padding:2px 14px;border-radius:20px;font-size:0.8rem;animation:blinkPulse 1.2s infinite;">جديد</span>
-                    </button>
-                    <p style="font-size:0.85rem;color:var(--text2);margin-top:8px;">
-                        <i class="fas fa-check-circle" style="color:var(--success);"></i> 
-                        متوافق مع Android • iPhone • كمبيوتر
-                        <span style="display:block;font-size:0.7rem;color:var(--text2);opacity:0.7;">
-                            🔒 تثبيت رسمي من المتصفح
-                        </span>
-                    </p>
-                </div>
+                ${installBtnHTML}
 
-                <!-- ====== شريط تثبيت PWA ====== -->
-                <div id="pwaInstallBanner">
-                    <div class="banner-content">
-                        <img src="${LOGO_IMAGE}" alt="يلا كيمياء">
-                        <div class="banner-text">
-                            <div class="title">📲 ثبّت تطبيق يلا كيمياء على جهازك الآن</div>
-                            <div class="desc">ذاكر في أي وقت مباشرة من الشاشة الرئيسية بدون فتح المتصفح</div>
-                        </div>
-                    </div>
-                    <div class="banner-actions">
-                        <button class="install-now-btn" onclick="installApp()">
-                            📲 حمل التطبيق الآن
-                        </button>
-                        <span class="blink-dot"></span>
-                    </div>
-                </div>
-                
                 <div class="video-section-title">تفاصيل بداية المنهج وتفاصيل المنصة | خطة الكيمياء الكاملة لطلاب دفعة 2027 مع مستر زياد مبروك</div>
                 
                 <div class="video-wrapper">
@@ -4015,6 +3991,7 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- الإحصائيات -->
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 24px;">
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;background:var(--card);border-radius:var(--radius-lg);padding:20px;border:1px solid var(--border);">
                     <div style="text-align:center;"><i class="fab fa-youtube" style="font-size:2rem;color:var(--accent);display:block;margin-bottom:4px;"></i><span style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--gold);display:block;">+88,000</span><span style="font-size:0.8rem;color:var(--text2);">🎥 مشاهدة</span></div>
@@ -4023,6 +4000,7 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- أهلاً برجوعك -->
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
                     <div style="order:2;">
@@ -4038,6 +4016,7 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- ليه تتابع -->
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
                     <div>
@@ -4053,6 +4032,7 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- مستر زياد -->
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
                     <div style="order:2;">
@@ -4070,6 +4050,7 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- الكورسات -->
             <section id="coursesSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📚 الكورسات المتاحة</h2>
                 <p style="text-align:center;color:var(--text2);margin-bottom:12px;">اختر صفك الدراسي وابدأ التعلم</p>
@@ -4090,18 +4071,20 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- آراء الطلاب -->
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">💬 آراء الطلاب</h2>
                 <p style="text-align:center;color:var(--text2);margin-bottom:16px;">ماذا يقول طلابنا عن المنصة</p>
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;">
-                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"شكراً يا مستر ❤️ امتحان الأزهر كله تقريباً جه من فيديو الـ150 سؤال"</p><div class="name" style="font-weight:700;color:var(--primary);">أحمد محمد</div></div>
-                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"المراجعة النهائية كانت جامدة جداً، لخصتلي المنهج كله"</p><div class="name" style="font-weight:700;color:var(--primary);">محمد خالد</div></div>
-                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"كنت بخاف من الكيمياء جداً، لكن طريقة الشرح خلت المادة أسهل"</p><div class="name" style="font-weight:700;color:var(--primary);">ملك أحمد</div></div>
-                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"الفضل بعد ربنا يرجع ليك يا مستر ❤️"</p><div class="name" style="font-weight:700;color:var(--primary);">فاطمة علي</div></div>
-                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"الشرح بسيط ومنظم، وكل حصة بحس إني فاهمة أكتر"</p><div class="name" style="font-weight:700;color:var(--primary);">إسراء محمود</div></div>
+                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"شكراً يا مستر ❤️ امتحان الأزهر كله تقريباً جه من فيديو الـ150 سؤال"</p><div class="name" style="font-weight:700;color:var(--primary);">أحمد محمد</div></div>
+                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"المراجعة النهائية كانت جامدة جداً، لخصتلي المنهج كله"</p><div class="name" style="font-weight:700;color:var(--primary);">محمد خالد</div></div>
+                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"كنت بخاف من الكيمياء جداً، لكن طريقة الشرح خلت المادة أسهل"</p><div class="name" style="font-weight:700;color:var(--primary);">ملك أحمد</div></div>
+                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"الفضل بعد ربنا يرجع ليك يا مستر ❤️"</p><div class="name" style="font-weight:700;color:var(--primary);">فاطمة علي</div></div>
+                    <div class="testimonial-card" style="padding:16px 18px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);"><div class="stars" style="color:var(--warning);margin-bottom:6px;">⭐⭐⭐⭐⭐</div><p style="font-size:0.9rem;color:var(--text);margin-bottom:6px;">"الشرح بسيط ومنظم، وكل حصة بحس إني فاهمة أكتر"</p><div class="name" style="font-weight:700;color:var(--primary);">إسراء محمود</div></div>
                 </div>
             </section>
 
+            <!-- المتصدرين -->
             <section id="leaderboardSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">🏆 المتصدرين - أفضل 5 طلاب</h2>
                 <p style="text-align:center;color:var(--text2);margin-bottom:12px;">أفضل الطلاب في منصة يلا كيمياء</p>
@@ -4110,6 +4093,7 @@ window.installApp = installApp;
                           `<div style="text-align:center;margin-top:16px;"><a href="login.html" class="btn-primary">🚀 انضم وكن من المتصدرين</a></div>`}
             </section>
 
+            <!-- الأسئلة الشائعة -->
             <section style="max-width:800px;margin:0 auto;padding:0 20px 32px;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">❓ أسئلة شائعة</h2>
                 <p style="text-align:center;color:var(--text2);margin-bottom:16px;">كل اللي محتاج تعرفه عن المنصة</p>
@@ -4123,6 +4107,7 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- مشاركة -->
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📢 شارك المنصة مع أصحابك</h2>
                 <p style="text-align:center;color:var(--text2);margin-bottom:16px;">انشر الرابط وساعد غيرك يتعلم الكيمياء بسهولة</p>
@@ -4133,6 +4118,7 @@ window.installApp = installApp;
                 </div>
             </section>
 
+            <!-- السوشيال ميديا -->
             <section style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
                 <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:16px;">انضم لمجتمعنا 🚀</h2>
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
@@ -4156,6 +4142,7 @@ window.installApp = installApp;
                 </section>
             ` : ''}
         `;
+        
         loadCourses();
         loadLeaderboard();
     }
