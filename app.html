@@ -2051,59 +2051,49 @@
     });
 
     // دالة التثبيت الرئيسية - تشتغل على كل الأجهزة
-    function installApp() {
-        // 1️⃣ المحاولة الأولى: التثبيت التلقائي (Android/Chrome)
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-                    // إخفاء الأزرار بعد التثبيت
-                    const btn = document.getElementById('installAppBtn');
-                    if (btn) btn.style.display = 'none';
-                    const banner = document.getElementById('pwaInstallBanner');
-                    if (banner) {
-                        banner.classList.remove('visible');
-                        banner.style.display = 'none';
-                    }
-                } else {
-                    showToast('تم إلغاء تثبيت التطبيق', 'info');
-                }
-                deferredPrompt = null;
-            });
-            return;
-        }
+    // ============================================================
+// 🔥 PWA - التثبيت الرسمي
+// ============================================================
 
-        // 2️⃣ المحاولة الثانية: iPhone (Safari)
-        if (window.navigator.standalone === true) {
-            showToast('✅ التطبيق مثبت بالفعل!', 'success');
-            return;
-        }
+let deferredPrompt = null;
 
-        // 3️⃣ المحاولة الثالثة: رسائل مخصصة لكل جهاز
-        const ua = navigator.userAgent.toLowerCase();
-        
-        if (ua.includes('android')) {
-            showToast('📲 اضغط على القائمة (⋮) ثم اختر "تثبيت التطبيق"', 'info');
-            // نحاول نفتح نافذة المشاركة
-            if (window.navigator && window.navigator.share) {
-                window.navigator.share({
-                    title: 'يلا كيمياء',
-                    text: 'ثبّت التطبيق على جهازك',
-                    url: window.location.href
-                }).catch(() => {});
-            }
-        } else if (ua.includes('iphone') || ua.includes('ipad')) {
-            showToast('📲 اضغط على ⬆ (مشاركة) ثم اختر "إضافة إلى الشاشة الرئيسية"', 'info');
-        } else if (ua.includes('windows') || ua.includes('mac')) {
-            showToast('💻 اضغط على علامة + في شريط العنوان أو اختر "تثبيت التطبيق"', 'info');
-        } else {
-            showToast('📲 استخدم القائمة (⋮) واختر "تثبيت التطبيق"', 'info');
-        }
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/service-worker.js');
+    });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const installBtn = document.getElementById('installAppBtn');
+    if (installBtn) installBtn.style.display = 'flex';
+    const banner = document.getElementById('pwaInstallBanner');
+    if (banner) {
+        banner.style.display = 'flex';
+        banner.classList.add('visible');
     }
+});
 
-    // ربط الدالة للاستخدام العالمي
-    window.installApp = installApp;
+function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                const installBtn = document.getElementById('installAppBtn');
+                if (installBtn) installBtn.style.display = 'none';
+                const banner = document.getElementById('pwaInstallBanner');
+                if (banner) {
+                    banner.classList.remove('visible');
+                    banner.style.display = 'none';
+                }
+            }
+            deferredPrompt = null;
+        });
+    }
+}
+
+window.installApp = installApp;
 
     // ============================================================
     // THEME
