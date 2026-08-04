@@ -45,8 +45,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
-    <!-- ====== كل الـ CSS ====== -->
     <style>
+        /* ====== كل الـ CSS كما هو ====== */
         :root {
             --bg: #EAF6FF;
             --card: #FFFFFF;
@@ -333,92 +333,10 @@
             font-size: 1.1rem;
         }
 
-        /* ====== شريط التثبيت ====== */
-        #pwaInstallBanner {
-            display: none;
-            background: linear-gradient(135deg, #0B4F8C, #1a365d);
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin: 16px 0;
-            box-shadow: 0 4px 20px rgba(11, 79, 140, 0.3);
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-            border: 2px solid #FFD60A;
-        }
-        #pwaInstallBanner.visible {
-            display: flex !important;
-        }
-        #pwaInstallBanner .banner-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            min-width: 200px;
-        }
-        #pwaInstallBanner .banner-content img {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.2);
-            flex-shrink: 0;
-        }
-        #pwaInstallBanner .banner-content .banner-text .title {
-            font-weight: 700;
-            color: #fff;
-            font-size: 0.95rem;
-        }
-        #pwaInstallBanner .banner-content .banner-text .desc {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.85);
-        }
-        #pwaInstallBanner .banner-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .install-now-btn {
-            background: linear-gradient(135deg, #FFD60A, #D4A800);
-            color: #081B2C;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4);
-            font-family: 'Cairo', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .install-now-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 28px rgba(255, 214, 10, 0.5);
-        }
-        .blink-dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            background: #EF4444;
-            border-radius: 50%;
-            animation: blinkPulse 1.2s ease-in-out infinite;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
-            flex-shrink: 0;
-        }
-
         /* ====== تأثيرات زر التثبيت ====== */
         @keyframes pulse-install {
             0%, 100% { box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4); }
             50% { box-shadow: 0 4px 28px rgba(255, 214, 10, 0.7); transform: scale(1.02); }
-        }
-        @keyframes blinkPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.7); }
         }
 
         .btn-primary {
@@ -1481,36 +1399,6 @@
         }
 
         @media (max-width: 768px) {
-            #pwaInstallBanner {
-                padding: 12px 14px;
-                margin: 12px 0;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-            #pwaInstallBanner .banner-content {
-                min-width: unset;
-            }
-            #pwaInstallBanner .banner-content .banner-text .title {
-                font-size: 0.85rem;
-            }
-            #pwaInstallBanner .banner-content .banner-text .desc {
-                font-size: 0.7rem;
-            }
-            .install-now-btn {
-                padding: 8px 16px;
-                font-size: 0.8rem;
-                width: 100%;
-                justify-content: center;
-            }
-            #pwaInstallBanner .banner-actions {
-                width: 100%;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .blink-dot {
-                display: none;
-            }
             .install-app-btn {
                 font-size: 0.7rem;
                 padding: 4px 12px;
@@ -1519,23 +1407,6 @@
         }
 
         @media (max-width: 480px) {
-            #pwaInstallBanner .banner-content {
-                gap: 8px;
-            }
-            #pwaInstallBanner .banner-content img {
-                width: 36px;
-                height: 36px;
-            }
-            #pwaInstallBanner .banner-content .banner-text .title {
-                font-size: 0.75rem;
-            }
-            #pwaInstallBanner .banner-content .banner-text .desc {
-                font-size: 0.65rem;
-            }
-            .install-now-btn {
-                font-size: 0.7rem;
-                padding: 6px 12px;
-            }
             .install-app-btn {
                 font-size: 0.6rem;
                 padding: 3px 10px;
@@ -1773,27 +1644,23 @@
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 عرض المصدر غير مسموح', 'warning');
                 return false;
             }
             if (e.key === 'F12') {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 أدوات المطور غير مسموحة', 'warning');
                 return false;
             }
             if (e.ctrlKey && e.shiftKey) {
                 if (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c') {
                     e.preventDefault();
                     e.stopPropagation();
-                    showToast('🚫 غير مسموح', 'warning');
                     return false;
                 }
             }
             if (e.ctrlKey && (e.key === 't' || e.key === 'T' || e.key === 'n' || e.key === 'N')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 فتح تبويب جديد غير مسموح', 'warning');
                 return false;
             }
         });
@@ -1803,7 +1670,6 @@
             if (!allowed) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 النقر الأيمن غير مسموح', 'warning');
                 return false;
             }
         });
@@ -1812,7 +1678,6 @@
             if (document.querySelector('.video-protected')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 النسخ غير مسموح', 'warning');
                 return false;
             }
         });
@@ -1826,7 +1691,6 @@
         const originalEval = window.eval;
         window.eval = function(code) {
             if (code.includes('view-source') || code.includes('outerHTML') || code.includes('document.documentElement')) {
-                showToast('🚫 هذا الأمر غير مسموح', 'error');
                 return null;
             }
             return originalEval(code);
@@ -1837,13 +1701,10 @@
             if (window.location.href !== lastUrl) {
                 if (window.location.href.includes('view-source')) {
                     window.location.href = window.location.href.replace('view-source:', '');
-                    showToast('🚫 عرض المصدر غير مسموح', 'error');
                 }
                 lastUrl = window.location.href;
             }
         }, 500);
-        
-        console.log('🛡️ الحماية الشاملة مفعلة');
     })();
 
     // ============================================================
@@ -2027,7 +1888,7 @@
     }
 
     // ============================================================
-    // 🔥 PWA - التثبيت الرسمي على كل الأجهزة
+    // 🔥 PWA - التثبيت الرسمي
     // ============================================================
     
     // تسجيل Service Worker
@@ -2035,10 +1896,10 @@
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('/service-worker.js')
                 .then(function(registration) {
-                    console.log('✅ Service Worker registered successfully');
+                    console.log('✅ Service Worker registered');
                 })
                 .catch(function(error) {
-                    console.warn('⚠️ Service Worker registration failed:', error);
+                    console.warn('⚠️ Service Worker registration failed');
                 });
         });
     }
@@ -2047,173 +1908,54 @@
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        console.log('✅ beforeinstallprompt triggered - PWA install available');
-        // إظهار زر التثبيت
-        const installBtn = document.getElementById('installAppBtn');
-        if (installBtn) {
-            installBtn.style.display = 'flex';
-        }
+        console.log('✅ beforeinstallprompt triggered');
     });
 
     // ============================================================
-    // 🔥 دالة التثبيت الشاملة - تعمل على جميع الأجهزة والمتصفحات
+    // 🔥 دالة التثبيت - الرسمية فقط
     // ============================================================
-    function installApp() {
-        // المحاولة الأولى: التثبيت التلقائي عبر متصفح PWA
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-                    // إخفاء أزرار التثبيت بعد التثبيت
-                    const installBtn = document.getElementById('installAppBtn');
-                    if (installBtn) {
-                        installBtn.innerHTML = '✅ تم تثبيت التطبيق';
-                        installBtn.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
-                        installBtn.style.color = '#fff';
-                        installBtn.style.animation = 'none';
-                        installBtn.style.boxShadow = '0 4px 16px rgba(34, 197, 94, 0.4)';
-                        installBtn.onclick = null;
-                        setTimeout(() => {
-                            installBtn.style.display = 'none';
-                        }, 3000);
-                    }
-                    const banner = document.getElementById('pwaInstallBanner');
-                    if (banner) {
-                        banner.classList.remove('visible');
-                        banner.style.display = 'none';
-                    }
-                }
-                deferredPrompt = null;
-            });
-            return;
+    async function installApp() {
+        if (!deferredPrompt) {
+            return; // لا نعرض أي شرح أو رسائل
         }
-        
-        // المحاولة الثانية: تثبيت عبر Safari (iOS)
-        if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('CriOS')) {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'يلا كيمياء',
-                    text: '📱 ثبّت التطبيق على جهازك الآن!\nاضغط على زر المشاركة ⬆ ثم اختر "إضافة للشاشة الرئيسية"',
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                showToast('📱 اضغط على ⬆ ثم "إضافة للشاشة الرئيسية"', 'info');
+
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+
+        if (outcome === 'accepted') {
+            showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) {
+                installBtn.innerHTML = '✅ تم تثبيت التطبيق';
+                installBtn.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
+                installBtn.style.color = '#fff';
+                installBtn.style.animation = 'none';
+                installBtn.style.boxShadow = '0 4px 16px rgba(34, 197, 94, 0.4)';
+                installBtn.onclick = null;
+                setTimeout(() => {
+                    installBtn.style.display = 'none';
+                }, 3000);
             }
-            return;
         }
 
-        // المحاولة الثالثة: تثبيت عبر متصفحات سطح المكتب (Chrome, Edge, Firefox)
-        if (window.navigator && window.navigator.share) {
-            window.navigator.share({
-                title: 'يلا كيمياء',
-                text: '🚀 المنصة التعليمية المتكاملة للكيمياء',
-                url: window.location.href
-            }).catch((err) => {
-                // إذا فشل المشاركة، نعرض تعليمات التثبيت
-                showInstallInstructions();
-            });
-            return;
-        }
-
-        // المحاولة الرابعة: تعليمات تثبيت مخصصة حسب الجهاز
-        showInstallInstructions();
+        deferredPrompt = null;
     }
 
-    // دالة مساعدة لعرض تعليمات التثبيت حسب الجهاز
-    function showInstallInstructions() {
-        const userAgent = navigator.userAgent;
-        let instructions = '';
-
-        if (/android/i.test(userAgent)) {
-            instructions = '📱 لتثبيت التطبيق على Android:\n\n' +
-                          '1️⃣ افتح المتصفح (Chrome أو Edge)\n' +
-                          '2️⃣ اضغط على القائمة (⋮) في أعلى يمين الشاشة\n' +
-                          '3️⃣ اختر "تثبيت التطبيق" أو "Add to Home Screen"\n' +
-                          '4️⃣ اضغط على "تثبيت" لتأكيد التثبيت';
-        } else if (/iphone|ipad|ipod/i.test(userAgent)) {
-            instructions = '📱 لتثبيت التطبيق على iPhone/iPad:\n\n' +
-                          '1️⃣ افتح المتصفح (Safari)\n' +
-                          '2️⃣ اضغط على زر المشاركة ⬆ في أسفل الشاشة\n' +
-                          '3️⃣ انتقل لليسار واختر "إضافة للشاشة الرئيسية"\n' +
-                          '4️⃣ اضغط على "إضافة" لتأكيد التثبيت';
-        } else if (/windows|mac/i.test(userAgent)) {
-            instructions = '💻 لتثبيت التطبيق على الكمبيوتر:\n\n' +
-                          '• Chrome/Edge: اضغط على أيقونة التثبيت 📲 في شريط العنوان\n' +
-                          '• أو اضغط على "Install" في قائمة المتصفح\n' +
-                          '• يمكنك أيضاً إضافة الموقع إلى المفضلة';
-        } else {
-            instructions = '📲 لتثبيت التطبيق:\n\n' +
-                          '• Android: اضغط على ⋮ ثم "تثبيت التطبيق"\n' +
-                          '• iPhone: اضغط على ⬆ ثم "إضافة للشاشة الرئيسية"\n' +
-                          '• كمبيوتر: اضغط على + أو 📲 في شريط العنوان';
-        }
-
-        alert(instructions);
-    }
-
-    // تفعيل زر التثبيت من البانر
-    function installFromBanner() {
-        installApp();
-    }
-
-    // تحديث حالة زر التثبيت بناءً على قدرات المتصفح
-    function updateInstallButtonVisibility() {
-        const installBtn = document.getElementById('installAppBtn');
-        if (!installBtn) return;
-
-        // إذا كان التطبيق مثبتاً بالفعل، نخفي الزر
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            installBtn.style.display = 'none';
-            return;
-        }
-
-        // إذا كان لدينا deferredPrompt، نظهر الزر
-        if (deferredPrompt) {
-            installBtn.style.display = 'flex';
-            return;
-        }
-
-        // في المتصفحات التي تدعم PWA ولكن لم يتم تفعيلها بعد
-        if ('serviceWorker' in navigator && 'Notification' in window) {
-            installBtn.style.display = 'flex';
-        }
-    }
-
-    // الاستماع لتغيير وضع العرض (Standalone vs Browser)
+    // التحقق من وضع التثبيت
     window.addEventListener('DOMContentLoaded', function() {
-        updateInstallButtonVisibility();
-
-        // مراقبة التغيير في وضع العرض
-        window.matchMedia('(display-mode: standalone)').addEventListener('change', function(e) {
-            if (e.matches) {
-                const installBtn = document.getElementById('installAppBtn');
-                if (installBtn) {
-                    installBtn.innerHTML = '✅ تم تثبيت التطبيق';
-                    installBtn.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
-                    installBtn.style.color = '#fff';
-                    installBtn.style.animation = 'none';
-                    installBtn.style.boxShadow = '0 4px 16px rgba(34, 197, 94, 0.4)';
-                    installBtn.onclick = null;
-                    setTimeout(() => {
-                        installBtn.style.display = 'none';
-                    }, 3000);
-                }
-                const banner = document.getElementById('pwaInstallBanner');
-                if (banner) {
-                    banner.classList.remove('visible');
-                    banner.style.display = 'none';
-                }
-            } else {
-                updateInstallButtonVisibility();
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) {
+                installBtn.innerHTML = '✅ تم تثبيت التطبيق';
+                installBtn.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
+                installBtn.style.color = '#fff';
+                installBtn.style.animation = 'none';
+                installBtn.style.boxShadow = '0 4px 16px rgba(34, 197, 94, 0.4)';
+                installBtn.onclick = null;
+                setTimeout(() => {
+                    installBtn.style.display = 'none';
+                }, 3000);
             }
-        });
-    });
-
-    // تحديث الزر عند تغيير حالة الموقع (للتحقق من PWA)
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible') {
-            updateInstallButtonVisibility();
         }
     });
 
@@ -2422,7 +2164,6 @@
             closeUserMenu();
             showHome();
         } catch (error) {
-            console.error('Logout error:', error);
             showToast('حدث خطأ في تسجيل الخروج', 'error');
         }
     }
@@ -2508,7 +2249,6 @@
             if (userData) userData.rank = rankDisplay;
             return rankDisplay;
         } catch (err) {
-            console.error('Rank calculation error:', err);
             return '--';
         }
     }
@@ -2575,9 +2315,7 @@
                                 updateCache();
                             }
                             studySessionStart = Date.now();
-                        } catch (err) {
-                            console.error('Study time update error:', err);
-                        }
+                        } catch (err) {}
                     }
                 }
             }, 30000);
@@ -2634,7 +2372,7 @@
         try {
             const ref = database.ref(`users/${uid}/notifications`).push();
             await ref.set({ id: ref.key, title, description, icon, read: false, createdAt: new Date().toISOString() });
-        } catch (err) { console.error('Error adding notification:', err); }
+        } catch (err) {}
     }
 
     async function markNotificationRead(id) {
@@ -2645,7 +2383,7 @@
             if (notif) notif.read = true;
             updateNotificationBadge();
             showNotificationsPage();
-        } catch (err) { console.error('Error marking notification read:', err); }
+        } catch (err) {}
     }
 
     async function markAllNotificationsRead() {
@@ -2659,7 +2397,7 @@
             updateNotificationBadge();
             showNotificationsPage();
             showToast('✅ تم تحديد الكل كمقروء', 'success');
-        } catch (err) { console.error('Error marking all read:', err); showToast('حدث خطأ', 'error'); }
+        } catch (err) { showToast('حدث خطأ', 'error'); }
     }
 
     async function deleteAllNotifications() {
@@ -2671,7 +2409,7 @@
             updateNotificationBadge();
             showNotificationsPage();
             showToast('🗑️ تم حذف جميع الإشعارات', 'success');
-        } catch (err) { console.error('Error deleting notifications:', err); showToast('حدث خطأ', 'error'); }
+        } catch (err) { showToast('حدث خطأ', 'error'); }
     }
 
     function showNotificationsPage() {
@@ -2768,15 +2506,14 @@
                 showToast('🎉 تم الاشتراك في الكورس بنجاح!', 'success');
                 renderCourses(allCourses);
                 await addNotification(currentUser.uid, '📚 تم الاشتراك في كورس جديد!', `لقد اشتركت في كورس "${course.title}" بنجاح.`, '📚');
-            } catch (err) { console.error('Subscription error:', err);
-                showToast('❌ حدث خطأ أثناء الاشتراك', 'error'); }
+            } catch (err) { showToast('❌ حدث خطأ أثناء الاشتراك', 'error'); }
         } else {
             showSubscriptionPage(courseId);
         }
     }
 
     // ============================================================
-    // COURSES & LESSONS (المختصرة)
+    // COURSES & LESSONS
     // ============================================================
     function loadCourses() {
         if (cache.courses.length > 0 && isCacheValid()) { allCourses = cache.courses;
@@ -2858,7 +2595,7 @@
     }
 
     // ============================================================
-    // VIDEO TRACKING (مختصرة)
+    // VIDEO TRACKING
     // ============================================================
     function clearVideoTracking() {
         if (videoWatchInterval) { clearInterval(videoWatchInterval);
@@ -2890,7 +2627,6 @@
         videoContainer.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            showToast('🚫 النقر الأيمن على الفيديو غير مسموح', 'warning');
             return false;
         });
         videoContainer.addEventListener('dragstart', function(e) {
@@ -2900,7 +2636,6 @@
         videoContainer.addEventListener('copy', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            showToast('🚫 نسخ الفيديو غير مسموح', 'warning');
             return false;
         });
         videoContainer.style.userSelect = 'none';
@@ -2912,7 +2647,6 @@
             iframe.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 غير مسموح', 'warning');
                 return false;
             });
             iframe.style.pointerEvents = 'none';
@@ -3054,7 +2788,6 @@
                 }
             }, 1000);
         } catch (error) {
-            console.error('openLessonVideo error:', error);
             showToast('حدث خطأ في تحميل الفيديو', 'error');
             showHome();
         }
@@ -3128,7 +2861,7 @@
                     dynamicWatermarkTimer = null;
                 }
             }
-        } catch (err) { console.error('Error completing lesson watch:', err); }
+        } catch (err) {}
     }
 
     function handleVideoExit(lessonId) {
@@ -3177,7 +2910,7 @@
     }
 
     // ============================================================
-    // COURSE PAGE (مختصرة)
+    // COURSE PAGE
     // ============================================================
     async function openCoursePage(courseId) {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -3186,27 +2919,22 @@
 
         // التحقق من الاشتراك للكورسات المجانية
         if (course.isFree !== false) {
-            // كورس مجاني - تحقق من الاشتراك
             const hasSubscription = isPremiumCourse(courseId);
             if (!hasSubscription) {
-                // عرض صفحة الاشتراك المجاني
                 showFreeSubscriptionPage(courseId);
                 return;
             }
         } else {
-            // كورس مدفوع - تحقق من الاشتراك المدفوع
             const hasSubscription = isPremiumCourse(courseId);
             if (!hasSubscription) {
-                // عرض صفحة الكورس المدفوع مع طلب الاشتراك
                 showPaidCoursePage(courseId);
                 return;
             }
         }
 
-        // إذا كان المستخدم مشتركاً، اعرض محتوى الكورس
         const main = document.getElementById('mainContent');
         if (!main) return;
-        main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;"><div class="spinner" style="margin:0 auto;width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div><p style="margin-top:12px;color:var(--text2);font-weight:600;">جارٍ تجهيز المحتوى...</p></div>`;
+        main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;"><div style="margin:0 auto;width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div><p style="margin-top:12px;color:var(--text2);font-weight:600;">جارٍ تجهيز المحتوى...</p></div>`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         try {
             const lessons = allLessons.filter(l => l.courseId === courseId);
@@ -3311,7 +3039,6 @@
                 </div>
             `;
         } catch (error) {
-            console.error('openCoursePage error:', error);
             main.innerHTML = `
                 <div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;">
                     <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
@@ -3364,10 +3091,8 @@
             }
             showToast('🎉 تم الاشتراك في الكورس بنجاح!', 'success');
             await addNotification(currentUser.uid, '📚 تم الاشتراك في كورس مجاني!', `لقد اشتركت في كورس "${course.title}" بنجاح.`, '📚');
-            // فتح الكورس مباشرة
             openCoursePage(courseId);
-        } catch (err) { console.error('Subscription error:', err);
-            showToast('❌ حدث خطأ أثناء الاشتراك', 'error'); }
+        } catch (err) { showToast('❌ حدث خطأ أثناء الاشتراك', 'error'); }
     }
 
     // صفحة الكورس المدفوع مع طلب الاشتراك
@@ -3404,7 +3129,6 @@
         const course = allCourses.find(c => c.id === courseId);
         if (!course) { showToast('⚠️ الكورس غير موجود', 'error'); return; }
         try {
-            // إرسال طلب الاشتراك إلى قاعدة البيانات
             const requestRef = database.ref('subscriptionRequests').push();
             await requestRef.set({
                 userId: currentUser.uid,
@@ -3417,8 +3141,7 @@
             });
             showToast('📩 تم إرسال طلب الاشتراك بنجاح! سيتم التواصل معك قريباً.', 'success');
             await addNotification(currentUser.uid, '📩 طلب اشتراك في كورس مدفوع', `تم إرسال طلب الاشتراك في كورس "${course.title}"، سيتم التواصل معك قريباً.`, '📩');
-        } catch (err) { console.error('Request subscription error:', err);
-            showToast('❌ حدث خطأ في إرسال الطلب', 'error'); }
+        } catch (err) { showToast('❌ حدث خطأ في إرسال الطلب', 'error'); }
     }
 
     // ============================================================
@@ -3529,7 +3252,6 @@
             }
             renderLeaderboard(users, container);
         } catch (error) {
-            console.error('Error loading leaderboard:', error);
             container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--danger);">⚠️ حدث خطأ في تحميل المتصدرين<button onclick="APP.loadLeaderboard()" class="btn-primary btn-sm" style="margin-top:10px;">🔄 إعادة المحاولة</button></div>`;
         }
     }
@@ -3612,7 +3334,7 @@
     }
 
     // ============================================================
-    // DASHBOARD (مختصرة)
+    // DASHBOARD
     // ============================================================
     function showDashboard() {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -3726,13 +3448,12 @@
             showToast('✅ تم تحديث الصورة بنجاح!', 'success');
             showDashboard();
         } catch (err) {
-            console.error('Upload error:', err);
             showToast('❌ حدث خطأ في رفع الصورة', 'error');
         }
     }
 
     // ============================================================
-    // ERROR BANK (مختصرة)
+    // ERROR BANK
     // ============================================================
     async function showErrorBank() {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -3772,8 +3493,7 @@
                 </div>
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (err) { console.error('Error loading error bank:', err);
-            showToast('حدث خطأ في تحميل الأخطاء', 'error'); }
+        } catch (err) { showToast('حدث خطأ في تحميل الأخطاء', 'error'); }
     }
 
     async function startErrorExam() {
@@ -3818,8 +3538,7 @@
             openExamSecurityModal('error_exam', function() {
                 showToast('📝 جاري عرض الامتحان...', 'info');
             }, 'exam');
-        } catch (err) { console.error('Error creating error exam:', err);
-            showToast('حدث خطأ في إنشاء الاختبار', 'error'); }
+        } catch (err) { showToast('حدث خطأ في إنشاء الاختبار', 'error'); }
     }
 
     // ============================================================
@@ -3893,12 +3612,11 @@
                 </div>
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        } catch (err) { console.error('Error loading results:', err);
-            showToast('حدث خطأ في تحميل النتائج', 'error'); }
+        } catch (err) { showToast('حدث خطأ في تحميل النتائج', 'error'); }
     }
 
     // ============================================================
-    // CERTIFICATE, STUDENT CARD, ACHIEVEMENTS, AI INSIGHTS (مختصرة)
+    // CERTIFICATE, STUDENT CARD, ACHIEVEMENTS, AI INSIGHTS
     // ============================================================
     function showCertificate() {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -3941,8 +3659,7 @@
             pdf.addImage(imgData, 'PNG', 0, 0, 297, 210);
             pdf.save('شهادة_يلا_كيمياء.pdf');
             showToast('✅ تم تحميل الشهادة بنجاح', 'success');
-        }).catch(err => { console.error('Download certificate error:', err);
-            showToast('حدث خطأ في تحميل الشهادة', 'error'); });
+        }).catch(err => { showToast('حدث خطأ في تحميل الشهادة', 'error'); });
     }
 
     function showStudentCard() {
@@ -3993,8 +3710,7 @@
             pdf.addImage(imgData, 'PNG', 15, 20, 180, 200);
             pdf.save('بطاقة_الطالب_يلا_كيمياء.pdf');
             showToast('✅ تم تحميل البطاقة بنجاح', 'success');
-        }).catch(err => { console.error('Download student card error:', err);
-            showToast('حدث خطأ في تحميل البطاقة', 'error'); });
+        }).catch(err => { showToast('حدث خطأ في تحميل البطاقة', 'error'); });
     }
 
     function showAchievements() {
@@ -4162,14 +3878,13 @@
     }
 
     // ============================================================
-    // HOME PAGE - مع زر التثبيت الضخم
+    // HOME PAGE
     // ============================================================
     function showHome() {
         const main = document.getElementById('mainContent');
         if (!main) return;
         const isUser = currentUser !== null;
 
-        // ====== زر التثبيت الضخم ======
         const installBtnHTML = `
             <div style="text-align:center;padding:10px 20px;margin:10px auto;max-width:600px;">
                 <button onclick="installApp()" style="
@@ -4450,7 +4165,6 @@
         setupScrollHandlers();
         initTheme();
         showHome();
-        console.log('🚀 Yalla Chemistry Platform v38.0 - ULTIMATE PRO');
     }
 
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
