@@ -83,47 +83,6 @@
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        /* ===== تحسين زر الليل والنهار ===== */
-        .theme-toggle {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            width: 48px;
-            height: 24px;
-            cursor: pointer;
-            position: relative;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            padding: 2px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            flex-shrink: 0;
-        }
-        .theme-toggle .slider {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--gold);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-            color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
-        [data-theme="dark"] .theme-toggle .slider {
-            transform: translateX(24px);
-            background: #38BDF8;
-        }
-        .theme-toggle .slider i { display: none; }
-        .theme-toggle .slider i.fa-sun { display: block; }
-        [data-theme="dark"] .theme-toggle .slider i.fa-sun { display: none; }
-        [data-theme="dark"] .theme-toggle .slider i.fa-moon { display: block; }
-
         .nav-logo img {
             width: 40px;
             height: 40px;
@@ -1236,7 +1195,6 @@
         .toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 500px; pointer-events: none; }
         .toast { pointer-events: auto; }
 
-        /* ===== تحسينات الأجهزة ===== */
         @media (max-width: 992px) {
             .nav-links a, .nav-links button { font-size: 0.7rem; padding: 4px 10px; }
             .nav-logo span { font-size: 1rem; }
@@ -1274,7 +1232,7 @@
     </style>
 </head>
 <body>
-    <!-- ====== Pop-up Window for Admin ====== -->
+    <!-- ====== Pop-up Window for Admin (جــــاهز) ====== -->
     <div id="adminPopup" style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:modalIn 0.5s ease;">
         <div style="background:var(--card);border-radius:var(--radius-lg);padding:24px;max-width:550px;width:100%;position:relative;border:2px solid var(--gold);box-shadow:0 20px 60px rgba(0,0,0,0.5);text-align:center;max-height:95vh;overflow-y:auto;">
             
@@ -1283,17 +1241,18 @@
             <div style="font-size:2.5rem;margin-bottom:8px;">🧪</div>
             <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--primary);margin-bottom:8px;">📢 إعلان هام من الإدارة</h2>
             
-            <!-- هنا ممكن تحط صورتك أو شعارك -->
-            <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" style="width:100px;height:100px;object-fit:contain;border-radius:50%;border:3px solid var(--gold);margin:0 auto 12px;display:block;background:transparent;">
-            
+            <!-- هنا ممكن تحط صورتك أو إعلانك 👇 -->
+            <div style="margin:0 auto 12px; display:block; width:200px; height:200px; background:var(--border); border-radius:var(--radius); display:flex; align-items:center; justify-content:center; color:var(--text2);">
+                <span>(هنا مكان الصورة أو الإعلان)</span>
+            </div>
+            <!-- اكتب كلامك هنا 👇 -->
             <p style="font-size:1.1rem;color:var(--text);line-height:1.8;margin-bottom:8px;">
-                مرحباً بكم في منصة <strong>يلا كيمياء</strong>! 🚀<br>
-                نتمنى لكم رحلة تعليمية ممتعة ومفيدة.<br>
-                <span style="color:var(--primary);font-weight:700;">ابدأ رحلتك الآن مع مستر زياد مبروك.</span>
+                مرحباً بكم في منصة يلا كيمياء!<br>
+                نتمنى لكم رحلة تعليمية ممتعة.
             </p>
             
             <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
-                <a href="login.html" class="btn-primary" style="width:100%;justify-content:center;">🚀 ابدأ التعلم الآن</a>
+                <button onclick="document.getElementById('adminPopup').style.display='none'" class="btn-primary" style="width:100%;justify-content:center;">🚀 ابدأ الآن</button>
                 <button onclick="document.getElementById('adminPopup').style.display='none'" class="btn-outline" style="width:100%;justify-content:center;">🔒 إغلاق النافذة</button>
             </div>
         </div>
@@ -1396,7 +1355,7 @@
                     <i class="fas fa-download"></i> حمل التطبيق
                 </button>
 
-                <!-- زر الليل والنهار الجديد -->
+                <!-- زر الليل والنهار المحسن -->
                 <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر">
                     <span class="slider"><i class="fas fa-sun"></i><i class="fas fa-moon"></i></span>
                 </button>
@@ -1489,7 +1448,7 @@
                 }
             });
             
-            // 3. منع النقر بزر الماوس الأيمن
+            // 3. منع النقر بزر الماوس الأيمن (حماية كاملة)
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -2363,11 +2322,11 @@
                             <div class="video-blocker" id="videoBlocker"></div>
                             
                             <div class="video-watermark" id="staticWatermark">
-                                👤 ${escapeHtml(studentName)} | كود: ${escapeHtml(studentCode)} | <span class="gold-text">🧪 يلا كيمياء</span>
+                                👤 ${escapeHtml(studentName)} | <span class="gold-text">🧪 يلا كيمياء</span>
                             </div>
                             
                             <div class="dynamic-watermark" id="dynamicWatermark">
-                                <span class="gold-text">🧪 خلط</span> ${escapeHtml(studentCode)} <span class="gold-text">🧪 خلط</span>
+                                <span class="gold-text">🧪</span> ${escapeHtml(studentName)} <span class="gold-text">🧪</span>
                             </div>
 
                             <iframe 
