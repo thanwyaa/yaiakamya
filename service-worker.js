@@ -47,9 +47,7 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
-        // إذا كان الملف في الكاش، نرجعه فوراً مع تحديث في الخلفية
         if (cachedResponse) {
-          // تحديث الكاش في الخلفية
           fetch(event.request)
             .then(response => {
               if (response && response.status === 200) {
@@ -61,7 +59,6 @@ self.addEventListener('fetch', event => {
           return cachedResponse;
         }
         
-        // إذا لم يكن في الكاش، نحاول جلب الملف من الشبكة
         return fetch(event.request)
           .then(response => {
             if (response && response.status === 200) {
@@ -72,7 +69,6 @@ self.addEventListener('fetch', event => {
             return response;
           })
           .catch(() => {
-            // إذا فشل الجلب، نرجح صفحة الخطأ أو الصفحة الرئيسية
             if (event.request.mode === 'navigate') {
               return caches.match('/');
             }
