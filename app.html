@@ -307,39 +307,37 @@
             transform: translateY(-1px);
         }
 
-        /* ====== زر التثبيت الرسمي ====== */
+        /* ====== زر التثبيت في النافبار ====== */
         .install-app-btn {
-            display: none;
+            display: flex !important;
             align-items: center;
             gap: 8px;
-            padding: 8px 20px;
+            padding: 8px 18px;
             border-radius: 50px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background: linear-gradient(135deg, #FFD60A, #F59E0B);
             color: #081B2C !important;
             font-weight: 700;
-            border: none;
+            border: 2px solid #fff;
             cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Cairo', sans-serif;
             font-size: 0.85rem;
-            animation: pulse-install 2s infinite;
-            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.3);
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse-install 1.5s infinite;
         }
         .install-app-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 24px rgba(255, 214, 10, 0.5);
+            box-shadow: 0 4px 24px rgba(255, 214, 10, 0.6);
         }
-        .install-app-btn i { font-size: 1.1rem; }
-        @keyframes pulse-install {
-            0%, 100% { box-shadow: 0 4px 16px rgba(255, 214, 10, 0.3); }
-            50% { box-shadow: 0 4px 28px rgba(255, 214, 10, 0.5); }
+        .install-app-btn i {
+            font-size: 1.1rem;
         }
 
         /* ====== شريط التثبيت ====== */
         #pwaInstallBanner {
             display: none;
-            background: linear-gradient(135deg, #0B4F8C, #1E81CE);
-            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, #0B4F8C, #1a365d);
+            border-radius: 16px;
             padding: 16px 20px;
             margin: 16px 0;
             box-shadow: 0 4px 20px rgba(11, 79, 140, 0.3);
@@ -347,7 +345,7 @@
             justify-content: space-between;
             gap: 12px;
             flex-wrap: wrap;
-            border: 2px solid var(--gold);
+            border: 2px solid #FFD60A;
         }
         #pwaInstallBanner.visible {
             display: flex !important;
@@ -411,6 +409,12 @@
             animation: blinkPulse 1.2s ease-in-out infinite;
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
             flex-shrink: 0;
+        }
+
+        /* ====== تأثيرات زر التثبيت ====== */
+        @keyframes pulse-install {
+            0%, 100% { box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4); }
+            50% { box-shadow: 0 4px 28px rgba(255, 214, 10, 0.7); transform: scale(1.02); }
         }
         @keyframes blinkPulse {
             0%, 100% { opacity: 1; transform: scale(1); }
@@ -1684,9 +1688,9 @@
             </ul>
 
             <div style="display:flex;align-items:center;gap:6px;">
-                <!-- ====== زر التثبيت الرسمي (يظهر تلقائياً عند دعم المتصفح) ====== -->
-                <button class="install-app-btn" id="installAppBtn" onclick="APP.installApp()">
-                    <i class="fas fa-download"></i> حمل التطبيق
+                <!-- ====== زر التثبيت الرسمي ====== -->
+                <button class="install-app-btn" id="installAppBtn" onclick="installApp()">
+                    <i class="fas fa-download"></i> 📲 حمل التطبيق
                 </button>
 
                 <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر">
@@ -2023,7 +2027,7 @@
     }
 
     // ============================================================
-    // 🔥 PWA - تسجيل Service Worker وزر التثبيت الرسمي
+    // 🔥 PWA - التثبيت الرسمي على كل الأجهزة
     // ============================================================
     
     // تسجيل Service Worker
@@ -2043,141 +2047,63 @@
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        
-        // إظهار زر التثبيت في النافبار
-        const installBtn = document.getElementById('installAppBtn');
-        if (installBtn) {
-            installBtn.style.display = 'flex';
-        }
-        
-        // إظهار شريط التثبيت
-        const banner = document.getElementById('pwaInstallBanner');
-        if (banner) {
-            banner.style.display = 'flex';
-            banner.classList.add('visible');
-        }
-        
         console.log('✅ beforeinstallprompt triggered - PWA install available');
     });
 
-    // لما يتم تثبيت التطبيق
-    window.addEventListener('appinstalled', () => {
-        const installBtn = document.getElementById('installAppBtn');
-        if (installBtn) {
-            installBtn.style.display = 'none';
+    // دالة التثبيت الرئيسية - تشتغل على كل الأجهزة
+    function installApp() {
+        // 1️⃣ المحاولة الأولى: التثبيت التلقائي (Android/Chrome)
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
+                    // إخفاء الأزرار بعد التثبيت
+                    const btn = document.getElementById('installAppBtn');
+                    if (btn) btn.style.display = 'none';
+                    const banner = document.getElementById('pwaInstallBanner');
+                    if (banner) {
+                        banner.classList.remove('visible');
+                        banner.style.display = 'none';
+                    }
+                } else {
+                    showToast('تم إلغاء تثبيت التطبيق', 'info');
+                }
+                deferredPrompt = null;
+            });
+            return;
         }
-        const banner = document.getElementById('pwaInstallBanner');
-        if (banner) {
-            banner.classList.remove('visible');
-            banner.style.display = 'none';
+
+        // 2️⃣ المحاولة الثانية: iPhone (Safari)
+        if (window.navigator.standalone === true) {
+            showToast('✅ التطبيق مثبت بالفعل!', 'success');
+            return;
         }
-        showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-        console.log('✅ App installed successfully');
-    });
 
-   // ============================================================
-// 🔥 التثبيت الرسمي - على كل الأجهزة
-// ============================================================
-
-let deferredPrompt;
-
-// تسجيل Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-        .then(() => console.log('✅ Service Worker جاهز'))
-        .catch(() => console.log('⚠️ Service Worker فشل'));
-}
-
-// استقبال حدث التثبيت من المتصفح (Android/Chrome)
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    console.log('✅ التثبيت التلقائي متاح');
-    // أظهر الزر
-    const btn = document.getElementById('installAppBtn');
-    if (btn) btn.style.display = 'flex';
-});
-
-// دالة التثبيت الرئيسية - تشتغل على كل الأجهزة
-function installApp() {
-    // 1️⃣ المحاولة الأولى: التثبيت التلقائي (Android/Chrome)
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((result) => {
-            if (result.outcome === 'accepted') {
-                showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-                hideInstallButtons();
-            } else {
-                showToast('تم إلغاء التثبيت', 'info');
-            }
-            deferredPrompt = null;
-        });
-        return;
-    }
-
-    // 2️⃣ المحاولة الثانية: iPhone (Safari)
-    if (window.navigator.standalone === true) {
-        showToast('✅ التطبيق مثبت بالفعل!', 'success');
-        return;
-    }
-
-    // 3️⃣ المحاولة الثالثة: فتح صفحة التثبيت يدوياً
-    // ده هيشتغل على كل المتصفحات حتى لو مش داعمة beforeinstallprompt
-    try {
-        // نحاول نفتح صفحة منفصلة للتثبيت
-        const installUrl = window.location.href;
+        // 3️⃣ المحاولة الثالثة: رسائل مخصصة لكل جهاز
+        const ua = navigator.userAgent.toLowerCase();
         
-        // لو على Android، نفتح الـ Chrome menu
-        if (navigator.userAgent.toLowerCase().includes('android')) {
+        if (ua.includes('android')) {
             showToast('📲 اضغط على القائمة (⋮) ثم اختر "تثبيت التطبيق"', 'info');
-            
-            // نحاول نفتح نافذة التثبيت مباشرة
+            // نحاول نفتح نافذة المشاركة
             if (window.navigator && window.navigator.share) {
                 window.navigator.share({
                     title: 'يلا كيمياء',
                     text: 'ثبّت التطبيق على جهازك',
-                    url: installUrl
+                    url: window.location.href
                 }).catch(() => {});
             }
-            return;
-        }
-        
-        // لو على iPhone
-        if (navigator.userAgent.toLowerCase().includes('iphone') || 
-            navigator.userAgent.toLowerCase().includes('ipad')) {
+        } else if (ua.includes('iphone') || ua.includes('ipad')) {
             showToast('📲 اضغط على ⬆ (مشاركة) ثم اختر "إضافة إلى الشاشة الرئيسية"', 'info');
-            return;
+        } else if (ua.includes('windows') || ua.includes('mac')) {
+            showToast('💻 اضغط على علامة + في شريط العنوان أو اختر "تثبيت التطبيق"', 'info');
+        } else {
+            showToast('📲 استخدم القائمة (⋮) واختر "تثبيت التطبيق"', 'info');
         }
-
-        // لو على كمبيوتر (Chrome/Edge)
-        if (navigator.userAgent.toLowerCase().includes('windows') || 
-            navigator.userAgent.toLowerCase().includes('mac')) {
-            showToast('💻 اضغط على علامة + في شريط العنوان أو اختر "تثبيت التطبيق" من القائمة', 'info');
-            return;
-        }
-
-        // آخر حل: رسالة عامة
-        showToast('📲 استخدم القائمة (⋮) واختر "تثبيت التطبيق"', 'info');
-        
-    } catch (err) {
-        console.log('Install error:', err);
-        showToast('📲 استخدم القائمة (⋮) واختر "تثبيت التطبيق"', 'info');
     }
-}
 
-// إخفاء أزرار التثبيت بعد التثبيت
-function hideInstallButtons() {
-    const btn = document.getElementById('installAppBtn');
-    if (btn) btn.style.display = 'none';
-    const banner = document.getElementById('pwaInstallBanner');
-    if (banner) {
-        banner.classList.remove('visible');
-        banner.style.display = 'none';
-    }
-}
-
-// ربط الدالة للاستخدام العالمي
-window.installApp = installApp;
+    // ربط الدالة للاستخدام العالمي
+    window.installApp = installApp;
 
     // ============================================================
     // THEME
@@ -4010,7 +3936,7 @@ window.installApp = installApp;
     }
 
     // ============================================================
-    // HOME PAGE
+    // HOME PAGE - مع زر التثبيت الضخم
     // ============================================================
     function showHome() {
         const main = document.getElementById('mainContent');
@@ -4023,6 +3949,44 @@ window.installApp = installApp;
                     <img src="${HERO_IMAGE}" alt="مستر زياد مبروك" loading="eager" fetchpriority="high" onerror="this.style.display='none'" style="width:100%;height:auto;max-height:450px;object-fit:cover;display:block;aspect-ratio:16/7;">
                 </div>
 
+                <!-- ====== زر التثبيت الضخم ====== -->
+                <div style="text-align:center;padding:10px 20px;margin:10px auto;max-width:600px;">
+                    <button onclick="installApp()" style="
+                        background:linear-gradient(135deg,#FFD60A,#F59E0B);
+                        color:#081B2C;
+                        border:none;
+                        padding:18px 50px;
+                        border-radius:60px;
+                        font-size:1.4rem;
+                        font-weight:900;
+                        font-family:'Cairo',sans-serif;
+                        cursor:pointer;
+                        box-shadow:0 8px 32px rgba(255,214,10,0.5);
+                        transition:all 0.3s ease;
+                        display:inline-flex;
+                        align-items:center;
+                        gap:14px;
+                        animation:pulse-install 2s infinite;
+                        border:3px solid rgba(255,255,255,0.3);
+                        width:100%;
+                        justify-content:center;
+                        max-width:500px;
+                    "
+                    onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 12px 48px rgba(255,214,10,0.7)';"
+                    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 32px rgba(255,214,10,0.5)';">
+                        <i class="fas fa-download" style="font-size:1.8rem;"></i>
+                        📲 ثبّت التطبيق على جهازك الآن
+                        <span style="background:#EF4444;color:#fff;padding:2px 14px;border-radius:20px;font-size:0.8rem;animation:blinkPulse 1.2s infinite;">جديد</span>
+                    </button>
+                    <p style="font-size:0.85rem;color:var(--text2);margin-top:8px;">
+                        <i class="fas fa-check-circle" style="color:var(--success);"></i> 
+                        متوافق مع Android • iPhone • كمبيوتر
+                        <span style="display:block;font-size:0.7rem;color:var(--text2);opacity:0.7;">
+                            🔒 تثبيت رسمي من المتصفح
+                        </span>
+                    </p>
+                </div>
+
                 <!-- ====== شريط تثبيت PWA ====== -->
                 <div id="pwaInstallBanner">
                     <div class="banner-content">
@@ -4033,7 +3997,7 @@ window.installApp = installApp;
                         </div>
                     </div>
                     <div class="banner-actions">
-                        <button class="install-now-btn" onclick="APP.installApp()">
+                        <button class="install-now-btn" onclick="installApp()">
                             📲 حمل التطبيق الآن
                         </button>
                         <span class="blink-dot"></span>
@@ -4329,49 +4293,6 @@ window.installApp = installApp;
     };
 
     window.APP = APP;
-        // ============================================================
-// 🔥 زر التثبيت - يظهر دايماً
-// ============================================================
-
-// خلي الزر يظهر فوراً
-document.addEventListener('DOMContentLoaded', function() {
-    const installBtn = document.getElementById('installAppBtn');
-    if (installBtn) {
-        installBtn.style.display = 'flex';
-        installBtn.style.fontSize = '1.1rem';
-        installBtn.style.padding = '10px 20px';
-        installBtn.style.background = 'linear-gradient(135deg, #FFD60A, #F59E0B)';
-        installBtn.style.color = '#081B2C';
-        installBtn.style.border = '3px solid #fff';
-        installBtn.style.borderRadius = '50px';
-        installBtn.style.boxShadow = '0 0 30px rgba(255, 214, 10, 0.5)';
-        installBtn.style.animation = 'pulse-install 1.5s infinite';
-        installBtn.innerHTML = '<i class="fas fa-download"></i> 📲 حمل التطبيق';
-    }
-    
-    const banner = document.getElementById('pwaInstallBanner');
-    if (banner) {
-        banner.style.display = 'flex';
-        banner.classList.add('visible');
-    }
-});
-
-// ربط دالة التثبيت
-window.installApp = function() {
-    if (typeof APP !== 'undefined' && APP.installApp) {
-        APP.installApp();
-    } else if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((result) => {
-            if (result.outcome === 'accepted') {
-                showToast('✅ تم التثبيت بنجاح!', 'success');
-            }
-            deferredPrompt = null;
-        });
-    } else {
-        showToast('📲 اضغط على القائمة (⋮) ثم اختر "تثبيت التطبيق"', 'info');
-    }
-};
     </script>
 </body>
 </html>
