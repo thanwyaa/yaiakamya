@@ -20,9 +20,16 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
+        console.log('📦 Caching assets...');
         return cache.addAll(ASSETS_TO_CACHE);
       })
-      .then(() => self.skipWaiting())
+      .then(() => {
+        console.log('✅ Service Worker installed successfully');
+        return self.skipWaiting();
+      })
+      .catch(error => {
+        console.error('❌ Service Worker install failed:', error);
+      })
   );
 });
 
@@ -33,12 +40,16 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
+            console.log('🗑️ Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     })
-    .then(() => self.clients.claim())
+    .then(() => {
+      console.log('✅ Service Worker activated successfully');
+      return self.clients.claim();
+    })
   );
 });
 
@@ -48,6 +59,7 @@ self.addEventListener('fetch', event => {
     caches.match(event.request)
       .then(cachedResponse => {
         if (cachedResponse) {
+          // تحديث الكاش في الخلفية
           fetch(event.request)
             .then(response => {
               if (response && response.status === 200) {
