@@ -1,7 +1,7 @@
 const CACHE_NAME = 'yalla-chemistry-v38';
 const ASSETS_TO_CACHE = [
   '/',
-  '/index.html',
+  '/app.html',
   '/manifest.json',
   'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg',
   'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png',
@@ -82,7 +82,7 @@ self.addEventListener('fetch', event => {
           })
           .catch(() => {
             if (event.request.mode === 'navigate') {
-              return caches.match('/');
+              return caches.match('/app.html');
             }
             return new Response('Network error', { status: 408 });
           });
@@ -98,7 +98,7 @@ self.addEventListener('push', event => {
     badge: 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg',
     vibrate: [200, 100, 200],
     data: {
-      url: '/'
+      url: '/app.html'
     }
   };
   
@@ -111,6 +111,6 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow(event.notification.data.url || '/')
+    clients.openWindow(event.notification.data.url || '/app.html')
   );
 });
