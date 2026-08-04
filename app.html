@@ -2075,22 +2075,109 @@
         console.log('✅ App installed successfully');
     });
 
-    // دالة التثبيت الرسمية
-    function installApp() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-                } else {
-                    showToast('تم إلغاء تثبيت التطبيق', 'info');
-                }
-                deferredPrompt = null;
-            });
-        } else {
-            showToast('⚠️ المتصفح لا يدعم التثبيت حالياً', 'warning');
-        }
+   // ============================================================
+// 🔥 التثبيت الرسمي - على كل الأجهزة
+// ============================================================
+
+let deferredPrompt;
+
+// تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('✅ Service Worker جاهز'))
+        .catch(() => console.log('⚠️ Service Worker فشل'));
+}
+
+// استقبال حدث التثبيت من المتصفح (Android/Chrome)
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('✅ التثبيت التلقائي متاح');
+    // أظهر الزر
+    const btn = document.getElementById('installAppBtn');
+    if (btn) btn.style.display = 'flex';
+});
+
+// دالة التثبيت الرئيسية - تشتغل على كل الأجهزة
+function installApp() {
+    // 1️⃣ المحاولة الأولى: التثبيت التلقائي (Android/Chrome)
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((result) => {
+            if (result.outcome === 'accepted') {
+                showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
+                hideInstallButtons();
+            } else {
+                showToast('تم إلغاء التثبيت', 'info');
+            }
+            deferredPrompt = null;
+        });
+        return;
     }
+
+    // 2️⃣ المحاولة الثانية: iPhone (Safari)
+    if (window.navigator.standalone === true) {
+        showToast('✅ التطبيق مثبت بالفعل!', 'success');
+        return;
+    }
+
+    // 3️⃣ المحاولة الثالثة: فتح صفحة التثبيت يدوياً
+    // ده هيشتغل على كل المتصفحات حتى لو مش داعمة beforeinstallprompt
+    try {
+        // نحاول نفتح صفحة منفصلة للتثبيت
+        const installUrl = window.location.href;
+        
+        // لو على Android، نفتح الـ Chrome menu
+        if (navigator.userAgent.toLowerCase().includes('android')) {
+            showToast('📲 اضغط على القائمة (⋮) ثم اختر "تثبيت التطبيق"', 'info');
+            
+            // نحاول نفتح نافذة التثبيت مباشرة
+            if (window.navigator && window.navigator.share) {
+                window.navigator.share({
+                    title: 'يلا كيمياء',
+                    text: 'ثبّت التطبيق على جهازك',
+                    url: installUrl
+                }).catch(() => {});
+            }
+            return;
+        }
+        
+        // لو على iPhone
+        if (navigator.userAgent.toLowerCase().includes('iphone') || 
+            navigator.userAgent.toLowerCase().includes('ipad')) {
+            showToast('📲 اضغط على ⬆ (مشاركة) ثم اختر "إضافة إلى الشاشة الرئيسية"', 'info');
+            return;
+        }
+
+        // لو على كمبيوتر (Chrome/Edge)
+        if (navigator.userAgent.toLowerCase().includes('windows') || 
+            navigator.userAgent.toLowerCase().includes('mac')) {
+            showToast('💻 اضغط على علامة + في شريط العنوان أو اختر "تثبيت التطبيق" من القائمة', 'info');
+            return;
+        }
+
+        // آخر حل: رسالة عامة
+        showToast('📲 استخدم القائمة (⋮) واختر "تثبيت التطبيق"', 'info');
+        
+    } catch (err) {
+        console.log('Install error:', err);
+        showToast('📲 استخدم القائمة (⋮) واختر "تثبيت التطبيق"', 'info');
+    }
+}
+
+// إخفاء أزرار التثبيت بعد التثبيت
+function hideInstallButtons() {
+    const btn = document.getElementById('installAppBtn');
+    if (btn) btn.style.display = 'none';
+    const banner = document.getElementById('pwaInstallBanner');
+    if (banner) {
+        banner.classList.remove('visible');
+        banner.style.display = 'none';
+    }
+}
+
+// ربط الدالة للاستخدام العالمي
+window.installApp = installApp;
 
     // ============================================================
     // THEME
