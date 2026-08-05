@@ -45,8 +45,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
-    <!-- ====== كل الـ CSS ====== -->
     <style>
+        /* ====== كل الـ CSS (نفسه بالضبط) ====== */
         :root {
             --bg: #EAF6FF;
             --card: #FFFFFF;
@@ -530,6 +530,12 @@
         .card-completed {
             border: 3px solid var(--success) !important;
             background: rgba(34, 197, 94, 0.08) !important;
+            cursor: default !important;
+            opacity: 0.85;
+        }
+        .card-completed:hover {
+            transform: none !important;
+            box-shadow: none !important;
         }
         .completed-overlay {
             display: none;
@@ -688,7 +694,15 @@
             position: relative;
         }
         .lesson-content-item:hover { border-color: var(--primary); background: var(--bg); transform: translateX(-4px); }
-        .lesson-content-item.completed-item { border-color: var(--success); background: rgba(34, 197, 94, 0.05); }
+        .lesson-content-item.completed-item { 
+            border-color: var(--success); 
+            background: rgba(34, 197, 94, 0.05);
+            cursor: pointer !important;
+        }
+        .lesson-content-item.completed-item:hover {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
         .lesson-content-item .item-icon {
             width: 44px;
             height: 44px;
@@ -1614,8 +1628,8 @@
     <div class="completed-modal" id="completedModal">
         <div class="modal-box">
             <div class="icon">✅</div>
-            <h2>لقد قمت بإتمام هذا الاختبار بالفعل</h2>
-            <p>لا يمكن إعادة دخوله مرة أخرى.<br>يمكنك مراجعة النتيجة من خلال صفحة <strong>نتائجي</strong>.</p>
+            <h2>⚠️ هذا الكورس مكتمل</h2>
+            <p>لقد أكملت هذا الكورس بالفعل.<br>لا يمكن فتحه مرة أخرى.</p>
             <button class="btn" onclick="APP.closeCompletedModal()" style="padding:12px 40px;border-radius:50px;border:none;font-weight:700;font-size:1rem;cursor:pointer;background:var(--primary);color:#fff;font-family:'Cairo',sans-serif;">حسناً</button>
         </div>
     </div>
@@ -1775,7 +1789,7 @@
     (function() {
         'use strict';
         
-        if (window.location.protocol === 'view-source:') {
+        if (window.location.href.includes('view-source')) {
             window.location.href = window.location.href.replace('view-source:', '');
         }
         
@@ -1783,7 +1797,7 @@
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 عرض المصدر غير مسموع', 'warning');
+                showToast('🚫 عرض المصدر غير مسموح', 'warning');
                 return false;
             }
             if (e.key === 'F12') {
@@ -1792,18 +1806,10 @@
                 showToast('🚫 أدوات المطور غير مسموحة', 'warning');
                 return false;
             }
-            if (e.ctrlKey && e.shiftKey) {
-                if (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    showToast('🚫 غير مسموح', 'warning');
-                    return false;
-                }
-            }
-            if (e.ctrlKey && (e.key === 't' || e.key === 'T' || e.key === 'n' || e.key === 'N')) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 فتح تبويب جديد غير مسموح', 'warning');
+                showToast('🚫 غير مسموح', 'warning');
                 return false;
             }
         });
@@ -1827,31 +1833,11 @@
             }
         });
         
+        // تعطيل الكونسول
         const noop = () => {};
-        const consoleMethods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd', 'table'];
-        consoleMethods.forEach(method => {
+        ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd', 'table'].forEach(method => {
             console[method] = noop;
         });
-        
-        const originalEval = window.eval;
-        window.eval = function(code) {
-            if (code.includes('view-source') || code.includes('outerHTML') || code.includes('document.documentElement')) {
-                showToast('🚫 هذا الأمر غير مسموح', 'error');
-                return null;
-            }
-            return originalEval(code);
-        };
-        
-        let lastUrl = window.location.href;
-        setInterval(() => {
-            if (window.location.href !== lastUrl) {
-                if (window.location.href.includes('view-source')) {
-                    window.location.href = window.location.href.replace('view-source:', '');
-                    showToast('🚫 عرض المصدر غير مسموح', 'error');
-                }
-                lastUrl = window.location.href;
-            }
-        }, 500);
         
         console.log('🛡️ الحماية الشاملة مفعلة');
     })();
@@ -2058,89 +2044,36 @@
         e.preventDefault();
         deferredPrompt = e;
         console.log('✅ beforeinstallprompt triggered - PWA install available');
-        // إظهار الزر عند توفر التثبيت
         updateInstallButtonVisibility();
     });
 
     // ============================================================
-    // 🔥 دالة التثبيت الشاملة - تعمل على جميع الأجهزة والمتصفحات
+    // 🔥 دالة التثبيت - تظهر نافذة المتصفح فوراً
     // ============================================================
     function installApp() {
-        // المحاولة الأولى: التثبيت التلقائي عبر متصفح PWA
+        // المحاولة الأولى: التثبيت عبر beforeinstallprompt (الطريقة الرسمية)
         if (deferredPrompt) {
-            deferredPrompt.prompt();
+            deferredPrompt.prompt(); // تظهر نافذة التثبيت فوراً
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-                    // إخفاء أزرار التثبيت بعد التثبيت
                     markAppInstalled();
+                } else {
+                    showToast('❌ تم إلغاء التثبيت', 'warning');
                 }
                 deferredPrompt = null;
             });
             return;
         }
         
-        // المحاولة الثانية: تثبيت عبر Safari (iOS)
+        // المحاولة الثانية: تثبيت عبر Safari (iOS) - تعليمات
         if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome') && !navigator.userAgent.includes('CriOS')) {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'يلا كيمياء',
-                    text: '📱 ثبّت التطبيق على جهازك الآن!\nاضغط على زر المشاركة ⬆ ثم اختر "إضافة للشاشة الرئيسية"',
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                showToast('📱 اضغط على ⬆ ثم "إضافة للشاشة الرئيسية"', 'info');
-            }
+            showToast('📱 اضغط على ⬆ ثم "إضافة للشاشة الرئيسية"', 'info');
             return;
         }
 
-        // المحاولة الثالثة: تثبيت عبر متصفحات سطح المكتب (Chrome, Edge, Firefox)
-        if (window.navigator && window.navigator.share) {
-            window.navigator.share({
-                title: 'يلا كيمياء',
-                text: '🚀 المنصة التعليمية المتكاملة للكيمياء',
-                url: window.location.href
-            }).catch((err) => {
-                // إذا فشل المشاركة، نعرض تعليمات التثبيت
-                showInstallInstructions();
-            });
-            return;
-        }
-
-        // المحاولة الرابعة: تعليمات تثبيت مخصصة حسب الجهاز
-        showInstallInstructions();
-    }
-
-    // دالة مساعدة لعرض تعليمات التثبيت حسب الجهاز
-    function showInstallInstructions() {
-        const userAgent = navigator.userAgent;
-        let instructions = '';
-
-        if (/android/i.test(userAgent)) {
-            instructions = '📱 لتثبيت التطبيق على Android:\n\n' +
-                          '1️⃣ افتح المتصفح (Chrome أو Edge)\n' +
-                          '2️⃣ اضغط على القائمة (⋮) في أعلى يمين الشاشة\n' +
-                          '3️⃣ اختر "تثبيت التطبيق" أو "Add to Home Screen"\n' +
-                          '4️⃣ اضغط على "تثبيت" لتأكيد التثبيت';
-        } else if (/iphone|ipad|ipod/i.test(userAgent)) {
-            instructions = '📱 لتثبيت التطبيق على iPhone/iPad:\n\n' +
-                          '1️⃣ افتح المتصفح (Safari)\n' +
-                          '2️⃣ اضغط على زر المشاركة ⬆ في أسفل الشاشة\n' +
-                          '3️⃣ انتقل لليسار واختر "إضافة للشاشة الرئيسية"\n' +
-                          '4️⃣ اضغط على "إضافة" لتأكيد التثبيت';
-        } else if (/windows|mac/i.test(userAgent)) {
-            instructions = '💻 لتثبيت التطبيق على الكمبيوتر:\n\n' +
-                          '• Chrome/Edge: اضغط على أيقونة التثبيت 📲 في شريط العنوان\n' +
-                          '• أو اضغط على "Install" في قائمة المتصفح\n' +
-                          '• يمكنك أيضاً إضافة الموقع إلى المفضلة';
-        } else {
-            instructions = '📲 لتثبيت التطبيق:\n\n' +
-                          '• Android: اضغط على ⋮ ثم "تثبيت التطبيق"\n' +
-                          '• iPhone: اضغط على ⬆ ثم "إضافة للشاشة الرئيسية"\n' +
-                          '• كمبيوتر: اضغط على + أو 📲 في شريط العنوان';
-        }
-
-        alert(instructions);
+        // المحاولة الثالثة: رسالة بأن المتصفح لا يدعم التثبيت
+        showToast('📱 التثبيت غير متاح على هذا المتصفح', 'info');
     }
 
     // تفعيل زر التثبيت من البانر
@@ -2148,13 +2081,13 @@
         installApp();
     }
 
-    // تحديث حالة زر التثبيت بناءً على قدرات المتصفح
+    // تحديث حالة زر التثبيت
     function updateInstallButtonVisibility() {
         const installBtn = document.getElementById('installAppBtn');
         if (!installBtn) return;
 
-        // إذا كان التطبيق مثبتاً بالفعل، نخفي الزر
-        if (window.matchMedia('(display-mode: standalone)').matches) {
+        // إذا كان التطبيق مثبتاً بالفعل
+        if (window.matchMedia('(display-mode: standalone)').matches || localStorage.getItem('appInstalled') === 'true') {
             markAppInstalled();
             return;
         }
@@ -2167,7 +2100,7 @@
             return;
         }
 
-        // في المتصفحات التي تدعم PWA ولكن لم يتم تفعيلها بعد
+        // في المتصفحات التي تدعم PWA
         if ('serviceWorker' in navigator && 'Notification' in window) {
             installBtn.style.display = 'flex';
             installBtn.classList.remove('installed');
@@ -2201,12 +2134,11 @@
         }
     }
 
-    // الاستماع لتغيير وضع العرض (Standalone vs Browser)
+    // الاستماع لتغيير وضع العرض
     window.addEventListener('DOMContentLoaded', function() {
         checkInstallStatus();
         updateInstallButtonVisibility();
 
-        // مراقبة التغيير في وضع العرض
         window.matchMedia('(display-mode: standalone)').addEventListener('change', function(e) {
             if (e.matches) {
                 markAppInstalled();
@@ -2216,7 +2148,6 @@
         });
     });
 
-    // تحديث الزر عند تغيير حالة الموقع (للتحقق من PWA)
     document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible') {
             updateInstallButtonVisibility();
@@ -2782,7 +2713,7 @@
     }
 
     // ============================================================
-    // COURSES & LESSONS (المختصرة)
+    // COURSES & LESSONS
     // ============================================================
     function loadCourses() {
         if (cache.courses.length > 0 && isCacheValid()) { allCourses = cache.courses;
@@ -2864,7 +2795,7 @@
     }
 
     // ============================================================
-    // VIDEO TRACKING (مختصرة)
+    // VIDEO TRACKING
     // ============================================================
     function clearVideoTracking() {
         if (videoWatchInterval) { clearInterval(videoWatchInterval);
@@ -2938,10 +2869,7 @@
             showSubscriptionPage(course.id);
             return;
         }
-        if (userCourseProgress[lessonId]?.watched) {
-            showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل', 'info');
-            return;
-        }
+        // الحصة تفتح حتى لو مكتملة (نفس نظام اليوتيوب)
         const main = document.getElementById('mainContent');
         if (!main) return;
         try {
@@ -2960,6 +2888,7 @@
             if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
             const studentName = userData?.name || 'طالب';
             const embedUrl = `https://www.youtube.com/embed/${videoIdYt}?enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&autoplay=1`;
+            const isCompleted = userCourseProgress[lessonId]?.watched || false;
             main.innerHTML = `
                 <div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:0.85rem;color:var(--text2);flex-wrap:wrap;">
@@ -2968,6 +2897,7 @@
                         </button>
                         <span style="color:var(--border);">/</span>
                         <span style="font-weight:600;color:var(--text);">${escapeHtml(lessonData.title)}</span>
+                        ${isCompleted ? '<span class="completed-badge" style="background:var(--success);color:#fff;padding:2px 12px;border-radius:20px;font-size:0.7rem;">✅ مكتملة (يمكن إعادة المشاهدة)</span>' : ''}
                     </div>
                     <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text);margin-bottom:12px;">🎥 ${escapeHtml(lessonData.title)}</h1>
                     <div class="video-protected" id="videoContainer">
@@ -2987,11 +2917,11 @@
                             <span class="time-display" id="watchTimer">00:00</span>
                         </div>
                         <div class="watch-progress-bar">
-                            <div class="fill" id="watchProgressFill" style="width:0%;"></div>
+                            <div class="fill" id="watchProgressFill" style="width:${isCompleted ? '100%' : '0%'};"></div>
                         </div>
                         <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text2);margin-top:4px;">
                             <span>0%</span>
-                            <span id="progressPercentLabel">0%</span>
+                            <span id="progressPercentLabel">${isCompleted ? '100%' : '0%'}</span>
                             <span>100%</span>
                         </div>
                     </div>
@@ -3022,6 +2952,13 @@
                     }, 4000);
                 }
             }, 500);
+            
+            // لو الحصة مكتملة، ما نبدأش التايمر
+            if (isCompleted) {
+                if (videoProgressTimer) clearInterval(videoProgressTimer);
+                return;
+            }
+            
             let watchSeconds = 0;
             const lessonDuration = parseInt(lessonData.duration) || 15;
             const totalSeconds = lessonDuration * 60;
@@ -3183,20 +3120,29 @@
     }
 
     // ============================================================
-    // COURSE PAGE (مختصرة)
+    // COURSE PAGE
     // ============================================================
     async function openCoursePage(courseId) {
         if (!currentUser) { showLoginOverlay(); return; }
-        const hasAccess = await checkCourseAccess(courseId);
-        if (!hasAccess) return;
-        const main = document.getElementById('mainContent');
-        if (!main) return;
         const course = allCourses.find(c => c.id === courseId);
         if (!course) { showToast('الكورس غير موجود', 'error'); return; }
+        
+        // التحقق: الكورس المكتمل لا يفتح
+        const lessons = allLessons.filter(l => l.courseId === courseId);
+        const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
+        if (lessons.length > 0 && completed.length === lessons.length) {
+            showCompletedModal();
+            return;
+        }
+        
+        const hasAccess = await checkCourseAccess(courseId);
+        if (!hasAccess) return;
+        
+        const main = document.getElementById('mainContent');
+        if (!main) return;
         main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;"><div class="spinner" style="margin:0 auto;width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div><p style="margin-top:12px;color:var(--text2);font-weight:600;">جارٍ تجهيز المحتوى...</p></div>`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         try {
-            const lessons = allLessons.filter(l => l.courseId === courseId);
             lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
             let completedCount = 0;
             let totalAtoms = 0;
@@ -3214,6 +3160,7 @@
             else if (progressPercent >= 25) motivationalMessage = '🌟 أحسنت! أكملت 25% من الكورس!';
             else if (completedCount > 0) motivationalMessage = '📚 بداية ممتازة! أكملت ' + completedCount + ' حصص!';
             else motivationalMessage = '🚀 ابدأ رحلتك في هذا الكورس اليوم!';
+            
             let lessonsHtml = lessons.map((lesson, idx) => {
                 const isCompleted = userCourseProgress[lesson.id]?.watched || false;
                 const statusText = isCompleted ? '✅ مكتملة' : '⏳ قيد التقدم';
@@ -3242,7 +3189,7 @@
                             <div class="lesson-content-item ${item.completed ? 'completed-item' : ''}" onclick="${item.action}">
                                 <div class="item-icon ${item.iconClass}"><i class="fas fa-${item.icon === 'video' ? 'play' : item.icon === 'pdf' ? 'file-pdf' : item.icon === 'assignment' ? 'tasks' : item.icon === 'quiz' ? 'puzzle-piece' : 'file-alt'}"></i></div>
                                 <div class="item-text"><div class="title">${item.title}</div></div>
-                                ${item.completed ? '<span class="completed-badge">✅ مكتمل</span>' : ''}
+                                ${item.completed ? '<span class="completed-badge">✅ مكتمل (يمكن إعادة المشاهدة)</span>' : ''}
                                 <i class="fas fa-chevron-left" style="color:var(--text2);font-size:0.7rem;"></i>
                             </div>
                         `).join('')}
@@ -3352,18 +3299,48 @@
             const lessons = allLessons.filter(l => l.courseId === c.id);
             const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
             const isCompleted = lessons.length > 0 && completed.length === lessons.length;
+            
+            // الكورس المكتمل - مقفول ومش بيتفتح
+            if (isCompleted) {
+                return `
+                    <div class="card card-completed" style="cursor:default;position:relative;">
+                        <div style="position:relative;overflow:hidden;">
+                            <img src="${c.image || 'https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'}" alt="${escapeHtml(c.title) || 'كورس'}" class="card-img" loading="lazy" onerror="this.src='https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'">
+                            <div style="position:absolute;top:12px;right:12px;display:flex;gap:6px;z-index:2;flex-wrap:wrap;">
+                                <span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--success);color:#fff;font-weight:700;">✅ مكتمل</span>
+                                <span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:${isFree ? 'var(--success)' : 'var(--gold)'};color:${isFree ? '#fff' : '#081B2C'};font-weight:700;">${isFree ? '🆓 مجاني' : '💰 مدفوع'}</span>
+                            </div>
+                            <div class="completed-overlay" style="display:flex !important;">
+                                <div class="check">✅</div>
+                                <div class="label">مكتمل - لا يمكن إعادة الفتح</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h3 style="font-weight:800;font-size:1.2rem;color:var(--text);margin-bottom:4px;">${escapeHtml(c.title) || 'كورس'}</h3>
+                            <p style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(c.description) || ''}</p>
+                            <div style="display:flex;flex-wrap:wrap;gap:4px 10px;font-size:0.7rem;color:var(--text2);margin-bottom:8px;border-top:1px solid var(--border);padding-top:6px;">
+                                <span>🎯 ${c.grade || 'كل الصفوف'}</span>
+                                <span>📚 ${c.lessonsCount || 0} حصة</span>
+                            </div>
+                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:var(--success);cursor:default;" onclick="APP.showCompletedModal()">
+                                ✅ مكتمل - مقفول
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // الكورس غير المكتمل - يفتح عادي
             return `
-                <div class="card ${isCompleted ? 'card-completed' : ''}" style="cursor:pointer;position:relative;" onclick="${isCompleted ? `APP.showCompletedModal()` : `APP.openCoursePage('${c.id}')`}">
+                <div class="card" style="cursor:pointer;position:relative;" onclick="APP.openCoursePage('${c.id}')">
                     <div style="position:relative;overflow:hidden;">
                         <img src="${c.image || 'https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'}" alt="${escapeHtml(c.title) || 'كورس'}" class="card-img" loading="lazy" onerror="this.src='https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'">
                         <div style="position:absolute;top:12px;right:12px;display:flex;gap:6px;z-index:2;flex-wrap:wrap;">
                             <span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:${isFree ? 'var(--success)' : 'var(--gold)'};color:${isFree ? '#fff' : '#081B2C'};font-weight:700;">${isFree ? '🆓 مجاني' : '💰 مدفوع'}</span>
                             ${!isFree ? `<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--gold);color:#081B2C;font-weight:700;">${escapeHtml(priceDisplay)}</span>` : ''}
                             ${isLocked ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:rgba(0,0,0,0.7);color:#fff;font-weight:700;">🔒</span>' : ''}
-                            ${isCompleted ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--success);color:#fff;font-weight:700;">✅ مكتمل</span>' : ''}
                         </div>
                         ${isLocked ? `<div class="lock-overlay"><span class="lock-text">🔒 هذا الكورس مدفوع</span></div>` : ''}
-                        ${isCompleted ? `<div class="completed-overlay"><div class="check">✅</div><div class="label">مكتمل</div></div>` : ''}
                     </div>
                     <div class="card-body">
                         <h3 style="font-weight:800;font-size:1.2rem;color:var(--text);margin-bottom:4px;">${escapeHtml(c.title) || 'كورس'}</h3>
@@ -3375,8 +3352,8 @@
                         </div>
                         ${currentUser ? `
                             ${subscribed ? `
-                                <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:${isCompleted ? 'var(--success)' : 'var(--primary2)'};" onclick="event.stopPropagation(); ${isCompleted ? `APP.showCompletedModal()` : `APP.openCoursePage('${c.id}')`}">
-                                    ${isCompleted ? '✅ مكتمل' : '📖 متابعة'}
+                                <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:var(--primary2);" onclick="event.stopPropagation(); APP.openCoursePage('${c.id}')">
+                                    📖 متابعة
                                 </button>
                             ` : `
                                 <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.subscribeToCourse('${c.id}')">
@@ -3395,7 +3372,7 @@
     }
 
     // ============================================================
-    // LEADERBOARD
+    // LEADERBOARD (مختصر)
     // ============================================================
     async function loadLeaderboard() {
         const container = document.getElementById('leaderboardContainer');
@@ -3526,6 +3503,14 @@
         let level = '🌱 مبتدئ';
         let levelColor = 'var(--primary)';
         if (progressPercent >= 80 && perfectExams >= 2) { level = '🏆 متقدم جداً'; levelColor = 'var(--gold)'; } else if (progressPercent >= 60) { level = '💪 متقدم'; levelColor = 'var(--success)'; } else if (progressPercent >= 30) { level = '📚 متوسط'; levelColor = 'var(--warning)'; }
+        
+        // احتساب الكورسات المكتملة
+        const completedCourses = allCourses.filter(c => {
+            const lessons = allLessons.filter(l => l.courseId === c.id);
+            const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
+            return lessons.length > 0 && completed.length === lessons.length;
+        }).length;
+        
         main.innerHTML = `
             <div style="max-width:1280px;margin:0 auto;padding:20px;">
                 <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
@@ -3554,6 +3539,7 @@
                 <div class="dashboard-stats-grid">
                     <div class="dashboard-stat-card"><span class="icon">📊</span><span class="number">${progressPercent}%</span><span class="label">نسبة الإنجاز الكلية</span><div class="progress-bar" style="margin-top:6px;"><div class="fill" style="width:${progressPercent}%;"></div></div></div>
                     <div class="dashboard-stat-card"><span class="icon">📚</span><span class="number">${enrolledCourses}</span><span class="label">كورسات مسجلة</span></div>
+                    <div class="dashboard-stat-card"><span class="icon">✅</span><span class="number">${completedCourses}</span><span class="label">كورسات مكتملة</span><span style="font-size:0.7rem;color:var(--success);">🔒 مقفولة</span></div>
                     <div class="dashboard-stat-card"><span class="icon">✅</span><span class="number">${completedLessons}</span><span class="label">حصص مكتملة</span><span style="font-size:0.7rem;color:var(--text2);">من أصل ${totalLessons}</span></div>
                     <div class="dashboard-stat-card"><span class="icon">📝</span><span class="number">${examsPassed}</span><span class="label">امتحانات</span><span style="font-size:0.7rem;color:var(--text2);">⭐ ${perfectExams} كاملة</span></div>
                     <div class="dashboard-stat-card"><span class="icon">🧪</span><span class="number">${quizzesPassed}</span><span class="label">كويزات</span></div>
@@ -4054,7 +4040,7 @@
     }
 
     // ============================================================
-    // HOME PAGE - مع زر التثبيت الضخم
+    // HOME PAGE
     // ============================================================
     function showHome() {
         const main = document.getElementById('mainContent');
