@@ -2035,7 +2035,7 @@
     // تسجيل Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/service-worker.js')
+            navigator.serviceWorker.register('/sw.js')
                 .then(function(registration) {
                     console.log('✅ Service Worker registered successfully');
                 })
@@ -2943,10 +2943,10 @@
             showSubscriptionPage(course.id);
             return;
         }
-        if (userCourseProgress[lessonId]?.watched) {
-            showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل', 'info');
-            return;
-        }
+        // تم تعديل الشرط: نسمح بفتح الفيديو حتى لو كان مكتمل
+        // إزالة الشرط الذي كان يمنع الفتح إذا كان مكتمل
+        /* removed: if (userCourseProgress[lessonId]?.watched) { showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل', 'info'); return; } */
+
         const main = document.getElementById('mainContent');
         if (!main) return;
         try {
@@ -4347,7 +4347,7 @@
         setupScrollHandlers();
         initTheme();
         showHome();
-        console.log('🚀 Yalla Chemistry Platform v38.0 - ULTIMATE PRO');
+        console.log('🚀 Yalla Chemistry Platform v39.0 - ULTIMATE PRO with Fixed Permissions');
     }
 
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
