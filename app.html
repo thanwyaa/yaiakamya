@@ -45,9 +45,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
     <style>
-        /* ============================================================
-           كل الـ CSS - كامل ومتكامل
-           ============================================================ */
+        /* كل الـ CSS موجود هنا بنفس الشكل، مع إضافة تحسينات بسيطة للفيديو */
         :root {
             --bg: #EAF6FF;
             --card: #FFFFFF;
@@ -1775,6 +1773,8 @@
     let dynamicWatermarkTimer = null;
     let videoProgressTimer = null;
     let controlsTimeout = null;
+    let currentLessonId = null;
+    let currentCourseId = null;
 
     function showVideoControls() {
         const controls = document.querySelector('.video-controls-overlay');
@@ -1797,7 +1797,6 @@
             }, 100);
         }
         showVideoControls();
-        showToast('▶️ تم تغيير حالة التشغيل', 'info');
     }
 
     function changeSpeed() {
@@ -1819,13 +1818,39 @@
     }
 
     function changeQuality() {
-        const qualities = ['auto', '1080p', '720p', '480p', '360p'];
+        const qualities = ['auto', '1080p', '720p', '480p', '360p', '240p', '144p'];
         const currentIndex = qualities.indexOf(currentQuality);
         const nextIndex = (currentIndex + 1) % qualities.length;
         currentQuality = qualities[nextIndex];
         
         const qualityBtn = document.getElementById('qualityBtn');
         if (qualityBtn) qualityBtn.textContent = `🎬 ${currentQuality}`;
+        
+        // تغيير جودة الفيديو فعلياً عن طريق إعادة تحميل الفيديو بجودة مختلفة
+        const iframe = document.getElementById('videoFrame');
+        if (iframe) {
+            const src = iframe.src;
+            // إضافة معامل الجودة إلى الرابط
+            let newSrc = src;
+            if (currentQuality !== 'auto') {
+                const qualityMap = {
+                    '1080p': 'hd1080',
+                    '720p': 'hd720',
+                    '480p': 'large',
+                    '360p': 'medium',
+                    '240p': 'small',
+                    '144p': 'tiny'
+                };
+                const vq = qualityMap[currentQuality] || 'auto';
+                if (src.includes('youtube.com')) {
+                    newSrc = src.replace(/&vq=[^&]*/, '');
+                    newSrc += `&vq=${vq}`;
+                }
+            } else {
+                newSrc = src.replace(/&vq=[^&]*/, '');
+            }
+            iframe.src = newSrc;
+        }
         
         showVideoControls();
         showToast(`🎬 الجودة: ${currentQuality}`, 'info');
@@ -2212,7 +2237,7 @@
                     <div class="card-body">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                             <span class="badge" style="background:var(--bg);color:var(--primary);font-size:0.75rem;padding:2px 10px;border-radius:20px;font-weight:700;">الصف ${c.grade === '1' ? 'الأول الثانوي' : c.grade === '2' ? 'الثاني الثانوي' : 'الثالث الثانوي'}</span>
-                            <span style="font-weight:800;color:var(--success);font-size:0.9rem;">${c.price > 0 ? c.price + ' ج.م' : 'مجاناً 🎁'}</span>
+                            <span style="font-weight:800;color:${c.price > 0 ? 'var(--gold)' : 'var(--success)'};font-size:0.9rem;">${c.price > 0 ? c.price + ' ج.م' : 'مجاناً 🎁'}</span>
                         </div>
                         <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--text);">${escapeHtml(c.title)}</h3>
                         <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px;line-height:1.5;">${escapeHtml(c.desc || '')}</p>
@@ -2399,6 +2424,8 @@
                 return;
             }
 
+            currentLessonId = lessonId;
+            currentCourseId = courseId;
             APP.openLessonVideo(lessonId, courseId, videoUrl);
         },
 
@@ -2510,7 +2537,7 @@
                     clearInterval(videoProgressTimer);
                     videoProgressTimer = null;
                     showToast('✅ تم مشاهدة الحصة بالكامل! (+10 ذرات)', 'success');
-                    if (!userCourseProgress[lessonId]?.watched) {
+                    if (currentLessonId && !userCourseProgress[currentLessonId]?.watched) {
                         APP.addAtoms(10);
                     }
                 }
@@ -2697,8 +2724,11 @@
                               '📖 تحتاج لمزيد من المذاكرة والمراجعة مع مستر زياد'}
                         </p>
                         ${wrongs.length > 0 ? `<div style="background:var(--bg);padding:12px;border-radius:var(--radius);margin:16px 0;">
-                            <strong>❌ الأخطاء:</strong> الأسئلة ${wrongs.join(', ').replace('q', '')}
-                        </div>` : ''}
+                            <strong>❌ الأخطاء:</strong> الأسئلة ${wrongs.join(', ').replace(/q/g, 'سؤال ')}
+                        </div>` : 
+                        `<div style="background:var(--bg);padding:12px;border-radius:var(--radius);margin:16px 0;color:var(--success);font-weight:700;">
+                            ✅ لا توجد أخطاء! أداء رائع
+                        </div>`}
                         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
                             <button onclick="APP.showDashboard()" class="btn-primary">حسابي</button>
                             <button onclick="APP.showHome()" class="btn-outline">الرئيسية</button>
