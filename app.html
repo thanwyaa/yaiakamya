@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- 🔒 حماية view-source -->
-    <script>
-        if (window.location.href.includes('view-source')) {
-            window.location.href = window.location.href.replace('view-source:', '');
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- ====== PWA - Manifest ====== -->
     <link rel="manifest" href="/manifest.json">
@@ -14,20 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
-    <link rel="canonical" href="https://yaiakamya.vercel.app/">
-    <meta property="og:title" content="يلا كيمياء | المنصة التعليمية المتكاملة">
-    <meta property="og:description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
-    <meta property="og:url" content="https://yaiakamya.vercel.app/">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="يلا كيمياء | المنصة التعليمية المتكاملة">
-    <meta name="twitter:description" content="منصة يلا كيمياء التعليمية - اشرح الكيمياء ببساطة مع مستر زياد مبروك">
-
     <link rel="icon" href="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg">
     <title>يلا كيمياء | المنصة التعليمية المتكاملة</title>
 
@@ -45,9 +28,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
     <style>
-        /* ============================================================
-           كل الـ CSS - كامل ومتكامل
-           ============================================================ */
+        /* ====== كل الـ CSS ====== */
         :root {
             --bg: #EAF6FF;
             --card: #FFFFFF;
@@ -59,8 +40,6 @@
             --accent: #4CC9F0;
             --gold: #FFD60A;
             --gold-dark: #D4A800;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
             --success: #22C55E;
             --danger: #EF4444;
             --warning: #FFA726;
@@ -90,13 +69,52 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-        .font-lalezar { font-family: 'Lalezar', cursive; }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        /* ====== الحماية ====== */
+        .no-copy {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
 
-        /* ====== NAVBAR ====== */
+        /* ====== زر التثبيت ====== */
+        .install-app-btn {
+            display: none !important;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #FFD60A, #F59E0B);
+            color: #081B2C !important;
+            font-weight: 700;
+            border: 2px solid #fff;
+            cursor: pointer;
+            font-size: clamp(0.6rem, 1vw, 0.85rem);
+            font-family: 'Cairo', sans-serif;
+            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse-install 1.5s infinite;
+        }
+        .install-app-btn.visible { display: flex !important; }
+        .install-app-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 24px rgba(255, 214, 10, 0.6);
+        }
+        .install-app-btn i { font-size: clamp(0.7rem, 1vw, 1.1rem); }
+        .install-app-btn.installed {
+            background: linear-gradient(135deg, #22C55E, #16A34A) !important;
+            color: #fff !important;
+            animation: none !important;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4) !important;
+        }
+
+        @keyframes pulse-install {
+            0%, 100% { box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4); }
+            50% { box-shadow: 0 4px 28px rgba(255, 214, 10, 0.7); transform: scale(1.02); }
+        }
+
+        /* ====== باقي الـ CSS ====== */
         .navbar {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
@@ -121,6 +139,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .nav-logo {
@@ -131,16 +150,13 @@
             flex-shrink: 0;
         }
         .nav-logo img {
-            width: 40px;
-            height: 40px;
+            width: clamp(24px, 3vw, 40px);
+            height: clamp(24px, 3vw, 40px);
             object-fit: contain;
-            border: none !important;
-            border-radius: 0 !important;
-            background: transparent !important;
         }
         .nav-logo span {
             font-family: 'Lalezar', cursive;
-            font-size: 1.2rem;
+            font-size: clamp(0.75rem, 1.2vw, 1.2rem);
             color: var(--primary);
         }
 
@@ -152,10 +168,10 @@
             flex-wrap: wrap;
         }
         .nav-links a, .nav-links button {
-            padding: 6px 14px;
+            padding: clamp(2px, 0.5vw, 6px) clamp(6px, 1vw, 14px);
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: clamp(0.55rem, 0.7vw, 0.8rem);
             transition: var(--transition);
             cursor: pointer;
             border: none;
@@ -163,7 +179,6 @@
             color: var(--text2);
             text-decoration: none;
             font-family: 'Cairo', sans-serif;
-            position: relative;
         }
         .nav-links a:hover, .nav-links button:hover {
             background: var(--border);
@@ -173,162 +188,17 @@
         .nav-links .btn-primary-nav {
             background: var(--primary);
             color: #fff !important;
-            padding: 6px 18px;
-        }
-        .nav-links .btn-primary-nav:hover {
-            background: var(--primary2);
-            transform: translateY(-1px);
+            padding: clamp(2px, 0.5vw, 6px) clamp(10px, 1.5vw, 18px);
         }
 
-        /* ====== زر التثبيت ====== */
-        .install-app-btn {
-            display: flex !important;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 18px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #FFD60A, #F59E0B);
-            color: #081B2C !important;
-            font-weight: 700;
-            border: 2px solid #fff;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-family: 'Cairo', sans-serif;
-            box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4);
-            transition: all 0.3s ease;
-            animation: pulse-install 1.5s infinite;
-        }
-        .install-app-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 24px rgba(255, 214, 10, 0.6);
-        }
-        .install-app-btn i { font-size: 1.1rem; }
-        .install-app-btn.installed {
-            background: var(--success);
-            color: #fff !important;
-            animation: none;
-            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
-        }
-
-        @keyframes pulse-install {
-            0%, 100% { box-shadow: 0 4px 16px rgba(255, 214, 10, 0.4); }
-            50% { box-shadow: 0 4px 28px rgba(255, 214, 10, 0.7); transform: scale(1.02); }
-        }
-
-        .theme-toggle {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 50px;
-            padding: 6px 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: var(--text);
-            min-width: 60px;
-            justify-content: center;
-        }
-        .theme-toggle:hover {
-            border-color: var(--primary);
-            transform: scale(1.05);
-        }
-
-        .atoms-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            background: var(--gold);
-            color: #081B2C;
-        }
-
-        .user-menu-wrapper { position: relative; display: flex; align-items: center; gap: 4px; }
-        .user-menu-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px 4px 6px;
-            border-radius: 50px;
-            border: 2px solid var(--primary);
-            background: var(--primary);
-            color: #fff;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            font-size: 0.8rem;
-        }
-        .user-menu-btn:hover { background: var(--primary2); border-color: var(--primary2); }
-        .user-menu-btn .avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.7rem;
-            overflow: hidden;
-            background: rgba(255,255,255,0.2);
-        }
-        .user-menu-btn .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-menu-btn .arrow { font-size: 0.6rem; transition: var(--transition); }
-        .user-menu-btn .arrow.open { transform: rotate(180deg); }
-        .user-menu-btn .label { display: inline-block; color: #fff; font-size: 0.8rem; }
-
-        .user-dropdown {
-            display: none;
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            min-width: 210px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            overflow: hidden;
-            z-index: 200;
-            padding: 4px 0;
-        }
-        .user-dropdown.open { display: block; }
-        .user-dropdown .dropdown-header { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-        .user-dropdown .dropdown-header .name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
-        .user-dropdown .dropdown-header .sub { font-size: 0.7rem; color: var(--text2); }
-        .user-dropdown .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 14px;
-            width: 100%;
-            border: none;
-            background: none;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Cairo', sans-serif;
-            font-size: 0.8rem;
-            color: var(--text);
-            text-align: right;
-        }
-        .user-dropdown .menu-item:hover { background: var(--bg); }
-        .user-dropdown .menu-item i { width: 18px; text-align: center; font-size: 0.85rem; color: var(--text2); }
-        .user-dropdown .menu-item.danger { color: var(--danger); }
-        .user-dropdown .menu-item.danger:hover { background: rgba(239,68,68,0.08); }
-        .user-dropdown .menu-divider { height: 1px; background: var(--border); margin: 4px 12px; }
-
-        /* ====== BUTTONS ====== */
         .btn-primary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 32px;
+            padding: clamp(6px, 1vw, 12px) clamp(14px, 2.5vw, 32px);
             border-radius: 50px;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
             background: linear-gradient(135deg, var(--primary), var(--primary2));
             color: #fff;
             border: none;
@@ -347,10 +217,10 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 32px;
+            padding: clamp(6px, 1vw, 12px) clamp(14px, 2.5vw, 32px);
             border-radius: 50px;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: clamp(0.7rem, 0.8vw, 0.95rem);
             background: transparent;
             color: var(--primary);
             border: 2px solid var(--primary);
@@ -365,68 +235,8 @@
             transform: translateY(-2px);
         }
 
-        .btn-sm { padding: 8px 20px; font-size: 0.8rem; }
-        .btn-filter {
-            padding: 6px 20px;
-            border-radius: 50px;
-            border: 2px solid var(--border);
-            background: transparent;
-            color: var(--text2);
-            font-family: 'Cairo', sans-serif;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .btn-filter:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
-        .btn-filter.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .btn-sm { padding: clamp(4px, 0.5vw, 8px) clamp(10px, 1.5vw, 20px); font-size: clamp(0.6rem, 0.7vw, 0.8rem); }
 
-        /* ====== TOAST ====== */
-        .toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 500px; pointer-events: none; }
-        .toast {
-            pointer-events: auto;
-            position: relative;
-            padding: 14px 32px;
-            border-radius: var(--radius);
-            font-weight: 600;
-            animation: slideUp 0.4s ease;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            font-size: 0.95rem;
-            font-family: 'Cairo', sans-serif;
-        }
-        .toast-success { background: var(--success); color: #fff; }
-        .toast-error { background: var(--danger); color: #fff; }
-        .toast-info { background: var(--primary); color: #fff; }
-        .toast-warning { background: var(--warning); color: #fff; }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-
-        /* ====== LOGIN OVERLAY ====== */
-        .login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(6px);
-            z-index: 9995;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-overlay.open { display: flex; }
-        .login-box {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 36px 32px;
-            max-width: 400px;
-            width: 92%;
-            text-align: center;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-        }
-
-        /* ====== CARDS ====== */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -451,8 +261,109 @@
         }
         @media (max-width: 768px) { .card-img { height: 170px; } }
         @media (max-width: 480px) { .card-img { height: 150px; } }
-        .card:hover .card-img { transform: scale(1.03); }
         .card-body { padding: 16px 18px; }
+
+        .card-completed {
+            border: 3px solid var(--success) !important;
+            background: rgba(34, 197, 94, 0.08) !important;
+        }
+        .completed-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(34, 197, 94, 0.12);
+            backdrop-filter: blur(2px);
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            z-index: 10;
+            flex-direction: column;
+            gap: 4px;
+            pointer-events: none;
+        }
+        .card-completed .completed-overlay { display: flex !important; }
+        .completed-overlay .check { font-size: 3rem; color: var(--success); }
+        .completed-overlay .label {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 1.1rem;
+            background: var(--card);
+            padding: 4px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(34, 197, 94, 0.2);
+        }
+
+        .lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 27, 44, 0.6);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            font-size: 2.5rem;
+            color: #fff;
+            pointer-events: none;
+        }
+        .lock-overlay .lock-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 14px 32px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            font-size: 0.95rem;
+            font-family: 'Cairo', sans-serif;
+        }
+        .toast-success { background: var(--success); color: #fff; }
+        .toast-error { background: var(--danger); color: #fff; }
+        .toast-info { background: var(--primary); color: #fff; }
+        .toast-warning { background: var(--warning); color: #fff; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            z-index: 9995;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-overlay.open { display: flex; }
+        .login-box {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            max-width: 400px;
+            width: 92%;
+            text-align: center;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+        }
 
         .grid-courses { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
         @media (max-width: 768px) {
@@ -460,320 +371,6 @@
         }
         @media (max-width: 480px) {
             .grid-courses { grid-template-columns: 1fr; gap: 12px; }
-        }
-
-        .dashboard-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .dashboard-stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 16px;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .dashboard-stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-        .dashboard-stat-card .icon { font-size: 2rem; margin-bottom: 4px; display: block; }
-        .dashboard-stat-card .number {
-            font-family: 'Lalezar', cursive;
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--primary);
-            display: block;
-        }
-        .dashboard-stat-card .label { font-size: 0.8rem; color: var(--text2); font-weight: 600; }
-
-        /* ====== LESSONS ====== */
-        .lesson-container {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 12px;
-            overflow: hidden;
-            background: var(--card);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .lesson-container:hover { border-color: var(--primary); }
-        .lesson-header {
-            padding: 16px 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 700;
-            color: var(--text);
-            font-size: 1rem;
-            user-select: none;
-        }
-        .lesson-header:hover { background: var(--border); }
-        .lesson-header .lesson-num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: #fff;
-            font-size: 0.8rem;
-            margin-left: 12px;
-            flex-shrink: 0;
-        }
-        .lesson-header .toggle-icon { transition: var(--transition); font-size: 0.9rem; }
-        .lesson-container.open .toggle-icon { transform: rotate(180deg); }
-        .lesson-container.open .lesson-header { background: var(--primary); color: #fff; }
-        .lesson-container.open .lesson-header .lesson-num { background: #fff; color: var(--primary); }
-
-        .lesson-body { padding: 0 16px 16px; display: none; }
-        .lesson-container.open .lesson-body { display: block; }
-
-        .lesson-content-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            margin-top: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            background: var(--card);
-            min-height: 56px;
-            position: relative;
-        }
-        .lesson-content-item:hover { border-color: var(--primary); background: var(--bg); transform: translateX(-4px); }
-        .lesson-content-item .item-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            color: #fff;
-            font-size: 1.1rem;
-        }
-        .lesson-content-item .item-icon.video { background: #EF4444; }
-        .lesson-content-item .item-icon.exam { background: #F59E0B; }
-        .lesson-content-item .item-icon.pdf { background: #DC2626; }
-        .lesson-content-item .item-text { flex: 1; }
-        .lesson-content-item .item-text .title { font-weight: 600; color: var(--text); font-size: 0.95rem; }
-        .lesson-content-item .item-text .sub { font-size: 0.7rem; color: var(--text2); }
-        .completed-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--success);
-            color: #fff;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-        }
-
-        .progress-bar { width: 100%; height: 6px; background: var(--border); border-radius: 10px; overflow: hidden; }
-        .progress-bar .fill {
-            height: 100%;
-            border-radius: 10px;
-            background: linear-gradient(90deg, var(--primary), var(--primary2));
-            transition: width 0.6s ease;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 48px 20px;
-            background: var(--bg);
-            border-radius: var(--radius-lg);
-            border: 2px dashed var(--border);
-        }
-        .empty-state .icon { font-size: 4rem; margin-bottom: 12px; }
-        .empty-state h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
-        .empty-state p { color: var(--text2); margin-top: 4px; }
-
-        /* ====== VIDEO ====== */
-        .video-protected {
-            position: relative;
-            width: 100%;
-            max-width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
-            overflow: hidden;
-            border-radius: var(--radius-lg);
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        .video-protected iframe, .video-protected video {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-            pointer-events: none;
-        }
-
-        .video-watermark {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            color: rgba(255, 255, 255, 0.45);
-            font-size: 13px;
-            z-index: 15;
-            pointer-events: none;
-            font-weight: bold;
-            font-family: 'Cairo', Arial, sans-serif;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 4px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .video-watermark .gold-text { color: var(--gold); }
-
-        .dynamic-watermark {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 2.2rem;
-            z-index: 15;
-            pointer-events: none;
-            transition: all 3s ease-in-out;
-            font-family: 'Lalezar', cursive;
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-            font-weight: 900;
-            letter-spacing: 4px;
-            opacity: 0.6;
-            top: 10px;
-            left: 10px;
-            white-space: nowrap;
-        }
-        .dynamic-watermark .gold-text { color: var(--gold); opacity: 0.8; }
-
-        /* ====== VIDEO CONTROLS ====== */
-        .video-controls-overlay {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.75);
-            padding: 10px 16px;
-            border-radius: 50px;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            pointer-events: auto !important;
-        }
-
-        .video-controls-overlay button {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 14px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-            font-family: 'Cairo', sans-serif;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            min-width: 40px;
-            justify-content: center;
-            pointer-events: auto !important;
-        }
-
-        .video-controls-overlay button:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.05);
-        }
-
-        .video-controls-overlay button.active {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .video-controls-overlay .btn-fullscreen {
-            background: rgba(255, 255, 255, 0.15);
-            font-size: 1rem;
-            padding: 6px 12px;
-        }
-        .video-controls-overlay .btn-fullscreen:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .fullscreen-btn {
-            position: absolute;
-            bottom: 80px;
-            right: 15px;
-            z-index: 20;
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: auto !important;
-        }
-        .fullscreen-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .watch-progress-container {
-            margin-top: 16px;
-            padding: 0 4px;
-        }
-        .watch-progress-container .timer-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--text2);
-            margin-bottom: 4px;
-        }
-        .watch-progress-container .timer-row .time-display {
-            font-weight: 700;
-            color: var(--primary);
-            font-family: 'Lalezar', cursive;
-            font-size: 1.1rem;
-        }
-        .watch-progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .watch-progress-bar .fill {
-            height: 100%;
-            border-radius: 10px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            transition: width 0.5s ease;
-            width: 0%;
-        }
-
-        .no-copy {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
         }
 
         .video-wrapper {
@@ -795,422 +392,17 @@
             border: none;
         }
 
-        .video-section-title {
-            font-family: 'Lalezar', cursive;
-            font-size: clamp(1.2rem, 2.5vw, 2rem);
-            color: var(--primary);
+        .empty-state {
             text-align: center;
-            margin: 16px 0 12px;
-        }
-
-        .course-page-hero {
-            background: linear-gradient(135deg, var(--primary), var(--primary2));
-            padding: 40px;
-            border-radius: var(--radius-lg);
-            color: #fff;
-            margin-bottom: 24px;
-        }
-        .course-page-hero h1 { font-family: 'Lalezar', cursive; font-size: 2.5rem; }
-        .course-page-hero p { opacity: 0.9; font-size: 1.1rem; }
-        .course-page-hero .stats { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
-        .course-page-hero .price-tag {
-            display: inline-block;
-            padding: 4px 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        .course-page-hero .price-tag.free { background: var(--success); color: #fff; }
-        .course-page-hero .price-tag.paid { background: var(--gold); color: #081B2C; }
-
-        .motivational-message {
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            background: var(--card);
-            border: 1px solid var(--border);
-            text-align: center;
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--primary);
-        }
-
-        /* ====== LEADERBOARD ====== */
-        .leaderboard-podium {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding: 20px 0;
+            padding: 48px 20px;
             background: var(--bg);
             border-radius: var(--radius-lg);
+            border: 2px dashed var(--border);
         }
-        .podium-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transition: var(--transition);
-            position: relative;
-        }
-        .podium-item:hover { transform: translateY(-5px); }
-        .podium-item .podium-rank { font-size: 2.5rem; margin-bottom: 4px; }
-        .podium-item .podium-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            border: 4px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            transition: var(--transition);
-            overflow: hidden;
-        }
-        .podium-item .podium-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .podium-item.gold .podium-avatar {
-            border-color: #FFD60A;
-            box-shadow: 0 0 30px rgba(255, 214, 10, 0.4);
-            animation: glowGold 2s ease-in-out infinite;
-        }
-        .podium-item.gold .podium-base { background: #FFD60A; height: 12px; width: 80px; border-radius: 4px; margin-top: 8px; }
-        .podium-item.silver .podium-avatar { border-color: #C0C0C0; box-shadow: 0 0 20px rgba(192, 192, 192, 0.3); }
-        .podium-item.silver .podium-base { background: #C0C0C0; height: 10px; width: 70px; border-radius: 4px; margin-top: 8px; }
-        .podium-item.bronze .podium-avatar { border-color: #CD7F32; box-shadow: 0 0 20px rgba(205, 127, 50, 0.3); }
-        .podium-item.bronze .podium-base { background: #CD7F32; height: 8px; width: 60px; border-radius: 4px; margin-top: 8px; }
-        .podium-item .crown {
-            position: absolute;
-            top: -25px;
-            font-size: 2.2rem;
-            animation: bounceCrown 2s ease-in-out infinite;
-        }
-        @keyframes glowGold {
-            0%, 100% { box-shadow: 0 0 30px rgba(255, 214, 10, 0.4); }
-            50% { box-shadow: 0 0 50px rgba(255, 214, 10, 0.6); }
-        }
-        @keyframes bounceCrown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .empty-state .icon { font-size: 4rem; margin-bottom: 12px; }
+        .empty-state h3 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+        .empty-state p { color: var(--text2); margin-top: 4px; }
 
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 10px 14px;
-            border-radius: var(--radius);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--border);
-            background: var(--card);
-            margin-bottom: 8px;
-        }
-        .leaderboard-item:hover { border-color: var(--primary); background: var(--bg); transform: translateX(-3px); }
-        .leaderboard-item .rank {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-            background: var(--border);
-            color: var(--text2);
-        }
-        .leaderboard-item .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            background: var(--primary);
-            color: #fff;
-            overflow: hidden;
-        }
-        .leaderboard-item .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .leaderboard-item .info { flex: 1; }
-        .leaderboard-item .info .name { font-weight: 700; color: var(--text); font-size: 0.95rem; }
-        .leaderboard-item .info .stats { font-size: 0.75rem; color: var(--text2); }
-        .leaderboard-item .points { font-weight: 800; color: var(--primary); font-size: 1rem; }
-
-        /* ====== PROFILE ====== */
-        .profile-photo-upload {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-            border: 3px solid var(--primary);
-            transition: var(--transition);
-            background: var(--bg);
-        }
-        .profile-photo-upload:hover { transform: scale(1.05); border-color: var(--gold); }
-        .profile-photo-upload img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-photo-upload .upload-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 1.5rem;
-            opacity: 0;
-            transition: var(--transition);
-            border-radius: 50%;
-        }
-        .profile-photo-upload:hover .upload-overlay { opacity: 1; }
-        .profile-photo-upload input[type="file"] { display: none; }
-
-        .profile-code {
-            background: var(--bg);
-            border: 2px dashed var(--primary);
-            border-radius: var(--radius);
-            padding: 12px;
-            text-align: center;
-            font-size: 1.3rem;
-            font-weight: 700;
-            font-family: 'Lalezar', cursive;
-            color: var(--primary);
-            letter-spacing: 2px;
-        }
-
-        /* ====== CERTIFICATE ====== */
-        .certificate-preview {
-            background: #fff;
-            border: 3px solid #FFD60A;
-            border-radius: var(--radius-lg);
-            padding: 40px;
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        .certificate-preview::before {
-            content: '';
-            position: absolute;
-            inset: 8px;
-            border: 2px dashed #FFD60A;
-            border-radius: var(--radius);
-            pointer-events: none;
-        }
-        .certificate-preview .logo { font-family: 'Lalezar', cursive; font-size: 2rem; color: var(--primary); }
-        .certificate-preview h2 { font-size: 2rem; margin: 12px 0; color: #D4A800; }
-        .certificate-preview .name { font-size: 1.8rem; font-weight: 700; color: var(--text); }
-
-        /* ====== STUDENT CARD ====== */
-        .student-card-preview {
-            background: #fff;
-            border-radius: var(--radius-lg);
-            padding: 30px;
-            max-width: 450px;
-            margin: 0 auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            position: relative;
-            overflow: hidden;
-        }
-        .student-card-preview .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 4rem;
-            font-family: 'Lalezar', cursive;
-            color: rgba(11, 79, 140, 0.06);
-            white-space: nowrap;
-            pointer-events: none;
-            letter-spacing: 10px;
-        }
-
-        /* ====== AI REPORT ====== */
-        .ai-report-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-        }
-        .ai-report-container .report-header { text-align: center; border-bottom: 2px solid var(--border); padding-bottom: 16px; margin-bottom: 16px; }
-        .ai-report-container .report-header .logo { font-family: 'Lalezar', cursive; font-size: 2rem; color: var(--primary); }
-        .ai-report-container .report-section { margin-bottom: 16px; padding: 16px; background: var(--bg); border-radius: var(--radius); }
-
-        /* ====== FAQ ====== */
-        .faq-item {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 8px;
-            overflow: hidden;
-            background: var(--card);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .faq-item:hover {
-            border-color: var(--primary);
-            box-shadow: var(--shadow);
-        }
-        .faq-item .faq-question {
-            padding: 14px 18px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text);
-            user-select: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--bg);
-        }
-        .faq-item .faq-question:hover {
-            background: var(--border);
-            color: var(--primary);
-        }
-        .faq-item .faq-question i {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.8rem;
-            color: var(--text2);
-        }
-        .faq-item.open .faq-question {
-            background: var(--primary);
-            color: #fff;
-        }
-        .faq-item.open .faq-question i {
-            transform: rotate(180deg);
-            color: #fff;
-        }
-        .faq-item .faq-answer {
-            padding: 0 18px;
-            color: var(--text2);
-            font-size: 0.9rem;
-            line-height: 1.8;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-        }
-        .faq-item.open .faq-answer {
-            padding: 16px 18px 18px;
-            max-height: 500px;
-            opacity: 1;
-            animation: faqSlideDown 0.4s ease;
-        }
-        @keyframes faqSlideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ====== EXAM SECURITY MODAL ====== */
-        .exam-security-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(8px);
-            z-index: 9998;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .exam-security-modal.open { display: flex; }
-        .exam-security-modal .security-box {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 48px 32px;
-            max-width: 550px;
-            width: 100%;
-            text-align: center;
-            border: 1px solid var(--border);
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalIn 0.4s ease;
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        /* ====== ADMIN POPUP ====== */
-        #adminPopup {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            animation: modalIn 0.5s ease;
-        }
-        #adminPopup.open { display: flex; }
-        .admin-popup-content {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            max-width: 550px;
-            width: 100%;
-            position: relative;
-            border: 2px solid var(--gold);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            text-align: center;
-            max-height: 95vh;
-            overflow-y: auto;
-        }
-        .admin-popup-content .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0,0,0,0.1);
-            color: var(--text);
-            font-size: 1.2rem;
-            cursor: pointer;
-            font-weight: 700;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .admin-popup-content .close-btn:hover {
-            background: rgba(0,0,0,0.2);
-            transform: rotate(90deg);
-        }
-
-        /* ====== BACK TO TOP ====== */
-        .back-top {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            z-index: 99;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 16px rgba(11,79,140,0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .back-top:hover { transform: translateY(-3px); }
-
-        /* ====== SKELETON ====== */
         .skeleton {
             background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
             background-size: 200% 100%;
@@ -1222,85 +414,29 @@
             100% { background-position: -200% 0; }
         }
 
-        /* ====== RESPONSIVE ====== */
         @media (max-width: 768px) {
-            .video-controls-overlay {
-                padding: 6px 12px;
-                gap: 4px;
-                bottom: 10px;
-                border-radius: 30px;
-                flex-wrap: wrap;
-                width: 95%;
-            }
-            .video-controls-overlay button {
-                font-size: 0.6rem;
-                padding: 4px 10px;
-                min-width: 30px;
-            }
-            .video-controls-overlay .btn-fullscreen {
-                font-size: 0.8rem;
-                padding: 4px 8px;
-            }
-            .fullscreen-btn {
-                bottom: 60px;
-                right: 10px;
-                width: 36px;
-                height: 36px;
-                font-size: 1.2rem;
-            }
-            .nav-container { padding: 0 8px; gap: 4px; flex-wrap: wrap; }
+            .nav-container { padding: 0 8px; gap: 4px; }
             .nav-links { gap: 2px; }
             .nav-links a, .nav-links button { font-size: 0.6rem; padding: 3px 8px; }
             .nav-logo span { font-size: 0.85rem; }
             .nav-logo img { width: 28px; height: 28px; }
             .btn-primary, .btn-outline { padding: 8px 18px; font-size: 0.8rem; }
             .grid-courses { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .dashboard-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
-
         @media (max-width: 480px) {
-            .video-controls-overlay {
-                padding: 4px 8px;
-                gap: 3px;
-                bottom: 8px;
-            }
-            .video-controls-overlay button {
-                font-size: 0.5rem;
-                padding: 3px 7px;
-                min-width: 25px;
-            }
-            .video-controls-overlay .btn-fullscreen {
-                font-size: 0.7rem;
-                padding: 3px 6px;
-            }
-            .fullscreen-btn {
-                bottom: 50px;
-                right: 8px;
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
-            }
             .nav-container { padding: 0 4px; gap: 2px; }
             .nav-links a, .nav-links button { font-size: 0.55rem; padding: 2px 6px; }
             .nav-logo span { font-size: 0.75rem; }
             .nav-logo img { width: 24px; height: 24px; }
             .btn-primary, .btn-outline { padding: 6px 14px; font-size: 0.7rem; }
             .grid-courses { grid-template-columns: 1fr; gap: 12px; }
-            .dashboard-stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-        }
-
-        @media print {
-            .navbar, .back-top, .btn, .no-print { display: none !important; }
-            body { background: #fff !important; }
+            .card-img { height: 150px; }
         }
     </style>
 </head>
 <body>
     <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- Back to Top -->
-    <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+    <div id="toastContainer" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;width:90%;max-width:500px;pointer-events:none;"></div>
 
     <!-- Login Overlay -->
     <div class="login-overlay" id="loginOverlay">
@@ -1308,51 +444,10 @@
             <div class="icon"><i class="fas fa-lock"></i></div>
             <h3>تسجيل الدخول مطلوب</h3>
             <p>يجب تسجيل الدخول أولاً للوصول إلى هذا المحتوى</p>
-            <div class="btn-group" style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
                 <a href="login.html" class="btn-primary" style="width:100%;justify-content:center;">تسجيل الدخول</a>
                 <a href="login.html" class="btn-outline" style="width:100%;justify-content:center;">إنشاء حساب</a>
                 <button onclick="APP.closeLoginOverlay()" class="btn-outline" style="border-color:var(--border);color:var(--text2);width:100%;justify-content:center;">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Exam Security Modal -->
-    <div class="exam-security-modal" id="examSecurityModal">
-        <div class="security-box">
-            <div class="icon">📜</div>
-            <h2>قبل بدء الاختبار</h2>
-            <div style="background:var(--bg);padding:16px 20px;border-radius:var(--radius);font-style:italic;color:var(--primary);margin-bottom:16px;font-size:1.1rem;border-right:4px solid var(--primary);text-align:center;">
-                "قال رسول الله ﷺ: من غشنا فليس منا."
-            </div>
-            <div style="color:var(--text);font-size:1rem;line-height:2;margin-bottom:20px;background:var(--bg);padding:20px;border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
-                🤲 أتعهد أمام الله أن أجيب بنفسي دون غش،<br>
-                وأن ألتزم بالأمانة العلمية،<br>
-                وأن يكون هدفي التعلم والاستفادة،<br>
-                <strong>والله على ما أقول شهيد.</strong>
-            </div>
-            <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
-                <button onclick="APP.startExamAfterPledge()" class="btn-primary" style="font-size:1.2rem;padding:16px 40px;background:var(--success);">
-                    ✅ أوافق وأبدأ الاختبار
-                </button>
-                <button onclick="APP.closeExamSecurityModal()" class="btn-outline">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Popup -->
-    <div id="adminPopup">
-        <div class="admin-popup-content">
-            <button onclick="APP.closeAdminPopup()" class="close-btn">✕</button>
-            <div style="font-size:2.5rem;margin-bottom:8px;">🧪</div>
-            <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--primary);margin-bottom:8px;">📢 إعلان من الإدارة</h2>
-            <div id="adminPopupContent" style="margin:12px auto;">
-                <div style="background:var(--bg);border-radius:var(--radius);padding:20px;min-height:100px;display:flex;align-items:center;justify-content:center;color:var(--text2);">
-                    <span style="font-size:1.2rem;">📢 انضم الآن لدفعة 2027 وابدأ رحلتك في الكيمياء مع مستر زياد مبروك!</span>
-                </div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
-                <button onclick="APP.closeAdminPopup()" class="btn-primary" style="width:100%;justify-content:center;">🚀 ابدأ الآن</button>
-                <button onclick="APP.closeAdminPopup()" class="btn-outline" style="width:100%;justify-content:center;">🔒 إغلاق</button>
             </div>
         </div>
     </div>
@@ -1361,13 +456,13 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo" onclick="APP.showHome()">
-                <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء" loading="eager" fetchpriority="high" onerror="this.style.display='none'">
+                <img src="https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg" alt="يلا كيمياء">
                 <span>يلا كيمياء</span>
             </a>
 
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" onclick="APP.showHome()">🏠 الرئيسية</a></li>
-                <li><a href="#" onclick="scrollToCourses()">📚 الكورسات</a></li>
+                <li><a href="#" onclick="APP.scrollToCourses()">📚 الكورسات</a></li>
                 <li class="guest-only"><a href="login.html" class="btn-primary-nav">تسجيل الدخول</a></li>
                 <li class="user-only" style="display:none;">
                     <button class="nav-dashboard-btn" onclick="APP.showDashboard()">👨‍🎓 حسابي</button>
@@ -1375,42 +470,14 @@
             </ul>
 
             <div style="display:flex;align-items:center;gap:6px;">
+                <!-- ====== زر التثبيت في النافبار ====== -->
                 <button class="install-app-btn" id="installAppBtn" onclick="installApp()">
                     <i class="fas fa-download"></i> 📲 حمل التطبيق
                 </button>
 
-                <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر">
+                <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر" style="background:var(--card);border:2px solid var(--border);border-radius:50px;padding:6px 12px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:8px;font-size:0.9rem;color:var(--text);min-width:60px;justify-content:center;">
                     <span class="slider">🌙</span>
                 </button>
-                
-                <span class="user-only atoms-badge" style="display:none;font-size:0.7rem;padding:2px 10px;" id="atomsBadge">
-                    <i class="fas fa-atom"></i> <span id="atomsCount">0</span>
-                </span>
-
-                <div class="user-only user-menu-wrapper" style="display:none;" id="userMenuWrapper">
-                    <button class="user-menu-btn" onclick="APP.toggleUserMenu()" id="userAvatarBtn">
-                        <span class="avatar" id="userAvatar">U</span>
-                        <span class="label" id="userMenuLabel">حسابي</span>
-                        <span class="arrow" id="userMenuArrow">▼</span>
-                    </button>
-                    <div class="user-dropdown" id="userDropdown">
-                        <div class="dropdown-header">
-                            <div class="name" id="userNameDisplay">مستخدم</div>
-                            <div class="sub"><i class="fas fa-atom"></i> <span id="userAtomsCount">0</span> ذرة</div>
-                        </div>
-                        <button class="menu-item" onclick="APP.showDashboard()"><i class="fas fa-user"></i> حسابي</button>
-                        <button class="menu-item" onclick="scrollToCourses()"><i class="fas fa-book"></i> كورساتي</button>
-                        <button class="menu-item" onclick="APP.showLeaderboard()"><i class="fas fa-trophy"></i> المتصدرين</button>
-                        <button class="menu-item" onclick="APP.showAIInsights()"><i class="fas fa-robot"></i> تحليل المستوى</button>
-                        <button class="menu-item" onclick="APP.showErrorBank()"><i class="fas fa-exclamation-triangle"></i> أخطائي</button>
-                        <button class="menu-item" onclick="APP.showResults()"><i class="fas fa-chart-bar"></i> نتائجي</button>
-                        <button class="menu-item" onclick="APP.showCertificate()"><i class="fas fa-certificate"></i> شهاداتي</button>
-                        <button class="menu-item" onclick="APP.showStudentCard()"><i class="fas fa-id-card"></i> بطاقتي</button>
-                        <button class="menu-item" onclick="APP.showAchievements()"><i class="fas fa-medal"></i> إنجازاتي</button>
-                        <div class="menu-divider"></div>
-                        <button class="menu-item danger" onclick="APP.logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
-                    </div>
-                </div>
             </div>
         </div>
     </nav>
@@ -1439,116 +506,58 @@
 
     <script>
     // ============================================================
-    // 🔒 الحماية الشاملة - ULTIMATE PROTECTION
+    // 🔒 SYSTEM PROTECTION - الحماية الشاملة
     // ============================================================
     (function() {
         'use strict';
         
+        // منع view-source
         if (window.location.href.includes('view-source')) {
             window.location.href = window.location.href.replace('view-source:', '');
         }
         
-        // منع جميع اختصارات الكيبورد الخطيرة
+        // منع اختصارات الكيبورد
         document.addEventListener('keydown', function(e) {
-            const blocked = [
-                'F12',
-                'F5',
-                ['ctrl', 'u'], ['ctrl', 'U'],
-                ['ctrl', 's'], ['ctrl', 'S'],
-                ['ctrl', 'p'], ['ctrl', 'P'],
-                ['ctrl', 't'], ['ctrl', 'T'],
-                ['ctrl', 'n'], ['ctrl', 'N'],
-                ['ctrl', 'r'], ['ctrl', 'R'],
-                ['ctrl', 'shift', 'i'], ['ctrl', 'shift', 'I'],
-                ['ctrl', 'shift', 'j'], ['ctrl', 'shift', 'J'],
-                ['ctrl', 'shift', 'c'], ['ctrl', 'shift', 'C']
-            ];
-            
             // F12
             if (e.key === 'F12') {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 أدوات المطور غير مسموحة', 'warning');
                 return false;
             }
-            
-            // F5
-            if (e.key === 'F5') {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 تحديث الصفحة غير مسموح', 'warning');
-                return false;
-            }
-            
-            // Ctrl+U
+            // Ctrl+U (view source)
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 عرض المصدر غير مسموح', 'warning');
                 return false;
             }
-            
-            // Ctrl+S
-            if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+            // Ctrl+Shift+I (dev tools)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 حفظ الصفحة غير مسموح', 'warning');
                 return false;
             }
-            
-            // Ctrl+P
-            if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
+            // Ctrl+Shift+J (console)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 الطباعة غير مسموحة', 'warning');
                 return false;
             }
-            
-            // Ctrl+T
-            if (e.ctrlKey && (e.key === 't' || e.key === 'T')) {
+            // Ctrl+Shift+C (inspect)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.key === 'c')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 فتح تبويب جديد غير مسموح', 'warning');
                 return false;
             }
-            
-            // Ctrl+N
+            // Ctrl+N (new window)
             if (e.ctrlKey && (e.key === 'n' || e.key === 'N')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 فتح نافذة جديدة غير مسموح', 'warning');
                 return false;
             }
-            
-            // Ctrl+R
-            if (e.ctrlKey && (e.key === 'r' || e.key === 'R')) {
+            // Ctrl+T (new tab)
+            if (e.ctrlKey && (e.key === 't' || e.key === 'T')) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 تحديث الصفحة غير مسموح', 'warning');
-                return false;
-            }
-            
-            // Ctrl+Shift+I
-            if (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I')) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 أدوات المطور غير مسموحة', 'warning');
-                return false;
-            }
-            
-            // Ctrl+Shift+J
-            if (e.ctrlKey && e.shiftKey && (e.key === 'j' || e.key === 'J')) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 الكونسول غير مسموح', 'warning');
-                return false;
-            }
-            
-            // Ctrl+Shift+C
-            if (e.ctrlKey && e.shiftKey && (e.key === 'c' || e.key === 'C')) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 غير مسموح', 'warning');
                 return false;
             }
         });
@@ -1559,47 +568,36 @@
             if (!allowed) {
                 e.preventDefault();
                 e.stopPropagation();
-                showToast('🚫 النقر الأيمن غير مسموح', 'warning');
                 return false;
             }
         });
         
-        // منع النسخ من المحتوى المحمي
-        document.addEventListener('copy', function(e) {
-            if (document.querySelector('.video-protected') || document.querySelector('.no-copy')) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 النسخ غير مسموح', 'warning');
-                return false;
-            }
-        });
-        
-        // منع القص واللصق
-        document.addEventListener('cut', function(e) {
-            if (document.querySelector('.video-protected') || document.querySelector('.no-copy')) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 القص غير مسموح', 'warning');
-                return false;
-            }
-        });
-        
-        document.addEventListener('paste', function(e) {
-            if (document.querySelector('.no-copy')) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 اللصق غير مسموح', 'warning');
-                return false;
-            }
-        });
-        
-        // تعطيل الكونسول
+        // تعطيل Console
         const noop = () => {};
-        ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd', 'table', 'clear'].forEach(method => {
+        const consoleMethods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd', 'table'];
+        consoleMethods.forEach(method => {
             console[method] = noop;
         });
         
-        console.log('🛡️ الحماية الشاملة مفعلة');
+        // تعطيل eval
+        const originalEval = window.eval;
+        window.eval = function(code) {
+            if (code.includes('view-source') || code.includes('outerHTML') || code.includes('document.documentElement')) {
+                return null;
+            }
+            return originalEval(code);
+        };
+        
+        // مراقبة تغيير URL
+        let lastUrl = window.location.href;
+        setInterval(() => {
+            if (window.location.href !== lastUrl) {
+                if (window.location.href.includes('view-source')) {
+                    window.location.href = window.location.href.replace('view-source:', '');
+                }
+                lastUrl = window.location.href;
+            }
+        }, 500);
     })();
 
     // ============================================================
@@ -1636,18 +634,25 @@
     }
 
     // ============================================================
-    // FAQ
+    // APP STATE
     // ============================================================
-    function toggleFaq(element) {
-        const parent = element.closest('.faq-item');
-        if (parent) parent.classList.toggle('open');
-    }
-
-    // ============================================================
-    // PWA - التثبيت
-    // ============================================================
+    let currentUser = null;
+    let userData = null;
+    let allCourses = [];
+    let userCourseProgress = {};
+    let allLessons = [];
+    let notifications = [];
     let deferredPrompt = null;
 
+    const APP_URL = 'https://yaiakamya.vercel.app/';
+    const HERO_IMAGE = 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png';
+    const INTRO_VIDEO_URL = 'https://www.youtube.com/embed/0PFWAzIJTOQ?si=fFqTokTKwqo1ZHMz';
+
+    // ============================================================
+    // 🔥 PWA - التثبيت الرسمي
+    // ============================================================
+    
+    // تسجيل Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('/service-worker.js')
@@ -1655,90 +660,80 @@
                     console.log('✅ Service Worker registered');
                 })
                 .catch(function(error) {
-                    console.warn('⚠️ Service Worker failed:', error);
+                    console.warn('⚠️ Service Worker registration failed');
                 });
         });
     }
 
+    // استقبال حدث التثبيت
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         console.log('✅ beforeinstallprompt triggered');
-        updateInstallButtonVisibility();
-    });
-
-    function installApp() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
-                    markAppInstalled();
-                }
-                deferredPrompt = null;
-            });
-            return;
-        }
-        showToast('📱 التثبيت غير متاح على هذا المتصفح', 'info');
-    }
-
-    function installFromBanner() {
-        installApp();
-    }
-
-    function markAppInstalled() {
+        
+        // إظهار زر التثبيت
         const installBtn = document.getElementById('installAppBtn');
         if (installBtn) {
-            installBtn.classList.add('installed');
-            installBtn.innerHTML = '✅ تم تثبيت التطبيق';
-            installBtn.onclick = () => {
-                showToast('✅ التطبيق مثبت بالفعل', 'info');
-            };
+            installBtn.classList.add('visible');
         }
-        const banner = document.getElementById('pwaInstallBanner');
-        if (banner) {
-            banner.classList.remove('visible');
-            banner.style.display = 'none';
-        }
-        localStorage.setItem('appInstalled', 'true');
-    }
+    });
 
-    function updateInstallButtonVisibility() {
-        const installBtn = document.getElementById('installAppBtn');
-        if (!installBtn) return;
-        
-        if (window.matchMedia('(display-mode: standalone)').matches || localStorage.getItem('appInstalled') === 'true') {
-            markAppInstalled();
+    // ============================================================
+    // 🔥 دالة التثبيت - الرسمية فقط
+    // ============================================================
+    async function installApp() {
+        if (!deferredPrompt) {
             return;
         }
-        
-        if (deferredPrompt) {
-            installBtn.style.display = 'flex';
-            installBtn.classList.remove('installed');
-            installBtn.innerHTML = '<i class="fas fa-download"></i> 📲 حمل التطبيق';
-            installBtn.onclick = installApp;
+
+        try {
+            await deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+
+            if (outcome === 'accepted') {
+                showToast('✅ تم تثبيت التطبيق بنجاح!', 'success');
+                const installBtn = document.getElementById('installAppBtn');
+                if (installBtn) {
+                    installBtn.innerHTML = '✅ تم تثبيت التطبيق';
+                    installBtn.classList.add('installed');
+                    installBtn.classList.remove('visible');
+                    installBtn.onclick = null;
+                }
+            }
+        } catch (error) {
+            console.error('Install error:', error);
         }
+
+        deferredPrompt = null;
     }
 
+    // التحقق من وضع التثبيت
     window.addEventListener('DOMContentLoaded', function() {
-        updateInstallButtonVisibility();
-        window.matchMedia('(display-mode: standalone)').addEventListener('change', function(e) {
-            if (e.matches) {
-                markAppInstalled();
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) {
+                installBtn.innerHTML = '✅ تم تثبيت التطبيق';
+                installBtn.classList.add('installed');
+                installBtn.classList.remove('visible');
+                installBtn.onclick = null;
             }
-        });
+        }
     });
 
     // ============================================================
     // THEME
     // ============================================================
+    function applyTheme(isDark) {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const btn = document.querySelector('.theme-toggle .slider');
+        if (btn) btn.textContent = isDark ? '🌙' : '☀️';
+    }
+
     function toggleTheme() {
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         const newTheme = !isDark;
-        document.documentElement.setAttribute('data-theme', newTheme ? 'dark' : 'light');
-        localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-        const btn = document.querySelector('.theme-toggle');
-        if (btn) btn.innerHTML = `<span class="slider">${newTheme ? '🌙' : '☀️'}</span>`;
+        applyTheme(newTheme);
         showToast(newTheme ? '🌙 الوضع الليلي' : '☀️ الوضع النهاري', 'info');
     }
 
@@ -1746,196 +741,380 @@
         const savedTheme = localStorage.getItem('theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const isDark = savedTheme ? savedTheme === 'dark' : prefersDark;
-        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        const btn = document.querySelector('.theme-toggle');
-        if (btn) btn.innerHTML = `<span class="slider">${isDark ? '🌙' : '☀️'}</span>`;
+        applyTheme(isDark);
     }
 
     // ============================================================
-    // VIDEO CONTROLS
+    // AUTH
     // ============================================================
-    let currentSpeed = 1;
-    let currentQuality = 'auto';
-    let currentVolume = 100;
-    let isMuted = false;
-    let dynamicWatermarkTimer = null;
-    let videoProgressTimer = null;
+    function updateUIForAuth(user) {
+        const guestElements = document.querySelectorAll('.guest-only');
+        const userElements = document.querySelectorAll('.user-only');
 
-    function togglePlay() {
-        const iframe = document.getElementById('videoFrame');
-        if (iframe) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            setTimeout(() => {
-                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            }, 100);
-        }
-        showToast('▶️ تم تغيير حالة التشغيل', 'info');
-    }
-
-    function changeSpeed() {
-        const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
-        const currentIndex = speeds.indexOf(currentSpeed);
-        const nextIndex = (currentIndex + 1) % speeds.length;
-        currentSpeed = speeds[nextIndex];
-        
-        const iframe = document.getElementById('videoFrame');
-        if (iframe) {
-            iframe.contentWindow.postMessage(`{"event":"command","func":"setPlaybackRate","args":["${currentSpeed}"]}`, '*');
-        }
-        
-        const speedBtn = document.getElementById('speedBtn');
-        if (speedBtn) speedBtn.textContent = `⏩ ${currentSpeed}x`;
-        
-        showToast(`⏩ السرعة: ${currentSpeed}x`, 'info');
-    }
-
-    function changeQuality() {
-        const qualities = ['auto', '1080p', '720p', '480p', '360p'];
-        const currentIndex = qualities.indexOf(currentQuality);
-        const nextIndex = (currentIndex + 1) % qualities.length;
-        currentQuality = qualities[nextIndex];
-        
-        const qualityBtn = document.getElementById('qualityBtn');
-        if (qualityBtn) qualityBtn.textContent = `🎬 ${currentQuality}`;
-        
-        showToast(`🎬 الجودة: ${currentQuality}`, 'info');
-    }
-
-    function toggleMute() {
-        isMuted = !isMuted;
-        const iframe = document.getElementById('videoFrame');
-        if (iframe) {
-            if (isMuted) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
-            } else {
-                iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
-            }
-        }
-        
-        const volumeBtn = document.getElementById('volumeBtn');
-        if (volumeBtn) {
-            volumeBtn.textContent = isMuted ? '🔇 كتم' : `🔊 ${currentVolume}%`;
-        }
-        
-        showToast(isMuted ? '🔇 تم الكتم' : '🔊 تم إلغاء الكتم', 'info');
-    }
-
-    function changeVolume() {
-        const volumes = [0, 25, 50, 75, 100];
-        const currentIndex = volumes.indexOf(currentVolume);
-        const nextIndex = (currentIndex + 1) % volumes.length;
-        currentVolume = volumes[nextIndex];
-        
-        const iframe = document.getElementById('videoFrame');
-        if (iframe) {
-            iframe.contentWindow.postMessage(`{"event":"command","func":"setVolume","args":["${currentVolume}"]}`, '*');
-        }
-        
-        const volumeBtn = document.getElementById('volumeBtn');
-        if (volumeBtn) {
-            if (currentVolume === 0) {
-                volumeBtn.textContent = '🔇 كتم';
-            } else {
-                volumeBtn.textContent = `🔊 ${currentVolume}%`;
-            }
-        }
-        
-        showToast(`🔊 الصوت: ${currentVolume}%`, 'info');
-    }
-
-    function toggleFullscreen() {
-        const container = document.getElementById('videoContainer') || document.querySelector('.video-protected');
-        if (!container) return;
-        
-        if (!document.fullscreenElement) {
-            container.requestFullscreen().catch(err => {
-                const iframe = document.getElementById('videoFrame');
-                if (iframe) {
-                    iframe.style.position = 'fixed';
-                    iframe.style.top = '0';
-                    iframe.style.left = '0';
-                    iframe.style.width = '100vw';
-                    iframe.style.height = '100vh';
-                    iframe.style.zIndex = '9999';
-                    iframe.style.background = '#000';
-                    document.body.style.overflow = 'hidden';
-                    
-                    const exitBtn = document.createElement('button');
-                    exitBtn.innerHTML = '✕';
-                    exitBtn.style.cssText = `
-                        position:fixed;top:20px;right:20px;z-index:10000;
-                        background:rgba(0,0,0,0.8);color:#fff;border:none;
-                        border-radius:50%;width:44px;height:44px;font-size:1.5rem;
-                        cursor:pointer;
-                    `;
-                    exitBtn.onclick = () => {
-                        iframe.style.position = '';
-                        iframe.style.top = '';
-                        iframe.style.left = '';
-                        iframe.style.width = '';
-                        iframe.style.height = '';
-                        iframe.style.zIndex = '';
-                        document.body.style.overflow = '';
-                        exitBtn.remove();
-                    };
-                    document.body.appendChild(exitBtn);
-                }
-            });
+        if (user) {
+            guestElements.forEach(el => { el.style.display = 'none'; });
+            userElements.forEach(el => { el.style.display = 'block'; });
         } else {
-            document.exitFullscreen();
+            guestElements.forEach(el => { el.style.display = 'block'; });
+            userElements.forEach(el => { el.style.display = 'none'; });
+            userData = null;
+        }
+    }
+
+    function loadUserData(uid) {
+        database.ref('users/' + uid).once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                userData = snapshot.val();
+            }
+        });
+    }
+
+    function loadUserProgress(uid) {
+        database.ref('users/' + uid + '/progress').once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                userCourseProgress = snapshot.val();
+            }
+        });
+    }
+
+    // ============================================================
+    // NAVIGATION HELPERS
+    // ============================================================
+    function showLoginOverlay() { document.getElementById('loginOverlay').classList.add('open'); }
+    function closeLoginOverlay() { document.getElementById('loginOverlay').classList.remove('open'); }
+    function scrollToCourses() {
+        const section = document.getElementById('coursesSection');
+        if (section) { section.scrollIntoView({ behavior: 'smooth' }); } else {
+            showHome();
+            setTimeout(() => { const sec = document.getElementById('coursesSection'); if (sec) sec.scrollIntoView({ behavior: 'smooth' }); }, 500);
         }
     }
 
     // ============================================================
-    // ADMIN POPUP
+    // SUBSCRIPTIONS
     // ============================================================
-    function showAdminPopup() {
-        const popup = document.getElementById('adminPopup');
-        if (popup) {
-            popup.classList.add('open');
-            document.body.style.overflow = 'hidden';
+    function isPremiumCourse(courseId) {
+        if (!currentUser || !userData) return false;
+        return userData.premiumCourses && userData.premiumCourses[courseId] === true;
+    }
+
+    async function subscribeToFreeCourse(courseId) {
+        if (!currentUser) { showLoginOverlay(); return; }
+        const course = allCourses.find(c => c.id === courseId);
+        if (!course) { showToast('⚠️ الكورس غير موجود', 'error'); return; }
+        try {
+            await database.ref('users/' + currentUser.uid + '/premiumCourses/' + courseId).set(true);
+            if (userData) {
+                if (!userData.premiumCourses) userData.premiumCourses = {};
+                userData.premiumCourses[courseId] = true;
+            }
+            showToast('🎉 تم الاشتراك في الكورس بنجاح!', 'success');
+            openCoursePage(courseId);
+        } catch (err) {
+            showToast('❌ حدث خطأ أثناء الاشتراك', 'error');
         }
     }
 
-    function closeAdminPopup() {
-        const popup = document.getElementById('adminPopup');
-        if (popup) {
-            popup.classList.remove('open');
-            document.body.style.overflow = '';
+    async function requestPaidSubscription(courseId) {
+        if (!currentUser) { showLoginOverlay(); return; }
+        const course = allCourses.find(c => c.id === courseId);
+        if (!course) { showToast('⚠️ الكورس غير موجود', 'error'); return; }
+        try {
+            const requestRef = database.ref('subscriptionRequests').push();
+            await requestRef.set({
+                userId: currentUser.uid,
+                userName: userData?.name || 'مستخدم',
+                userEmail: userData?.email || '',
+                courseId: courseId,
+                courseTitle: course.title,
+                status: 'pending',
+                requestedAt: new Date().toISOString()
+            });
+            showToast('📩 تم إرسال طلب الاشتراك بنجاح!', 'success');
+        } catch (err) {
+            showToast('❌ حدث خطأ في إرسال الطلب', 'error');
         }
     }
 
-    function showAdminPopupOnce() {
-        if (!localStorage.getItem('adminPopupShown')) {
-            showAdminPopup();
-            localStorage.setItem('adminPopupShown', 'true');
-        }
+    // ============================================================
+    // COURSES
+    // ============================================================
+    function loadCourses() {
+        database.ref('courses').once('value', (snapshot) => {
+            allCourses = [];
+            snapshot.forEach((child) => {
+                const data = child.val();
+                allCourses.push({ id: child.key, ...data });
+            });
+            allCourses.sort((a, b) => (a.order || 0) - (b.order || 0));
+            renderCourses(allCourses);
+        });
     }
 
-    // ============================================================
-    // APP STATE
-    // ============================================================
-    let currentUser = null;
-    let userData = null;
-    let allCourses = [];
-    let userSubscriptions = [];
-    let userCourseProgress = {};
-    let allLessons = [];
-    let currentGradeFilter = 'all';
+    function loadLessons() {
+        database.ref('lessons').once('value', (snapshot) => {
+            allLessons = [];
+            snapshot.forEach((child) => {
+                allLessons.push({ id: child.key, ...child.val() });
+            });
+        });
+    }
 
-    const APP_URL = 'https://yaiakamya.vercel.app/';
-    const LOGO_IMAGE = 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg';
-    const HERO_IMAGE = 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png';
-    const INTRO_VIDEO_URL = 'https://www.youtube.com/embed/0PFWAzIJTOQ?si=fFqTokTKwqo1ZHMz';
+    function renderCourses(courses) {
+        const grid = document.getElementById('coursesGrid');
+        if (!grid) return;
+        if (!courses || courses.length === 0) {
+            grid.innerHTML = `<div class="empty-state"><div class="icon">📚</div><h3>لا توجد كورسات متاحة حالياً</h3></div>`;
+            return;
+        }
+        grid.innerHTML = courses.map(c => {
+            const subscribed = currentUser ? isPremiumCourse(c.id) : false;
+            const isFree = c.isFree !== false;
+            const lessons = allLessons.filter(l => l.courseId === c.id);
+            const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
+            const isCompleted = lessons.length > 0 && completed.length === lessons.length;
+            return `
+                <div class="card ${isCompleted ? 'card-completed' : ''}" style="cursor:pointer;position:relative;" onclick="${isCompleted ? `APP.showCompletedModal()` : `APP.openCoursePage('${c.id}')`}">
+                    <div style="position:relative;overflow:hidden;">
+                        <img src="${c.image || 'https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'}" alt="${escapeHtml(c.title) || 'كورس'}" class="card-img" loading="lazy">
+                        <div style="position:absolute;top:12px;right:12px;display:flex;gap:6px;z-index:2;flex-wrap:wrap;">
+                            <span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:${isFree ? 'var(--success)' : 'var(--gold)'};color:${isFree ? '#fff' : '#081B2C'};font-weight:700;">${isFree ? '🆓 مجاني' : '💰 مدفوع'}</span>
+                            ${isCompleted ? '<span style="font-size:0.8rem;padding:4px 16px;border-radius:50px;background:var(--success);color:#fff;font-weight:700;">✅ مكتمل</span>' : ''}
+                        </div>
+                        ${isCompleted ? `<div class="completed-overlay"><div class="check">✅</div><div class="label">مكتمل</div></div>` : ''}
+                    </div>
+                    <div class="card-body">
+                        <h3 style="font-weight:800;font-size:1.2rem;color:var(--text);">${escapeHtml(c.title) || 'كورس'}</h3>
+                        <p style="font-size:0.85rem;color:var(--text2);margin:6px 0;">${escapeHtml(c.description) || ''}</p>
+                        <div style="display:flex;flex-wrap:wrap;gap:4px 10px;font-size:0.7rem;color:var(--text2);margin-bottom:8px;">
+                            <span>🎯 ${c.grade || 'كل الصفوف'}</span>
+                            <span>📚 ${c.lessonsCount || 0} حصة</span>
+                        </div>
+                        ${currentUser ? `
+                            ${subscribed ? `
+                                <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;background:${isCompleted ? 'var(--success)' : 'var(--primary2)'};" onclick="event.stopPropagation(); ${isCompleted ? `APP.showCompletedModal()` : `APP.openCoursePage('${c.id}')`}">
+                                    ${isCompleted ? '✅ مكتمل' : '📖 متابعة'}
+                                </button>
+                            ` : `
+                                <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.openCoursePage('${c.id}')">
+                                    ${isFree ? '📝 اشترك مجاناً' : '💰 اشترِ الآن'}
+                                </button>
+                            `}
+                        ` : `
+                            <button class="btn-primary" style="width:100%;justify-content:center;font-size:0.8rem;padding:6px 12px;" onclick="event.stopPropagation(); APP.showLoginOverlay()">
+                                🔒 اشترك الآن
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
 
-    // ============================================================
-    // UTILITY FUNCTIONS
-    // ============================================================
     function escapeHtml(str) {
         if (!str) return '';
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    }
+
+    // ============================================================
+    // COURSE PAGE
+    // ============================================================
+    async function openCoursePage(courseId) {
+        if (!currentUser) { showLoginOverlay(); return; }
+        const course = allCourses.find(c => c.id === courseId);
+        if (!course) { showToast('الكورس غير موجود', 'error'); return; }
+
+        const hasSubscription = isPremiumCourse(courseId);
+        const isFree = course.isFree !== false;
+
+        if (isFree && !hasSubscription) {
+            showFreeSubscriptionPage(courseId);
+            return;
+        }
+
+        if (!isFree && !hasSubscription) {
+            showPaidCoursePage(courseId);
+            return;
+        }
+
+        const main = document.getElementById('mainContent');
+        if (!main) return;
+        main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;"><div style="margin:0 auto;width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div><p style="margin-top:12px;color:var(--text2);">جارٍ التحميل...</p></div>`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        try {
+            const lessons = allLessons.filter(l => l.courseId === courseId);
+            lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
+            let completedCount = lessons.filter(l => userCourseProgress[l.id]?.watched).length;
+            const progressPercent = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
+            
+            let lessonsHtml = lessons.map((lesson, idx) => {
+                const isCompleted = userCourseProgress[lesson.id]?.watched || false;
+                return `
+                    <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                        <span>${idx + 1}. ${escapeHtml(lesson.title)}</span>
+                        ${isCompleted ? '<span style="color:var(--success);font-weight:700;">✅ مكتمل</span>' : '<button class="btn-primary btn-sm" onclick="APP.openLessonVideo(\''+lesson.id+'\')">▶ مشاهدة</button>'}
+                    </div>
+                `;
+            }).join('');
+
+            main.innerHTML = `
+                <div style="max-width:1280px;margin:0 auto;padding:20px;">
+                    <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;background:var(--card);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border);margin:12px 0;">
+                        ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:120px;height:120px;border-radius:var(--radius);object-fit:cover;">` : ''}
+                        <div>
+                            <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);">${escapeHtml(course.title)}</h1>
+                            <p style="color:var(--text2);">${escapeHtml(course.description)}</p>
+                            <span style="padding:4px 16px;border-radius:20px;background:${isFree ? 'var(--success)' : 'var(--gold)'};color:${isFree ? '#fff' : '#081B2C'};font-weight:700;">${isFree ? '🆓 مجاني' : '💰 مدفوع'}</span>
+                        </div>
+                    </div>
+                    <h3 style="font-weight:700;font-size:1.2rem;color:var(--primary);margin-bottom:12px;">📚 قائمة الحصص</h3>
+                    ${lessonsHtml || '<div class="empty-state"><div class="icon">📚</div><h3>لا توجد حصص</h3></div>'}
+                </div>
+            `;
+        } catch (error) {
+            main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;"><div style="font-size:3rem;">⚠️</div><h3>حدث خطأ</h3><button class="btn-primary" onclick="APP.showHome()">🏠 العودة</button></div>`;
+        }
+    }
+
+    // صفحة الاشتراك المجاني
+    function showFreeSubscriptionPage(courseId) {
+        const course = allCourses.find(c => c.id === courseId);
+        if (!course) { showToast('الكورس غير موجود', 'error'); return; }
+        const main = document.getElementById('mainContent');
+        main.innerHTML = `
+            <div style="max-width:600px;margin:0 auto;padding:20px;">
+                <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                <div class="card" style="padding:24px;margin-top:12px;text-align:center;">
+                    ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:100%;max-height:250px;object-fit:cover;border-radius:var(--radius);margin-bottom:16px;">` : ''}
+                    <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);">${escapeHtml(course.title)}</h1>
+                    <p style="margin:12px 0;color:var(--text2);font-size:1rem;">${escapeHtml(course.description || '')}</p>
+                    <div style="margin:20px 0;padding:16px;background:var(--bg);border-radius:var(--radius);border:2px solid var(--success);">
+                        <p style="font-size:1.2rem;font-weight:700;color:var(--success);">🆓 هذا الكورس مجاني</p>
+                    </div>
+                    <button class="btn-primary" style="width:100%;font-size:1.2rem;padding:16px;" onclick="APP.subscribeToFreeCourse('${courseId}')">
+                        📝 اشترك مجاناً
+                    </button>
+                </div>
+            </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // صفحة الكورس المدفوع
+    function showPaidCoursePage(courseId) {
+        const course = allCourses.find(c => c.id === courseId);
+        if (!course) { showToast('الكورس غير موجود', 'error'); return; }
+        const main = document.getElementById('mainContent');
+        main.innerHTML = `
+            <div style="max-width:600px;margin:0 auto;padding:20px;">
+                <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                <div class="card" style="padding:24px;margin-top:12px;text-align:center;">
+                    ${course.image ? `<img src="${course.image}" alt="${escapeHtml(course.title)}" style="width:100%;max-height:250px;object-fit:cover;border-radius:var(--radius);margin-bottom:16px;">` : ''}
+                    <h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);">💰 ${escapeHtml(course.title)}</h1>
+                    <p style="margin:12px 0;color:var(--text2);font-size:1rem;">${escapeHtml(course.description || '')}</p>
+                    <div style="font-size:2rem;font-weight:900;color:var(--gold-dark);margin:12px 0;">${course.price || 'غير محدد'} جنيه</div>
+                    <div style="background:var(--bg);padding:16px;border-radius:var(--radius);margin:16px 0;text-align:right;">
+                        <p style="font-weight:700;margin-bottom:8px;">📌 طريقة الاشتراك:</p>
+                        <p>📱 واتساب: <a href="https://wa.me/201234567890" target="_blank">اضغط هنا للتواصل</a></p>
+                        <p>📢 تيليجرام: <a href="https://t.me/yala_kamya_ziad_mabrok" target="_blank">@yala_kamya_ziad_mabrok</a></p>
+                    </div>
+                    <button class="btn-primary" style="width:100%;font-size:1.2rem;padding:16px;background:var(--gold);color:#081B2C;" onclick="APP.requestPaidSubscription('${courseId}')">
+                        📩 طلب الاشتراك
+                    </button>
+                </div>
+            </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================================
+    // LESSON VIDEO
+    // ============================================================
+    async function openLessonVideo(lessonId) {
+        if (!currentUser) { showLoginOverlay(); return; }
+        const lesson = allLessons.find(l => l.id === lessonId);
+        if (!lesson) { showToast('الحصة غير موجودة', 'error'); return; }
+        const course = allCourses.find(c => c.id === lesson.courseId);
+        if (course && course.isFree === false && !isPremiumCourse(course.id)) {
+            showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+            showPaidCoursePage(course.id);
+            return;
+        }
+        if (userCourseProgress[lessonId]?.watched) {
+            showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل', 'info');
+            return;
+        }
+
+        const videoId = extractYouTubeId(lesson.videoUrl);
+        if (!videoId) {
+            showToast('⚠️ لا يوجد فيديو لهذه الحصة', 'warning');
+            return;
+        }
+
+        const main = document.getElementById('mainContent');
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+        
+        main.innerHTML = `
+            <div style="max-width:1100px;margin:0 auto;padding:16px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+                    <button class="btn-outline btn-sm no-print" onclick="APP.openCoursePage('${lesson.courseId}')">
+                        <i class="fas fa-arrow-right"></i> ${escapeHtml(course?.title || 'الكورس')}
+                    </button>
+                    <span style="font-weight:600;color:var(--text);">${escapeHtml(lesson.title)}</span>
+                </div>
+                <div class="video-wrapper">
+                    <iframe src="${embedUrl}" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+                    <button class="btn-outline btn-sm" onclick="APP.openCoursePage('${lesson.courseId}')">📚 العودة للكورس</button>
+                </div>
+            </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(() => {
+            if (!userCourseProgress[lessonId]?.watched) {
+                completeLessonWatch(lessonId);
+            }
+        }, 30000);
+    }
+
+    async function completeLessonWatch(lessonId) {
+        try {
+            if (userCourseProgress[lessonId]?.watched) return;
+            const lesson = allLessons.find(l => l.id === lessonId);
+            if (!lesson) return;
+            
+            const atomsReward = lesson.atomsReward || 5;
+            const userRef = database.ref('users/' + currentUser.uid);
+            const userSnap = await userRef.once('value');
+            
+            if (userSnap.exists()) {
+                const currentAtoms = userSnap.val().atoms || 0;
+                await database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
+                    watched: true,
+                    completedAt: new Date().toISOString()
+                });
+                await userRef.update({
+                    atoms: currentAtoms + atomsReward,
+                    videosWatched: (userSnap.val().videosWatched || 0) + 1,
+                    lessonsCompleted: (userSnap.val().lessonsCompleted || 0) + 1
+                });
+                if (userData) {
+                    userData.atoms = currentAtoms + atomsReward;
+                    userData.videosWatched = (userData.videosWatched || 0) + 1;
+                    userData.lessonsCompleted = (userData.lessonsCompleted || 0) + 1;
+                }
+                userCourseProgress[lessonId] = { watched: true, completedAt: new Date().toISOString() };
+                showToast(`🎉 +${atomsReward} ذرة!`, 'success');
+            }
+        } catch (err) {
+            console.error('Error completing lesson watch:', err);
+        }
     }
 
     function extractYouTubeId(url) {
@@ -1945,72 +1124,174 @@
         return (match && match[2].length === 11) ? match[2] : null;
     }
 
-    async function generateStudentCode() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let code = '';
-        for (let i = 0; i < 6; i++) {
-            code += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        const formatted = `YK-${code.substring(0,2)}-${code.substring(2,4)}-${code.substring(4)}`;
-        const snapshot = await database.ref('users').orderByChild('code').equalTo(formatted).once('value');
-        if (snapshot.exists()) {
-            return generateStudentCode();
-        }
-        return formatted;
+    // ============================================================
+    // DASHBOARD
+    // ============================================================
+    function showDashboard() {
+        if (!currentUser) { showLoginOverlay(); return; }
+        const main = document.getElementById('mainContent');
+        const totalLessons = allLessons.length;
+        const completedLessons = Object.keys(userCourseProgress).filter(key => userCourseProgress[key]?.watched).length;
+        const progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+        const atoms = userData?.atoms || 0;
+
+        main.innerHTML = `
+            <div style="max-width:1280px;margin:0 auto;padding:20px;">
+                <button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>
+                <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;background:var(--card);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border);margin:12px 0;">
+                    <div style="display:flex;align-items:center;gap:16px;">
+                        <div style="width:80px;height:80px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;">
+                            ${userData?.photoURL ? `<img src="${userData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : (userData?.name?.[0] || '👤')}
+                        </div>
+                        <div>
+                            <h2 style="font-size:1.5rem;font-weight:800;color:var(--text);">${escapeHtml(userData?.name || 'مستخدم')}</h2>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <span style="padding:2px 14px;border-radius:20px;background:var(--bg);color:var(--text2);font-size:0.8rem;font-weight:600;">⚛️ ${atoms} ذرة</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;">
+                    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;">
+                        <span class="icon" style="font-size:2rem;display:block;">📊</span>
+                        <span style="font-family:'Lalezar',cursive;font-size:2rem;font-weight:900;color:var(--primary);display:block;">${progressPercent}%</span>
+                        <span style="font-size:0.8rem;color:var(--text2);font-weight:600;">نسبة الإنجاز</span>
+                    </div>
+                    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;">
+                        <span class="icon" style="font-size:2rem;display:block;">✅</span>
+                        <span style="font-family:'Lalezar',cursive;font-size:2rem;font-weight:900;color:var(--primary);display:block;">${completedLessons}</span>
+                        <span style="font-size:0.8rem;color:var(--text2);font-weight:600;">حصص مكتملة</span>
+                    </div>
+                    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;">
+                        <span class="icon" style="font-size:2rem;display:block;">🎥</span>
+                        <span style="font-family:'Lalezar',cursive;font-size:2rem;font-weight:900;color:var(--primary);display:block;">${userData?.videosWatched || 0}</span>
+                        <span style="font-size:0.8rem;color:var(--text2);font-weight:600;">فيديوهات</span>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                    <button class="btn-primary btn-sm" onclick="APP.scrollToCourses()">📚 كورساتي</button>
+                </div>
+            </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ============================================================
-    // SCROLL TO COURSES
+    // HOME PAGE
     // ============================================================
-    function scrollToCourses() {
-        const coursesSection = document.getElementById('coursesSection');
-        if (coursesSection) {
-            coursesSection.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            APP.showHome();
-            setTimeout(() => {
-                const sec = document.getElementById('coursesSection');
-                if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-            }, 300);
-        }
+    function showHome() {
+        const main = document.getElementById('mainContent');
+        const isUser = currentUser !== null;
+
+        const installBtnHTML = `
+            <div style="text-align:center;padding:10px 20px;margin:10px auto;max-width:600px;">
+                <button id="mainInstallBtn" onclick="installApp()" style="
+                    background:linear-gradient(135deg,#FFD60A,#F59E0B);
+                    color:#081B2C;
+                    border:none;
+                    padding:18px 50px;
+                    border-radius:60px;
+                    font-size:1.4rem;
+                    font-weight:900;
+                    font-family:'Cairo',sans-serif;
+                    cursor:pointer;
+                    box-shadow:0 8px 32px rgba(255,214,10,0.5);
+                    transition:all 0.3s ease;
+                    display:inline-flex;
+                    align-items:center;
+                    gap:14px;
+                    animation:pulse-install 2s infinite;
+                    border:3px solid rgba(255,255,255,0.3);
+                    width:100%;
+                    justify-content:center;
+                    max-width:500px;
+                ">
+                    <i class="fas fa-download" style="font-size:1.8rem;"></i>
+                    📲 ثبّت التطبيق على جهازك الآن
+                </button>
+                <p style="font-size:0.85rem;color:var(--text2);margin-top:8px;">
+                    <i class="fas fa-check-circle" style="color:var(--success);"></i> 
+                    متوافق مع Android • iPhone • كمبيوتر
+                </p>
+            </div>
+        `;
+
+        main.innerHTML = `
+            <section style="padding:40px 20px 20px;max-width:1280px;margin:0 auto;">
+                <div style="width:100%;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);margin-bottom:24px;background:var(--bg);">
+                    <img src="${HERO_IMAGE}" alt="مستر زياد مبروك" loading="eager" style="width:100%;height:auto;max-height:450px;object-fit:cover;display:block;aspect-ratio:16/7;">
+                </div>
+
+                ${installBtnHTML}
+
+                <div class="video-wrapper">
+                    <iframe src="${INTRO_VIDEO_URL}" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <div style="text-align:center;">
+                    <h1 style="font-family:'Lalezar',cursive;font-size:clamp(2rem,5vw,3.5rem);color:var(--text);margin-bottom:12px;">ابدأ صح… وخلّي الكيمياء تبقى لعبتك 🔥</h1>
+                    <p style="font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text2);max-width:600px;margin:0 auto 20px;">مهما كان مستواك، هنا هتبدأ من الأول خالص… وهتمشي خطوة خطوة لحد ما توصل للفهم الحقيقي 💪</p>
+                    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                        ${isUser ? `
+                            <button class="btn-primary" onclick="APP.scrollToCourses()">📚 كورساتي</button>
+                            <button class="btn-primary" onclick="APP.showDashboard()" style="background:var(--gold);color:#081B2C;">👨‍🎓 لوحة الطالب</button>
+                        ` : `
+                            <a href="login.html" class="btn-primary">🚀 ابدأ التعلم الآن</a>
+                            <a href="login.html" class="btn-outline">⚪ سجل دخول</a>
+                        `}
+                    </div>
+                </div>
+            </section>
+
+            <section id="coursesSection" style="max-width:1280px;margin:0 auto;padding:0 20px 32px;">
+                <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2.5vw,2.5rem);text-align:center;color:var(--text);margin-bottom:4px;">📚 الكورسات المتاحة</h2>
+                <div class="grid-courses" id="coursesGrid">
+                    <div class="card skeleton" style="height:320px;"></div>
+                    <div class="card skeleton" style="height:320px;"></div>
+                    <div class="card skeleton" style="height:320px;"></div>
+                </div>
+            </section>
+        `;
+        
+        loadCourses();
+        loadLessons();
     }
 
     // ============================================================
-    // AUTH
+    // PRIVACY & TERMS
     // ============================================================
-    function showLoginOverlay() { document.getElementById('loginOverlay').classList.add('open'); }
-    function closeLoginOverlay() { document.getElementById('loginOverlay').classList.remove('open'); }
-    function closeUserMenu() {
-        const dropdown = document.getElementById('userDropdown');
-        const arrow = document.getElementById('userMenuArrow');
-        if (dropdown) dropdown.classList.remove('open');
-        if (arrow) arrow.classList.remove('open');
-    }
-    function toggleUserMenu() {
-        const dropdown = document.getElementById('userDropdown');
-        const arrow = document.getElementById('userMenuArrow');
-        if (!dropdown) return;
-        dropdown.classList.toggle('open');
-        if (arrow) arrow.classList.toggle('open');
+    function showPrivacy() {
+        const main = document.getElementById('mainContent');
+        main.innerHTML = `<div style="max-width:800px;margin:0 auto;padding:20px;"><button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button><h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">🔒 سياسة الخصوصية</h1><div class="card" style="padding:24px;line-height:2;"><p>نحن في منصة يلا كيمياء نلتزم بحماية خصوصية بياناتك الشخصية.</p><p><strong>ما هي البيانات التي نجمعها؟</strong></p><p>• الاسم، البريد الإلكتروني، رقم الهاتف، الصف الدراسي</p><p>• بيانات التقدم في التعلم</p><p><strong>كيف نستخدم بياناتك؟</strong></p><p>• لتقديم خدمات التعلم المخصصة</p><p>• لتتبع تقدمك وتحسين تجربتك</p><p style="color:var(--text2);font-size:0.9rem;">آخر تحديث: ${new Date().toLocaleDateString('ar')}</p></div></div>`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    async function logout() {
-        try {
-            await auth.signOut();
-            currentUser = null;
-            userData = null;
-            localStorage.removeItem('user');
-            showToast('👋 تم تسجيل الخروج بنجاح', 'info');
-            document.querySelectorAll('.guest-only').forEach(el => el.style.display = 'flex');
-            document.querySelectorAll('.user-only').forEach(el => el.style.display = 'none');
-            APP.showHome();
-        } catch (error) {
-            showToast('حدث خطأ في تسجيل الخروج', 'error');
-        }
+    function showTerms() {
+        const main = document.getElementById('mainContent');
+        main.innerHTML = `<div style="max-width:800px;margin:0 auto;padding:20px;"><button class="btn-outline btn-sm no-print" onclick="APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button><h1 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--text);margin:12px 0;">📜 الشروط والأحكام</h1><div class="card" style="padding:24px;line-height:2;"><p><strong>1. استخدام المنصة</strong></p><p>• المنصة مخصصة للأغراض التعليمية فقط.</p><p>• يجب على الطالب الالتزام بالأمانة العلمية.</p><p><strong>2. الحسابات</strong></p><p>• كل طالب لديه حساب شخصي واحد فقط.</p><p>• يجب حماية كلمة المرور.</p><p><strong>3. المحتوى</strong></p><p>• جميع المواد التعليمية محمية بحقوق النشر.</p><p>• لا يسمح بإعادة توزيع المحتوى دون إذن.</p><p style="color:var(--text2);font-size:0.9rem;">آخر تحديث: ${new Date().toLocaleDateString('ar')}</p></div></div>`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ============================================================
-    // APP CONTROLLER
+    // INIT
+    // ============================================================
+    function init() {
+        initTheme();
+        showHome();
+        loadLessons();
+        
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            updateUIForAuth(user);
+            if (user) {
+                loadUserData(user.uid);
+                loadUserProgress(user.uid);
+            }
+        });
+    }
+
+    // ============================================================
+    // APP OBJECT
     // ============================================================
     const APP = {
         toggleTheme,
@@ -2018,746 +1299,26 @@
         scrollToCourses,
         closeLoginOverlay,
         showLoginOverlay,
-        toggleUserMenu,
-        logout,
+        subscribeToFreeCourse,
+        requestPaidSubscription,
+        openCoursePage,
+        openLessonVideo,
         showDashboard,
-        showLeaderboard,
-        showAIInsights,
-        showCertificate,
-        showStudentCard,
-        showErrorBank,
-        showResults,
-        showAchievements,
-        showNotificationsPage,
         showPrivacy,
         showTerms,
-        closeAdminPopup,
-        showAdminPopup,
-        openLessonItem,
-        startExam,
-        closeExamSecurityModal,
-        startExamAfterPledge,
-        submitExam,
-        addAtoms,
-        uploadProfilePhoto,
-        loadCourses,
-        renderCourses,
-        filterCourses,
-        openCourse,
-        openLessonVideo,
-        initDynamicWatermark,
-
-        showHome() {
-            closeUserMenu();
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `
-                <section style="background:linear-gradient(135deg,var(--primary),var(--primary2));padding:60px 20px;border-radius:0 0 var(--radius-lg) var(--radius-lg);color:#fff;text-align:center;margin-bottom:30px;position:relative;overflow:hidden;">
-                    <div style="max-width:800px;margin:0 auto;position:relative;z-index:2;">
-                        <span class="atoms-badge" style="background:var(--gold);color:#081B2C;margin-bottom:16px;display:inline-flex;">
-                            <i class="fas fa-atom"></i> الدفعة الجديدة 2027
-                        </span>
-                        <h1 style="font-family:'Lalezar',cursive;font-size:clamp(2.2rem,5vw,3.5rem);margin-bottom:12px;line-height:1.2;">
-                            اشرح الكيمياء ببساطة مع مستر زياد مبروك
-                        </h1>
-                        <p style="font-size:clamp(1rem,2vw,1.2rem);opacity:0.9;margin-bottom:24px;line-height:1.6;">
-                            المنصة التعليمية المتكاملة لطلاب الثانوية العامة. تأسيس قوي، شرح ممتع، وحل تدريبات وتقييمات شاملة.
-                        </p>
-                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-                            <button onclick="scrollToCourses()" class="btn-primary" style="background:var(--gold);color:#081B2C;border:none;padding:14px 36px;font-size:1.1rem;">
-                                📚 تصفح الكورسات
-                            </button>
-                            ${currentUser ? 
-                                `<button onclick="APP.showDashboard()" class="btn-outline" style="border-color:#fff;color:#fff;padding:14px 36px;font-size:1.1rem;">
-                                    👨‍🎓 حسابي
-                                </button>` :
-                                `<a href="login.html" class="btn-outline" style="border-color:#fff;color:#fff;padding:14px 36px;font-size:1.1rem;">
-                                    🔑 تسجيل الدخول
-                                </a>`
-                            }
-                        </div>
-                    </div>
-                </section>
-
-                <div style="max-width:1280px;margin:0 auto;padding:0 20px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;" id="coursesSection">
-                        <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);">
-                            📚 الكورسات والمناهج الدراسية
-                        </h2>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn-filter active" data-grade="all" onclick="APP.filterCourses('all', this)">الكل</button>
-                            <button class="btn-filter" data-grade="1" onclick="APP.filterCourses('1', this)">الصف الأول</button>
-                            <button class="btn-filter" data-grade="2" onclick="APP.filterCourses('2', this)">الصف الثاني</button>
-                            <button class="btn-filter" data-grade="3" onclick="APP.filterCourses('3', this)">الصف الثالث</button>
-                        </div>
-                    </div>
-
-                    <div class="grid-courses" id="coursesGrid">
-                        <div class="card skeleton" style="height:300px;"></div>
-                        <div class="card skeleton" style="height:300px;"></div>
-                        <div class="card skeleton" style="height:300px;"></div>
-                    </div>
-                </div>
-
-                <div style="max-width:900px;margin:40px auto;padding:0 20px;">
-                    <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);text-align:center;margin-bottom:24px;">
-                        ❓ الأسئلة الشائعة
-                    </h2>
-                    <div class="faq-item" onclick="toggleFaq(this)">
-                        <div class="faq-question">
-                            <span>كيف يمكنني الاشتراك في الكورسات؟</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            يمكنك إنشاء حساب جديد مجاناً، ثم الضغط على زر الاشتراك في أي كورس متاح. حتى الكورسات المجانية تتطلب الضغط على زر الاشتراك لتفعيل متابعة التقدم.
-                        </div>
-                    </div>
-                    <div class="faq-item" onclick="toggleFaq(this)">
-                        <div class="faq-question">
-                            <span>هل الفيديوهات محمية ضد التسريب؟</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            نعم، المنصة مزودة بنظام حماية شامل يمنع أدوات المطورين، النسخ، التصوير، ويعرض علامتك المائية الخاصة بك (اسمك ورقمك) لمنع التداول غير اللائق.
-                        </div>
-                    </div>
-                    <div class="faq-item" onclick="toggleFaq(this)">
-                        <div class="faq-question">
-                            <span>كيف أحصل على نقاط الذرات والشهادات؟</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            تكسب نقاط "الذرات" من خلال مشاهدة الحصص كاملة وحل الاختبارات بامتياز، وعند إتمام الكورس بنجاح تتمكن من إصدار شهادة معتمدة من المنصة.
-                        </div>
-                    </div>
-                </div>
-            `;
-            APP.loadCourses();
-        },
-
-        loadCourses() {
-            const grid = document.getElementById('coursesGrid');
-            if (!grid) return;
-
-            database.ref('courses').once('value').then(snapshot => {
-                allCourses = [];
-                snapshot.forEach(child => {
-                    allCourses.push({ id: child.key, ...child.val() });
-                });
-
-                if (allCourses.length === 0) {
-                    allCourses = [
-                        { id: 'c1', title: 'كورس التأسيس الشامل لدفعة 2027', grade: '3', price: 0, image: HERO_IMAGE, desc: 'التأسيس من الصفر لاحتراف الكيمياء في الثانوية العامة' },
-                        { id: 'c2', title: 'الباب الأول: البناء الذري', grade: '2', price: 0, image: HERO_IMAGE, desc: 'شرح تفصيلي ومبسط لجدول مندليف والجدول الحديث' },
-                        { id: 'c3', title: 'كيمياء الصف الأول الثانوي - الترم الأول', grade: '1', price: 0, image: HERO_IMAGE, desc: 'القياس في الكيمياء، المحاليل، والاحماض والقواعد' }
-                    ];
-                }
-
-                APP.renderCourses(allCourses);
-            }).catch(() => {
-                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">⚠️</div><h3>تعذر تحميل الكورسات</h3><p>تأكد من اتصالك بالإنترنت</p></div>';
-            });
-        },
-
-        renderCourses(courses) {
-            const grid = document.getElementById('coursesGrid');
-            if (!grid) return;
-
-            if (courses.length === 0) {
-                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">📭</div><h3>لا توجد كورسات متاحة حالياً</h3><p>ترقبوا المزيد قريباً</p></div>';
-                return;
-            }
-
-            grid.innerHTML = courses.map(c => `
-                <div class="card">
-                    <img src="${c.image || HERO_IMAGE}" alt="${escapeHtml(c.title)}" class="card-img" loading="lazy" onerror="this.src='${HERO_IMAGE}'">
-                    <div class="card-body">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                            <span class="badge" style="background:var(--bg);color:var(--primary);font-size:0.75rem;padding:2px 10px;border-radius:20px;font-weight:700;">الصف ${c.grade === '1' ? 'الأول الثانوي' : c.grade === '2' ? 'الثاني الثانوي' : 'الثالث الثانوي'}</span>
-                            <span style="font-weight:800;color:var(--success);font-size:0.9rem;">${c.price > 0 ? c.price + ' ج.م' : 'مجاناً 🎁'}</span>
-                        </div>
-                        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:6px;color:var(--text);">${escapeHtml(c.title)}</h3>
-                        <p style="font-size:0.85rem;color:var(--text2);margin-bottom:16px;line-height:1.5;">${escapeHtml(c.desc || '')}</p>
-                        <button onclick="APP.openCourse('${c.id}')" class="btn-primary" style="width:100%;justify-content:center;padding:10px;">
-                            🚀 دخول الكورس
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        },
-
-        filterCourses(grade, btn) {
-            currentGradeFilter = grade;
-            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-
-            if (grade === 'all') {
-                APP.renderCourses(allCourses);
-            } else {
-                const filtered = allCourses.filter(c => c.grade === grade);
-                APP.renderCourses(filtered);
-            }
-        },
-
-        openCourse(courseId) {
-            if (!currentUser) {
-                showLoginOverlay();
-                return;
-            }
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const course = allCourses.find(c => c.id === courseId) || { title: 'تفاصيل الكورس', grade: '3', price: 0, desc: '' };
-
-            main.innerHTML = `
-                <div style="max-width:1100px;margin:20px auto;padding:0 20px;">
-                    <button onclick="APP.showHome()" class="btn-outline" style="margin-bottom:16px;padding:6px 16px;font-size:0.85rem;">
-                        ⬅ العودة للرئيسية
-                    </button>
-                    <div class="course-page-hero">
-                        <span class="price-tag ${course.price > 0 ? 'paid' : 'free'}">${course.price > 0 ? course.price + ' ج.م' : 'مجاني تماماً'}</span>
-                        <h1 style="margin-top:8px;">${escapeHtml(course.title)}</h1>
-                        <p>${escapeHtml(course.desc || 'شرح مبسط ومفصل مع مستر زياد مبروك')}</p>
-                    </div>
-
-                    <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--primary);margin-bottom:16px;">
-                        📂 محتوى الكورس والحصص
-                    </h2>
-                    
-                    <div id="courseLessonsList">
-                        <div class="skeleton" style="height:60px;margin-bottom:12px;"></div>
-                        <div class="skeleton" style="height:60px;margin-bottom:12px;"></div>
-                    </div>
-                </div>
-            `;
-
-            database.ref(`lessons/${courseId}`).once('value').then(snapshot => {
-                const lessonsList = document.getElementById('courseLessonsList');
-                if (!lessonsList) return;
-
-                let lessons = [];
-                snapshot.forEach(child => {
-                    lessons.push({ id: child.key, ...child.val() });
-                });
-
-                if (lessons.length === 0) {
-                    lessons = [
-                        { id: 'l1', title: 'الحصة التأسيسية الأولى: أساسيات التوزيع الإلكتروني', type: 'video', videoUrl: INTRO_VIDEO_URL },
-                        { id: 'l2', title: 'الحصة التأسيسية الثانية: حساب المول والكتلة الذرية', type: 'video', videoUrl: INTRO_VIDEO_URL },
-                        { id: 'e1', title: 'اختبار تقييمي على التأسيس', type: 'exam' }
-                    ];
-                }
-
-                lessonsList.innerHTML = lessons.map((l, index) => `
-                    <div class="lesson-container open">
-                        <div class="lesson-header" onclick="this.parentElement.classList.toggle('open')">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <span class="lesson-num">${index + 1}</span>
-                                <span>${escapeHtml(l.title)}</span>
-                            </div>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
-                        </div>
-                        <div class="lesson-body">
-                            <div class="lesson-content-item" onclick="APP.openLessonItem('${courseId}', '${l.id}', '${l.type}', '${l.videoUrl || ''}')">
-                                <div class="item-icon ${l.type === 'video' ? 'video' : 'exam'}">
-                                    <i class="fas ${l.type === 'video' ? 'fa-play' : 'fa-file-alt'}"></i>
-                                </div>
-                                <div class="item-text">
-                                    <div class="title">${escapeHtml(l.title)}</div>
-                                    <div class="sub">${l.type === 'video' ? 'فيديو الشرح مع الحماية الكاملة وعلامات مائية' : 'اختبار تقييمي لقياس الفهم'}</div>
-                                </div>
-                                <button class="btn-primary btn-sm">بدء الآن</button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            });
-        },
-
-        openLessonItem(courseId, lessonId, type, videoUrl) {
-            if (!currentUser) {
-                showLoginOverlay();
-                return;
-            }
-
-            if (type === 'exam') {
-                APP.startExam(lessonId);
-                return;
-            }
-
-            APP.openLessonVideo(lessonId, courseId, videoUrl);
-        },
-
-        openLessonVideo(lessonId, courseId, videoUrl) {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const studentName = userData ? (userData.name || 'طالب متميز') : 'طالب متميز';
-            const studentCode = userData ? (userData.code || 'YK-0000') : 'YK-0000';
-            const videoSrc = videoUrl || INTRO_VIDEO_URL;
-            const videoId = extractYouTubeId(videoSrc);
-            const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1&controls=0&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&autoplay=1` : videoSrc;
-
-            main.innerHTML = `
-                <div style="max-width:1000px;margin:20px auto;padding:0 20px;" class="no-copy">
-                    <button onclick="APP.openCourse('${courseId}')" class="btn-outline" style="margin-bottom:16px;padding:6px 16px;font-size:0.85rem;">
-                        ⬅ العودة للكورس
-                    </button>
-                    <h2 class="video-section-title">شرح الحصة التعليمية</h2>
-                    
-                    <div class="video-protected" id="videoContainer">
-                        <div class="video-watermark">
-                            👤 ${escapeHtml(studentName)} | <span class="gold-text">${escapeHtml(studentCode)}</span>
-                        </div>
-                        <div class="dynamic-watermark" id="dynamicWatermark">
-                            <span class="gold-text">🧪</span> ${escapeHtml(studentName)} <span class="gold-text">🧪</span>
-                        </div>
-                        <iframe id="videoFrame" src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        
-                        <div class="video-controls-overlay">
-                            <button onclick="togglePlay()" title="تشغيل/إيقاف">▶️</button>
-                            <button id="speedBtn" onclick="changeSpeed()" title="السرعة">⏩ 1x</button>
-                            <button id="qualityBtn" onclick="changeQuality()" title="الجودة">🎬 auto</button>
-                            <button id="volumeBtn" onclick="toggleMute()" title="الصوت">🔊 100%</button>
-                            <button class="btn-fullscreen" onclick="toggleFullscreen()" title="ملء الشاشة">⛶</button>
-                        </div>
-                        <button onclick="toggleFullscreen()" class="fullscreen-btn">⛶</button>
-                    </div>
-
-                    <div class="watch-progress-container">
-                        <div class="timer-row">
-                            <span>مدة المشاهدة المطلوبة</span>
-                            <span class="time-display" id="watchTimerDisplay">00:00 / 05:00</span>
-                        </div>
-                        <div class="watch-progress-bar">
-                            <div class="fill" id="watchProgressFill" style="width:0%"></div>
-                        </div>
-                    </div>
-
-                    <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;justify-content:center;">
-                        <button onclick="APP.completeLesson('${lessonId}', '${courseId}')" class="btn-primary">
-                            ✅ تسجيل الحصة كمكتملة (+10 ذرات)
-                        </button>
-                        <button onclick="APP.openCourse('${courseId}')" class="btn-outline">
-                            العودة للكورس
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            APP.initDynamicWatermark();
-            APP.startVideoProgress();
-        },
-
-        initDynamicWatermark() {
-            const wm = document.getElementById('dynamicWatermark');
-            if (!wm) return;
-            if (dynamicWatermarkTimer) clearInterval(dynamicWatermarkTimer);
-
-            dynamicWatermarkTimer = setInterval(() => {
-                const container = document.getElementById('videoContainer');
-                if (!container) return;
-                const maxWidth = container.clientWidth - 120;
-                const maxHeight = container.clientHeight - 60;
-                const randomX = Math.floor(Math.random() * Math.max(0, maxWidth));
-                const randomY = Math.floor(Math.random() * Math.max(0, maxHeight));
-                wm.style.left = randomX + 'px';
-                wm.style.top = randomY + 'px';
-            }, 4000);
-        },
-
-        startVideoProgress() {
-            if (videoProgressTimer) clearInterval(videoProgressTimer);
-            let seconds = 0;
-            const totalSeconds = 300; // 5 دقائق
-
-            videoProgressTimer = setInterval(() => {
-                seconds++;
-                const mins = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                const timerEl = document.getElementById('watchTimerDisplay');
-                const fillEl = document.getElementById('watchProgressFill');
-                if (timerEl) {
-                    timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')} / 05:00`;
-                }
-                const progress = Math.min((seconds / totalSeconds) * 100, 100);
-                if (fillEl) fillEl.style.width = progress + '%';
-            }, 1000);
-        },
-
-        completeLesson(lessonId, courseId) {
-            if (videoProgressTimer) {
-                clearInterval(videoProgressTimer);
-                videoProgressTimer = null;
-            }
-            if (dynamicWatermarkTimer) {
-                clearInterval(dynamicWatermarkTimer);
-                dynamicWatermarkTimer = null;
-            }
-            
-            // تسجيل الحصة كمكتملة
-            if (!userCourseProgress[lessonId]) {
-                userCourseProgress[lessonId] = { watched: true, completedAt: new Date().toISOString() };
-            }
-            
-            APP.addAtoms(10);
-            showToast('✅ تم تسجيل الحصة كمكتملة! (+10 ذرات)', 'success');
-            setTimeout(() => APP.openCourse(courseId), 1500);
-        },
-
-        startExam(examId) {
-            const modal = document.getElementById('examSecurityModal');
-            if (modal) modal.classList.add('open');
-        },
-
-        closeExamSecurityModal() {
-            const modal = document.getElementById('examSecurityModal');
-            if (modal) modal.classList.remove('open');
-        },
-
-        startExamAfterPledge() {
-            APP.closeExamSecurityModal();
-            showToast('🚀 بدأ الامتحان بالتوفيق!', 'success');
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `
-                <div style="max-width:800px;margin:30px auto;padding:20px;" class="card">
-                    <h2 style="font-family:'Lalezar',cursive;font-size:2rem;color:var(--primary);margin-bottom:16px;">
-                        📝 امتحان تقييمي تجريبي
-                    </h2>
-                    <div style="background:var(--bg);padding:20px;border-radius:var(--radius);margin-bottom:20px;">
-                        <p style="font-weight:700;margin-bottom:12px;">السؤال 1: ما هو العدد الذري لعنصر الصوديوم (Na)؟</p>
-                        <label style="display:block;margin-bottom:8px;cursor:pointer;"><input type="radio" name="q1" value="11"> أ) 11</label>
-                        <label style="display:block;margin-bottom:8px;cursor:pointer;"><input type="radio" name="q1" value="12"> ب) 12</label>
-                        <label style="display:block;margin-bottom:8px;cursor:pointer;"><input type="radio" name="q1" value="19"> ج) 19</label>
-                    </div>
-                    <button onclick="APP.submitExam()" class="btn-primary" style="width:100%;justify-content:center;padding:14px;">
-                        📤 تسليم الإجابات
-                    </button>
-                </div>
-            `;
-        },
-
-        submitExam() {
-            // تسجيل الامتحان كمكتمل
-            const examId = 'exam_' + Date.now();
-            userCourseProgress[examId] = { completed: true, completedAt: new Date().toISOString() };
-            
-            showToast('🎉 تم تسليم الإجابات بنجاح! النتيجة: امتياز (+25 ذرة)', 'success');
-            APP.addAtoms(25);
-            setTimeout(() => APP.showDashboard(), 1500);
-        },
-
-        addAtoms(amount) {
-            if (!currentUser) return;
-            const userRef = database.ref(`users/${currentUser.uid}/atoms`);
-            userRef.transaction(current => (current || 0) + amount, (error, committed, snapshot) => {
-                if (committed) {
-                    const newVal = snapshot.val();
-                    if (userData) userData.atoms = newVal;
-                    const badge = document.getElementById('atomsCount');
-                    const dropdownBadge = document.getElementById('userAtomsCount');
-                    if (badge) badge.textContent = newVal;
-                    if (dropdownBadge) dropdownBadge.textContent = newVal;
-                }
-            });
-        },
-
-        showDashboard() {
-            closeUserMenu();
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-
-            const name = userData ? (userData.name || 'طالب متميز') : 'طالب متميز';
-            const atoms = userData ? (userData.atoms || 0) : 0;
-            const code = userData ? (userData.code || 'YK-0000') : 'YK-0000';
-
-            main.innerHTML = `
-                <div style="max-width:1100px;margin:20px auto;padding:0 20px;">
-                    <div class="card" style="padding:30px;margin-bottom:24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
-                        <div class="profile-photo-upload" onclick="document.getElementById('profilePhotoInput').click()">
-                            <img id="profileAvatarImg" src="${userData?.photo || LOGO_IMAGE}" alt="صورة الطالب" onerror="this.src='${LOGO_IMAGE}'">
-                            <div class="upload-overlay"><i class="fas fa-camera"></i></div>
-                            <input type="file" id="profilePhotoInput" accept="image/*" onchange="APP.uploadProfilePhoto(this)">
-                        </div>
-                        <div style="flex:1;">
-                            <h1 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:var(--primary);margin-bottom:4px;">
-                                أهلاً بك، ${escapeHtml(name)}
-                            </h1>
-                            <p style="color:var(--text2);margin-bottom:12px;">مستمرون معك حتى القمة في الكيمياء مع مستر زياد مبروك</p>
-                            <div class="profile-code">كود الطالب: ${escapeHtml(code)}</div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-stats-grid">
-                        <div class="dashboard-stat-card">
-                            <span class="icon">⚛️</span>
-                            <span class="number" id="dashAtoms">${atoms}</span>
-                            <span class="label">إجمالي الذرات</span>
-                        </div>
-                        <div class="dashboard-stat-card">
-                            <span class="icon">📚</span>
-                            <span class="number">${allCourses.length}</span>
-                            <span class="label">الكورسات المتاحة</span>
-                        </div>
-                        <div class="dashboard-stat-card">
-                            <span class="icon">✅</span>
-                            <span class="number">${Object.keys(userCourseProgress).filter(k => userCourseProgress[k]?.watched).length}</span>
-                            <span class="label">حصص مكتملة</span>
-                        </div>
-                        <div class="dashboard-stat-card">
-                            <span class="icon">🏆</span>
-                            <span class="number">${userData?.rank || '--'}</span>
-                            <span class="label">الترتيب</span>
-                        </div>
-                    </div>
-
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;">
-                        <button onclick="scrollToCourses()" class="btn-primary">📚 كورساتي</button>
-                        <button onclick="APP.showLeaderboard()" class="btn-primary">🏆 المتصدرين</button>
-                        <button onclick="APP.showAIInsights()" class="btn-outline">🤖 تحليل المستوى</button>
-                        <button onclick="APP.showCertificate()" class="btn-outline">📜 شهاداتي</button>
-                        <button onclick="APP.showStudentCard()" class="btn-outline">🪪 بطاقتي</button>
-                    </div>
-                </div>
-            `;
-        },
-
-        showLeaderboard() {
-            closeUserMenu();
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `
-                <div style="max-width:900px;margin:20px auto;padding:0 20px;">
-                    <button onclick="APP.showDashboard()" class="btn-outline" style="margin-bottom:16px;">⬅ العودة لحسابي</button>
-                    <h2 style="font-family:'Lalezar',cursive;font-size:2.2rem;color:var(--primary);text-align:center;margin-bottom:24px;">
-                        🏆 لوحة المتصدرين لدفعة 2027
-                    </h2>
-                    <div class="leaderboard-podium">
-                        <div class="podium-item silver">
-                            <div class="podium-rank">🥈</div>
-                            <div class="podium-avatar">أ</div>
-                            <div style="font-weight:700;font-size:0.9rem;">أحمد محمد</div>
-                            <div style="font-size:0.75rem;color:var(--text2);">950 ذرة</div>
-                            <div class="podium-base"></div>
-                        </div>
-                        <div class="podium-item gold">
-                            <div class="crown">👑</div>
-                            <div class="podium-rank">🥇</div>
-                            <div class="podium-avatar">م</div>
-                            <div style="font-weight:700;font-size:0.9rem;">محمود إبراهيم</div>
-                            <div style="font-size:0.75rem;color:var(--text2);">1200 ذرة</div>
-                            <div class="podium-base"></div>
-                        </div>
-                        <div class="podium-item bronze">
-                            <div class="podium-rank">🥉</div>
-                            <div class="podium-avatar">س</div>
-                            <div style="font-weight:700;font-size:0.9rem;">سارة أحمد</div>
-                            <div style="font-size:0.75rem;color:var(--text2);">880 ذرة</div>
-                            <div class="podium-base"></div>
-                        </div>
-                    </div>
-                    <div class="leaderboard-item">
-                        <div class="rank">4</div>
-                        <div class="avatar">ي</div>
-                        <div class="info"><div class="name">يوسف علي</div><div class="stats">الصف الثالث • 820 نقطة</div></div>
-                        <div class="points">820 ⚛️</div>
-                    </div>
-                    <div class="leaderboard-item">
-                        <div class="rank">5</div>
-                        <div class="avatar">ن</div>
-                        <div class="info"><div class="name">ندى خالد</div><div class="stats">الصف الثالث • 790 نقطة</div></div>
-                        <div class="points">790 ⚛️</div>
-                    </div>
-                </div>
-            `;
-        },
-
-        showAIInsights() {
-            closeUserMenu();
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `
-                <div class="ai-report-container">
-                    <button onclick="APP.showDashboard()" class="btn-outline" style="margin-bottom:16px;">⬅ العودة لحسابي</button>
-                    <div class="report-header">
-                        <div class="logo">يلا كيمياء - الذكاء الاصطناعي</div>
-                        <h2 style="font-family:'Lalezar',cursive;font-size:1.8rem;color:var(--primary);">تحليل الأداء الأكاديمي</h2>
-                    </div>
-                    <div class="report-section">
-                        <h3 style="color:var(--primary);margin-bottom:8px;">📊 ملخص المستوى العام</h3>
-                        <p style="line-height:1.7;color:var(--text2);">أداؤك متميز جداً في التوزيع الإلكتروني والروابط الكيميائية، وننصحك بمزيد من التركيز على المسائل الخاصة بحساب المول وحجم الغاز.</p>
-                    </div>
-                    <div class="report-section">
-                        <h3 style="color:var(--success);margin-bottom:8px;">💡 توصيات مستر زياد مبروك</h3>
-                        <p style="line-height:1.7;color:var(--text2);">قم بإعادة مشاهدة الحصة الثانية وحل التقييمات الشاملة لرفع نقاطك والوصول للمركز الأول في اللوحة.</p>
-                    </div>
-                </div>
-            `;
-        },
-
-        showCertificate() {
-            closeUserMenu();
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            const name = userData ? (userData.name || 'طالب متميز') : 'طالب متميز';
-            main.innerHTML = `
-                <div style="max-width:900px;margin:20px auto;padding:0 20px;">
-                    <button onclick="APP.showDashboard()" class="btn-outline" style="margin-bottom:16px;">⬅ العودة لحسابي</button>
-                    <div class="certificate-preview">
-                        <div class="logo">منصة يلا كيمياء التعليمية</div>
-                        <h2 style="font-family:'Lalezar',cursive;">شهادة إتمام كورس تفوق</h2>
-                        <p style="color:var(--text2);margin-bottom:8px;">تمنح هذه الشهادة بكل فخر إلى الطالب/ة:</p>
-                        <div class="name">${escapeHtml(name)}</div>
-                        <p style="color:var(--text2);margin-top:12px;line-height:1.6;">لاجتيازه كورس التأسيس الشامل في الكيمياء لدفعة 2027 بتقدير امتياز مع مستر زياد مبروك.</p>
-                        <div style="margin-top:30px;display:flex;justify-content:space-between;align-items:center;font-weight:700;">
-                            <div>مستر زياد مبروك<br><span style="font-size:0.8rem;color:var(--text2);">معلم الكيمياء</span></div>
-                            <div>ختم المنصة الرسمية ✅</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        },
-
-        showStudentCard() {
-            closeUserMenu();
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            const name = userData ? (userData.name || 'طالب متميز') : 'طالب متميز';
-            const code = userData ? (userData.code || 'YK-0000') : 'YK-0000';
-            main.innerHTML = `
-                <div style="max-width:900px;margin:20px auto;padding:0 20px;">
-                    <button onclick="APP.showDashboard()" class="btn-outline" style="margin-bottom:16px;">⬅ العودة لحسابي</button>
-                    <div class="student-card-preview">
-                        <div class="watermark">YALLA KIMYA</div>
-                        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-                            <img src="${userData?.photo || LOGO_IMAGE}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);" onerror="this.src='${LOGO_IMAGE}'">
-                            <div>
-                                <h3 style="font-family:'Lalezar',cursive;font-size:1.5rem;color:var(--primary);">بطاقة الطالب الرسمية</h3>
-                                <div style="font-weight:700;font-size:1.1rem;color:var(--text);">${escapeHtml(name)}</div>
-                                <div style="font-size:0.85rem;color:var(--text2);">الصف الثالث الثانوي • دفعة 2027</div>
-                            </div>
-                        </div>
-                        <div style="background:var(--bg);padding:12px;border-radius:var(--radius);text-align:center;font-weight:700;color:var(--primary);font-family:'Lalezar',cursive;font-size:1.2rem;letter-spacing:2px;">
-                            ${escapeHtml(code)}
-                        </div>
-                    </div>
-                </div>
-            `;
-        },
-
-        showErrorBank() { APP.showDashboard(); },
-        showResults() { APP.showDashboard(); },
-        showAchievements() { APP.showDashboard(); },
-        showNotificationsPage() { APP.showDashboard(); },
-        
-        showPrivacy() {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `<div style="max-width:800px;margin:30px auto;padding:20px;" class="card"><h2 style="font-family:'Lalezar',cursive;color:var(--primary);">سياسة الخصوصية</h2><p style="margin-top:12px;line-height:1.7;">نلتزم بحماية بياناتك الشخصية واستخدامها حصرياً للأغراض التعليمية داخل منصة يلا كيمياء.</p><button onclick="APP.showHome()" class="btn-primary" style="margin-top:20px;">الرئيسية</button></div>`;
-        },
-        
-        showTerms() {
-            const main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML = `<div style="max-width:800px;margin:30px auto;padding:20px;" class="card"><h2 style="font-family:'Lalezar',cursive;color:var(--primary);">الشروط والأحكام</h2><p style="margin-top:12px;line-height:1.7;">جميع محتويات المنصة والفيديوهات محمية بحقوق الملكية ولا يجوز إعادة نشرها أو تداولها.</p><button onclick="APP.showHome()" class="btn-primary" style="margin-top:20px;">الرئيسية</button></div>`;
-        },
-
-        uploadProfilePhoto(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Img = e.target.result;
-                    const imgEl = document.getElementById('profileAvatarImg');
-                    if (imgEl) imgEl.src = base64Img;
-                    if (currentUser) {
-                        database.ref(`users/${currentUser.uid}`).update({ photo: base64Img }).then(() => {
-                            showToast('✅ تم تحديث الصورة الشخصية بنجاح', 'success');
-                        });
-                    }
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+        showCompletedModal: () => document.getElementById('completedModal')?.classList.add('open'),
+        closeCompletedModal: () => document.getElementById('completedModal')?.classList.remove('open'),
+        installApp,
+        showToast
     };
 
-    // ============================================================
-    // GLOBAL EVENT LISTENERS & INITIALIZATION
-    // ============================================================
-    document.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-        updateInstallButtonVisibility();
-
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                currentUser = user;
-                const snapshot = await database.ref(`users/${user.uid}`).once('value');
-                if (snapshot.exists()) {
-                    userData = snapshot.val();
-                } else {
-                    const code = await generateStudentCode();
-                    userData = {
-                        name: user.displayName || 'طالب متميز',
-                        email: user.email || '',
-                        atoms: 0,
-                        code: code,
-                        photo: LOGO_IMAGE
-                    };
-                    await database.ref(`users/${user.uid}`).set(userData);
-                }
-
-                document.querySelectorAll('.guest-only').forEach(el => el.style.display = 'none');
-                document.querySelectorAll('.user-only').forEach(el => el.style.display = 'flex');
-
-                const atomsCountEl = document.getElementById('atomsCount');
-                const userAtomsCountEl = document.getElementById('userAtomsCount');
-                const userNameDisplayEl = document.getElementById('userNameDisplay');
-                const userAvatarEl = document.getElementById('userAvatar');
-
-                if (atomsCountEl) atomsCountEl.textContent = userData.atoms || 0;
-                if (userAtomsCountEl) userAtomsCountEl.textContent = userData.atoms || 0;
-                if (userNameDisplayEl) userNameDisplayEl.textContent = userData.name || 'طالب متميز';
-                if (userAvatarEl) {
-                    if (userData.photo && userData.photo !== LOGO_IMAGE) {
-                        userAvatarEl.innerHTML = `<img src="${userData.photo}" alt="Avatar">`;
-                    } else {
-                        userAvatarEl.textContent = (userData.name || 'U').charAt(0);
-                    }
-                }
-
-                // تحميل تقدم الطالب
-                const progressSnap = await database.ref(`users/${user.uid}/progress`).once('value');
-                if (progressSnap.exists()) {
-                    userCourseProgress = progressSnap.val();
-                }
-
-            } else {
-                document.querySelectorAll('.guest-only').forEach(el => el.style.display = 'flex');
-                document.querySelectorAll('.user-only').forEach(el => el.style.display = 'none');
-                userData = null;
-            }
-
-            APP.showHome();
-            showAdminPopupOnce();
-        });
-    });
-
-    // ============================================================
-    // EXPOSE FUNCTIONS TO GLOBAL SCOPE
-    // ============================================================
-    window.toggleFaq = toggleFaq;
-    window.toggleFullscreen = toggleFullscreen;
-    window.installApp = installApp;
-    window.installFromBanner = installFromBanner;
-    window.scrollToCourses = scrollToCourses;
-    window.showLoginOverlay = showLoginOverlay;
-    window.closeLoginOverlay = closeLoginOverlay;
-    window.togglePlay = togglePlay;
-    window.changeSpeed = changeSpeed;
-    window.changeQuality = changeQuality;
-    window.toggleMute = toggleMute;
-    window.changeVolume = changeVolume;
     window.APP = APP;
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
     </script>
 </body>
 </html>
