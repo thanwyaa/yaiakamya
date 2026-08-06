@@ -41,7 +41,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
-    <!-- ====== كل الـ CSS من الكود الأصلي ====== -->
     <style>
         :root {
             --bg: #EAF6FF;
@@ -1227,7 +1226,6 @@
         .toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 500px; pointer-events: none; }
         .toast { pointer-events: auto; }
 
-        /* ====== نافذة الإعلان ====== */
         #adminPopup {
             position: fixed;
             inset: 0;
@@ -1306,7 +1304,6 @@
             transition: var(--transition);
         }
 
-        /* ====== الأسئلة الشائعة ====== */
         .faq-item {
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -1703,7 +1700,6 @@
             background: rgba(255,255,255,0.25);
         }
 
-        /* صفحة الكورس قبل الدخول */
         .course-preview-page {
             max-width: 900px;
             margin: 0 auto;
@@ -1852,13 +1848,9 @@
 </head>
 <body>
     <!-- ====== كل الـ HTML من الكود الأصلي ====== -->
-    <!-- ====== Toast Container ====== -->
     <div class="toast-container" id="toastContainer"></div>
-
-    <!-- ====== Back to Top ====== -->
     <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
 
-    <!-- ====== Login Overlay ====== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="icon"><i class="fas fa-lock"></i></div>
@@ -1872,7 +1864,6 @@
         </div>
     </div>
 
-    <!-- ====== Completed Modal ====== -->
     <div class="completed-modal" id="completedModal">
         <div class="modal-box">
             <div class="icon">✅</div>
@@ -1882,7 +1873,6 @@
         </div>
     </div>
 
-    <!-- ====== Exam Security Modal ====== -->
     <div class="exam-security-modal" id="examSecurityModal">
         <div class="security-box">
             <div class="icon">📜</div>
@@ -1909,13 +1899,11 @@
         </div>
     </div>
 
-    <!-- ====== Image Zoom Overlay ====== -->
     <div class="quiz-image-overlay" id="imageOverlay" onclick="APP.closeImageZoom()" style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:none;align-items:center;justify-content:center;cursor:pointer;">
         <div style="position:absolute;top:20px;right:20px;color:#fff;font-size:2rem;cursor:pointer;background:rgba(255,255,255,0.1);width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.3s;">✕</div>
         <img id="zoomedImage" src="" alt="تكبير الصورة" style="max-width:90%;max-height:90%;object-fit:contain;border-radius:var(--radius);">
     </div>
 
-    <!-- ====== Exam Blur Overlay ====== -->
     <div class="exam-blur-overlay" id="examBlurOverlay">
         <div>
             <i class="fas fa-exclamation-triangle" style="font-size:3rem;display:block;margin-bottom:12px;"></i>
@@ -1924,7 +1912,6 @@
         </div>
     </div>
 
-    <!-- ====== نافذة الإعلان (مخفية) ====== -->
     <div id="adminPopup">
         <div class="admin-popup-content">
             <button onclick="APP.closeAdminPopup()" class="close-btn">✕</button>
@@ -1942,7 +1929,6 @@
         </div>
     </div>
 
-    <!-- ====== NAVBAR ====== -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo" onclick="APP.showHome()">
@@ -1963,12 +1949,10 @@
             </ul>
 
             <div style="display:flex;align-items:center;gap:6px;">
-                <!-- زر تحميل التطبيق (PWA) -->
                 <button class="install-app-btn" id="installAppBtn" onclick="APP.installApp()" style="display:none;">
                     <i class="fas fa-download"></i> حمل التطبيق
                 </button>
 
-                <!-- زر الليل والنهار المحسن -->
                 <button class="theme-toggle" onclick="APP.toggleTheme()" aria-label="تغيير المظهر">
                     <span class="slider">🌙</span>
                 </button>
@@ -2012,12 +1996,8 @@
         </div>
     </nav>
 
-    <!-- ====== MAIN CONTENT ====== -->
-    <main id="mainContent">
-        <!-- يتم تحميل المحتوى بواسطة JavaScript -->
-    </main>
+    <main id="mainContent"></main>
 
-    <!-- ====== FOOTER ====== -->
     <footer style="background:var(--card);border-top:1px solid var(--border);padding:20px;margin-top:16px;">
         <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;">
             <div style="display:flex;align-items:center;gap:10px;">
@@ -2034,7 +2014,6 @@
         </div>
     </footer>
 
-    <!-- ====== كل الـ JavaScript من الكود الأصلي ====== -->
     <script>
     // ============================================================
     // 🔒 SYSTEM PROTECTION - الحماية الشاملة
@@ -2042,13 +2021,11 @@
     (function() {
         'use strict';
         
-        // 1. منع view-source و Ctrl+U
         if (window.location.protocol === 'view-source:') {
             window.location.href = window.location.href.replace('view-source:', '');
         }
         
         document.addEventListener('keydown', function(e) {
-            // منع Ctrl+U
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -2056,7 +2033,6 @@
                 return false;
             }
             
-            // منع F12
             if (e.key === 'F12') {
                 e.preventDefault();
                 e.stopPropagation();
@@ -2064,7 +2040,6 @@
                 return false;
             }
             
-            // منع Ctrl+Shift+I/J/C
             if (e.ctrlKey && e.shiftKey) {
                 if (e.key === 'I' || e.key === 'i' || 
                     e.key === 'J' || e.key === 'j' || 
@@ -2076,7 +2051,6 @@
                 }
             }
             
-            // منع Ctrl+T و Ctrl+N
             if (e.ctrlKey && (e.key === 't' || e.key === 'T' || e.key === 'n' || e.key === 'N')) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -2085,9 +2059,7 @@
             }
         });
         
-        // 2. منع النقر الأيمن
         document.addEventListener('contextmenu', function(e) {
-            // السماح في الحقول والأزرار والروابط
             const allowed = e.target.closest('input, textarea, select, button, a');
             if (!allowed) {
                 e.preventDefault();
@@ -2097,7 +2069,6 @@
             }
         });
         
-        // 3. منع النسخ من الفيديو
         document.addEventListener('copy', function(e) {
             if (document.querySelector('.video-protected')) {
                 e.preventDefault();
@@ -2107,14 +2078,12 @@
             }
         });
         
-        // 4. إخفاء الكونسول
         const noop = () => {};
         const consoleMethods = ['log', 'info', 'warn', 'error', 'debug', 'trace', 'dir', 'dirxml', 'group', 'groupEnd', 'time', 'timeEnd', 'count', 'assert', 'profile', 'profileEnd', 'table'];
         consoleMethods.forEach(method => {
             console[method] = noop;
         });
         
-        // 5. منع eval
         const originalEval = window.eval;
         window.eval = function(code) {
             if (code.includes('view-source') || 
@@ -2126,7 +2095,6 @@
             return originalEval(code);
         };
         
-        // 6. مراقبة الـ URL
         let lastUrl = window.location.href;
         setInterval(() => {
             if (window.location.href !== lastUrl) {
@@ -2175,14 +2143,6 @@
     }
 
     // ============================================================
-    // دالة فتح وإغلاق الأسئلة الشائعة
-    // ============================================================
-    function toggleFaq(element) {
-        const parent = element.parentElement;
-        parent.classList.toggle('open');
-    }
-
-    // ============================================================
     // APP STATE
     // ============================================================
     let currentUser = null;
@@ -2227,9 +2187,6 @@
     const LOGO_IMAGE = 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593692/idraaak/ogvolfsxxnvk24gho8eb.jpg';
     const INTRO_VIDEO_URL = 'https://www.youtube.com/embed/0PFWAzIJTOQ?si=fFqTokTKwqo1ZHMz';
 
-    // ============================================================
-    // UTILITY FUNCTIONS
-    // ============================================================
     function escapeHtml(str) {
         if (!str) return '';
         const div = document.createElement('div');
@@ -2326,7 +2283,7 @@
     }
 
     // ============================================================
-    // PWA - تحميل التطبيق
+    // PWA
     // ============================================================
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -2384,7 +2341,7 @@
     }
 
     // ============================================================
-    // THEME - الوضع الليلي/النهاري المتكامل
+    // THEME
     // ============================================================
     function applyTheme(isDark) {
         document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
@@ -2418,7 +2375,7 @@
     }
 
     // ============================================================
-    // FULLSCREEN - تكبير الحصة
+    // FULLSCREEN
     // ============================================================
     function toggleFullscreen() {
         const container = document.getElementById('videoContainer');
@@ -2480,7 +2437,7 @@
     });
 
     // ============================================================
-    // ADMIN POPUP - الإعلان
+    // ADMIN POPUP
     // ============================================================
     function showAdminPopup() {
         const popup = document.getElementById('adminPopup');
@@ -3052,162 +3009,107 @@
     }
 
     // ============================================================
-    // حماية الفيديو المتكاملة
+    // مشغل الفيديو الاحترافي - يعمل مع يوتيوب عبر iframe
     // ============================================================
-    function protectVideoPlayer() {
-        const videoContainer = document.getElementById('videoContainer');
-        if (!videoContainer) return;
-        
-        // منع النقر الأيمن
-        videoContainer.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showToast('🚫 النقر الأيمن على الفيديو غير مسموح', 'warning');
-            return false;
-        });
-        
-        // منع السحب
-        videoContainer.addEventListener('dragstart', function(e) {
-            e.preventDefault();
-            return false;
-        });
-        
-        // منع النسخ
-        videoContainer.addEventListener('copy', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showToast('🚫 نسخ الفيديو غير مسموح', 'warning');
-            return false;
-        });
-        
-        // منع تحديد النص
-        videoContainer.style.userSelect = 'none';
-        videoContainer.style.webkitUserSelect = 'none';
-        videoContainer.style.mozUserSelect = 'none';
-        videoContainer.style.msUserSelect = 'none';
-        
-        // حماية الـ iframe
-        const iframe = document.getElementById('videoFrame');
-        if (iframe) {
-            iframe.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 غير مسموح', 'warning');
-                return false;
-            });
-            
-            iframe.style.pointerEvents = 'none';
-        }
-    }
-
-    // ============================================================
-    // مشغل الفيديو الاحترافي الجديد - يستخدم عنصر video مباشر
-    // ============================================================
-    function createCustomPlayer(videoSrc, options = {}) {
+    function createCustomPlayer(videoId, options = {}) {
         const {
             autoplay = true,
-            poster = '',
             onComplete = null,
             lessonId = null,
-            duration = 900,
-            onTimeUpdate = null
+            studentName = 'طالب'
         } = options;
 
         const container = document.createElement('div');
         container.className = 'custom-player';
+        container.id = 'customPlayer_' + Date.now();
         
-        const video = document.createElement('video');
-        video.src = videoSrc;
-        video.preload = 'metadata';
-        if (poster) video.poster = poster;
-        video.playsInline = true;
-        video.disablePictureInPicture = false;
+        // إنشاء iframe لليوتيوب
+        const iframe = document.createElement('iframe');
+        const autoplayParam = autoplay ? '&autoplay=1' : '';
+        iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1&controls=0&showinfo=0&fs=0&iv_load_policy=3&disablekb=1${autoplayParam}`;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        iframe.allow = 'accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.id = 'yt_iframe_' + Date.now();
         
-        // إضافة طبقة حماية على الفيديو
-        video.style.pointerEvents = 'none';
+        container.appendChild(iframe);
         
+        // واجهة التحكم
         const controls = document.createElement('div');
         controls.className = 'player-controls';
-        
-        const progressContainer = document.createElement('div');
-        progressContainer.className = 'progress-container';
-        progressContainer.innerHTML = `
-            <div class="progress-bar">
-                <div class="buffer-fill"></div>
-                <div class="progress-fill"></div>
-            </div>
-        `;
-        
-        const topRow = document.createElement('div');
-        topRow.className = 'controls-top';
-        topRow.innerHTML = `
-            <div class="left-controls">
-                <button class="control-btn play-btn" aria-label="تشغيل/إيقاف"><i class="fas fa-play"></i></button>
-                <button class="control-btn small-text" data-seek="-10"><i class="fas fa-backward"></i> 10</button>
-                <button class="control-btn small-text" data-seek="10"><i class="fas fa-forward"></i> 10</button>
-                <div class="time-display">00:00 / 00:00</div>
-            </div>
-            <div class="right-controls">
-                <div class="volume-container">
-                    <button class="control-btn volume-btn" aria-label="كتم الصوت"><i class="fas fa-volume-up"></i></button>
-                    <input type="range" class="volume-slider" min="0" max="1" step="0.05" value="1">
+        controls.innerHTML = `
+            <div class="controls-top">
+                <div class="left-controls">
+                    <button class="control-btn play-btn" aria-label="تشغيل/إيقاف"><i class="fas fa-play"></i></button>
+                    <button class="control-btn small-text" data-seek="-10"><i class="fas fa-backward"></i> 10</button>
+                    <button class="control-btn small-text" data-seek="10"><i class="fas fa-forward"></i> 10</button>
+                    <span class="time-display">00:00 / 00:00</span>
                 </div>
-                <select class="speed-select" aria-label="سرعة التشغيل">
-                    <option value="0.5">0.5x</option>
-                    <option value="0.75">0.75x</option>
-                    <option value="1" selected>1x</option>
-                    <option value="1.25">1.25x</option>
-                    <option value="1.5">1.5x</option>
-                    <option value="1.75">1.75x</option>
-                    <option value="2">2x</option>
-                </select>
-                <select class="quality-select" aria-label="جودة الفيديو">
-                    <option value="auto">Auto</option>
-                    <option value="1080p">1080p</option>
-                    <option value="720p">720p</option>
-                    <option value="480p">480p</option>
-                    <option value="360p">360p</option>
-                </select>
+                <div class="right-controls">
+                    <div class="volume-container">
+                        <button class="control-btn volume-btn" aria-label="كتم الصوت"><i class="fas fa-volume-up"></i></button>
+                        <input type="range" class="volume-slider" min="0" max="1" step="0.05" value="1">
+                    </div>
+                    <select class="speed-select" aria-label="سرعة التشغيل">
+                        <option value="0.5">0.5x</option>
+                        <option value="0.75">0.75x</option>
+                        <option value="1" selected>1x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="1.75">1.75x</option>
+                        <option value="2">2x</option>
+                    </select>
+                    <select class="quality-select" aria-label="جودة الفيديو">
+                        <option value="auto">Auto</option>
+                        <option value="1080p">1080p</option>
+                        <option value="720p">720p</option>
+                        <option value="480p">480p</option>
+                        <option value="360p">360p</option>
+                    </select>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="buffer-fill"></div>
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            <div class="controls-bottom">
+                <div class="left-controls">
+                    <button class="pip-btn" aria-label="Picture in Picture"><i class="fas fa-arrows-alt-v"></i></button>
+                </div>
+                <div class="right-controls">
+                    <button class="fullscreen-btn-custom" aria-label="ملء الشاشة"><i class="fas fa-expand"></i></button>
+                </div>
             </div>
         `;
         
-        const bottomRow = document.createElement('div');
-        bottomRow.className = 'controls-bottom';
-        bottomRow.innerHTML = `
-            <div class="left-controls">
-                <button class="pip-btn" aria-label="Picture in Picture"><i class="fas fa-arrows-alt-v"></i></button>
-            </div>
-            <div class="right-controls">
-                <button class="fullscreen-btn-custom" aria-label="ملء الشاشة"><i class="fas fa-expand"></i></button>
-            </div>
-        `;
+        container.appendChild(controls);
         
-        controls.appendChild(progressContainer);
-        controls.appendChild(topRow);
-        controls.appendChild(bottomRow);
-        
+        // زر التشغيل المركزي
         const overlay = document.createElement('div');
         overlay.className = 'player-overlay';
         overlay.innerHTML = `<button class="play-center-btn"><i class="fas fa-play"></i></button>`;
-        
-        container.appendChild(video);
-        container.appendChild(controls);
         container.appendChild(overlay);
         
+        // متغيرات التحكم
         let isPlaying = false;
         let isMuted = false;
-        let isFullscreen = false;
         let hideTimeout = null;
         let currentSpeed = 1;
         let progressInterval = null;
-        let watchTime = 0;
         let isCompleted = false;
+        let ytPlayerReady = false;
+        let ytCurrentTime = 0;
+        let ytDuration = 0;
         
+        // عناصر التحكم
         const playBtn = controls.querySelector('.play-btn');
         const playCenterBtn = overlay.querySelector('.play-center-btn');
         const timeDisplay = controls.querySelector('.time-display');
         const progressFill = controls.querySelector('.progress-fill');
-        const bufferFill = controls.querySelector('.buffer-fill');
         const volumeBtn = controls.querySelector('.volume-btn');
         const volumeSlider = controls.querySelector('.volume-slider');
         const speedSelect = controls.querySelector('.speed-select');
@@ -3216,63 +3118,70 @@
         const fullscreenBtn = controls.querySelector('.fullscreen-btn-custom');
         const seekBtns = controls.querySelectorAll('[data-seek]');
         
-        function updateTime() {
-            if (!video.duration) return;
-            const current = video.currentTime || 0;
-            const total = video.duration || 0;
-            
+        // دالة تحديث الوقت
+        function updateTimeDisplay() {
             const format = (t) => {
                 const m = Math.floor(t / 60);
                 const s = Math.floor(t % 60);
                 return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             };
-            
-            timeDisplay.textContent = `${format(current)} / ${format(total)}`;
-            
-            const percent = total > 0 ? (current / total) * 100 : 0;
+            timeDisplay.textContent = `${format(ytCurrentTime)} / ${format(ytDuration)}`;
+            const percent = ytDuration > 0 ? (ytCurrentTime / ytDuration) * 100 : 0;
             progressFill.style.width = `${percent}%`;
-            
-            if (onTimeUpdate) onTimeUpdate(current, total);
         }
         
-        function updateBuffer() {
-            if (!video.buffered.length) return;
-            const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-            const total = video.duration || 1;
-            const percent = (bufferedEnd / total) * 100;
-            bufferFill.style.width = `${Math.min(percent, 100)}%`;
+        // دالة إرسال أمر إلى يوتيوب
+        function sendYtCommand(command, value) {
+            if (!ytPlayerReady) return;
+            try {
+                const msg = JSON.stringify({ event: 'command', func: command, args: value !== undefined ? [value] : [] });
+                iframe.contentWindow.postMessage(msg, '*');
+            } catch (e) {}
         }
         
+        // دالة تشغيل/إيقاف
         function togglePlay() {
-            if (video.paused) {
-                video.play().catch(() => {});
-                isPlaying = true;
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                playCenterBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                container.classList.remove('paused');
-                startProgressTracking();
-            } else {
-                video.pause();
+            if (isPlaying) {
+                sendYtCommand('pauseVideo');
                 isPlaying = false;
                 playBtn.innerHTML = '<i class="fas fa-play"></i>';
                 playCenterBtn.innerHTML = '<i class="fas fa-play"></i>';
                 container.classList.add('paused');
                 stopProgressTracking();
+            } else {
+                sendYtCommand('playVideo');
+                isPlaying = true;
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                playCenterBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                container.classList.remove('paused');
+                startProgressTracking();
+                startHideTimer();
             }
         }
         
         function startProgressTracking() {
             if (progressInterval) return;
-            watchTime = 0;
             progressInterval = setInterval(() => {
-                if (!video.paused && video.currentTime < video.duration) {
-                    watchTime++;
-                    if (watchTime % 10 === 0) {
-                        const progress = Math.min((video.currentTime / (video.duration || 1)) * 100, 100);
-                        if (progress >= 90 && !isCompleted) {
-                            isCompleted = true;
-                            if (onComplete) onComplete();
-                            showToast('🎉 تم إكمال مشاهدة الحصة!', 'success');
+                if (isPlaying && ytPlayerReady) {
+                    sendYtCommand('getCurrentTime');
+                    sendYtCommand('getDuration');
+                    // تحديث وقت المشاهدة
+                    if (activeVideoLessonId) {
+                        const watchSeconds = Math.floor(ytCurrentTime);
+                        videoWatchTotal[activeVideoLessonId] = (videoWatchTotal[activeVideoLessonId] || 0) + 1;
+                        const timerEl = document.getElementById('watchTimer');
+                        if (timerEl) {
+                            const mins = Math.floor(watchSeconds / 60);
+                            const secs = watchSeconds % 60;
+                            timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                        }
+                        // تحديث نسبة التقدم
+                        if (ytDuration > 0) {
+                            const progress = Math.min((watchSeconds / ytDuration) * 100, 100);
+                            const fillEl = document.getElementById('watchProgressFill');
+                            const percentLabel = document.getElementById('progressPercentLabel');
+                            if (fillEl) fillEl.style.width = `${progress}%`;
+                            if (percentLabel) percentLabel.textContent = `${Math.round(progress)}%`;
                         }
                     }
                 }
@@ -3283,50 +3192,6 @@
             if (progressInterval) {
                 clearInterval(progressInterval);
                 progressInterval = null;
-            }
-        }
-        
-        function setVolume(value) {
-            video.volume = value;
-            volumeSlider.value = value;
-            if (value === 0) {
-                isMuted = true;
-                volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            } else {
-                isMuted = false;
-                volumeBtn.innerHTML = value > 0.5 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-down"></i>';
-            }
-        }
-        
-        function toggleMute() {
-            if (isMuted) {
-                setVolume(volumeSlider.value || 0.5);
-            } else {
-                setVolume(0);
-            }
-        }
-        
-        function toggleFullscreenVideo() {
-            if (!document.fullscreenElement) {
-                container.requestFullscreen().catch(() => {
-                    if (video.requestFullscreen) {
-                        video.requestFullscreen().catch(() => {});
-                    }
-                });
-                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-                isFullscreen = true;
-            } else {
-                document.exitFullscreen();
-                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-                isFullscreen = false;
-            }
-        }
-        
-        function togglePip() {
-            if (document.pictureInPictureElement) {
-                document.exitPictureInPicture().catch(() => {});
-            } else {
-                video.requestPictureInPicture().catch(() => {});
             }
         }
         
@@ -3344,95 +3209,131 @@
             startHideTimer();
         }
         
-        video.addEventListener('loadedmetadata', () => {
-            updateTime();
-            if (autoplay) {
-                video.play().catch(() => {});
-                isPlaying = true;
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                playCenterBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                container.classList.remove('paused');
-                startProgressTracking();
-            }
+        // استقبال رسائل من يوتيوب
+        window.addEventListener('message', function ytMessageHandler(e) {
+            if (e.origin !== 'https://www.youtube.com') return;
+            try {
+                const data = JSON.parse(e.data);
+                if (data.event === 'onReady') {
+                    ytPlayerReady = true;
+                    if (autoplay) {
+                        sendYtCommand('playVideo');
+                        isPlaying = true;
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        playCenterBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        container.classList.remove('paused');
+                        startProgressTracking();
+                        startHideTimer();
+                    }
+                }
+                if (data.event === 'onStateChange') {
+                    if (data.info === 1) { // playing
+                        isPlaying = true;
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        playCenterBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        container.classList.remove('paused');
+                        startProgressTracking();
+                        startHideTimer();
+                    } else if (data.info === 2) { // paused
+                        isPlaying = false;
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        playCenterBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        container.classList.add('paused');
+                        stopProgressTracking();
+                        controls.style.opacity = '1';
+                    } else if (data.info === 0) { // ended
+                        isPlaying = false;
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        playCenterBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        container.classList.add('paused');
+                        stopProgressTracking();
+                        if (!isCompleted && onComplete) {
+                            isCompleted = true;
+                            onComplete();
+                            showToast('🎉 تم إكمال مشاهدة الحصة!', 'success');
+                        }
+                    }
+                }
+                if (data.event === 'onCurrentTime') {
+                    ytCurrentTime = data.info;
+                    updateTimeDisplay();
+                }
+                if (data.event === 'onDuration') {
+                    ytDuration = data.info;
+                    updateTimeDisplay();
+                }
+            } catch (err) {}
         });
         
-        video.addEventListener('timeupdate', () => {
-            updateTime();
-            updateBuffer();
-        });
-        
-        video.addEventListener('progress', updateBuffer);
-        video.addEventListener('ended', () => {
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            playCenterBtn.innerHTML = '<i class="fas fa-play"></i>';
-            container.classList.add('paused');
-            stopProgressTracking();
-            if (!isCompleted && onComplete) {
-                isCompleted = true;
-                onComplete();
-                showToast('🎉 تم إكمال مشاهدة الحصة!', 'success');
-            }
-        });
-        
-        video.addEventListener('pause', () => {
-            isPlaying = false;
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            playCenterBtn.innerHTML = '<i class="fas fa-play"></i>';
-            container.classList.add('paused');
-            stopProgressTracking();
-            controls.style.opacity = '1';
-        });
-        
-        video.addEventListener('play', () => {
-            isPlaying = true;
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            playCenterBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            container.classList.remove('paused');
-            startProgressTracking();
-            startHideTimer();
-        });
-        
+        // أحداث التحكم
         playBtn.addEventListener('click', togglePlay);
         playCenterBtn.addEventListener('click', togglePlay);
-        
-        progressContainer.addEventListener('click', (e) => {
-            const rect = progressContainer.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            if (video.duration) {
-                video.currentTime = percent * video.duration;
-                updateTime();
-            }
-        });
         
         seekBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const seek = parseInt(btn.dataset.seek);
-                video.currentTime = Math.max(0, Math.min(video.currentTime + seek, video.duration || 0));
-                updateTime();
+                const newTime = Math.max(0, ytCurrentTime + seek);
+                sendYtCommand('seekTo', newTime);
+                setTimeout(() => sendYtCommand('getCurrentTime'), 100);
                 showControls();
             });
         });
         
         volumeSlider.addEventListener('input', (e) => {
-            setVolume(parseFloat(e.target.value));
+            const val = parseFloat(e.target.value);
+            sendYtCommand('setVolume', val * 100);
+            if (val === 0) {
+                volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                isMuted = true;
+            } else {
+                volumeBtn.innerHTML = val > 0.5 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-down"></i>';
+                isMuted = false;
+            }
         });
         
-        volumeBtn.addEventListener('click', toggleMute);
+        volumeBtn.addEventListener('click', () => {
+            if (isMuted) {
+                volumeSlider.value = 0.5;
+                sendYtCommand('setVolume', 50);
+                volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                isMuted = false;
+            } else {
+                volumeSlider.value = 0;
+                sendYtCommand('setVolume', 0);
+                volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                isMuted = true;
+            }
+        });
         
         speedSelect.addEventListener('change', () => {
             currentSpeed = parseFloat(speedSelect.value);
-            video.playbackRate = currentSpeed;
+            sendYtCommand('setPlaybackRate', currentSpeed);
         });
         
         qualitySelect.addEventListener('change', () => {
             showToast(`🔄 تغيير الجودة إلى ${qualitySelect.value}`, 'info');
         });
         
-        pipBtn.addEventListener('click', togglePip);
+        pipBtn.addEventListener('click', () => {
+            if (document.pictureInPictureElement) {
+                document.exitPictureInPicture().catch(() => {});
+            } else {
+                iframe.requestPictureInPicture().catch(() => {});
+            }
+        });
         
-        fullscreenBtn.addEventListener('click', toggleFullscreenVideo);
+        fullscreenBtn.addEventListener('click', () => {
+            const container2 = container.closest('.video-protected') || container;
+            if (!document.fullscreenElement) {
+                container2.requestFullscreen().catch(() => {});
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                document.exitFullscreen();
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        });
         
+        // إظهار/إخفاء الأزرار
         container.addEventListener('mouseenter', () => {
             controls.style.opacity = '1';
             if (hideTimeout) clearTimeout(hideTimeout);
@@ -3450,7 +3351,7 @@
         });
         
         // اختصارات لوحة المفاتيح
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', function ytKeyHandler(e) {
             if (!container.contains(document.activeElement) && !container.matches(':hover')) return;
             
             switch(e.key) {
@@ -3461,36 +3362,59 @@
                     break;
                 case 'ArrowRight':
                     e.preventDefault();
-                    video.currentTime = Math.min(video.currentTime + 10, video.duration || 0);
-                    updateTime();
+                    const newTimeR = Math.min(ytCurrentTime + 10, ytDuration);
+                    sendYtCommand('seekTo', newTimeR);
+                    setTimeout(() => sendYtCommand('getCurrentTime'), 100);
                     showControls();
                     break;
                 case 'ArrowLeft':
                     e.preventDefault();
-                    video.currentTime = Math.max(video.currentTime - 10, 0);
-                    updateTime();
+                    const newTimeL = Math.max(ytCurrentTime - 10, 0);
+                    sendYtCommand('seekTo', newTimeL);
+                    setTimeout(() => sendYtCommand('getCurrentTime'), 100);
                     showControls();
                     break;
                 case 'ArrowUp':
                     e.preventDefault();
-                    setVolume(Math.min(1, video.volume + 0.1));
+                    const volUp = Math.min(1, parseFloat(volumeSlider.value) + 0.1);
+                    volumeSlider.value = volUp;
+                    sendYtCommand('setVolume', volUp * 100);
+                    volumeBtn.innerHTML = volUp > 0 ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
                     break;
                 case 'ArrowDown':
                     e.preventDefault();
-                    setVolume(Math.max(0, video.volume - 0.1));
+                    const volDown = Math.max(0, parseFloat(volumeSlider.value) - 0.1);
+                    volumeSlider.value = volDown;
+                    sendYtCommand('setVolume', volDown * 100);
+                    volumeBtn.innerHTML = volDown > 0 ? '<i class="fas fa-volume-down"></i>' : '<i class="fas fa-volume-mute"></i>';
                     break;
                 case 'f':
                 case 'F':
                     e.preventDefault();
-                    toggleFullscreenVideo();
+                    fullscreenBtn.click();
                     break;
                 case 'm':
                 case 'M':
                     e.preventDefault();
-                    toggleMute();
+                    volumeBtn.click();
                     break;
             }
         });
+        
+        // حماية iframe من النقر الأيمن والنسخ
+        iframe.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showToast('🚫 النقر الأيمن غير مسموح', 'warning');
+            return false;
+        });
+        
+        iframe.style.pointerEvents = 'none';
+        
+        // إضافة طبقة حماية شفافة
+        const blocker = document.createElement('div');
+        blocker.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;cursor:default;pointer-events:none;';
+        container.appendChild(blocker);
         
         activeCustomPlayer = container;
         
@@ -3498,7 +3422,7 @@
     }
 
     // ============================================================
-    // تعديل دالة openLessonVideo لاستخدام مشغل الفيديو الاحترافي
+    // تعديل دالة openLessonVideo لاستخدام المشغل الجديد
     // ============================================================
     async function openLessonVideo(lessonId) {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -3513,7 +3437,6 @@
             return;
         }
         
-        // حتى لو كانت الحصة مكتملة، نسمح بمشاهدتها مرة أخرى
         const isWatched = userCourseProgress[lessonId]?.watched || false;
         if (isWatched) {
             showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل (يمكنك إعادة مشاهدتها)', 'info');
@@ -3529,9 +3452,10 @@
 
             const videoUrl = lessonData.videoUrl || '';
             const courseName = course ? course.title : 'الكورس';
+            const videoId = extractYouTubeId(videoUrl);
 
-            if (!videoUrl) {
-                showToast('⚠️ لا يوجد فيديو لهذه الحصة', 'warning');
+            if (!videoId) {
+                showToast('⚠️ رابط الفيديو غير صالح', 'warning');
                 return;
             }
 
@@ -3542,7 +3466,6 @@
 
             const studentName = userData?.name || 'طالب';
 
-            // إنشاء حاوية الفيديو
             main.innerHTML = `
                 <div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:0.85rem;color:var(--text2);flex-wrap:wrap;">
@@ -3596,348 +3519,20 @@
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // إنشاء مشغل الفيديو الاحترافي
+            // إنشاء مشغل الفيديو
             const playerContainer = document.getElementById('customPlayerContainer');
             if (playerContainer) {
-                // تحويل رابط يوتيوب إلى رابط قابل للتشغيل المباشر
-                let finalVideoUrl = videoUrl;
-                const youtubeId = extractYouTubeId(videoUrl);
-                if (youtubeId) {
-                    // استخدام رابط مباشر لملف الفيديو - نستخدم proxy أو رابط مباشر
-                    // في حالة يوتيوب، نستخدم embed مع enablejsapi=1 للتحكم
-                    // لكن بما أننا نريد استخدام عنصر video، نحتاج إلى رابط مباشر
-                    // سنستخدم iframe داخل المشغل للفيديوهات من يوتيوب
-                    // أو نستخدم رابط مباشر إذا كان الفيديو على Firebase/Cloudinary
-                    
-                    // للتبسيط، سنستخدم iframe مع controls مخفية
-                    const iframe = document.createElement('iframe');
-                    iframe.src = `https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&rel=0&modestbranding=1&controls=0&showinfo=0&fs=0&iv_load_policy=3&disablekb=1&autoplay=1`;
-                    iframe.style.width = '100%';
-                    iframe.style.height = '100%';
-                    iframe.style.border = 'none';
-                    iframe.allow = 'accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture';
-                    iframe.allowFullscreen = true;
-                    
-                    // حماية iframe
-                    iframe.style.pointerEvents = 'none';
-                    
-                    playerContainer.appendChild(iframe);
-                    
-                    // إضافة طبقة شفافة للحماية
-                    const blocker = document.createElement('div');
-                    blocker.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;cursor:default;pointer-events:none;';
-                    playerContainer.appendChild(blocker);
-                    
-                    // نستخدم مشغل وهمي للتحكم في iframe عبر postMessage
-                    // لكن للتبسيط، سنستخدم التحكم الافتراضي لليوتيوب
-                    // ونضيف واجهة تحكم مخصصة فوقه
-                    
-                    // إضافة واجهة تحكم مخصصة
-                    const customControls = document.createElement('div');
-                    customControls.style.cssText = `
-                        position:absolute;bottom:0;left:0;right:0;
-                        background:linear-gradient(transparent, rgba(0,0,0,0.85));
-                        padding:20px 16px 14px;
-                        z-index:20;
-                        opacity:0;
-                        transition:opacity 0.3s ease;
-                    `;
-                    
-                    customControls.innerHTML = `
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-                            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                                <button class="yt-play-btn" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                                <button class="yt-seek-btn" data-seek="-10" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;">
-                                    <i class="fas fa-backward"></i> 10
-                                </button>
-                                <button class="yt-seek-btn" data-seek="10" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;">
-                                    <i class="fas fa-forward"></i> 10
-                                </button>
-                                <span class="yt-time-display" style="color:#fff;font-size:0.8rem;font-weight:600;font-family:'Cairo',sans-serif;min-width:100px;">00:00 / 00:00</span>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                                <div style="display:flex;align-items:center;gap:6px;">
-                                    <button class="yt-volume-btn" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;">
-                                        <i class="fas fa-volume-up"></i>
-                                    </button>
-                                    <input type="range" class="yt-volume-slider" min="0" max="1" step="0.05" value="1" style="width:60px;height:4px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.3);border-radius:10px;outline:none;">
-                                </div>
-                                <select class="yt-speed-select" style="background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:4px 8px;border-radius:6px;font-size:0.7rem;cursor:pointer;font-family:'Cairo',sans-serif;">
-                                    <option value="0.5">0.5x</option>
-                                    <option value="0.75">0.75x</option>
-                                    <option value="1" selected>1x</option>
-                                    <option value="1.25">1.25x</option>
-                                    <option value="1.5">1.5x</option>
-                                    <option value="1.75">1.75x</option>
-                                    <option value="2">2x</option>
-                                </select>
-                                <select class="yt-quality-select" style="background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:4px 8px;border-radius:6px;font-size:0.7rem;cursor:pointer;font-family:'Cairo',sans-serif;">
-                                    <option value="auto">Auto</option>
-                                    <option value="1080p">1080p</option>
-                                    <option value="720p">720p</option>
-                                    <option value="480p">480p</option>
-                                    <option value="360p">360p</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:6px;">
-                            <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
-                                <button class="yt-pip-btn" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;">
-                                    <i class="fas fa-arrows-alt-v"></i>
-                                </button>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
-                                <button class="yt-fullscreen-btn" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;">
-                                    <i class="fas fa-expand"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div style="width:100%;height:5px;background:rgba(255,255,255,0.3);border-radius:10px;position:relative;cursor:pointer;margin-top:8px;">
-                            <div class="yt-progress-fill" style="height:100%;background:var(--primary);border-radius:10px;width:0%;position:relative;transition:width 0.1s linear;"></div>
-                        </div>
-                    `;
-                    
-                    playerContainer.appendChild(customControls);
-                    
-                    // التحكم في iframe عبر postMessage
-                    let ytPlayerReady = false;
-                    let ytCurrentTime = 0;
-                    let ytDuration = 0;
-                    let isYtPlaying = false;
-                    let ytProgressInterval = null;
-                    
-                    // دالة التحكم في اليوتيوب
-                    function sendYtCommand(command, value) {
-                        if (!ytPlayerReady) return;
-                        const msg = JSON.stringify({ event: 'command', func: command, args: value !== undefined ? [value] : [] });
-                        iframe.contentWindow.postMessage(msg, '*');
-                    }
-                    
-                    // استقبال رسائل من iframe
-                    window.addEventListener('message', (e) => {
-                        if (e.origin !== 'https://www.youtube.com') return;
-                        try {
-                            const data = JSON.parse(e.data);
-                            if (data.event === 'onReady') {
-                                ytPlayerReady = true;
-                                sendYtCommand('playVideo');
-                                isYtPlaying = true;
-                                document.querySelector('.yt-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
-                                startYtProgressTracking();
-                            }
-                            if (data.event === 'onStateChange') {
-                                if (data.info === 1) { // playing
-                                    isYtPlaying = true;
-                                    document.querySelector('.yt-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
-                                    startYtProgressTracking();
-                                } else if (data.info === 2) { // paused
-                                    isYtPlaying = false;
-                                    document.querySelector('.yt-play-btn').innerHTML = '<i class="fas fa-play"></i>';
-                                    stopYtProgressTracking();
-                                } else if (data.info === 0) { // ended
-                                    isYtPlaying = false;
-                                    document.querySelector('.yt-play-btn').innerHTML = '<i class="fas fa-play"></i>';
-                                    stopYtProgressTracking();
-                                    if (!isWatched && !userCourseProgress[lessonId]?.watched) {
-                                        completeLessonWatch(lessonId);
-                                    }
-                                }
-                            }
-                            if (data.event === 'onCurrentTime') {
-                                ytCurrentTime = data.info;
-                                updateYtTimeDisplay();
-                            }
-                            if (data.event === 'onDuration') {
-                                ytDuration = data.info;
-                                updateYtTimeDisplay();
-                            }
-                        } catch (err) {}
-                    });
-                    
-                    function updateYtTimeDisplay() {
-                        const display = document.querySelector('.yt-time-display');
-                        if (!display) return;
-                        const format = (t) => {
-                            const m = Math.floor(t / 60);
-                            const s = Math.floor(t % 60);
-                            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-                        };
-                        const current = ytCurrentTime || 0;
-                        const total = ytDuration || 0;
-                        display.textContent = `${format(current)} / ${format(total)}`;
-                        const progress = total > 0 ? (current / total) * 100 : 0;
-                        const fill = document.querySelector('.yt-progress-fill');
-                        if (fill) fill.style.width = `${progress}%`;
-                    }
-                    
-                    function startYtProgressTracking() {
-                        if (ytProgressInterval) return;
-                        ytProgressInterval = setInterval(() => {
-                            if (isYtPlaying && ytPlayerReady) {
-                                sendYtCommand('getCurrentTime');
-                                sendYtCommand('getDuration');
-                                
-                                // تحديث وقت المشاهدة
-                                const watchSeconds = Math.floor(ytCurrentTime || 0);
-                                const timerEl = document.getElementById('watchTimer');
-                                if (timerEl) {
-                                    const mins = Math.floor(watchSeconds / 60);
-                                    const secs = watchSeconds % 60;
-                                    timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-                                }
-                                
-                                const progress = Math.min((watchSeconds / 900) * 100, 100);
-                                const fillEl = document.getElementById('watchProgressFill');
-                                const percentLabel = document.getElementById('progressPercentLabel');
-                                if (fillEl) fillEl.style.width = `${progress}%`;
-                                if (percentLabel) percentLabel.textContent = `${Math.round(progress)}%`;
-                            }
-                        }, 1000);
-                    }
-                    
-                    function stopYtProgressTracking() {
-                        if (ytProgressInterval) {
-                            clearInterval(ytProgressInterval);
-                            ytProgressInterval = null;
+                const player = createCustomPlayer(videoId, {
+                    autoplay: true,
+                    lessonId: lessonId,
+                    studentName: studentName,
+                    onComplete: () => {
+                        if (!userCourseProgress[lessonId]?.watched) {
+                            completeLessonWatch(lessonId);
                         }
                     }
-                    
-                    // أحداث التحكم
-                    document.querySelector('.yt-play-btn').addEventListener('click', () => {
-                        if (isYtPlaying) {
-                            sendYtCommand('pauseVideo');
-                            isYtPlaying = false;
-                            document.querySelector('.yt-play-btn').innerHTML = '<i class="fas fa-play"></i>';
-                        } else {
-                            sendYtCommand('playVideo');
-                            isYtPlaying = true;
-                            document.querySelector('.yt-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
-                        }
-                    });
-                    
-                    document.querySelectorAll('.yt-seek-btn').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const seek = parseInt(btn.dataset.seek);
-                            const newTime = Math.max(0, (ytCurrentTime || 0) + seek);
-                            sendYtCommand('seekTo', newTime);
-                            sendYtCommand('getCurrentTime');
-                        });
-                    });
-                    
-                    document.querySelector('.yt-volume-slider').addEventListener('input', (e) => {
-                        const val = parseFloat(e.target.value);
-                        sendYtCommand('setVolume', val * 100);
-                    });
-                    
-                    document.querySelector('.yt-volume-btn').addEventListener('click', () => {
-                        const slider = document.querySelector('.yt-volume-slider');
-                        if (parseFloat(slider.value) > 0) {
-                            slider.value = 0;
-                            sendYtCommand('setVolume', 0);
-                            document.querySelector('.yt-volume-btn').innerHTML = '<i class="fas fa-volume-mute"></i>';
-                        } else {
-                            slider.value = 1;
-                            sendYtCommand('setVolume', 100);
-                            document.querySelector('.yt-volume-btn').innerHTML = '<i class="fas fa-volume-up"></i>';
-                        }
-                    });
-                    
-                    document.querySelector('.yt-speed-select').addEventListener('change', (e) => {
-                        const speed = parseFloat(e.target.value);
-                        sendYtCommand('setPlaybackRate', speed);
-                    });
-                    
-                    document.querySelector('.yt-quality-select').addEventListener('change', (e) => {
-                        showToast(`🔄 تغيير الجودة إلى ${e.target.value}`, 'info');
-                    });
-                    
-                    document.querySelector('.yt-pip-btn').addEventListener('click', () => {
-                        if (document.pictureInPictureElement) {
-                            document.exitPictureInPicture().catch(() => {});
-                        } else {
-                            iframe.requestPictureInPicture().catch(() => {});
-                        }
-                    });
-                    
-                    document.querySelector('.yt-fullscreen-btn').addEventListener('click', () => {
-                        const container = document.getElementById('videoContainer');
-                        if (!document.fullscreenElement) {
-                            container.requestFullscreen().catch(() => {});
-                            document.querySelector('.yt-fullscreen-btn').innerHTML = '<i class="fas fa-compress"></i>';
-                        } else {
-                            document.exitFullscreen();
-                            document.querySelector('.yt-fullscreen-btn').innerHTML = '<i class="fas fa-expand"></i>';
-                        }
-                    });
-                    
-                    // إظهار/إخفاء الأزرار
-                    let ytHideTimeout = null;
-                    playerContainer.addEventListener('mouseenter', () => {
-                        customControls.style.opacity = '1';
-                        if (ytHideTimeout) clearTimeout(ytHideTimeout);
-                    });
-                    playerContainer.addEventListener('mouseleave', () => {
-                        if (isYtPlaying) {
-                            ytHideTimeout = setTimeout(() => {
-                                customControls.style.opacity = '0';
-                            }, 2000);
-                        }
-                    });
-                    playerContainer.addEventListener('mousemove', () => {
-                        customControls.style.opacity = '1';
-                        if (ytHideTimeout) clearTimeout(ytHideTimeout);
-                        if (isYtPlaying) {
-                            ytHideTimeout = setTimeout(() => {
-                                customControls.style.opacity = '0';
-                            }, 2000);
-                        }
-                    });
-                    
-                    // اختصارات لوحة المفاتيح لليوتيوب
-                    document.addEventListener('keydown', (e) => {
-                        if (!playerContainer.contains(document.activeElement) && !playerContainer.matches(':hover')) return;
-                        
-                        switch(e.key) {
-                            case ' ':
-                            case 'Space':
-                                e.preventDefault();
-                                document.querySelector('.yt-play-btn').click();
-                                break;
-                            case 'ArrowRight':
-                                e.preventDefault();
-                                document.querySelectorAll('.yt-seek-btn')[1].click();
-                                break;
-                            case 'ArrowLeft':
-                                e.preventDefault();
-                                document.querySelectorAll('.yt-seek-btn')[0].click();
-                                break;
-                            case 'ArrowUp':
-                                e.preventDefault();
-                                const volSlider = document.querySelector('.yt-volume-slider');
-                                volSlider.value = Math.min(1, parseFloat(volSlider.value) + 0.1);
-                                volSlider.dispatchEvent(new Event('input'));
-                                break;
-                            case 'ArrowDown':
-                                e.preventDefault();
-                                const volSliderDown = document.querySelector('.yt-volume-slider');
-                                volSliderDown.value = Math.max(0, parseFloat(volSliderDown.value) - 0.1);
-                                volSliderDown.dispatchEvent(new Event('input'));
-                                break;
-                            case 'f':
-                            case 'F':
-                                e.preventDefault();
-                                document.querySelector('.yt-fullscreen-btn').click();
-                                break;
-                            case 'm':
-                            case 'M':
-                                e.preventDefault();
-                                document.querySelector('.yt-volume-btn').click();
-                                break;
-                        }
-                    });
-                }
+                });
+                playerContainer.appendChild(player);
             }
 
             // حماية الفيديو
@@ -4069,6 +3664,49 @@
     }
 
     // ============================================================
+    // حماية الفيديو المتكاملة
+    // ============================================================
+    function protectVideoPlayer() {
+        const videoContainer = document.getElementById('videoContainer');
+        if (!videoContainer) return;
+        
+        videoContainer.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showToast('🚫 النقر الأيمن على الفيديو غير مسموح', 'warning');
+            return false;
+        });
+        
+        videoContainer.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        videoContainer.addEventListener('copy', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            showToast('🚫 نسخ الفيديو غير مسموح', 'warning');
+            return false;
+        });
+        
+        videoContainer.style.userSelect = 'none';
+        videoContainer.style.webkitUserSelect = 'none';
+        videoContainer.style.mozUserSelect = 'none';
+        videoContainer.style.msUserSelect = 'none';
+        
+        const iframe = document.getElementById('videoFrame');
+        if (iframe) {
+            iframe.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                showToast('🚫 غير مسموح', 'warning');
+                return false;
+            });
+            iframe.style.pointerEvents = 'none';
+        }
+    }
+
+    // ============================================================
     // صفحة الكورس قبل الدخول
     // ============================================================
     function showCoursePreview(courseId) {
@@ -4083,7 +3721,6 @@
         const isPaidApproved = currentUser && userData && userData.premiumCourses && userData.premiumCourses[courseId] === true;
         
         let subscribeButton = '';
-        let paymentSection = '';
         
         if (!currentUser) {
             subscribeButton = `
@@ -4101,7 +3738,6 @@
                 <button class="btn-primary" onclick="APP.subscribeToCourse('${courseId}')">📝 اشترك الآن مجاناً</button>
             `;
         } else {
-            // كورس مدفوع
             subscribeButton = `
                 <div class="price">${course.price || 'غير محدد'} جنيه</div>
                 <div style="margin:12px 0;text-align:right;">
@@ -4135,7 +3771,6 @@
             `;
         }
         
-        // بناء معلومات الكورس - عرض فقط الحقول الموجودة
         let infoItems = '';
         const infoData = [
             { label: '📚 عدد الدروس', value: course.lessonsCount || course.lessons || 0 },
@@ -4178,7 +3813,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // رفع صورة التحويل
     async function handlePaymentUpload(event, courseId) {
         const file = event.target.files[0];
         if (!file) return;
@@ -4204,7 +3838,6 @@
         }
     }
 
-    // إرسال طلب اشتراك مدفوع
     async function submitPaidRequest(courseId) {
         if (!currentUser) { showLoginOverlay(); return; }
         const course = allCourses.find(c => c.id === courseId);
@@ -4246,7 +3879,7 @@
     }
 
     // ============================================================
-    // COURSE PAGE - تم تعديلها لاستخدام صفحة المعاينة
+    // COURSE PAGE
     // ============================================================
     async function openCoursePage(courseId) {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -4254,30 +3887,26 @@
         const course = allCourses.find(c => c.id === courseId);
         if (!course) { showToast('الكورس غير موجود', 'error'); return; }
         
-        // التحقق من الاشتراك
         const isSubscribed = isUserSubscribed(courseId);
         const isPaidApproved = isPremiumCourse(courseId);
         
         if (!isSubscribed && !isPaidApproved && course.isFree === false) {
-            // كورس مدفوع وغير مشترك - عرض صفحة المعاينة
             showCoursePreview(courseId);
             return;
         }
         
         if (course.isFree !== false && !isSubscribed && !isPaidApproved) {
-            // كورس مجاني وغير مشترك - عرض صفحة المعاينة للاشتراك
             showCoursePreview(courseId);
             return;
         }
         
-        // المستخدم مشترك أو الكورس مجاني ومسجل - عرض محتوى الكورس
         const hasAccess = await checkCourseAccess(courseId);
         if (!hasAccess) return;
         
         const main = document.getElementById('mainContent');
         if (!main) return;
 
-        main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;"><div class="spinner" style="margin:0 auto;width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div><p style="margin-top:12px;color:var(--text2);font-weight:600;">جارٍ تجهيز المحتوى...</p></div>`;
+        main.innerHTML = `<div style="max-width:1280px;margin:0 auto;padding:20px;text-align:center;"><div style="margin:0 auto;width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div><p style="margin-top:12px;color:var(--text2);font-weight:600;">جارٍ تجهيز المحتوى...</p></div>`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         try {
@@ -4497,14 +4126,11 @@
     }
 
     // ============================================================
-    // LEADERBOARD - المتصدرين
+    // LEADERBOARD
     // ============================================================
     async function loadLeaderboard() {
         const container = document.getElementById('leaderboardContainer');
-        if (!container) {
-            console.log('Leaderboard container not found');
-            return;
-        }
+        if (!container) return;
 
         try {
             const snapshot = await database.ref('users')
@@ -4649,10 +4275,8 @@
     }
 
     // ============================================================
-    // ⭐⭐⭐ باقي الدوال المهمة ⭐⭐⭐
+    // باقي الدوال المهمة (Dashboard, Error Bank, Results, etc.)
     // ============================================================
-
-    // لوحة الطالب Dashboard
     function showDashboard() {
         if (!currentUser) { showLoginOverlay(); return; }
         const main = document.getElementById('mainContent');
@@ -5156,7 +4780,6 @@
         const streak = userData?.streak || 0;
         const lessonsCompleted = userData?.lessonsCompleted || 0;
         const studyTime = Math.round(userData?.studyTime || 0);
-        const videosWatched = userData?.videosWatched || 0;
         const progress = allLessons.length > 0 ? Math.round((lessonsCompleted / allLessons.length) * 100) : 0;
         const rank = userData?.rank || '--';
         let level = 'مبتدئ', levelColor = 'var(--text2)', levelEmoji = '🌱', detailedAnalysis = '', suggestions = [], strengths = [], weaknesses = [];
