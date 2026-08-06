@@ -3009,7 +3009,7 @@
     }
 
     // ============================================================
-    // مشغل الفيديو الاحترافي - يعمل مع يوتيوب عبر iframe
+    // مشغل الفيديو الاحترافي
     // ============================================================
     function createCustomPlayer(videoId, options = {}) {
         const {
@@ -3023,7 +3023,6 @@
         container.className = 'custom-player';
         container.id = 'customPlayer_' + Date.now();
         
-        // إنشاء iframe لليوتيوب
         const iframe = document.createElement('iframe');
         const autoplayParam = autoplay ? '&autoplay=1' : '';
         iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1&controls=0&showinfo=0&fs=0&iv_load_policy=3&disablekb=1${autoplayParam}`;
@@ -3036,7 +3035,6 @@
         
         container.appendChild(iframe);
         
-        // واجهة التحكم
         const controls = document.createElement('div');
         controls.className = 'player-controls';
         controls.innerHTML = `
@@ -3088,13 +3086,11 @@
         
         container.appendChild(controls);
         
-        // زر التشغيل المركزي
         const overlay = document.createElement('div');
         overlay.className = 'player-overlay';
         overlay.innerHTML = `<button class="play-center-btn"><i class="fas fa-play"></i></button>`;
         container.appendChild(overlay);
         
-        // متغيرات التحكم
         let isPlaying = false;
         let isMuted = false;
         let hideTimeout = null;
@@ -3105,7 +3101,6 @@
         let ytCurrentTime = 0;
         let ytDuration = 0;
         
-        // عناصر التحكم
         const playBtn = controls.querySelector('.play-btn');
         const playCenterBtn = overlay.querySelector('.play-center-btn');
         const timeDisplay = controls.querySelector('.time-display');
@@ -3118,7 +3113,6 @@
         const fullscreenBtn = controls.querySelector('.fullscreen-btn-custom');
         const seekBtns = controls.querySelectorAll('[data-seek]');
         
-        // دالة تحديث الوقت
         function updateTimeDisplay() {
             const format = (t) => {
                 const m = Math.floor(t / 60);
@@ -3130,7 +3124,6 @@
             progressFill.style.width = `${percent}%`;
         }
         
-        // دالة إرسال أمر إلى يوتيوب
         function sendYtCommand(command, value) {
             if (!ytPlayerReady) return;
             try {
@@ -3139,7 +3132,6 @@
             } catch (e) {}
         }
         
-        // دالة تشغيل/إيقاف
         function togglePlay() {
             if (isPlaying) {
                 sendYtCommand('pauseVideo');
@@ -3165,7 +3157,6 @@
                 if (isPlaying && ytPlayerReady) {
                     sendYtCommand('getCurrentTime');
                     sendYtCommand('getDuration');
-                    // تحديث وقت المشاهدة
                     if (activeVideoLessonId) {
                         const watchSeconds = Math.floor(ytCurrentTime);
                         videoWatchTotal[activeVideoLessonId] = (videoWatchTotal[activeVideoLessonId] || 0) + 1;
@@ -3175,7 +3166,6 @@
                             const secs = watchSeconds % 60;
                             timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
                         }
-                        // تحديث نسبة التقدم
                         if (ytDuration > 0) {
                             const progress = Math.min((watchSeconds / ytDuration) * 100, 100);
                             const fillEl = document.getElementById('watchProgressFill');
@@ -3209,7 +3199,6 @@
             startHideTimer();
         }
         
-        // استقبال رسائل من يوتيوب
         window.addEventListener('message', function ytMessageHandler(e) {
             if (e.origin !== 'https://www.youtube.com') return;
             try {
@@ -3227,21 +3216,21 @@
                     }
                 }
                 if (data.event === 'onStateChange') {
-                    if (data.info === 1) { // playing
+                    if (data.info === 1) {
                         isPlaying = true;
                         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
                         playCenterBtn.innerHTML = '<i class="fas fa-pause"></i>';
                         container.classList.remove('paused');
                         startProgressTracking();
                         startHideTimer();
-                    } else if (data.info === 2) { // paused
+                    } else if (data.info === 2) {
                         isPlaying = false;
                         playBtn.innerHTML = '<i class="fas fa-play"></i>';
                         playCenterBtn.innerHTML = '<i class="fas fa-play"></i>';
                         container.classList.add('paused');
                         stopProgressTracking();
                         controls.style.opacity = '1';
-                    } else if (data.info === 0) { // ended
+                    } else if (data.info === 0) {
                         isPlaying = false;
                         playBtn.innerHTML = '<i class="fas fa-play"></i>';
                         playCenterBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -3265,7 +3254,6 @@
             } catch (err) {}
         });
         
-        // أحداث التحكم
         playBtn.addEventListener('click', togglePlay);
         playCenterBtn.addEventListener('click', togglePlay);
         
@@ -3333,7 +3321,6 @@
             }
         });
         
-        // إظهار/إخفاء الأزرار
         container.addEventListener('mouseenter', () => {
             controls.style.opacity = '1';
             if (hideTimeout) clearTimeout(hideTimeout);
@@ -3350,7 +3337,6 @@
             startHideTimer();
         });
         
-        // اختصارات لوحة المفاتيح
         document.addEventListener('keydown', function ytKeyHandler(e) {
             if (!container.contains(document.activeElement) && !container.matches(':hover')) return;
             
@@ -3401,7 +3387,6 @@
             }
         });
         
-        // حماية iframe من النقر الأيمن والنسخ
         iframe.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -3411,7 +3396,6 @@
         
         iframe.style.pointerEvents = 'none';
         
-        // إضافة طبقة حماية شفافة
         const blocker = document.createElement('div');
         blocker.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;cursor:default;pointer-events:none;';
         container.appendChild(blocker);
@@ -3422,7 +3406,7 @@
     }
 
     // ============================================================
-    // تعديل دالة openLessonVideo لاستخدام المشغل الجديد
+    // openLessonVideo - تستخدم المشغل الجديد
     // ============================================================
     async function openLessonVideo(lessonId) {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -3519,7 +3503,6 @@
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // إنشاء مشغل الفيديو
             const playerContainer = document.getElementById('customPlayerContainer');
             if (playerContainer) {
                 const player = createCustomPlayer(videoId, {
@@ -3535,12 +3518,10 @@
                 playerContainer.appendChild(player);
             }
 
-            // حماية الفيديو
             setTimeout(() => {
                 protectVideoPlayer();
             }, 1000);
 
-            // تحريك العلامة المائية
             setTimeout(() => {
                 const container = document.getElementById('videoContainer');
                 const dynamicWM = document.getElementById('dynamicWatermark');
@@ -3565,7 +3546,9 @@
         }
     }
 
-    // ===== إكمال مشاهدة الحصة =====
+    // ============================================================
+    // completeLessonWatch
+    // ============================================================
     async function completeLessonWatch(lessonId) {
         try {
             if (userCourseProgress[lessonId]?.watched) return;
@@ -3663,9 +3646,6 @@
         }
     }
 
-    // ============================================================
-    // حماية الفيديو المتكاملة
-    // ============================================================
     function protectVideoPlayer() {
         const videoContainer = document.getElementById('videoContainer');
         if (!videoContainer) return;
@@ -3693,21 +3673,10 @@
         videoContainer.style.webkitUserSelect = 'none';
         videoContainer.style.mozUserSelect = 'none';
         videoContainer.style.msUserSelect = 'none';
-        
-        const iframe = document.getElementById('videoFrame');
-        if (iframe) {
-            iframe.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                showToast('🚫 غير مسموح', 'warning');
-                return false;
-            });
-            iframe.style.pointerEvents = 'none';
-        }
     }
 
     // ============================================================
-    // صفحة الكورس قبل الدخول
+    // showCoursePreview - صفحة الكورس قبل الدخول
     // ============================================================
     function showCoursePreview(courseId) {
         const course = allCourses.find(c => c.id === courseId);
@@ -3879,7 +3848,7 @@
     }
 
     // ============================================================
-    // COURSE PAGE
+    // openCoursePage - الصفحة الرئيسية للكورس
     // ============================================================
     async function openCoursePage(courseId) {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -4275,7 +4244,7 @@
     }
 
     // ============================================================
-    // باقي الدوال المهمة (Dashboard, Error Bank, Results, etc.)
+    // باقي الدوال (Dashboard, Error Bank, Results, etc.)
     // ============================================================
     function showDashboard() {
         if (!currentUser) { showLoginOverlay(); return; }
@@ -4409,7 +4378,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // رفع الصورة
     async function uploadProfilePhoto(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -4435,7 +4403,6 @@
         }
     }
 
-    // بنك الأخطاء
     async function showErrorBank() {
         if (!currentUser) { showLoginOverlay(); return; }
         const main = document.getElementById('mainContent');
@@ -4486,7 +4453,6 @@
             showToast('حدث خطأ في تحميل الأخطاء', 'error'); }
     }
 
-    // اختبار تصحيح الأخطاء
     async function startErrorExam() {
         if (!currentUser) { showLoginOverlay(); return; }
         try {
@@ -4578,7 +4544,6 @@
         }
     }
 
-    // النتائج
     async function showResults() {
         if (!currentUser) { showLoginOverlay(); return; }
         const main = document.getElementById('mainContent');
@@ -4625,7 +4590,6 @@
             showToast('حدث خطأ في تحميل النتائج', 'error'); }
     }
 
-    // الشهادات، بطاقة الطالب، الإنجازات، تحليل المستوى
     function showCertificate() {
         if (!currentUser) { showLoginOverlay(); return; }
         const main = document.getElementById('mainContent');
