@@ -5594,33 +5594,10 @@
         }
 
         // ============================================================
-        // EXAM FUNCTIONS
+        // ⭐⭐⭐ EXAM, QUIZ, ASSIGNMENT - CORE IMPLEMENTATION ⭐⭐⭐
         // ============================================================
-        function openLessonExam(lessonId) {
-            // التحقق من إكمال الامتحان مسبقاً
-            if (userCourseProgress['exam_' + lessonId]?.completed) {
-                showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً ولا يمكن إعادته', 'warning');
-                return;
-            }
-            showToast('📝 جاري تحميل الامتحان...', 'info');
-        }
 
-        function openLessonQuiz(lessonId) {
-            if (userCourseProgress['quiz_' + lessonId]?.completed) {
-                showToast('❌ لقد قمت بأداء هذا الكويز مسبقاً ولا يمكن إعادته', 'warning');
-                return;
-            }
-            showToast('🧪 جاري تحميل الكويز...', 'info');
-        }
-
-        function openLessonAssignment(lessonId) {
-            if (userCourseProgress['assignment_' + lessonId]?.completed) {
-                showToast('❌ لقد قمت بتسليم هذا الواجب مسبقاً', 'warning');
-                return;
-            }
-            showToast('📝 جاري تحميل الواجب...', 'info');
-        }
-
+        // -------- Helper: Open Exam Security Modal --------
         function openExamSecurityModal(id, callback, type) {
             const modal = document.getElementById('examSecurityModal');
             if (modal) modal.classList.add('open');
@@ -5640,6 +5617,953 @@
                 window._examCallback();
                 window._examCallback = null;
             }
+        }
+
+        // -------- Helper: Get Exam Data from Firestore --------
+        async function getExamData(examId) {
+            try {
+                const snapshot = await database.ref('exams/' + examId).once('value');
+                if (snapshot.exists()) {
+                    return { id: examId, ...snapshot.val() };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error loading exam:', error);
+                showToast('حدث خطأ في تحميل الامتحان', 'error');
+                return null;
+            }
+        }
+
+        // -------- Helper: Get Quiz Data from Firestore --------
+        async function getQuizData(quizId) {
+            try {
+                const snapshot = await database.ref('quizzes/' + quizId).once('value');
+                if (snapshot.exists()) {
+                    return { id: quizId, ...snapshot.val() };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                showToast('حدث خطأ في تحميل الكويز', 'error');
+                return null;
+            }
+        }
+
+        // -------- Helper: Get Assignment Data from Firestore --------
+        async function getAssignmentData(assignmentId) {
+            try {
+                const snapshot = await database.ref('assignments/' + assignmentId).once('value');
+                if (snapshot.exists()) {
+                    return { id: assignmentId, ...snapshot.val() };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error loading assignment:', error);
+                showToast('حدث خطأ في تحميل الواجب', 'error');
+                return null;
+            }
+        }
+
+        // -------- Helper: Award Points & Update Progress --------
+        async function awardPointsAndUpdateProgress(userId, progressKey, atomsEarned, resultData) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    // Use a transaction to prevent race conditions
+                    await database.ref('users/' + userId).transaction((currentData) => {
+                        if (currentData === null) {
+                            return currentData;
+                        }
+
+                        // Check if already completed to prevent duplicate rewards
+                        if (currentData.progress && currentData.progress[progressKey] && currentData.progress[progressKey].completed) {
+                            return; // Abort transaction
+                        }
+
+                        // Update user data
+                        const updatedData = currentData;
+                        updatedData.atoms = (updatedData.atoms || 0) + atomsEarned;
+
+                        // Update statistics based on type
+                        if (resultData.type === 'exam') {
+                            updatedData.examsPassed = (updatedData.examsPassed || 0) + 1;
+                            if (resultData.score === 100) {
+                                updatedData.perfectExams = (updatedData.perfectExams || 0) + 1;
+                            }
+                        } else if (resultData.type === 'quiz') {
+                            updatedData.quizzesPassed = (updatedData.quizzesPassed || 0) + 1;
+                        }
+
+                        // Update progress
+                        if (!updatedData.progress) {
+                            updatedData.progress = {};
+                        }
+                        updatedData.progress[progressKey] = {
+                            completed: true,
+                            completedAt: new Date().toISOString(),
+                            score: resultData.score,
+                            atomsEarned: atomsEarned,
+                            correctAnswers: resultData.correctAnswers || 0,
+                            totalQuestions: resultData.totalQuestions || 0,
+                            type: resultData.type,
+                            id: resultData.id
+                        };
+
+                        return updatedData;
+                    });
+
+                    // After successful transaction, save the detailed result
+                    await database.ref('users/' + userId + '/results').push({
+                        id: resultData.id,
+                        title: resultData.title,
+                        type: resultData.type,
+                        score: resultData.score,
+                        correctAnswers: resultData.correctAnswers || 0,
+                        totalQuestions: resultData.totalQuestions || 0,
+                        atomsEarned: atomsEarned,
+                        completedAt: new Date().toISOString()
+                    });
+
+                    // Also store the submission details (answers) for review
+                    await database.ref('users/' + userId + '/submissions/' + progressKey).set({
+                        id: resultData.id,
+                        type: resultData.type,
+                        title: resultData.title,
+                        answers: resultData.answers || {},
+                        score: resultData.score,
+                        correctAnswers: resultData.correctAnswers || 0,
+                        totalQuestions: resultData.totalQuestions || 0,
+                        atomsEarned: atomsEarned,
+                        submittedAt: new Date().toISOString()
+                    });
+
+                    // Update local state
+                    if (userData) {
+                        userData.atoms = (userData.atoms || 0) + atomsEarned;
+                        if (resultData.type === 'exam') {
+                            userData.examsPassed = (userData.examsPassed || 0) + 1;
+                            if (resultData.score === 100) {
+                                userData.perfectExams = (userData.perfectExams || 0) + 1;
+                            }
+                        } else if (resultData.type === 'quiz') {
+                            userData.quizzesPassed = (userData.quizzesPassed || 0) + 1;
+                        }
+                        cache.userData = userData;
+                        updateCache();
+                    }
+
+                    // Update local progress
+                    userCourseProgress[progressKey] = {
+                        completed: true,
+                        completedAt: new Date().toISOString(),
+                        score: resultData.score,
+                        atomsEarned: atomsEarned,
+                        correctAnswers: resultData.correctAnswers || 0,
+                        totalQuestions: resultData.totalQuestions || 0,
+                        type: resultData.type,
+                        id: resultData.id
+                    };
+                    cache.progress = userCourseProgress;
+                    updateCache();
+
+                    // Update UI atoms badge
+                    animateAtoms('atomsCount', userData?.atoms || 0);
+                    animateAtoms('userAtomsCount', userData?.atoms || 0);
+
+                    // Update rank
+                    if (currentUser) {
+                        calculateUserRank(currentUser.uid, userData?.atoms || 0);
+                    }
+
+                    resolve(true);
+                } catch (error) {
+                    console.error('Error awarding points:', error);
+                    reject(error);
+                }
+            });
+        }
+
+        // -------- Helper: Render Exam/Quiz Questions --------
+        function renderExamQuestions(containerId, questions, type = 'exam') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            container.innerHTML = questions.map((q, index) => {
+                const optionsHtml = q.options.map((opt, optIndex) => {
+                    const isCorrect = optIndex === q.correctAnswer;
+                    const isSelected = examAnswers[type + '_' + q.id] === optIndex;
+                    return `
+                        <div class="exam-option" style="padding:8px 16px;margin:6px 0;border:2px solid ${isSelected ? 'var(--primary)' : 'var(--border)'};border-radius:var(--radius);cursor:pointer;background:${isSelected ? 'var(--primary)' : 'var(--card)'};color:${isSelected ? '#fff' : 'var(--text)'};transition:all 0.2s;" onclick="APP.selectAnswer('${type}', '${q.id}', ${optIndex})">
+                            <span style="font-weight:600;font-size:clamp(0.9rem,1vw,1rem);">${String.fromCharCode(65 + optIndex)}. ${escapeHtml(opt)}</span>
+                            ${isSelected ? '<span style="float:left;"><i class="fas fa-check-circle"></i></span>' : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="exam-question" style="margin-bottom:20px;padding:16px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);">
+                        <div style="font-weight:700;font-size:clamp(0.95rem,1.05vw,1.1rem);color:var(--text);margin-bottom:8px;">
+                            <span style="color:var(--primary);">${index + 1}.</span> ${escapeHtml(q.question)}
+                        </div>
+                        <div class="exam-options">
+                            ${optionsHtml}
+                        </div>
+                        ${q.image ? `<div style="margin-top:8px;text-align:center;"><img src="${q.image}" alt="سؤال ${index + 1}" style="max-width:300px;max-height:200px;border-radius:var(--radius);cursor:pointer;" onclick="APP.openImageZoom('${q.image}')"></div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // -------- Core: Open Lesson Exam --------
+        async function openLessonExam(lessonId) {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            // Check if exam already completed
+            const progressKey = 'exam_' + lessonId;
+            if (userCourseProgress[progressKey]?.completed) {
+                showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً ولا يمكن إعادته', 'warning');
+                showCompletedModal();
+                return;
+            }
+
+            // Find the lesson
+            const lesson = allLessons.find(l => l.id === lessonId);
+            if (!lesson) {
+                showToast('الحصة غير موجودة', 'error');
+                return;
+            }
+
+            // Find the exam linked to this lesson
+            const examId = lesson.examId;
+            if (!examId) {
+                showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning');
+                return;
+            }
+
+            // Check access to the course
+            const course = allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
+                showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                showSubscriptionPage(course.id);
+                return;
+            }
+
+            // Open security modal before starting
+            openExamSecurityModal(examId, async function() {
+                await startExam(examId, lessonId, 'exam', lesson.title);
+            }, 'exam');
+        }
+
+        // -------- Core: Start Exam --------
+        async function startExam(examId, lessonId, type, lessonTitle) {
+            try {
+                // Load exam data from Firestore
+                const examData = await getExamData(examId);
+                if (!examData) {
+                    showToast('⚠️ لم يتم العثور على الامتحان', 'error');
+                    return;
+                }
+
+                // Store correct answers temporarily (will be cleared after submission)
+                // This is a security measure: we keep answers in a separate object
+                // that is NOT exposed to the user interface before submission
+                const correctAnswers = {};
+                const questions = examData.questions.map(q => {
+                    // Store correct answer
+                    correctAnswers[q.id] = q.correctAnswer;
+                    // Return question without exposing correct answer
+                    return {
+                        id: q.id,
+                        question: q.question,
+                        options: q.options,
+                        image: q.image || null
+                    };
+                });
+
+                // Store the exam context
+                currentExamData = {
+                    id: examId,
+                    type: type,
+                    lessonId: lessonId,
+                    title: examData.title || 'امتحان',
+                    questions: questions,
+                    duration: examData.duration || 30,
+                    atomsReward: examData.atomsReward || 10,
+                    // Store correct answers in a temporary variable that will be cleared
+                    _correctAnswers: correctAnswers
+                };
+
+                // Initialize answers
+                examAnswers = {};
+
+                // Render exam interface
+                renderExamInterface(currentExamData);
+
+            } catch (error) {
+                console.error('Error starting exam:', error);
+                showToast('حدث خطأ في بدء الامتحان', 'error');
+            }
+        }
+
+        // -------- Helper: Render Exam Interface --------
+        function renderExamInterface(examData) {
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+
+            const totalQuestions = examData.questions.length;
+            const duration = examData.duration || 30;
+
+            main.innerHTML = `
+                <div style="max-width:900px;margin:0 auto;padding:20px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                        <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2vw,1.8rem);color:var(--text);">📝 ${escapeHtml(examData.title)}</h1>
+                        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                            <div style="background:var(--bg);padding:6px 16px;border-radius:50px;font-weight:700;color:var(--primary);font-size:clamp(0.8rem,0.9vw,0.9rem);">
+                                <i class="fas fa-clock"></i> <span id="examTimer">${duration}:00</span>
+                            </div>
+                            <div style="background:var(--bg);padding:6px 16px;border-radius:50px;font-weight:700;color:var(--text2);font-size:clamp(0.8rem,0.9vw,0.9rem);">
+                                <i class="fas fa-question-circle"></i> <span id="answeredCount">0</span>/${totalQuestions}
+                            </div>
+                            <button class="btn-outline btn-sm no-print" onclick="APP.closeExam()" style="min-height:36px;">✕ إلغاء</button>
+                        </div>
+                    </div>
+                    
+                    <div id="examQuestionsContainer" style="margin:16px 0;">
+                        ${renderExamQuestionsHTML(examData.questions)}
+                    </div>
+                    
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:20px;">
+                        <button class="btn-primary" id="submitExamBtn" onclick="APP.submitExam()" style="min-height:44px;padding:12px 40px;font-size:clamp(1rem,1.1vw,1.2rem);">
+                            <i class="fas fa-paper-plane"></i> تسليم الامتحان
+                        </button>
+                        <button class="btn-outline btn-sm no-print" onclick="APP.closeExam()" style="min-height:36px;">✕ إلغاء</button>
+                    </div>
+                    
+                    <p style="text-align:center;font-size:0.75rem;color:var(--text2);margin-top:12px;">
+                        <i class="fas fa-info-circle"></i> سيتم تسليم الامتحان تلقائياً عند انتهاء الوقت
+                    </p>
+                </div>
+            `;
+
+            // Start timer
+            startExamTimer(duration);
+
+            // Update answered count on change
+            updateAnsweredCount();
+        }
+
+        // -------- Helper: Render Questions HTML --------
+        function renderExamQuestionsHTML(questions) {
+            return questions.map((q, index) => {
+                const optionsHtml = q.options.map((opt, optIndex) => {
+                    const isSelected = examAnswers[q.id] === optIndex;
+                    return `
+                        <div class="exam-option" style="padding:8px 16px;margin:6px 0;border:2px solid ${isSelected ? 'var(--primary)' : 'var(--border)'};border-radius:var(--radius);cursor:pointer;background:${isSelected ? 'var(--primary)' : 'var(--card)'};color:${isSelected ? '#fff' : 'var(--text)'};transition:all 0.2s;" onclick="APP.selectAnswer('${q.id}', ${optIndex})">
+                            <span style="font-weight:600;font-size:clamp(0.9rem,1vw,1rem);">${String.fromCharCode(65 + optIndex)}. ${escapeHtml(opt)}</span>
+                            ${isSelected ? '<span style="float:left;"><i class="fas fa-check-circle"></i></span>' : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="exam-question" style="margin-bottom:20px;padding:16px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);" data-question-id="${q.id}">
+                        <div style="font-weight:700;font-size:clamp(0.95rem,1.05vw,1.1rem);color:var(--text);margin-bottom:8px;">
+                            <span style="color:var(--primary);">${index + 1}.</span> ${escapeHtml(q.question)}
+                        </div>
+                        <div class="exam-options">
+                            ${optionsHtml}
+                        </div>
+                        ${q.image ? `<div style="margin-top:8px;text-align:center;"><img src="${q.image}" alt="سؤال ${index + 1}" style="max-width:300px;max-height:200px;border-radius:var(--radius);cursor:pointer;" onclick="APP.openImageZoom('${q.image}')"></div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // -------- Select Answer --------
+        function selectAnswer(questionId, optionIndex) {
+            if (window._examLocked) {
+                showToast('⚠️ تم قفل الامتحان، لا يمكن تعديل الإجابات', 'warning');
+                return;
+            }
+
+            examAnswers[questionId] = optionIndex;
+            updateAnsweredCount();
+            reRenderExamOptions();
+        }
+
+        // -------- Update Answered Count --------
+        function updateAnsweredCount() {
+            const countEl = document.getElementById('answeredCount');
+            if (countEl) {
+                const answered = Object.keys(examAnswers).length;
+                countEl.textContent = answered;
+            }
+        }
+
+        // -------- Re-render Options (for visual feedback) --------
+        function reRenderExamOptions() {
+            const container = document.getElementById('examQuestionsContainer');
+            if (!container) return;
+            
+            const questionDivs = container.querySelectorAll('.exam-question');
+            questionDivs.forEach(div => {
+                const qId = div.dataset.questionId;
+                if (!qId) return;
+                const selected = examAnswers[qId];
+                const options = div.querySelectorAll('.exam-option');
+                options.forEach((opt, idx) => {
+                    const isSelected = idx === selected;
+                    opt.style.borderColor = isSelected ? 'var(--primary)' : 'var(--border)';
+                    opt.style.background = isSelected ? 'var(--primary)' : 'var(--card)';
+                    opt.style.color = isSelected ? '#fff' : 'var(--text)';
+                    // Update checkmark
+                    const checkSpan = opt.querySelector('span:last-child');
+                    if (checkSpan && isSelected) {
+                        checkSpan.innerHTML = '<span style="float:left;"><i class="fas fa-check-circle"></i></span>';
+                    } else if (checkSpan) {
+                        checkSpan.innerHTML = '';
+                    }
+                });
+            });
+        }
+
+        // -------- Exam Timer --------
+        let examTimerInterval = null;
+        let examTimeLeft = 0;
+
+        function startExamTimer(duration) {
+            examTimeLeft = duration * 60;
+            const timerEl = document.getElementById('examTimer');
+            if (!timerEl) return;
+
+            if (examTimerInterval) {
+                clearInterval(examTimerInterval);
+            }
+
+            examTimerInterval = setInterval(() => {
+                examTimeLeft--;
+                if (examTimeLeft <= 0) {
+                    clearInterval(examTimerInterval);
+                    examTimerInterval = null;
+                    autoSubmitExam();
+                    return;
+                }
+
+                const minutes = Math.floor(examTimeLeft / 60);
+                const seconds = examTimeLeft % 60;
+                timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                // Warning when 1 minute left
+                if (examTimeLeft === 60) {
+                    showToast('⏰ دقيقة واحدة متبقية!', 'warning');
+                }
+                if (examTimeLeft === 30) {
+                    showToast('⏰ 30 ثانية متبقية!', 'warning');
+                }
+            }, 1000);
+        }
+
+        // -------- Auto Submit --------
+        let isSubmitting = false;
+
+        async function autoSubmitExam() {
+            if (isSubmitting) return;
+            showToast('⏰ انتهى الوقت! يتم تسليم الامتحان تلقائياً...', 'info');
+            await submitExam(true);
+        }
+
+        // -------- Core: Submit Exam --------
+        async function submitExam(isAuto = false) {
+            if (isSubmitting) {
+                showToast('⏳ جاري تسليم الامتحان، يرجى الانتظار...', 'info');
+                return;
+            }
+
+            if (!currentExamData) {
+                showToast('⚠️ لا يوجد امتحان نشط', 'error');
+                return;
+            }
+
+            // Lock the exam to prevent further changes
+            window._examLocked = true;
+
+            // Clear timer
+            if (examTimerInterval) {
+                clearInterval(examTimerInterval);
+                examTimerInterval = null;
+            }
+
+            isSubmitting = true;
+            const submitBtn = document.getElementById('submitExamBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسليم...';
+            }
+
+            try {
+                const examData = currentExamData;
+                const correctAnswers = examData._correctAnswers || {};
+
+                // Calculate results
+                let correctCount = 0;
+                let wrongCount = 0;
+                let unansweredCount = 0;
+
+                examData.questions.forEach(q => {
+                    const userAnswer = examAnswers[q.id];
+                    const correct = correctAnswers[q.id];
+                    if (userAnswer === undefined) {
+                        unansweredCount++;
+                    } else if (userAnswer === correct) {
+                        correctCount++;
+                    } else {
+                        wrongCount++;
+                    }
+                });
+
+                const totalQuestions = examData.questions.length;
+                const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+                // Calculate atoms earned
+                let atomsEarned = 0;
+                if (score >= 90) atomsEarned = examData.atomsReward || 10;
+                else if (score >= 70) atomsEarned = Math.round((examData.atomsReward || 10) * 0.7);
+                else if (score >= 50) atomsEarned = Math.round((examData.atomsReward || 10) * 0.4);
+                else atomsEarned = 0;
+
+                // Prepare result data
+                const resultData = {
+                    id: examData.id,
+                    title: examData.title,
+                    type: examData.type || 'exam',
+                    score: score,
+                    correctAnswers: correctCount,
+                    totalQuestions: totalQuestions,
+                    atomsEarned: atomsEarned,
+                    answers: examAnswers,
+                    completedAt: new Date().toISOString()
+                };
+
+                const progressKey = examData.type + '_' + examData.lessonId;
+
+                // Save result and award points
+                await awardPointsAndUpdateProgress(
+                    currentUser.uid,
+                    progressKey,
+                    atomsEarned,
+                    resultData
+                );
+
+                // Clear sensitive data
+                delete currentExamData._correctAnswers;
+
+                // Show result
+                showExamResult(resultData);
+
+                // Add notification
+                await addNotification(
+                    currentUser.uid,
+                    `📝 تم إكمال ${examData.type === 'exam' ? 'امتحان' : 'كويز'}`,
+                    `حصلت على ${score}% في "${examData.title}" وربحت ${atomsEarned} ذرة.`,
+                    '📝'
+                );
+
+                // Show success message
+                showToast(`✅ تم تسليم ${examData.type === 'exam' ? 'الامتحان' : 'الكويز'} بنجاح!`, 'success');
+
+            } catch (error) {
+                console.error('Error submitting exam:', error);
+                showToast('❌ حدث خطأ أثناء تسليم الامتحان', 'error');
+                // Unlock only on error
+                window._examLocked = false;
+            } finally {
+                isSubmitting = false;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تسليم الامتحان';
+                }
+            }
+        }
+
+        // -------- Show Exam Result --------
+        function showExamResult(resultData) {
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+
+            const isPerfect = resultData.score === 100;
+            const isPassed = resultData.score >= 50;
+
+            main.innerHTML = `
+                <div style="max-width:700px;margin:0 auto;padding:20px;">
+                    <div style="text-align:center;padding:clamp(20px,3vw,40px);background:var(--card);border-radius:var(--radius-lg);border:2px solid ${isPerfect ? 'var(--gold)' : isPassed ? 'var(--success)' : 'var(--danger)'};">
+                        <div style="font-size:clamp(3rem,4vw,5rem);">
+                            ${isPerfect ? '🏆' : isPassed ? '✅' : '📚'}
+                        </div>
+                        <h2 style="font-family:'Lalezar',cursive;font-size:clamp(1.5rem,2vw,2rem);color:var(--text);">
+                            ${isPerfect ? '🎉 ممتاز! درجة كاملة!' : isPassed ? '💪 أحسنت! اجتياز ناجح!' : '📖 تحتاج إلى مراجعة'}
+                        </h2>
+                        <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:16px 0;">
+                            <div style="text-align:center;">
+                                <div style="font-size:clamp(2rem,2.5vw,3rem);font-weight:900;color:${isPassed ? 'var(--success)' : 'var(--danger)'};">${resultData.score}%</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">الدرجة</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:clamp(2rem,2.5vw,3rem);font-weight:900;color:var(--primary);">${resultData.correctAnswers}/${resultData.totalQuestions}</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">الإجابات الصحيحة</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:clamp(2rem,2.5vw,3rem);font-weight:900;color:var(--gold);">+${resultData.atomsEarned}</div>
+                                <div style="font-size:0.8rem;color:var(--text2);">ذرات مضافة</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
+                            <button class="btn-primary" onclick="APP.showResults()" style="min-height:44px;">📊 عرض النتائج</button>
+                            <button class="btn-outline" onclick="APP.showHome()" style="min-height:44px;">🏠 الرئيسية</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // -------- Close Exam --------
+        function closeExam() {
+            if (examTimerInterval) {
+                clearInterval(examTimerInterval);
+                examTimerInterval = null;
+            }
+            window._examLocked = false;
+            currentExamData = null;
+            examAnswers = {};
+            // Go back to the lesson page
+            if (currentExamData && currentExamData.lessonId) {
+                const lesson = allLessons.find(l => l.id === currentExamData.lessonId);
+                if (lesson) {
+                    openCoursePage(lesson.courseId);
+                    return;
+                }
+            }
+            showHome();
+        }
+
+        // -------- Quiz Implementation --------
+        async function openLessonQuiz(lessonId) {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            // Check if quiz already completed
+            const progressKey = 'quiz_' + lessonId;
+            if (userCourseProgress[progressKey]?.completed) {
+                showToast('❌ لقد قمت بأداء هذا الكويز مسبقاً ولا يمكن إعادته', 'warning');
+                showCompletedModal();
+                return;
+            }
+
+            const lesson = allLessons.find(l => l.id === lessonId);
+            if (!lesson) {
+                showToast('الحصة غير موجودة', 'error');
+                return;
+            }
+
+            const quizId = lesson.quizId;
+            if (!quizId) {
+                showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning');
+                return;
+            }
+
+            const course = allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
+                showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                showSubscriptionPage(course.id);
+                return;
+            }
+
+            // Open security modal before starting quiz
+            openExamSecurityModal(quizId, async function() {
+                await startQuiz(quizId, lessonId, lesson.title);
+            }, 'quiz');
+        }
+
+        async function startQuiz(quizId, lessonId, lessonTitle) {
+            try {
+                const quizData = await getQuizData(quizId);
+                if (!quizData) {
+                    showToast('⚠️ لم يتم العثور على الكويز', 'error');
+                    return;
+                }
+
+                const correctAnswers = {};
+                const questions = quizData.questions.map(q => {
+                    correctAnswers[q.id] = q.correctAnswer;
+                    return {
+                        id: q.id,
+                        question: q.question,
+                        options: q.options,
+                        image: q.image || null
+                    };
+                });
+
+                currentExamData = {
+                    id: quizId,
+                    type: 'quiz',
+                    lessonId: lessonId,
+                    title: quizData.title || 'كويز',
+                    questions: questions,
+                    duration: quizData.duration || 15,
+                    atomsReward: quizData.atomsReward || 5,
+                    _correctAnswers: correctAnswers
+                };
+
+                examAnswers = {};
+                renderExamInterface(currentExamData);
+
+            } catch (error) {
+                console.error('Error starting quiz:', error);
+                showToast('حدث خطأ في بدء الكويز', 'error');
+            }
+        }
+
+        // -------- Assignment Implementation --------
+        async function openLessonAssignment(lessonId) {
+            if (!currentUser) {
+                showLoginOverlay();
+                return;
+            }
+
+            // Check if assignment already completed
+            const progressKey = 'assignment_' + lessonId;
+            if (userCourseProgress[progressKey]?.completed) {
+                showToast('❌ لقد قمت بتسليم هذا الواجب مسبقاً', 'warning');
+                showCompletedModal();
+                return;
+            }
+
+            const lesson = allLessons.find(l => l.id === lessonId);
+            if (!lesson) {
+                showToast('الحصة غير موجودة', 'error');
+                return;
+            }
+
+            const assignmentId = lesson.assignmentId;
+            if (!assignmentId) {
+                showToast('⚠️ لا يوجد واجب لهذه الحصة', 'warning');
+                return;
+            }
+
+            const course = allCourses.find(c => c.id === lesson.courseId);
+            if (course && course.isFree === false && !isPremiumCourse(course.id)) {
+                showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                showSubscriptionPage(course.id);
+                return;
+            }
+
+            // Open assignment
+            await startAssignment(assignmentId, lessonId, lesson.title);
+        }
+
+        async function startAssignment(assignmentId, lessonId, lessonTitle) {
+            try {
+                const assignmentData = await getAssignmentData(assignmentId);
+                if (!assignmentData) {
+                    showToast('⚠️ لم يتم العثور على الواجب', 'error');
+                    return;
+                }
+
+                // Render assignment interface
+                const main = document.getElementById('mainContent');
+                if (!main) return;
+
+                main.innerHTML = `
+                    <div style="max-width:800px;margin:0 auto;padding:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+                            <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.3rem,2vw,1.8rem);color:var(--text);">📝 ${escapeHtml(assignmentData.title)}</h1>
+                            <button class="btn-outline btn-sm no-print" onclick="APP.closeAssignment()" style="min-height:36px;">✕ إلغاء</button>
+                        </div>
+                        
+                        <div style="background:var(--bg);padding:16px;border-radius:var(--radius);margin-bottom:16px;">
+                            <p style="color:var(--text2);font-size:clamp(0.9rem,1vw,1rem);">${escapeHtml(assignmentData.description || '')}</p>
+                            ${assignmentData.instructions ? `<p style="color:var(--text);margin-top:8px;font-weight:600;">📌 التعليمات: ${escapeHtml(assignmentData.instructions)}</p>` : ''}
+                            ${assignmentData.fileUrl ? `<p style="margin-top:8px;"><a href="${assignmentData.fileUrl}" target="_blank" class="btn-outline btn-sm">📄 تحميل ملف الواجب</a></p>` : ''}
+                        </div>
+                        
+                        <div style="margin:16px 0;">
+                            <label style="display:block;font-weight:700;color:var(--text);margin-bottom:8px;">✍️ إجابتك</label>
+                            <textarea id="assignmentAnswer" style="width:100%;min-height:150px;padding:12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.9rem,1vw,1rem);resize:vertical;" placeholder="اكتب إجابتك هنا..."></textarea>
+                        </div>
+                        
+                        ${assignmentData.allowFileUpload !== false ? `
+                            <div style="margin:16px 0;">
+                                <label style="display:block;font-weight:700;color:var(--text);margin-bottom:8px;">📎 رفع ملف (اختياري)</label>
+                                <input type="file" id="assignmentFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;">
+                                <div id="assignmentFilePreview" style="margin-top:8px;display:none;">
+                                    <div style="padding:8px 16px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+                                        <i class="fas fa-file"></i>
+                                        <span id="assignmentFileName"></span>
+                                        <button onclick="APP.clearAssignmentFile()" style="background:none;border:none;color:var(--danger);cursor:pointer;">✕</button>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:20px;">
+                            <button class="btn-primary" onclick="APP.submitAssignment('${assignmentId}', '${lessonId}')" style="min-height:44px;padding:12px 40px;font-size:clamp(1rem,1.1vw,1.2rem);">
+                                <i class="fas fa-paper-plane"></i> تسليم الواجب
+                            </button>
+                            <button class="btn-outline btn-sm no-print" onclick="APP.closeAssignment()" style="min-height:36px;">✕ إلغاء</button>
+                        </div>
+                    </div>
+                `;
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // File upload preview
+                const fileInput = document.getElementById('assignmentFile');
+                if (fileInput) {
+                    fileInput.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            document.getElementById('assignmentFilePreview').style.display = 'block';
+                            document.getElementById('assignmentFileName').textContent = file.name;
+                        }
+                    });
+                }
+
+                // Store assignment context
+                window._currentAssignment = {
+                    id: assignmentId,
+                    lessonId: lessonId,
+                    title: assignmentData.title,
+                    atomsReward: assignmentData.atomsReward || 10
+                };
+
+            } catch (error) {
+                console.error('Error starting assignment:', error);
+                showToast('حدث خطأ في تحميل الواجب', 'error');
+            }
+        }
+
+        // -------- Submit Assignment --------
+        async function submitAssignment(assignmentId, lessonId) {
+            if (!currentUser) return;
+            if (window._isSubmittingAssignment) {
+                showToast('⏳ جاري التسليم، يرجى الانتظار...', 'info');
+                return;
+            }
+
+            const answer = document.getElementById('assignmentAnswer')?.value?.trim();
+            if (!answer) {
+                showToast('⚠️ يرجى كتابة إجابتك قبل التسليم', 'warning');
+                return;
+            }
+
+            window._isSubmittingAssignment = true;
+            const submitBtn = document.querySelector('.btn-primary[onclick*="submitAssignment"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسليم...';
+            }
+
+            try {
+                const assignmentData = window._currentAssignment || {};
+                const atomsReward = assignmentData.atomsReward || 10;
+
+                // Upload file if present
+                let fileUrl = '';
+                const fileInput = document.getElementById('assignmentFile');
+                if (fileInput && fileInput.files && fileInput.files[0]) {
+                    try {
+                        const file = fileInput.files[0];
+                        const storageRef = storage.ref('assignments/' + currentUser.uid + '/' + assignmentId + '/' + Date.now() + '_' + file.name);
+                        await storageRef.put(file);
+                        fileUrl = await storageRef.getDownloadURL();
+                    } catch (err) {
+                        console.error('File upload error:', err);
+                        showToast('❌ حدث خطأ في رفع الملف', 'error');
+                        window._isSubmittingAssignment = false;
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تسليم الواجب';
+                        }
+                        return;
+                    }
+                }
+
+                // Prepare result data
+                const resultData = {
+                    id: assignmentId,
+                    title: assignmentData.title || 'واجب',
+                    type: 'assignment',
+                    score: 100, // Assignment is considered complete
+                    correctAnswers: 1,
+                    totalQuestions: 1,
+                    atomsEarned: atomsReward,
+                    answer: answer,
+                    fileUrl: fileUrl,
+                    completedAt: new Date().toISOString()
+                };
+
+                const progressKey = 'assignment_' + lessonId;
+
+                // Save result and award points
+                await awardPointsAndUpdateProgress(
+                    currentUser.uid,
+                    progressKey,
+                    atomsReward,
+                    resultData
+                );
+
+                // Show success message
+                showToast(`✅ تم تسليم الواجب "${assignmentData.title}" بنجاح!`, 'success');
+
+                // Add notification
+                await addNotification(
+                    currentUser.uid,
+                    '📝 تم تسليم واجب',
+                    `تم تسليم واجب "${assignmentData.title}" وحصلت على ${atomsReward} ذرة.`,
+                    '📝'
+                );
+
+                // Close assignment and go back
+                setTimeout(() => {
+                    closeAssignment();
+                }, 1500);
+
+            } catch (error) {
+                console.error('Error submitting assignment:', error);
+                showToast('❌ حدث خطأ أثناء تسليم الواجب', 'error');
+            } finally {
+                window._isSubmittingAssignment = false;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تسليم الواجب';
+                }
+            }
+        }
+
+        // -------- Close Assignment --------
+        function closeAssignment() {
+            window._currentAssignment = null;
+            window._isSubmittingAssignment = false;
+            const lesson = allLessons.find(l => l.id === window._currentAssignment?.lessonId);
+            if (lesson) {
+                openCoursePage(lesson.courseId);
+            } else {
+                showHome();
+            }
+        }
+
+        // -------- Clear Assignment File --------
+        function clearAssignmentFile() {
+            const fileInput = document.getElementById('assignmentFile');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            document.getElementById('assignmentFilePreview').style.display = 'none';
+            document.getElementById('assignmentFileName').textContent = '';
         }
 
         // ============================================================
@@ -6297,7 +7221,6 @@
         // ============================================================
         const APP = {
             toggleTheme,
-            // ✅ ربط share مع shareOn
             share: shareOn,
             showHome,
             scrollToCourses,
@@ -6312,7 +7235,6 @@
             sendSubscriptionRequest,
             checkSubscriptionStatus,
             hasCourseAccess,
-            // ✅ ربط openCoursePage
             openCoursePage,
             showSubscriptionPage,
             showFreeCoursePage,
@@ -6346,14 +7268,23 @@
             installApp,
             toggleFullscreen,
             toggleFaq,
-            // ✅ ربط toggleLesson
             toggleLesson,
+            // Exam functions
             openLessonExam,
-            openLessonQuiz,
-            openLessonAssignment,
             openExamSecurityModal,
             closeExamSecurityModal,
             startExamAfterPledge,
+            selectAnswer,
+            submitExam,
+            closeExam,
+            // Quiz functions
+            openLessonQuiz,
+            // Assignment functions
+            openLessonAssignment,
+            submitAssignment,
+            closeAssignment,
+            clearAssignmentFile,
+            // Admin
             showAdminPopup,
             closeAdminPopup,
             updateAdminPopup,
