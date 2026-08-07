@@ -1505,7 +1505,7 @@
             display: flex;
         }
 
-        /* ====== تحسينات الحصص ====== */
+        /* ====== تحسينات الحصص (Lesson Styles) ====== */
         .lesson-container {
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -1551,11 +1551,12 @@
             flex-shrink: 0;
             font-weight: 700;
         }
-        .lesson-header .lesson-title {
+        .lesson-header .lesson-title-group {
             display: flex;
             align-items: center;
             gap: 10px;
             flex: 1;
+            flex-wrap: wrap;
         }
         .lesson-header .lesson-status {
             font-size: 0.75rem;
@@ -1619,9 +1620,6 @@
             color: #fff;
             border-color: rgba(255, 255, 255, 0.2);
         }
-        .lesson-container.open .lesson-header .toggle-icon:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
         .lesson-container.open .lesson-header .lesson-num {
             background: #fff;
             color: var(--primary);
@@ -1677,9 +1675,6 @@
         .lesson-content-item.completed-item {
             border-color: var(--success);
             background: rgba(34, 197, 94, 0.08);
-        }
-        .lesson-content-item.completed-item:hover {
-            background: rgba(34, 197, 94, 0.15);
         }
         .lesson-content-item .item-icon {
             width: 44px;
@@ -2616,6 +2611,7 @@
         let videoWatchInterval = null;
         let activeVideoLessonId = null;
         let videoWatchStartTime = null;
+        // ✅ تعريف videoWatchTotal في النطاق الصحيح
         let videoWatchTotal = {};
         let studySessionStart = null;
         let studyInterval = null;
@@ -2640,7 +2636,8 @@
             ttl: 60000
         };
 
-        const APP_URL = 'https://yaiakamya.vercel.app/';
+        // ✅ تعريف APP_URL بشكل آمن
+        const APP_URL = window.location.origin || 'https://yaiakamya.vercel.app/';
         const HERO_IMAGE = 'https://res.cloudinary.com/dbahe7lxz/image/upload/v1785593596/idraaak/x0xgxrk0kkxxgn73npal.png';
         const INTRO_VIDEO_URL = 'https://www.youtube.com/embed/0PFWAzIJTOQ?si=fFqTokTKwqo1ZHMz';
 
@@ -2815,13 +2812,13 @@
         }
 
         // ============================================================
-        // SHARE
+        // SHARE - ✅ إصلاح دالة المشاركة
         // ============================================================
-        const SHARE_TEXT =
+        const shareText =
             `🔥 منصة يلا كيمياء - اشرح الكيمياء ببساطة مع مستر زياد مبروك\n\n📚 شرح مبسط وسهل\n📝 اختبارات وتقييمات مستمرة\n🏆 نظام ذرات ومتصدرين\n📈 متابعة مستمرة لمستواك\n\nابدأ رحلتك دلوقتي 👇\n${APP_URL}`;
 
         function shareOn(platform) {
-            const text = encodeURIComponent(SHARE_TEXT);
+            const text = encodeURIComponent(shareText);
             const url = encodeURIComponent(APP_URL);
             const links = {
                 whatsapp: `https://wa.me/?text=${text}`,
@@ -2905,6 +2902,34 @@
         }
 
         // ============================================================
+        // ✅ دالة فتح وإغلاق الحصص - toggleLesson
+        // ============================================================
+        function toggleLesson(element) {
+            const container = element.closest('.lesson-container');
+            if (!container) return;
+
+            container.classList.toggle('open');
+
+            const body = container.querySelector('.lesson-body');
+            if (body) {
+                if (container.classList.contains('open')) {
+                    body.style.display = 'block';
+                    body.style.animation = 'slideDown 0.3s ease';
+                } else {
+                    body.style.display = 'none';
+                }
+            }
+
+            const toggleIcon = container.querySelector('.toggle-icon');
+            if (toggleIcon) {
+                toggleIcon.style.transform =
+                    container.classList.contains('open') ?
+                    'rotate(180deg)' :
+                    'rotate(0deg)';
+            }
+        }
+
+        // ============================================================
         // AUTH
         // ============================================================
         async function logout() {
@@ -2963,6 +2988,7 @@
             document.getElementById('userAtomsCount').textContent = '...';
         }
 
+        // ✅ updateUserUI مع حماية من البيانات الفارغة
         function updateUserUI(data) {
             if (!data) return;
             const atoms = data.atoms || 0;
@@ -3003,6 +3029,7 @@
             });
         }
 
+        // ✅ calculateUserRank مع عرض -- بدلاً من 0
         async function calculateUserRank(uid, atoms) {
             try {
                 const snapshot = await database.ref('users').orderByChild('atoms').limitToLast(100).once('value');
@@ -3249,6 +3276,7 @@
         // ============================================================
         // PREMIUM / SUBSCRIPTIONS
         // ============================================================
+        // ✅ تعريف isPremiumCourse
         function isPremiumCourse(courseId) {
             if (!currentUser || !userData) return false;
             return userData.premiumCourses && userData.premiumCourses[courseId] === true;
@@ -3548,6 +3576,7 @@
         }
 
         function createYouTubePlayer({ videoId, containerId, lessonId, lessonTitle, onReady, onStateChange, onError }) {
+            // ✅ التحقق من تحميل YouTube API
             if (!ytPlayerReady) {
                 ytPlayerQueue.push({ videoId, containerId, lessonId, lessonTitle, onReady, onStateChange, onError });
                 return;
@@ -3638,7 +3667,6 @@
                 const duration = playerInstance.getDuration();
                 const currentTime = playerInstance.getCurrentTime();
 
-                // تحديث زر التشغيل
                 if (playPauseBtn) {
                     if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
                         playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -3647,7 +3675,6 @@
                     }
                 }
 
-                // تحديث الوقت
                 if (timeDisplay && duration > 0) {
                     const currentMins = Math.floor(currentTime / 60);
                     const currentSecs = Math.floor(currentTime % 60);
@@ -3657,13 +3684,11 @@
                         `${String(currentMins).padStart(2, '0')}:${String(currentSecs).padStart(2, '0')} / ${String(totalMins).padStart(2, '0')}:${String(totalSecs).padStart(2, '0')}`;
                 }
 
-                // تحديث شريط التقدم
                 if (progressFill && duration > 0) {
                     const progress = (currentTime / duration) * 100;
                     progressFill.style.width = `${Math.min(progress, 99)}%`;
                 }
 
-                // Auto hide controls
                 if (controls) {
                     if (state === YT.PlayerState.PLAYING) {
                         controls.classList.add('visible');
@@ -3678,7 +3703,6 @@
                     }
                 }
 
-                // تحديث التقدم في قاعدة البيانات
                 if (duration > 0 && activeVideoLessonId) {
                     const progress = Math.min(Math.round((currentTime / duration) * 100), 99);
                     if (progress % 5 === 0 || progress > 80) {
@@ -4057,6 +4081,7 @@
                     e.preventDefault();
 
                     try {
+                        // ✅ التحقق من وجود iframe قبل الاستخدام
                         const iframe = document.querySelector('#youtube-player iframe');
                         if (iframe) {
                             if (document.pictureInPictureElement) {
@@ -4379,7 +4404,7 @@
         }
 
         // ============================================================
-        // Complete Lesson Watch
+        // ✅ Complete Lesson Watch - مع التأكد من وجود videoWatchTotal
         // ============================================================
         async function completeLessonWatch(lessonId) {
             try {
@@ -4392,7 +4417,8 @@
                 const userSnap = await userRef.once('value');
                 if (userSnap.exists()) {
                     const currentAtoms = userSnap.val().atoms || 0;
-                    const actualWatchTime = videoWatchTotal[lessonId] || 900;
+                    // ✅ استخدام videoWatchTotal مع التحقق من وجوده
+                    const actualWatchTime = (videoWatchTotal && videoWatchTotal[lessonId]) ? videoWatchTotal[lessonId] : 900;
                     const studyHours = actualWatchTime / 3600;
                     let currentStudyTime = userSnap.val().studyTime || 0;
 
@@ -4444,7 +4470,9 @@
                     cache.progress = userCourseProgress;
                     updateCache();
 
-                    delete videoWatchTotal[lessonId];
+                    if (videoWatchTotal && videoWatchTotal[lessonId]) {
+                        delete videoWatchTotal[lessonId];
+                    }
                     animateAtoms('atomsCount', currentAtoms + atomsReward);
                     animateAtoms('userAtomsCount', currentAtoms + atomsReward);
                     showToast(`🎉 +${atomsReward} ذرة! (أكملت مشاهدة ${lesson.title})`, 'success');
@@ -4478,7 +4506,7 @@
                 clearInterval(dynamicWatermarkTimer);
                 dynamicWatermarkTimer = null;
             }
-            if (videoWatchTotal[lessonId] && videoWatchTotal[lessonId] > 60 && !userCourseProgress[lessonId]?.watched) {
+            if (videoWatchTotal && videoWatchTotal[lessonId] && videoWatchTotal[lessonId] > 60 && !userCourseProgress[lessonId]?.watched) {
                 const watchPercent = Math.min(Math.round((videoWatchTotal[lessonId] / 900) * 100), 89);
                 if (currentUser) {
                     database.ref(`users/${currentUser.uid}/progress/${lessonId}`).update({
@@ -4517,7 +4545,6 @@
         }
 
         // ============================================================
-        // ============================================================
         // 📚 PAGE DU COURS AVANT ENTRÉE - صفحة الكورس قبل الدخول
         // ============================================================
         async function openCoursePage(courseId) {
@@ -4532,23 +4559,19 @@
                 return;
             }
 
-            // التحقق من الاشتراك للكورسات المدفوعة
             const isSubscribed = isUserSubscribed(courseId) || isPremiumCourse(courseId);
             const isFree = course.isFree !== false;
 
-            // إذا كان الكورس مدفوع وغير مشترك، عرض صفحة الاشتراك
             if (!isFree && !isSubscribed) {
                 showSubscriptionPage(courseId);
                 return;
             }
 
-            // إذا كان الكورس مجاني وغير مشترك، عرض صفحة الاشتراك المجاني
             if (isFree && !isSubscribed) {
                 showFreeCoursePage(courseId);
                 return;
             }
 
-            // إذا كان مشترك، عرض محتوى الكورس
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -4564,7 +4587,6 @@
 
             try {
                 const lessons = allLessons.filter(l => l.courseId === courseId);
-                // ✅ ترتيب الحصص حسب order أو حسب idx
                 lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
 
                 let completedCount = 0;
@@ -4575,7 +4597,6 @@
                 });
                 const progressPercent = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
 
-                // ✅ بناء HTML للحصص بشكل منظم وجميل
                 let lessonsHtml = lessons.map((lesson, idx) => {
                     const isCompleted = userCourseProgress[lesson.id]?.watched || false;
                     const statusText = isCompleted ? 'مكتملة ✅' : 'قيد التقدم';
@@ -4664,7 +4685,7 @@
 
                     return `
                             <div class="lesson-container ${isCompleted ? 'open' : ''}" style="border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;background:var(--card);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);">
-                                <div class="lesson-header" onclick="this.parentElement.classList.toggle('open')" style="padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--bg);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-weight:700;color:var(--text);font-size:clamp(0.95rem,1.1vw,1.1rem);min-height:56px;flex-wrap:wrap;gap:8px;border-radius:var(--radius) var(--radius) 0 0;">
+                                <div class="lesson-header" onclick="APP.toggleLesson(this)" style="padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--bg);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-weight:700;color:var(--text);font-size:clamp(0.95rem,1.1vw,1.1rem);min-height:56px;flex-wrap:wrap;gap:8px;border-radius:var(--radius) var(--radius) 0 0;">
                                     <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;">
                                         <span class="lesson-num" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;font-size:0.8rem;flex-shrink:0;font-weight:700;">${idx + 1}</span>
                                         <span style="font-weight:700;">${escapeHtml(lesson.title)}</span>
@@ -5533,7 +5554,8 @@
             try {
                 const snapshot = await database.ref('users/' + currentUser.uid + '/errorBank').once('value');
                 const errors = snapshot.exists() ? snapshot.val() : [];
-                // استخدام الأخطاء غير المحلولة فقط                const unsolved = errors.filter(e => !e.solved);
+                // استخدام الأخطاء غير المحلولة فقط
+                const unsolved = errors.filter(e => !e.solved);
                 if (unsolved.length === 0) {
                     showToast('🎉 لا توجد أخطاء! أنت متميز!', 'success');
                     return;
@@ -6275,6 +6297,7 @@
         // ============================================================
         const APP = {
             toggleTheme,
+            // ✅ ربط share مع shareOn
             share: shareOn,
             showHome,
             scrollToCourses,
@@ -6289,6 +6312,7 @@
             sendSubscriptionRequest,
             checkSubscriptionStatus,
             hasCourseAccess,
+            // ✅ ربط openCoursePage
             openCoursePage,
             showSubscriptionPage,
             showFreeCoursePage,
@@ -6322,6 +6346,8 @@
             installApp,
             toggleFullscreen,
             toggleFaq,
+            // ✅ ربط toggleLesson
+            toggleLesson,
             openLessonExam,
             openLessonQuiz,
             openLessonAssignment,
