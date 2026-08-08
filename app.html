@@ -3316,7 +3316,7 @@
             }
 
             if (isUserSubscribed(courseId)) {
-                showToast('✅ أنت مشترك بالفعل في هذا الكورس', 'info');
+                showToast('✅ أنت مشترك بالفعل في هذا الكورس ❤️', 'info');
                 openCoursePage(courseId);
                 return;
             }
@@ -3351,7 +3351,7 @@
         // ============================================================
         // PAID COURSE SUBSCRIPTION - SUBMIT REQUEST
         // ============================================================
-        async function submitSubscriptionRequest(courseId, studentName, transferPhone, amount, transferTime) {
+        async function submitSubscriptionRequest(courseId) {
             if (!currentUser) {
                 showLoginOverlay();
                 return;
@@ -3368,23 +3368,42 @@
                 return;
             }
 
-            // Check for existing pending request
+            // Get form data
+            const studentName = document.getElementById('subscriptionStudentName')?.value?.trim();
+            const transferPhone = document.getElementById('subscriptionTransferPhone')?.value?.trim();
+            const amount = document.getElementById('subscriptionAmount')?.value?.trim();
+            const transferTime = document.getElementById('subscriptionTransferTime')?.value?.trim();
+
+            // Validate all fields
+            if (!studentName || !transferPhone || !amount || !transferTime) {
+                showToast('⚠️ يرجى ملء جميع الخانات الأربع', 'warning');
+                return;
+            }
+
+            // Check for existing request
             const existingRequest = await database.ref('subscriptionRequests')
                 .orderByChild('userId')
                 .equalTo(currentUser.uid)
                 .once('value');
 
-            let hasPending = false;
+            let hasExisting = false;
             existingRequest.forEach((child) => {
                 const data = child.val();
-                if (data.courseId === courseId && data.status === 'pending') {
-                    hasPending = true;
+                if (data.courseId === courseId) {
+                    hasExisting = true;
                 }
             });
 
-            if (hasPending) {
+            if (hasExisting) {
                 showToast('⚠️ لقد قدمت طلب اشتراك لهذا الكورس بالفعل. طلبك قيد المراجعة.', 'warning');
                 return;
+            }
+
+            // Disable button to prevent double submit
+            const submitBtn = document.getElementById('submitSubscriptionBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
             }
 
             try {
@@ -3393,12 +3412,12 @@
                     requestId: requestRef.key,
                     userId: currentUser.uid,
                     userEmail: userData?.email || '',
-                    studentName: studentName || userData?.name || 'مستخدم',
+                    studentName: studentName,
                     courseId: courseId,
                     courseTitle: course.title,
-                    transferPhone: transferPhone || '',
-                    amount: amount || '',
-                    transferTime: transferTime || '',
+                    transferPhone: transferPhone,
+                    amount: amount,
+                    transferTime: transferTime,
                     status: 'pending',
                     createdAt: new Date().toISOString()
                 });
@@ -3417,6 +3436,11 @@
             } catch (err) {
                 console.error('Error submitting request:', err);
                 showToast('❌ حدث خطأ في إرسال الطلب', 'error');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
+                }
             }
         }
 
@@ -3463,7 +3487,6 @@
             if (!main) return;
 
             const isSubscribed = isUserSubscribed(courseId);
-            const hasPendingRequest = false; // Will be checked in the render
 
             main.innerHTML = `
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
@@ -3519,23 +3542,23 @@
                                 <h3 style="font-weight:700;color:var(--text);margin-bottom:8px;">📝 تقديم طلب اشتراك</h3>
                                 <div style="display:flex;flex-direction:column;gap:12px;">
                                     <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">اسم الطالب</label>
+                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">1. اسم الطالب</label>
                                         <input type="text" id="subscriptionStudentName" value="${escapeHtml(userData?.name || '')}" readonly style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
                                     </div>
                                     <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">رقم الهاتف المحول منه</label>
+                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">2. رقم الهاتف المحول منه</label>
                                         <input type="tel" id="subscriptionTransferPhone" placeholder="مثال: 0123456789" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
                                     </div>
                                     <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">المبلغ المحول</label>
+                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">3. المبلغ المحول</label>
                                         <input type="text" id="subscriptionAmount" placeholder="مثال: 150" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
                                     </div>
                                     <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">وقت التحويل</label>
+                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">4. وقت التحويل</label>
                                         <input type="time" id="subscriptionTransferTime" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
                                     </div>
                                 </div>
-                                <button class="btn-primary" onclick="APP.submitSubscriptionRequest('${courseId}')" style="width:100%;justify-content:center;font-size:1.1rem;padding:16px;min-height:56px;margin-top:12px;">
+                                <button class="btn-primary" id="submitSubscriptionBtn" onclick="APP.submitSubscriptionRequest('${courseId}')" style="width:100%;justify-content:center;font-size:1.1rem;padding:16px;min-height:56px;margin-top:12px;">
                                     📩 تقديم طلب اشتراك
                                 </button>
                             </div>
@@ -3684,7 +3707,7 @@
                                     </button>
                                 ` : `
                                     <button class="btn-primary" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:6px 12px;min-height:40px;" onclick="event.stopPropagation(); APP.subscribeToCourse('${c.id}')">
-                                        ${isFree ? '📝 اشترك الآن' : '💰 اشترِ الآن'}
+                                        ${isFree ? '📝 اشترك مجانًا الآن' : '💰 اشترِ الآن'}
                                     </button>
                                 `}
                             ` : `
@@ -3711,9 +3734,18 @@
                 allCourses = [];
                 snapshot.forEach((child) => {
                     const data = child.val();
+                    // Backward compatibility: support both isFree and isPremium
+                    let isFree = data.isFree;
+                    if (isFree === undefined && data.isPremium !== undefined) {
+                        isFree = !data.isPremium;
+                    }
+                    if (isFree === undefined) {
+                        isFree = true; // Default to free
+                    }
                     allCourses.push({
                         id: child.key,
                         ...data,
+                        isFree: isFree,
                         studentsCount: data.studentsCount || data.students || 0,
                         lessonsCount: data.lessonsCount || data.lessons || 0
                     });
@@ -7050,6 +7082,57 @@
         }
 
         // ============================================================
+        // BAN SYSTEM
+        // ============================================================
+        async function checkUserBan(uid) {
+            if (!uid) return false;
+            try {
+                const snapshot = await database.ref('users/' + uid).once('value');
+                if (snapshot.exists()) {
+                    const user = snapshot.val();
+                    if (user.isBanned === true) {
+                        return {
+                            isBanned: true,
+                            reason: user.banReason || 'لا يوجد سبب محدد',
+                            bannedAt: user.bannedAt || new Date().toISOString()
+                        };
+                    }
+                }
+                return { isBanned: false };
+            } catch (error) {
+                console.error('Error checking ban:', error);
+                return { isBanned: false };
+            }
+        }
+
+        function showBanPage(banInfo) {
+            const main = document.getElementById('mainContent');
+            if (!main) return;
+            
+            document.getElementById('atomsBadge').classList.remove('show');
+            document.getElementById('notificationWrapper').classList.remove('show');
+            document.getElementById('userMenuWrapper').classList.remove('show');
+            
+            main.innerHTML = `
+                <div style="max-width:600px;margin:40px auto;padding:20px;">
+                    <div class="card" style="padding:clamp(30px,4vw,50px);text-align:center;border:3px solid var(--danger);">
+                        <div style="font-size:4rem;margin-bottom:16px;">🚫</div>
+                        <h1 style="font-family:'Lalezar',cursive;font-size:clamp(1.8rem,2.5vw,2.5rem);color:var(--danger);">تم حظرك من المنصة</h1>
+                        <div style="background:var(--bg);padding:16px;border-radius:var(--radius);margin:16px 0;border-right:4px solid var(--danger);">
+                            <p style="font-weight:700;color:var(--text);">سبب الحظر:</p>
+                            <p style="color:var(--text2);font-size:clamp(0.9rem,1vw,1rem);">${escapeHtml(banInfo.reason)}</p>
+                            ${banInfo.bannedAt ? `<p style="font-size:0.75rem;color:var(--text2);margin-top:4px;">تاريخ الحظر: ${formatTime(banInfo.bannedAt)}</p>` : ''}
+                        </div>
+                        <p style="color:var(--text2);margin:16px 0;">إذا كنت تعتقد أن هناك خطأ، يرجى التواصل مع الإدارة.</p>
+                        <button class="btn-outline" onclick="APP.logout()" style="width:100%;justify-content:center;min-height:44px;">
+                            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================================
         // INIT
         // ============================================================
         function setupScrollHandlers() {
@@ -7086,11 +7169,20 @@
 
         window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
-        auth.onAuthStateChanged((user) => {
+        auth.onAuthStateChanged(async (user) => {
             currentUser = user;
             isAuthChecked = true;
-            updateUIForAuth(user);
+            
             if (user) {
+                // Check if user is banned
+                const banInfo = await checkUserBan(user.uid);
+                if (banInfo.isBanned) {
+                    showBanPage(banInfo);
+                    updateUIForAuth(null);
+                    return;
+                }
+                
+                updateUIForAuth(user);
                 loadUserData(user.uid);
                 loadUserSubscriptions(user.uid);
                 loadUserProgress(user.uid);
@@ -7108,6 +7200,7 @@
                 loadExams();
                 loadQuizzes();
                 loadLeaderboard();
+                updateUIForAuth(null);
             }
         });
 
@@ -7115,7 +7208,7 @@
             setupScrollHandlers();
             initTheme();
             showHome();
-            console.log('🚀 Yalla Chemistry Platform v40.0 - ULTIMATE PRO');
+            console.log('🚀 Yalla Chemistry Platform v41.0 - COMPLETE SYSTEM');
         }
 
         if (document.readyState === 'loading') {
@@ -7200,7 +7293,9 @@
             updateAdminPopup,
             showAdminPopupOnce,
             resetAdminPopup,
-            // BAN FUNCTIONS
+            // Ban functions
+            checkUserBan,
+            showBanPage,
             async banUser(userId, reason) {
                 if (!currentUser) {
                     showToast('يجب تسجيل الدخول', 'error');
@@ -7277,13 +7372,115 @@
                     return [];
                 }
             },
-            async checkUserBan(userData) {
-                if (userData && userData.isBanned === true) {
-                    const reason = userData.banReason || 'لا يوجد سبب محدد';
-                    showToast(`⛔ حسابك محظور! السبب: ${reason}`, 'error');
-                    return true;
+            async approveSubscription(requestId) {
+                if (!currentUser) {
+                    showToast('يجب تسجيل الدخول', 'error');
+                    return;
                 }
-                return false;
+                try {
+                    const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
+                    if (!adminSnapshot.exists()) {
+                        showToast('⛔ غير مصرح لك بهذه العملية', 'error');
+                        return;
+                    }
+                    
+                    const requestSnapshot = await database.ref('subscriptionRequests/' + requestId).once('value');
+                    if (!requestSnapshot.exists()) {
+                        showToast('⚠️ الطلب غير موجود', 'error');
+                        return;
+                    }
+                    
+                    const requestData = requestSnapshot.val();
+                    if (requestData.status === 'approved') {
+                        showToast('⚠️ هذا الطلب تمت الموافقة عليه بالفعل', 'warning');
+                        return;
+                    }
+                    
+                    // Update request status
+                    await database.ref('subscriptionRequests/' + requestId + '/status').set('approved');
+                    await database.ref('subscriptionRequests/' + requestId + '/approvedAt').set(new Date().toISOString());
+                    await database.ref('subscriptionRequests/' + requestId + '/approvedBy').set(currentUser.uid);
+                    
+                    // Create active subscription
+                    const subscriptionRef = database.ref('subscriptions').push();
+                    await subscriptionRef.set({
+                        userId: requestData.userId,
+                        courseId: requestData.courseId,
+                        status: 'active',
+                        type: 'paid',
+                        createdAt: new Date().toISOString(),
+                        activatedAt: new Date().toISOString(),
+                        requestId: requestId,
+                        approvedBy: currentUser.uid
+                    });
+                    
+                    // Update user's premium courses
+                    await database.ref('users/' + requestData.userId + '/premiumCourses/' + requestData.courseId).set(true);
+                    
+                    // Log the action
+                    await database.ref('adminLogs').push({
+                        action: 'approve_subscription',
+                        requestId: requestId,
+                        userId: requestData.userId,
+                        adminId: currentUser.uid,
+                        courseId: requestData.courseId,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    showToast('✅ تم تفعيل الاشتراك بنجاح!', 'success');
+                    await addNotification(requestData.userId, '🎉 تم تفعيل اشتراكك!', `تم تفعيل اشتراكك في كورس "${requestData.courseTitle}" بنجاح.`, '🎉');
+                    
+                } catch (error) {
+                    console.error('Error approving subscription:', error);
+                    showToast('❌ حدث خطأ أثناء تفعيل الاشتراك', 'error');
+                }
+            },
+            async rejectSubscription(requestId, reason) {
+                if (!currentUser) {
+                    showToast('يجب تسجيل الدخول', 'error');
+                    return;
+                }
+                try {
+                    const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
+                    if (!adminSnapshot.exists()) {
+                        showToast('⛔ غير مصرح لك بهذه العملية', 'error');
+                        return;
+                    }
+                    
+                    const requestSnapshot = await database.ref('subscriptionRequests/' + requestId).once('value');
+                    if (!requestSnapshot.exists()) {
+                        showToast('⚠️ الطلب غير موجود', 'error');
+                        return;
+                    }
+                    
+                    const requestData = requestSnapshot.val();
+                    if (requestData.status === 'rejected') {
+                        showToast('⚠️ هذا الطلب تم رفضه بالفعل', 'warning');
+                        return;
+                    }
+                    
+                    await database.ref('subscriptionRequests/' + requestId + '/status').set('rejected');
+                    await database.ref('subscriptionRequests/' + requestId + '/rejectedAt').set(new Date().toISOString());
+                    await database.ref('subscriptionRequests/' + requestId + '/rejectedBy').set(currentUser.uid);
+                    await database.ref('subscriptionRequests/' + requestId + '/rejectionReason').set(reason || 'لم يتم تحديد سبب');
+                    
+                    await database.ref('adminLogs').push({
+                        action: 'reject_subscription',
+                        requestId: requestId,
+                        userId: requestData.userId,
+                        adminId: currentUser.uid,
+                        courseId: requestData.courseId,
+                        reason: reason || 'لم يتم تحديد سبب',
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    showToast('✅ تم رفض الطلب', 'success');
+                    await addNotification(requestData.userId, '❌ تم رفض طلب اشتراكك', `تم رفض طلب اشتراكك في كورس "${requestData.courseTitle}". السبب: ${reason || 'لم يتم تحديد سبب'}`, '❌');
+                    
+                } catch (error) {
+                    console.error('Error rejecting subscription:', error);
+                    showToast('❌ حدث خطأ أثناء رفض الطلب', 'error');
+                }
             }
         };
 
