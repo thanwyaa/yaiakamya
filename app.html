@@ -3267,7 +3267,7 @@
         }
 
         // ============================================================
-        // PREMIUM / SUBSCRIPTIONS
+        // PREMIUM / SUBSCRIPTIONS - FIXED
         // ============================================================
         function isPremiumCourse(courseId) {
             if (!currentUser || !userData) return false;
@@ -3279,6 +3279,9 @@
             return userSubscriptions.some(sub => sub.courseId === courseId && sub.status === 'active');
         }
 
+        // ============================================================
+        // CHECK COURSE ACCESS - FIXED
+        // ============================================================
         async function checkCourseAccess(courseId) {
             if (!currentUser) {
                 showLoginOverlay();
@@ -3289,14 +3292,51 @@
                 showToast('الكورس غير موجود', 'error');
                 return false;
             }
-            if (course.isFree !== false) return true;
-            if (isUserSubscribed(courseId)) return true;
-            showSubscriptionPage(courseId);
+            // If course is free, allow access
+            if (course.isFree === true) {
+                return true;
+            }
+            // If user has active subscription
+            if (isUserSubscribed(courseId)) {
+                return true;
+            }
+            // Check if there's a pending request
+            const pendingSnapshot = await database.ref('subscriptionRequests')
+                .orderByChild('userId')
+                .equalTo(currentUser.uid)
+                .once('value');
+            let hasPending = false;
+            let isRejected = false;
+            let rejectionReason = '';
+            pendingSnapshot.forEach((child) => {
+                const data = child.val();
+                if (data.courseId === courseId) {
+                    if (data.status === 'pending' || data.status === 'reviewing') {
+                        hasPending = true;
+                    }
+                    if (data.status === 'rejected') {
+                        isRejected = true;
+                        rejectionReason = data.rejectionReason || '';
+                    }
+                }
+            });
+            if (hasPending) {
+                showToast('⏳ طلبك قيد المراجعة، يرجى الانتظار', 'info');
+                showPaidCourseDetails(courseId);
+                return false;
+            }
+            if (isRejected) {
+                showToast('❌ تم رفض طلب الاشتراك الخاص بك' + (rejectionReason ? `، السبب: ${rejectionReason}` : ''), 'error');
+                showPaidCourseDetails(courseId);
+                return false;
+            }
+            // Not subscribed - show subscription page
+            showPaidCourseDetails(courseId);
             return false;
         }
 
         // ============================================================
-        // FREE COURSE SUBSCRIPTION
+        // SUBSCRIBE TO FREE COURSE
         // ============================================================
         async function subscribeToFreeCourse(courseId) {
             if (!currentUser) {
@@ -3310,7 +3350,7 @@
                 return;
             }
 
-            if (course.isFree === false) {
+            if (course.isFree !== true) {
                 showToast('⚠️ هذا الكورس مدفوع، يرجى الاشتراك من خلال صفحة الدفع', 'error');
                 return;
             }
@@ -3322,6 +3362,7 @@
             }
 
             try {
+                // Create subscription in subscriptions node
                 const subscriptionRef = database.ref('subscriptions').push();
                 await subscriptionRef.set({
                     userId: currentUser.uid,
@@ -3332,6 +3373,7 @@
                     activatedAt: new Date().toISOString()
                 });
 
+                // Update user's premiumCourses
                 if (userData) {
                     if (!userData.premiumCourses) userData.premiumCourses = {};
                     userData.premiumCourses[courseId] = true;
@@ -3349,7 +3391,7 @@
         }
 
         // ============================================================
-        // PAID COURSE SUBSCRIPTION - SUBMIT REQUEST
+        // SUBMIT SUBSCRIPTION REQUEST
         // ============================================================
         async function submitSubscriptionRequest(courseId) {
             if (!currentUser) {
@@ -3380,23 +3422,35 @@
                 return;
             }
 
-            // Check for existing request
+            // Check for existing request - FIXED: check for any pending request for this course
             const existingRequest = await database.ref('subscriptionRequests')
                 .orderByChild('userId')
                 .equalTo(currentUser.uid)
                 .once('value');
 
-            let hasExisting = false;
+            let hasPending = false;
+            let isRejected = false;
+            let rejectionReason = '';
             existingRequest.forEach((child) => {
                 const data = child.val();
                 if (data.courseId === courseId) {
-                    hasExisting = true;
+                    if (data.status === 'pending' || data.status === 'reviewing') {
+                        hasPending = true;
+                    }
+                    if (data.status === 'rejected') {
+                        isRejected = true;
+                        rejectionReason = data.rejectionReason || '';
+                    }
                 }
             });
 
-            if (hasExisting) {
-                showToast('⚠️ لقد قدمت طلب اشتراك لهذا الكورس بالفعل. طلبك قيد المراجعة.', 'warning');
+            if (hasPending) {
+                showToast('⏳ لديك طلب اشتراك قيد المراجعة بالفعل لهذا الكورس.', 'warning');
                 return;
+            }
+
+            if (isRejected) {
+                showToast(`❌ تم رفض طلبك السابق لهذا الكورس${rejectionReason ? `، السبب: ${rejectionReason}` : ''}. يمكنك تقديم طلب جديد.`, 'warning');
             }
 
             // Disable button to prevent double submit
@@ -3428,7 +3482,7 @@
                 await addNotification(currentUser.uid, '📩 تم إرسال طلب اشتراك',
                     `تم إرسال طلب اشتراك في كورس "${course.title}"، في انتظار الموافقة.`, '📩');
 
-                // Show pending status
+                // Refresh the page to show pending status
                 setTimeout(() => {
                     showPaidCourseDetails(courseId);
                 }, 1500);
@@ -3450,21 +3504,52 @@
         async function checkSubscriptionStatus(courseId) {
             if (!currentUser) return false;
 
-            try {
-                if (isUserSubscribed(courseId)) return true;
+            // First check active subscriptions
+            if (isUserSubscribed(courseId)) return true;
 
+            // Then check if there's an approved request without active subscription
+            try {
                 const snapshot = await database.ref('subscriptionRequests')
                     .orderByChild('userId')
                     .equalTo(currentUser.uid)
                     .once('value');
 
                 let isApproved = false;
+                let requestData = null;
                 snapshot.forEach((child) => {
                     const data = child.val();
                     if (data.courseId === courseId && data.status === 'approved') {
                         isApproved = true;
+                        requestData = data;
                     }
                 });
+
+                // If approved but no active subscription, fix it
+                if (isApproved && requestData && !isUserSubscribed(courseId)) {
+                    // Create active subscription
+                    const subscriptionRef = database.ref('subscriptions').push();
+                    await subscriptionRef.set({
+                        userId: currentUser.uid,
+                        courseId: courseId,
+                        status: 'active',
+                        type: 'paid',
+                        createdAt: new Date().toISOString(),
+                        activatedAt: new Date().toISOString(),
+                        requestId: requestData.requestId || null
+                    });
+
+                    // Update premiumCourses
+                    if (userData) {
+                        if (!userData.premiumCourses) userData.premiumCourses = {};
+                        userData.premiumCourses[courseId] = true;
+                        cache.userData = userData;
+                        updateCache();
+                    }
+
+                    // Reload subscriptions
+                    await loadUserSubscriptions(currentUser.uid);
+                    return true;
+                }
 
                 return isApproved;
             } catch (err) {
@@ -3474,7 +3559,7 @@
         }
 
         // ============================================================
-        // PAID COURSE DETAILS PAGE
+        // PAID COURSE DETAILS PAGE - FIXED
         // ============================================================
         function showPaidCourseDetails(courseId) {
             const course = allCourses.find(c => c.id === courseId);
@@ -3486,7 +3571,90 @@
             const main = document.getElementById('mainContent');
             if (!main) return;
 
+            // Check if user has active subscription
             const isSubscribed = isUserSubscribed(courseId);
+            
+            // Check request status
+            let requestStatus = 'none';
+            let rejectionReason = '';
+            let requestId = '';
+            
+            // Check for existing requests
+            if (currentUser) {
+                database.ref('subscriptionRequests')
+                    .orderByChild('userId')
+                    .equalTo(currentUser.uid)
+                    .once('value')
+                    .then((snapshot) => {
+                        snapshot.forEach((child) => {
+                            const data = child.val();
+                            if (data.courseId === courseId) {
+                                requestStatus = data.status || 'pending';
+                                rejectionReason = data.rejectionReason || '';
+                                requestId = data.requestId || child.key;
+                            }
+                        });
+                        // Re-render with updated status if needed
+                        if (requestStatus !== 'none') {
+                            showPaidCourseDetails(courseId);
+                        }
+                    });
+            }
+
+            // If subscribed, open course page directly
+            if (isSubscribed) {
+                openCoursePage(courseId);
+                return;
+            }
+
+            // Build subscription form HTML
+            let subscriptionFormHtml = '';
+            if (requestStatus === 'pending' || requestStatus === 'reviewing') {
+                subscriptionFormHtml = `
+                    <div style="margin:16px 0;padding:16px;background:var(--warning);border-radius:var(--radius);text-align:center;font-weight:700;font-size:clamp(1rem,1.1vw,1.2rem);color:#fff;">
+                        ⏳ طلبك قيد المراجعة، يرجى الانتظار
+                    </div>
+                `;
+            } else if (requestStatus === 'rejected') {
+                subscriptionFormHtml = `
+                    <div style="margin:16px 0;padding:16px;background:var(--danger);border-radius:var(--radius);text-align:center;font-weight:700;font-size:clamp(1rem,1.1vw,1.2rem);color:#fff;">
+                        ❌ تم رفض طلب الاشتراك${rejectionReason ? `، السبب: ${rejectionReason}` : ''}
+                    </div>
+                    <div style="margin:12px 0;">
+                        <button class="btn-primary" onclick="APP.submitSubscriptionRequest('${courseId}')" style="width:100%;justify-content:center;font-size:1.1rem;padding:16px;min-height:56px;">
+                            📩 تقديم طلب جديد
+                        </button>
+                    </div>
+                `;
+            } else {
+                // No request - show form
+                subscriptionFormHtml = `
+                    <div style="margin:16px 0;padding:16px;background:var(--bg);border-radius:var(--radius);border-right:4px solid var(--warning);">
+                        <h3 style="font-weight:700;color:var(--text);margin-bottom:8px;">📝 تقديم طلب اشتراك</h3>
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div>
+                                <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">1. اسم الطالب</label>
+                                <input type="text" id="subscriptionStudentName" value="${escapeHtml(userData?.name || '')}" readonly style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
+                            </div>
+                            <div>
+                                <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">2. رقم الهاتف المحول منه</label>
+                                <input type="tel" id="subscriptionTransferPhone" placeholder="مثال: 0123456789" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
+                            </div>
+                            <div>
+                                <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">3. المبلغ المحول</label>
+                                <input type="text" id="subscriptionAmount" placeholder="مثال: 150" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
+                            </div>
+                            <div>
+                                <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">4. وقت التحويل</label>
+                                <input type="time" id="subscriptionTransferTime" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="submitSubscriptionBtn" onclick="APP.submitSubscriptionRequest('${courseId}')" style="width:100%;justify-content:center;font-size:1.1rem;padding:16px;min-height:56px;margin-top:12px;">
+                            📩 تقديم طلب اشتراك
+                        </button>
+                    </div>
+                `;
+            }
 
             main.innerHTML = `
                 <div style="max-width:900px;margin:0 auto;padding:20px;">
@@ -3537,36 +3705,7 @@
                             </div>
                         ` : ''}
 
-                        ${!isSubscribed ? `
-                            <div style="margin:16px 0;padding:16px;background:var(--bg);border-radius:var(--radius);border-right:4px solid var(--warning);">
-                                <h3 style="font-weight:700;color:var(--text);margin-bottom:8px;">📝 تقديم طلب اشتراك</h3>
-                                <div style="display:flex;flex-direction:column;gap:12px;">
-                                    <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">1. اسم الطالب</label>
-                                        <input type="text" id="subscriptionStudentName" value="${escapeHtml(userData?.name || '')}" readonly style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
-                                    </div>
-                                    <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">2. رقم الهاتف المحول منه</label>
-                                        <input type="tel" id="subscriptionTransferPhone" placeholder="مثال: 0123456789" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
-                                    </div>
-                                    <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">3. المبلغ المحول</label>
-                                        <input type="text" id="subscriptionAmount" placeholder="مثال: 150" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
-                                    </div>
-                                    <div>
-                                        <label style="display:block;font-weight:600;color:var(--text);font-size:clamp(0.85rem,0.9vw,0.9rem);">4. وقت التحويل</label>
-                                        <input type="time" id="subscriptionTransferTime" style="width:100%;padding:8px 12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:clamp(0.85rem,0.9vw,0.9rem);">
-                                    </div>
-                                </div>
-                                <button class="btn-primary" id="submitSubscriptionBtn" onclick="APP.submitSubscriptionRequest('${courseId}')" style="width:100%;justify-content:center;font-size:1.1rem;padding:16px;min-height:56px;margin-top:12px;">
-                                    📩 تقديم طلب اشتراك
-                                </button>
-                            </div>
-                        ` : `
-                            <div style="margin:16px 0;padding:16px;background:var(--success);border-radius:var(--radius);text-align:center;color:#fff;font-weight:700;font-size:clamp(1rem,1.1vw,1.2rem);">
-                                ✅ أنت مشترك بالفعل في هذا الكورس
-                            </div>
-                        `}
+                        ${subscriptionFormHtml}
                     </div>
                 </div>
             `;
@@ -3584,7 +3723,7 @@
                 return;
             }
 
-            if (course.isFree !== false) {
+            if (course.isFree === true) {
                 subscribeToFreeCourse(courseId);
                 return;
             }
@@ -3607,7 +3746,7 @@
                 return;
             }
 
-            if (course.isFree !== false) {
+            if (course.isFree === true) {
                 await subscribeToFreeCourse(courseId);
             } else {
                 showPaidCourseDetails(courseId);
@@ -3621,7 +3760,7 @@
             if (!currentUser) return false;
             const course = allCourses.find(c => c.id === courseId);
             if (!course) return false;
-            if (course.isFree !== false) return true;
+            if (course.isFree === true) return true;
             return isUserSubscribed(courseId);
         }
 
@@ -3661,7 +3800,7 @@
         }
 
         // ============================================================
-        // RENDER COURSES
+        // RENDER COURSES - FIXED
         // ============================================================
         function renderCourses(courses) {
             const grid = document.getElementById('coursesGrid');
@@ -3673,14 +3812,22 @@
             }
             grid.innerHTML = courses.map(c => {
                 const subscribed = currentUser ? isUserSubscribed(c.id) : false;
-                const isLocked = !currentUser || (!subscribed && c.isFree === false);
-                const isFree = c.isFree !== false;
+                const isFree = c.isFree === true;
+                const isLocked = !currentUser || (!subscribed && !isFree);
                 const priceDisplay = isFree ? 'مجاني' : (c.price || 'مدفوع');
                 const lessons = allLessons.filter(l => l.courseId === c.id);
                 const completed = lessons.filter(l => userCourseProgress[l.id]?.watched);
                 const isCompleted = lessons.length > 0 && completed.length === lessons.length;
+                // Determine card action
+                let cardAction = `APP.openCoursePage('${c.id}')`;
+                if (isLocked) {
+                    cardAction = `APP.showSubscriptionPage('${c.id}')`;
+                } else if (isCompleted) {
+                    cardAction = `APP.showCompletedModal()`;
+                }
+                
                 return `
-                    <div class="card ${isCompleted ? 'card-completed' : ''}" style="cursor:pointer;position:relative;" onclick="${isCompleted ? `APP.showCompletedModal()` : `APP.openCoursePage('${c.id}')`}">
+                    <div class="card ${isCompleted ? 'card-completed' : ''}" style="cursor:pointer;position:relative;" onclick="${cardAction}">
                         <div style="position:relative;overflow:hidden;">
                             <img src="${c.image || 'https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'}" alt="${escapeHtml(c.title) || 'كورس'}" class="card-img" loading="lazy" onerror="this.src='https://placehold.co/600x400/1a1f2e/0B4F8C?text=كورس'">
                             <div style="position:absolute;top:12px;right:12px;display:flex;gap:6px;z-index:2;flex-wrap:wrap;">
@@ -3734,13 +3881,14 @@
                 allCourses = [];
                 snapshot.forEach((child) => {
                     const data = child.val();
-                    // Backward compatibility: support both isFree and isPremium
+                    // Backward compatibility: treat isFree as boolean, default to false for paid
                     let isFree = data.isFree;
                     if (isFree === undefined && data.isPremium !== undefined) {
                         isFree = !data.isPremium;
                     }
                     if (isFree === undefined) {
-                        isFree = true; // Default to free
+                        // For courses without isFree, default to false (paid) to prevent accidental free access
+                        isFree = false;
                     }
                     allCourses.push({
                         id: child.key,
@@ -4097,7 +4245,7 @@
             }
 
             const course = allCourses.find(c => c.id === lesson.courseId);
-            if (course && course.isFree === false && !isUserSubscribed(course.id)) {
+            if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
                 showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
                 showSubscriptionPage(course.id);
                 return;
@@ -4904,7 +5052,7 @@
         }
 
         // ============================================================
-        // OPEN COURSE PAGE
+        // OPEN COURSE PAGE - FIXED
         // ============================================================
         async function openCoursePage(courseId) {
             if (!currentUser) {
@@ -4918,39 +5066,14 @@
                 return;
             }
 
-            const isSubscribed = isUserSubscribed(courseId);
-
-            if (course.isFree === false && !isSubscribed) {
-                // Check for pending request
-                const pendingSnapshot = await database.ref('subscriptionRequests')
-                    .orderByChild('userId')
-                    .equalTo(currentUser.uid)
-                    .once('value');
-
-                let hasPending = false;
-                pendingSnapshot.forEach((child) => {
-                    const data = child.val();
-                    if (data.courseId === courseId && data.status === 'pending') {
-                        hasPending = true;
-                    }
-                });
-
-                if (hasPending) {
-                    showPaidCourseDetails(courseId);
-                    showToast('⏳ طلبك قيد المراجعة، يرجى الانتظار', 'info');
-                    return;
-                }
-
-                showPaidCourseDetails(courseId);
+            // Check access properly
+            const hasAccess = await checkCourseAccess(courseId);
+            if (!hasAccess) {
+                // checkCourseAccess already shows the appropriate page
                 return;
             }
 
-            if (course.isFree !== false && !isSubscribed) {
-                showFreeCoursePage(courseId);
-                return;
-            }
-
-            // User is subscribed - show full course content
+            // User has access - show full course content
             const main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -5093,7 +5216,7 @@
                 else if (completedCount > 0) motivationalMessage = '📚 بداية ممتازة! أكملت ' + completedCount + ' حصص!';
                 else motivationalMessage = '🚀 ابدأ رحلتك في هذا الكورس اليوم!';
 
-                const isFree = course.isFree !== false;
+                const isFree = course.isFree === true;
                 const priceDisplay = isFree ? 'مجاني' : (course.price || 'مدفوع');
 
                 main.innerHTML = `
@@ -5826,7 +5949,7 @@
             }
 
             const course = allCourses.find(c => c.id === lesson.courseId);
-            if (course && course.isFree === false && !isUserSubscribed(course.id)) {
+            if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
                 showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
                 showSubscriptionPage(course.id);
                 return;
@@ -6006,6 +6129,7 @@
 
             if (examTimerInterval) {
                 clearInterval(examTimerInterval);
+                examTimerInterval = null;
             }
 
             examTimerInterval = setInterval(() => {
@@ -6228,7 +6352,7 @@
             }
 
             const course = allCourses.find(c => c.id === lesson.courseId);
-            if (course && course.isFree === false && !isUserSubscribed(course.id)) {
+            if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
                 showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
                 showSubscriptionPage(course.id);
                 return;
@@ -6305,7 +6429,7 @@
             }
 
             const course = allCourses.find(c => c.id === lesson.courseId);
-            if (course && course.isFree === false && !isUserSubscribed(course.id)) {
+            if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
                 showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
                 showSubscriptionPage(course.id);
                 return;
@@ -7085,16 +7209,16 @@
         // BAN SYSTEM
         // ============================================================
         async function checkUserBan(uid) {
-            if (!uid) return false;
+            if (!uid) return { isBanned: false };
             try {
                 const snapshot = await database.ref('users/' + uid).once('value');
                 if (snapshot.exists()) {
                     const user = snapshot.val();
-                    if (user.isBanned === true) {
+                    if (user.isBanned === true || user.banned === true) {
                         return {
                             isBanned: true,
-                            reason: user.banReason || 'لا يوجد سبب محدد',
-                            bannedAt: user.bannedAt || new Date().toISOString()
+                            reason: user.banReason || user.bannedReason || 'لا يوجد سبب محدد',
+                            bannedAt: user.bannedAt || user.banTime || new Date().toISOString()
                         };
                     }
                 }
@@ -7130,6 +7254,232 @@
                     </div>
                 </div>
             `;
+        }
+
+        // ============================================================
+        // BAN FUNCTIONS FOR ADMIN - SUPPORT
+        // ============================================================
+        async function banUser(userId, reason) {
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول', 'error');
+                return;
+            }
+            try {
+                // Check if user is admin
+                const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
+                if (!adminSnapshot.exists()) {
+                    showToast('⛔ غير مصرح لك بهذه العملية', 'error');
+                    return;
+                }
+                await database.ref('users/' + userId).update({
+                    isBanned: true,
+                    banned: true,
+                    banReason: reason || 'مخالفة قوانين المنصة',
+                    bannedAt: new Date().toISOString(),
+                    bannedBy: currentUser.uid,
+                    bannedByName: currentUser.displayName || 'Admin'
+                });
+                await database.ref('adminLogs').push({
+                    action: 'ban_user',
+                    userId: userId,
+                    adminId: currentUser.uid,
+                    adminName: currentUser.displayName || 'Admin',
+                    reason: reason || 'مخالفة قوانين المنصة',
+                    timestamp: new Date().toISOString()
+                });
+                showToast('✅ تم حظر المستخدم بنجاح', 'success');
+                await addNotification(userId, '⛔ تم حظر حسابك', `تم حظر حسابك بسبب: ${reason || 'مخالفة قوانين المنصة'}. للاستفسار، يرجى التواصل مع الإدارة.`, '🚫');
+                // Force logout user
+                await database.ref('online/' + userId).remove();
+            } catch (error) {
+                console.error('Error banning user:', error);
+                showToast('❌ حدث خطأ أثناء حظر المستخدم', 'error');
+            }
+        }
+
+        async function unbanUser(userId) {
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول', 'error');
+                return;
+            }
+            try {
+                const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
+                if (!adminSnapshot.exists()) {
+                    showToast('⛔ غير مصرح لك بهذه العملية', 'error');
+                    return;
+                }
+                await database.ref('users/' + userId).update({
+                    isBanned: false,
+                    banned: false,
+                    banReason: null,
+                    bannedAt: null,
+                    bannedBy: null,
+                    bannedByName: null,
+                    unbannedAt: new Date().toISOString(),
+                    unbannedBy: currentUser.uid,
+                    unbannedByName: currentUser.displayName || 'Admin'
+                });
+                await database.ref('adminLogs').push({
+                    action: 'unban_user',
+                    userId: userId,
+                    adminId: currentUser.uid,
+                    adminName: currentUser.displayName || 'Admin',
+                    timestamp: new Date().toISOString()
+                });
+                showToast('✅ تم إلغاء حظر المستخدم', 'success');
+                await addNotification(userId, '✅ تم إلغاء حظر حسابك', 'تم إلغاء حظر حسابك، يمكنك الآن استخدام المنصة مرة أخرى.', '🎉');
+            } catch (error) {
+                console.error('Error unbanning user:', error);
+                showToast('❌ حدث خطأ أثناء إلغاء الحظر', 'error');
+            }
+        }
+
+        async function getBannedUsers() {
+            try {
+                const snapshot = await database.ref('users').orderByChild('isBanned').equalTo(true).once('value');
+                const bannedUsers = [];
+                snapshot.forEach((child) => {
+                    bannedUsers.push({ id: child.key, ...child.val() });
+                });
+                return bannedUsers;
+            } catch (error) {
+                console.error('Error fetching banned users:', error);
+                return [];
+            }
+        }
+
+        // ============================================================
+        // SUBSCRIPTION REQUEST HANDLING FOR ADMIN - SUPPORT
+        // ============================================================
+        async function approveSubscription(requestId) {
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول', 'error');
+                return;
+            }
+            try {
+                const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
+                if (!adminSnapshot.exists()) {
+                    showToast('⛔ غير مصرح لك بهذه العملية', 'error');
+                    return;
+                }
+                
+                const requestSnapshot = await database.ref('subscriptionRequests/' + requestId).once('value');
+                if (!requestSnapshot.exists()) {
+                    showToast('⚠️ الطلب غير موجود', 'error');
+                    return;
+                }
+                
+                const requestData = requestSnapshot.val();
+                if (requestData.status === 'approved') {
+                    showToast('⚠️ هذا الطلب تمت الموافقة عليه بالفعل', 'warning');
+                    return;
+                }
+                
+                // Update request status
+                await database.ref('subscriptionRequests/' + requestId + '/status').set('approved');
+                await database.ref('subscriptionRequests/' + requestId + '/approvedAt').set(new Date().toISOString());
+                await database.ref('subscriptionRequests/' + requestId + '/approvedBy').set(currentUser.uid);
+                await database.ref('subscriptionRequests/' + requestId + '/approvedByName').set(currentUser.displayName || 'Admin');
+                
+                // Create active subscription
+                const subscriptionRef = database.ref('subscriptions').push();
+                await subscriptionRef.set({
+                    userId: requestData.userId,
+                    courseId: requestData.courseId,
+                    status: 'active',
+                    type: 'paid',
+                    createdAt: new Date().toISOString(),
+                    activatedAt: new Date().toISOString(),
+                    requestId: requestId,
+                    approvedBy: currentUser.uid,
+                    approvedByName: currentUser.displayName || 'Admin'
+                });
+                
+                // Update user's premiumCourses
+                await database.ref('users/' + requestData.userId + '/premiumCourses/' + requestData.courseId).set(true);
+                
+                // Update user's subscriptions
+                await database.ref('users/' + requestData.userId + '/subscriptions/' + requestData.courseId).set({
+                    courseName: requestData.courseTitle,
+                    type: 'premium',
+                    startDate: new Date().toISOString(),
+                    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+                    active: true,
+                    approvedBy: currentUser.uid,
+                    approvedByName: currentUser.displayName || 'Admin',
+                    approvedAt: new Date().toISOString()
+                });
+                
+                // Log the action
+                await database.ref('adminLogs').push({
+                    action: 'approve_subscription',
+                    requestId: requestId,
+                    userId: requestData.userId,
+                    adminId: currentUser.uid,
+                    adminName: currentUser.displayName || 'Admin',
+                    courseId: requestData.courseId,
+                    courseTitle: requestData.courseTitle,
+                    timestamp: new Date().toISOString()
+                });
+                
+                showToast('✅ تم تفعيل الاشتراك بنجاح!', 'success');
+                await addNotification(requestData.userId, '🎉 تم تفعيل اشتراكك!', `تم تفعيل اشتراكك في كورس "${requestData.courseTitle}" بنجاح.`, '🎉');
+                
+            } catch (error) {
+                console.error('Error approving subscription:', error);
+                showToast('❌ حدث خطأ أثناء تفعيل الاشتراك', 'error');
+            }
+        }
+
+        async function rejectSubscription(requestId, reason) {
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول', 'error');
+                return;
+            }
+            try {
+                const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
+                if (!adminSnapshot.exists()) {
+                    showToast('⛔ غير مصرح لك بهذه العملية', 'error');
+                    return;
+                }
+                
+                const requestSnapshot = await database.ref('subscriptionRequests/' + requestId).once('value');
+                if (!requestSnapshot.exists()) {
+                    showToast('⚠️ الطلب غير موجود', 'error');
+                    return;
+                }
+                
+                const requestData = requestSnapshot.val();
+                if (requestData.status === 'rejected') {
+                    showToast('⚠️ هذا الطلب تم رفضه بالفعل', 'warning');
+                    return;
+                }
+                
+                await database.ref('subscriptionRequests/' + requestId + '/status').set('rejected');
+                await database.ref('subscriptionRequests/' + requestId + '/rejectedAt').set(new Date().toISOString());
+                await database.ref('subscriptionRequests/' + requestId + '/rejectedBy').set(currentUser.uid);
+                await database.ref('subscriptionRequests/' + requestId + '/rejectedByName').set(currentUser.displayName || 'Admin');
+                await database.ref('subscriptionRequests/' + requestId + '/rejectionReason').set(reason || 'لم يتم تحديد سبب');
+                
+                await database.ref('adminLogs').push({
+                    action: 'reject_subscription',
+                    requestId: requestId,
+                    userId: requestData.userId,
+                    adminId: currentUser.uid,
+                    adminName: currentUser.displayName || 'Admin',
+                    courseId: requestData.courseId,
+                    courseTitle: requestData.courseTitle,
+                    reason: reason || 'لم يتم تحديد سبب',
+                    timestamp: new Date().toISOString()
+                });
+                
+                showToast('✅ تم رفض الطلب', 'success');
+                await addNotification(requestData.userId, '❌ تم رفض طلب اشتراكك', `تم رفض طلب اشتراكك في كورس "${requestData.courseTitle}". السبب: ${reason || 'لم يتم تحديد سبب'}`, '❌');
+                
+            } catch (error) {
+                console.error('Error rejecting subscription:', error);
+                showToast('❌ حدث خطأ أثناء رفض الطلب', 'error');
+            }
         }
 
         // ============================================================
@@ -7218,10 +7568,9 @@
         }
 
         // ============================================================
-        // APP OBJECT
+        // APP OBJECT - COMPLETE
         // ============================================================
         const APP = {
-            // Existing functions
             toggleTheme,
             share: shareOn,
             showHome,
@@ -7239,6 +7588,7 @@
             submitSubscriptionRequest,
             checkSubscriptionStatus,
             hasCourseAccess,
+            checkCourseAccess,
             openCoursePage,
             showFreeCoursePage,
             openLessonVideo,
@@ -7287,7 +7637,7 @@
             submitAssignment,
             closeAssignment,
             clearAssignmentFile,
-            // Admin
+            // Admin popup
             showAdminPopup,
             closeAdminPopup,
             updateAdminPopup,
@@ -7296,192 +7646,12 @@
             // Ban functions
             checkUserBan,
             showBanPage,
-            async banUser(userId, reason) {
-                if (!currentUser) {
-                    showToast('يجب تسجيل الدخول', 'error');
-                    return;
-                }
-                try {
-                    const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
-                    if (!adminSnapshot.exists()) {
-                        showToast('⛔ غير مصرح لك بهذه العملية', 'error');
-                        return;
-                    }
-                    await database.ref('users/' + userId).update({
-                        isBanned: true,
-                        banReason: reason || 'مخالفة قوانين المنصة',
-                        bannedAt: new Date().toISOString(),
-                        bannedBy: currentUser.uid
-                    });
-                    await database.ref('adminLogs').push({
-                        action: 'ban_user',
-                        userId: userId,
-                        adminId: currentUser.uid,
-                        reason: reason || 'مخالفة قوانين المنصة',
-                        timestamp: new Date().toISOString()
-                    });
-                    showToast('✅ تم حظر المستخدم بنجاح', 'success');
-                    await addNotification(userId, '⛔ تم حظر حسابك', `تم حظر حسابك بسبب: ${reason || 'مخالفة قوانين المنصة'}. للاستفسار، يرجى التواصل مع الإدارة.`, '🚫');
-                } catch (error) {
-                    console.error('Error banning user:', error);
-                    showToast('❌ حدث خطأ أثناء حظر المستخدم', 'error');
-                }
-            },
-            async unbanUser(userId) {
-                if (!currentUser) {
-                    showToast('يجب تسجيل الدخول', 'error');
-                    return;
-                }
-                try {
-                    const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
-                    if (!adminSnapshot.exists()) {
-                        showToast('⛔ غير مصرح لك بهذه العملية', 'error');
-                        return;
-                    }
-                    await database.ref('users/' + userId).update({
-                        isBanned: false,
-                        banReason: null,
-                        bannedAt: null,
-                        bannedBy: null,
-                        unbannedAt: new Date().toISOString(),
-                        unbannedBy: currentUser.uid
-                    });
-                    await database.ref('adminLogs').push({
-                        action: 'unban_user',
-                        userId: userId,
-                        adminId: currentUser.uid,
-                        timestamp: new Date().toISOString()
-                    });
-                    showToast('✅ تم إلغاء حظر المستخدم', 'success');
-                    await addNotification(userId, '✅ تم إلغاء حظر حسابك', 'تم إلغاء حظر حسابك، يمكنك الآن استخدام المنصة مرة أخرى.', '🎉');
-                } catch (error) {
-                    console.error('Error unbanning user:', error);
-                    showToast('❌ حدث خطأ أثناء إلغاء الحظر', 'error');
-                }
-            },
-            async getBannedUsers() {
-                try {
-                    const snapshot = await database.ref('users').orderByChild('isBanned').equalTo(true).once('value');
-                    const bannedUsers = [];
-                    snapshot.forEach((child) => {
-                        bannedUsers.push({ id: child.key, ...child.val() });
-                    });
-                    return bannedUsers;
-                } catch (error) {
-                    console.error('Error fetching banned users:', error);
-                    return [];
-                }
-            },
-            async approveSubscription(requestId) {
-                if (!currentUser) {
-                    showToast('يجب تسجيل الدخول', 'error');
-                    return;
-                }
-                try {
-                    const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
-                    if (!adminSnapshot.exists()) {
-                        showToast('⛔ غير مصرح لك بهذه العملية', 'error');
-                        return;
-                    }
-                    
-                    const requestSnapshot = await database.ref('subscriptionRequests/' + requestId).once('value');
-                    if (!requestSnapshot.exists()) {
-                        showToast('⚠️ الطلب غير موجود', 'error');
-                        return;
-                    }
-                    
-                    const requestData = requestSnapshot.val();
-                    if (requestData.status === 'approved') {
-                        showToast('⚠️ هذا الطلب تمت الموافقة عليه بالفعل', 'warning');
-                        return;
-                    }
-                    
-                    // Update request status
-                    await database.ref('subscriptionRequests/' + requestId + '/status').set('approved');
-                    await database.ref('subscriptionRequests/' + requestId + '/approvedAt').set(new Date().toISOString());
-                    await database.ref('subscriptionRequests/' + requestId + '/approvedBy').set(currentUser.uid);
-                    
-                    // Create active subscription
-                    const subscriptionRef = database.ref('subscriptions').push();
-                    await subscriptionRef.set({
-                        userId: requestData.userId,
-                        courseId: requestData.courseId,
-                        status: 'active',
-                        type: 'paid',
-                        createdAt: new Date().toISOString(),
-                        activatedAt: new Date().toISOString(),
-                        requestId: requestId,
-                        approvedBy: currentUser.uid
-                    });
-                    
-                    // Update user's premium courses
-                    await database.ref('users/' + requestData.userId + '/premiumCourses/' + requestData.courseId).set(true);
-                    
-                    // Log the action
-                    await database.ref('adminLogs').push({
-                        action: 'approve_subscription',
-                        requestId: requestId,
-                        userId: requestData.userId,
-                        adminId: currentUser.uid,
-                        courseId: requestData.courseId,
-                        timestamp: new Date().toISOString()
-                    });
-                    
-                    showToast('✅ تم تفعيل الاشتراك بنجاح!', 'success');
-                    await addNotification(requestData.userId, '🎉 تم تفعيل اشتراكك!', `تم تفعيل اشتراكك في كورس "${requestData.courseTitle}" بنجاح.`, '🎉');
-                    
-                } catch (error) {
-                    console.error('Error approving subscription:', error);
-                    showToast('❌ حدث خطأ أثناء تفعيل الاشتراك', 'error');
-                }
-            },
-            async rejectSubscription(requestId, reason) {
-                if (!currentUser) {
-                    showToast('يجب تسجيل الدخول', 'error');
-                    return;
-                }
-                try {
-                    const adminSnapshot = await database.ref('admins/' + currentUser.uid).once('value');
-                    if (!adminSnapshot.exists()) {
-                        showToast('⛔ غير مصرح لك بهذه العملية', 'error');
-                        return;
-                    }
-                    
-                    const requestSnapshot = await database.ref('subscriptionRequests/' + requestId).once('value');
-                    if (!requestSnapshot.exists()) {
-                        showToast('⚠️ الطلب غير موجود', 'error');
-                        return;
-                    }
-                    
-                    const requestData = requestSnapshot.val();
-                    if (requestData.status === 'rejected') {
-                        showToast('⚠️ هذا الطلب تم رفضه بالفعل', 'warning');
-                        return;
-                    }
-                    
-                    await database.ref('subscriptionRequests/' + requestId + '/status').set('rejected');
-                    await database.ref('subscriptionRequests/' + requestId + '/rejectedAt').set(new Date().toISOString());
-                    await database.ref('subscriptionRequests/' + requestId + '/rejectedBy').set(currentUser.uid);
-                    await database.ref('subscriptionRequests/' + requestId + '/rejectionReason').set(reason || 'لم يتم تحديد سبب');
-                    
-                    await database.ref('adminLogs').push({
-                        action: 'reject_subscription',
-                        requestId: requestId,
-                        userId: requestData.userId,
-                        adminId: currentUser.uid,
-                        courseId: requestData.courseId,
-                        reason: reason || 'لم يتم تحديد سبب',
-                        timestamp: new Date().toISOString()
-                    });
-                    
-                    showToast('✅ تم رفض الطلب', 'success');
-                    await addNotification(requestData.userId, '❌ تم رفض طلب اشتراكك', `تم رفض طلب اشتراكك في كورس "${requestData.courseTitle}". السبب: ${reason || 'لم يتم تحديد سبب'}`, '❌');
-                    
-                } catch (error) {
-                    console.error('Error rejecting subscription:', error);
-                    showToast('❌ حدث خطأ أثناء رفض الطلب', 'error');
-                }
-            }
+            banUser,
+            unbanUser,
+            getBannedUsers,
+            // Subscription functions for admin
+            approveSubscription,
+            rejectSubscription
         };
 
         window.APP = APP;
