@@ -3413,18 +3413,24 @@
         // SUBMIT SUBSCRIPTION REQUEST - FIXED
         // ============================================================
        function submitSubscriptionRequest(courseId) {
+    console.log("🚀 بدء تقديم الطلب للكورس:", courseId);
+    
     // 1️⃣ التحقق من تسجيل الدخول
     if (!currentUser) {
+        console.log("❌ المستخدم غير مسجل");
         showLoginOverlay();
         return;
     }
+    console.log("✅ المستخدم مسجل:", currentUser.uid);
 
     // 2️⃣ التحقق من وجود الكورس
     var course = allCourses.find(function(c) { return c.id === courseId; });
     if (!course) {
+        console.log("❌ الكورس غير موجود");
         showToast('⚠️ الكورس غير موجود', 'error');
         return;
     }
+    console.log("✅ الكورس موجود:", course.title);
 
     // 3️⃣ جلب البيانات من الحقول
     var studentNameInput = document.getElementById('subscriptionStudentName');
@@ -3437,19 +3443,21 @@
     var amount = amountInput ? amountInput.value.trim() : '';
     var transferTime = transferTimeInput ? transferTimeInput.value.trim() : '';
 
-    // 4️⃣ التحقق من صحة البيانات
+    console.log("📝 البيانات المدخلة:", { studentName, transferPhone, amount, transferTime });
+
+    // 4️⃣ التحقق من البيانات
     if (!studentName) {
         showToast('⚠️ يرجى إدخال اسم الطالب', 'warning');
         if (studentNameInput) studentNameInput.focus();
         return;
     }
     if (!transferPhone) {
-        showToast('⚠️ يرجى إدخال رقم الهاتف المحول منه', 'warning');
+        showToast('⚠️ يرجى إدخال رقم الهاتف', 'warning');
         if (transferPhoneInput) transferPhoneInput.focus();
         return;
     }
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-        showToast('⚠️ يرجى إدخال مبلغ صحيح أكبر من صفر', 'warning');
+        showToast('⚠️ يرجى إدخال مبلغ صحيح', 'warning');
         if (amountInput) amountInput.focus();
         return;
     }
@@ -3459,17 +3467,15 @@
         return;
     }
 
-    // 5️⃣ تعطيل الزر أثناء الإرسال
+    // 5️⃣ تعطيل الزر
     var submitBtn = document.getElementById('submitSubscriptionBtn');
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
     }
 
-    // 6️⃣ إنشاء الطلب الجديد
-    var requestRef = database.ref('subscriptionRequests').push();
+    // 6️⃣ إنشاء البيانات
     var requestData = {
-        requestId: requestRef.key,
         userId: currentUser.uid,
         userEmail: userData ? userData.email : '',
         studentName: studentName,
@@ -3479,34 +3485,59 @@
         amount: amount,
         transferTime: transferTime,
         status: 'pending',
-        createdAt: firebase.database.ServerValue.TIMESTAMP  // ⭐ استخدم ServerValue
+        createdAt: Date.now()  // استخدم Date.now() بدل ServerValue عشان نتأكد
     };
 
-    console.log('📤 جاري إرسال الطلب:', requestData);
+    console.log("📤 البيانات المرسلة:", requestData);
 
-    // 7️⃣ حفظ الطلب في Firebase
+    // 7️⃣ التأكد من وجود Firebase
+    if (typeof database === 'undefined' || !database) {
+        console.error("❌ Firebase Database مش موجودة!");
+        showToast('❌ Firebase Database مش موجودة! تأكد من تحميل Firebase', 'error');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
+        }
+        return;
+    }
+
+    // 8️⃣ التحقق من وجود ref
+    if (!database.ref) {
+        console.error("❌ database.ref مش موجود!");
+        showToast('❌ Firebase مش متهيأ بشكل صحيح', 'error');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
+        }
+        return;
+    }
+
+    // 9️⃣ إرسال الطلب
+    var requestRef = database.ref('subscriptionRequests').push();
+    console.log("📌 مرجع الطلب:", requestRef.key);
+
     requestRef.set(requestData)
         .then(function() {
-            console.log('✅ تم حفظ الطلب بنجاح:', requestRef.key);
+            console.log("✅ تم حفظ الطلب بنجاح!");
             
-            // 8️⃣ إرسال إشعار للمستخدم
+            // إرسال إشعار
             try {
-                database.ref('users/' + currentUser.uid + '/notifications').push({
-                    title: '📩 تم إرسال طلب اشتراك',
-                    description: 'تم إرسال طلب اشتراك في كورس "' + course.title + '"، في انتظار الموافقة.',
-                    icon: '📩',
-                    read: false,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                });
+                if (database.ref && currentUser) {
+                    database.ref('users/' + currentUser.uid + '/notifications').push({
+                        title: '📩 تم إرسال طلب اشتراك',
+                        description: 'تم إرسال طلب اشتراك في كورس "' + course.title + '"، في انتظار الموافقة.',
+                        icon: '📩',
+                        read: false,
+                        createdAt: Date.now()
+                    });
+                }
             } catch (notifErr) {
                 console.warn('⚠️ فشل إرسال الإشعار:', notifErr);
             }
 
-            // 9️⃣ عرض رسالة نجاح للمستخدم
             showToast('✅ تم إرسال طلب الاشتراك بنجاح!', 'success');
-            showToast('⏳ في انتظار موافقة الإدارة', 'info');
-
-            // 🔟 تحديث الصفحة وعرض رسالة النجاح
+            
+            // عرض رسالة نجاح
             var main = document.getElementById('mainContent');
             if (main) {
                 main.innerHTML = `
@@ -3521,11 +3552,10 @@
                             <p><strong>👤 الطالب:</strong> ${escapeHtml(studentName)}</p>
                             <p><strong>📱 الهاتف:</strong> ${escapeHtml(transferPhone)}</p>
                             <p><strong>💰 المبلغ:</strong> ${escapeHtml(amount)} جنيه</p>
-                            <p><strong>⏱️ وقت التحويل:</strong> ${escapeHtml(transferTime)}</p>
                         </div>
                         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
                             <button class="btn-primary-premium" onclick="window.APP.showHome()" style="min-height:44px;">
-                                🏠 العودة للرئيسية
+                                🏠 الرئيسية
                             </button>
                             <button class="btn-outline-premium" onclick="window.APP.showDashboard()" style="min-height:44px;">
                                 📊 حسابي
@@ -3535,36 +3565,36 @@
                 `;
             }
 
-            // 1️⃣1️⃣ تفعيل الزر مرة أخرى
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
             }
         })
         .catch(function(error) {
-            // 1️⃣2️⃣ معالجة الأخطاء
-            console.error('🔥 خطأ في إرسال الطلب:', error);
+            console.error("🔥 خطأ في الإرسال:", error);
+            console.error("🔥 تفاصيل الخطأ:", {
+                code: error.code,
+                message: error.message,
+                stack: error.stack
+            });
             
-            // عرض رسالة خطأ مفصلة
             var errorMsg = 'حدث خطأ في إرسال الطلب';
             if (error.code === 'PERMISSION_DENIED') {
-                errorMsg = 'ليس لديك صلاحية لإرسال الطلب. يرجى تسجيل الدخول مرة أخرى.';
+                errorMsg = 'ليس لديك صلاحية. تأكد من قواعد Firebase.';
             } else if (error.code === 'NETWORK_ERROR') {
-                errorMsg = 'فشل الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت.';
+                errorMsg = 'فشل الاتصال بالإنترنت.';
             } else if (error.message) {
                 errorMsg = error.message;
             }
             
             showToast('❌ ' + errorMsg, 'error');
             
-            // تفعيل الزر مرة أخرى
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
             }
         });
 }
-
         // ============================================================
         // CHECK SUBSCRIPTION STATUS
         // ============================================================
