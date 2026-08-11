@@ -3412,173 +3412,158 @@
         // ============================================================
         // SUBMIT SUBSCRIPTION REQUEST - FIXED
         // ============================================================
-        function submitSubscriptionRequest(courseId) {
-            if (!currentUser) {
-                showLoginOverlay();
-                return;
-            }
+       function submitSubscriptionRequest(courseId) {
+    // 1️⃣ التحقق من تسجيل الدخول
+    if (!currentUser) {
+        showLoginOverlay();
+        return;
+    }
 
-            var course = allCourses.find(function(c) { return c.id === courseId; });
-            if (!course) {
-                showToast('⚠️ الكورس غير موجود', 'error');
-                return;
-            }
+    // 2️⃣ التحقق من وجود الكورس
+    var course = allCourses.find(function(c) { return c.id === courseId; });
+    if (!course) {
+        showToast('⚠️ الكورس غير موجود', 'error');
+        return;
+    }
 
-            if (course.isFree === true) {
-                showToast('⚠️ هذا الكورس مجاني، يمكنك الاشتراك مباشرة', 'error');
-                return;
-            }
+    // 3️⃣ جلب البيانات من الحقول
+    var studentNameInput = document.getElementById('subscriptionStudentName');
+    var transferPhoneInput = document.getElementById('subscriptionTransferPhone');
+    var amountInput = document.getElementById('subscriptionAmount');
+    var transferTimeInput = document.getElementById('subscriptionTransferTime');
 
-            // جلب القيم من الحقول
-            var studentNameInput = document.getElementById('subscriptionStudentName');
-            var transferPhoneInput = document.getElementById('subscriptionTransferPhone');
-            var amountInput = document.getElementById('subscriptionAmount');
-            var transferTimeInput = document.getElementById('subscriptionTransferTime');
+    var studentName = studentNameInput ? studentNameInput.value.trim() : '';
+    var transferPhone = transferPhoneInput ? transferPhoneInput.value.trim() : '';
+    var amount = amountInput ? amountInput.value.trim() : '';
+    var transferTime = transferTimeInput ? transferTimeInput.value.trim() : '';
 
-            var studentName = studentNameInput ? studentNameInput.value.trim() : '';
-            var transferPhone = transferPhoneInput ? transferPhoneInput.value.trim() : '';
-            var amount = amountInput ? amountInput.value.trim() : '';
-            var transferTime = transferTimeInput ? transferTimeInput.value.trim() : '';
+    // 4️⃣ التحقق من صحة البيانات
+    if (!studentName) {
+        showToast('⚠️ يرجى إدخال اسم الطالب', 'warning');
+        if (studentNameInput) studentNameInput.focus();
+        return;
+    }
+    if (!transferPhone) {
+        showToast('⚠️ يرجى إدخال رقم الهاتف المحول منه', 'warning');
+        if (transferPhoneInput) transferPhoneInput.focus();
+        return;
+    }
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+        showToast('⚠️ يرجى إدخال مبلغ صحيح أكبر من صفر', 'warning');
+        if (amountInput) amountInput.focus();
+        return;
+    }
+    if (!transferTime) {
+        showToast('⚠️ يرجى تحديد وقت التحويل', 'warning');
+        if (transferTimeInput) transferTimeInput.focus();
+        return;
+    }
 
-            // التحقق من البيانات
-            if (!studentName) {
-                showToast('⚠️ يرجى إدخال اسم الطالب', 'warning');
-                if (studentNameInput) studentNameInput.focus();
-                return;
-            }
-            if (!transferPhone) {
-                showToast('⚠️ يرجى إدخال رقم الهاتف المحول منه', 'warning');
-                if (transferPhoneInput) transferPhoneInput.focus();
-                return;
-            }
-            if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-                showToast('⚠️ يرجى إدخال مبلغ صحيح أكبر من صفر', 'warning');
-                if (amountInput) amountInput.focus();
-                return;
-            }
-            if (!transferTime) {
-                showToast('⚠️ يرجى تحديد وقت التحويل', 'warning');
-                if (transferTimeInput) transferTimeInput.focus();
-                return;
-            }
+    // 5️⃣ تعطيل الزر أثناء الإرسال
+    var submitBtn = document.getElementById('submitSubscriptionBtn');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+    }
 
-            // تعطيل الزر أثناء الإرسال
-            var submitBtn = document.getElementById('submitSubscriptionBtn');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
-            }
+    // 6️⃣ إنشاء الطلب الجديد
+    var requestRef = database.ref('subscriptionRequests').push();
+    var requestData = {
+        requestId: requestRef.key,
+        userId: currentUser.uid,
+        userEmail: userData ? userData.email : '',
+        studentName: studentName,
+        courseId: courseId,
+        courseTitle: course.title,
+        transferPhone: transferPhone,
+        amount: amount,
+        transferTime: transferTime,
+        status: 'pending',
+        createdAt: firebase.database.ServerValue.TIMESTAMP  // ⭐ استخدم ServerValue
+    };
 
-            // التحقق من الطلبات السابقة
-            database.ref('subscriptionRequests')
-                .orderByChild('userId')
-                .equalTo(currentUser.uid)
-                .once('value')
-                .then(function(existingRequest) {
-                    var hasPending = false;
-                    var isApproved = false;
-                    var isRejected = false;
-                    var rejectionReason = '';
+    console.log('📤 جاري إرسال الطلب:', requestData);
 
-                    existingRequest.forEach(function(child) {
-                        var data = child.val();
-                        if (data.courseId === courseId) {
-                            if (data.status === 'pending' || data.status === 'reviewing') {
-                                hasPending = true;
-                            }
-                            if (data.status === 'approved') {
-                                isApproved = true;
-                            }
-                            if (data.status === 'rejected') {
-                                isRejected = true;
-                                rejectionReason = data.rejectionReason || '';
-                            }
-                        }
-                    });
-
-                    if (hasPending) {
-                        showToast('⏳ لديك طلب اشتراك قيد المراجعة بالفعل لهذا الكورس.', 'warning');
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
-                        }
-                        return;
-                    }
-
-                    if (isApproved) {
-                        showToast('✅ تم الموافقة على طلبك بالفعل، يمكنك الدخول للكورس الآن.', 'success');
-                        openCoursePage(courseId);
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
-                        }
-                        return;
-                    }
-
-                    if (isRejected) {
-                        if (!confirm('❌ تم رفض طلبك السابق' + (rejectionReason ? '، السبب: ' + rejectionReason :
-                                '') + '.\nهل تريد تقديم طلب جديد؟')) {
-                            if (submitBtn) {
-                                submitBtn.disabled = false;
-                                submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
-                            }
-                            return;
-                        }
-                    }
-
-                    // إرسال الطلب الجديد
-                    var requestRef = database.ref('subscriptionRequests').push();
-                    requestRef.set({
-                        requestId: requestRef.key,
-                        userId: currentUser.uid,
-                        userEmail: userData ? userData.email : '',
-                        studentName: studentName,
-                        courseId: courseId,
-                        courseTitle: course.title,
-                        transferPhone: transferPhone,
-                        amount: amount,
-                        transferTime: transferTime,
-                        status: 'pending',
-                        createdAt: new Date().toISOString()
-                    }).then(function() {
-                        console.log('✅ تم حفظ طلب الاشتراك بنجاح:', requestRef.key);
-
-                        // إرسال إشعار
-                        try {
-                            addNotification(currentUser.uid, '📩 تم إرسال طلب اشتراك',
-                                'تم إرسال طلب اشتراك في كورس "' + course.title +
-                                '"، في انتظار الموافقة.', '📩');
-                        } catch (notifErr) {
-                            console.error('⚠️ فشل إرسال الإشعار:', notifErr);
-                        }
-
-                        showToast('✅ تم إرسال طلب الاشتراك بنجاح!', 'success');
-                        showToast('⏳ في انتظار موافقة الإدارة', 'info');
-
-                        // تحديث الصفحة بعد 1.5 ثانية
-                        setTimeout(function() {
-                            showPaidCourseDetails(courseId);
-                        }, 1500);
-
-                    }).catch(function(err) {
-                        console.error('🔥 خطأ في إرسال الطلب:', err);
-                        showToast('❌ حدث خطأ في إرسال الطلب: ' + err.message, 'error');
-                    }).finally(function() {
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
-                        }
-                    });
-
-                }).catch(function(err) {
-                    console.error('Error checking existing requests:', err);
-                    showToast('⚠️ حدث خطأ في التحقق من الطلبات السابقة', 'error');
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
-                    }
+    // 7️⃣ حفظ الطلب في Firebase
+    requestRef.set(requestData)
+        .then(function() {
+            console.log('✅ تم حفظ الطلب بنجاح:', requestRef.key);
+            
+            // 8️⃣ إرسال إشعار للمستخدم
+            try {
+                database.ref('users/' + currentUser.uid + '/notifications').push({
+                    title: '📩 تم إرسال طلب اشتراك',
+                    description: 'تم إرسال طلب اشتراك في كورس "' + course.title + '"، في انتظار الموافقة.',
+                    icon: '📩',
+                    read: false,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
-        }
+            } catch (notifErr) {
+                console.warn('⚠️ فشل إرسال الإشعار:', notifErr);
+            }
+
+            // 9️⃣ عرض رسالة نجاح للمستخدم
+            showToast('✅ تم إرسال طلب الاشتراك بنجاح!', 'success');
+            showToast('⏳ في انتظار موافقة الإدارة', 'info');
+
+            // 🔟 تحديث الصفحة وعرض رسالة النجاح
+            var main = document.getElementById('mainContent');
+            if (main) {
+                main.innerHTML = `
+                    <div style="max-width:600px;margin:40px auto;padding:20px;text-align:center;">
+                        <div style="font-size:4rem;margin-bottom:16px;">✅</div>
+                        <h2 style="font-family:var(--font-display);color:var(--text-dark);">تم إرسال طلبك بنجاح!</h2>
+                        <p style="color:var(--text-secondary);font-size:1.1rem;margin:16px 0;">
+                            سيتم مراجعة طلبك من قبل الإدارة في أقرب وقت.
+                        </p>
+                        <div style="background:var(--white);padding:16px;border-radius:var(--radius);margin:16px 0;border:1px solid rgba(231,42,155,0.06);text-align:right;">
+                            <p><strong>📚 الكورس:</strong> ${escapeHtml(course.title)}</p>
+                            <p><strong>👤 الطالب:</strong> ${escapeHtml(studentName)}</p>
+                            <p><strong>📱 الهاتف:</strong> ${escapeHtml(transferPhone)}</p>
+                            <p><strong>💰 المبلغ:</strong> ${escapeHtml(amount)} جنيه</p>
+                            <p><strong>⏱️ وقت التحويل:</strong> ${escapeHtml(transferTime)}</p>
+                        </div>
+                        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
+                            <button class="btn-primary-premium" onclick="window.APP.showHome()" style="min-height:44px;">
+                                🏠 العودة للرئيسية
+                            </button>
+                            <button class="btn-outline-premium" onclick="window.APP.showDashboard()" style="min-height:44px;">
+                                📊 حسابي
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 1️⃣1️⃣ تفعيل الزر مرة أخرى
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
+            }
+        })
+        .catch(function(error) {
+            // 1️⃣2️⃣ معالجة الأخطاء
+            console.error('🔥 خطأ في إرسال الطلب:', error);
+            
+            // عرض رسالة خطأ مفصلة
+            var errorMsg = 'حدث خطأ في إرسال الطلب';
+            if (error.code === 'PERMISSION_DENIED') {
+                errorMsg = 'ليس لديك صلاحية لإرسال الطلب. يرجى تسجيل الدخول مرة أخرى.';
+            } else if (error.code === 'NETWORK_ERROR') {
+                errorMsg = 'فشل الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت.';
+            } else if (error.message) {
+                errorMsg = error.message;
+            }
+            
+            showToast('❌ ' + errorMsg, 'error');
+            
+            // تفعيل الزر مرة أخرى
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '📩 تقديم طلب اشتراك';
+            }
+        });
+}
 
         // ============================================================
         // CHECK SUBSCRIPTION STATUS
