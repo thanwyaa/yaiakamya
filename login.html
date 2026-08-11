@@ -957,6 +957,9 @@
                         <span class="icon"><i class="fas fa-graduation-cap"></i></span>
                         <select id="signupGrade">
                             <option value="">اختر الصف الدراسي</option>
+                            <option value="1">أولى ثانوي</option>
+                            <option value="2">ثانية ثانوي</option>
+                            <option value="3">ثالثة ثانوي</option>
                         </select>
                     </div>
                     <div class="error-text" id="gradeError">❌ الرجاء اختيار الصف الدراسي</div>
@@ -1030,7 +1033,7 @@
                 <span class="toggle-link" onclick="toggleMode()">إنشاء حساب جديد</span>
             </div>
 
-            <a href="index.html" style="display:block;text-align:center;margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);text-decoration:none;transition:var(--transition);font-weight:500;" onmouseover="this.style.color='var(--magenta)'" onmouseout="this.style.color='var(--text-muted)'">
+            <a href="app.html" style="display:block;text-align:center;margin-top:0.4rem;font-size:0.85rem;color:var(--text-muted);text-decoration:none;transition:var(--transition);font-weight:500;" onmouseover="this.style.color='var(--magenta)'" onmouseout="this.style.color='var(--text-muted)'">
                 <i class="fas fa-arrow-right"></i> العودة للصفحة الرئيسية
             </a>
 
@@ -1043,7 +1046,7 @@
     </div>
 
     <!-- ============================================================
-    FIREBASE SCRIPT
+    FIREBASE SCRIPT - 100% عربي، Console مخفي تماماً
     ============================================================ -->
     <script type="module">
         // ============================================================
@@ -1070,6 +1073,15 @@
         } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
 
         // ============================================================
+        // إخفاء الـ Console بالكامل
+        // ============================================================
+        console.log = function() {};
+        console.warn = function() {};
+        console.error = function() {};
+        console.info = function() {};
+        console.debug = function() {};
+
+        // ============================================================
         // CONFIG
         // ============================================================
         const firebaseConfig = {
@@ -1091,10 +1103,8 @@
         const db = getDatabase(app);
 
         setPersistence(auth, browserLocalPersistence)
-            .then(() => console.log('✅ تم تفعيل التخزين المحلي'))
-            .catch((err) => console.warn('⚠️ خطأ في التخزين:', err));
-
-        console.log('🔥 تم تهيئة Firebase: يلا كيمياء');
+            .then(() => {})
+            .catch(() => {});
 
         // ============================================================
         // STATE
@@ -1239,14 +1249,10 @@
         }
 
         // ============================================================
-        // ERROR HANDLER - ترجمة كاملة بالعربية
+        // ERROR HANDLER - 100% عربي
         // ============================================================
         function getArabicErrorMessage(error) {
-            console.error('🔥 خطأ Firebase:', {
-                code: error.code || 'غير معروف',
-                message: error.message || 'لا توجد رسالة'
-            });
-
+            // الأخطاء المعروفة مترجمة بالكامل للعربية
             const errorMap = {
                 'auth/email-already-in-use': '❌ البريد الإلكتروني مستخدم بالفعل\n💡 استخدم بريداً آخر أو سجل الدخول',
                 'auth/invalid-email': '❌ البريد الإلكتروني غير صحيح\n💡 اكتب بريداً إلكترونياً صحيحاً',
@@ -1285,29 +1291,17 @@
                 'auth/admin-restricted-operation': '❌ هذه العملية مقيدة على المسؤولين فقط',
                 'auth/timeout': '❌ انتهت مدة الجلسة\n💡 حاول مرة أخرى',
                 'auth/web-storage-unsupported': '❌ المتصفح لا يدعم التخزين المحلي\n💡 يرجى استخدام متصفح حديث',
-                'PERMISSION_DENIED': '❌ لا توجد صلاحية لتنفيذ هذه العملية\n💡 تأكد من قواعد الأمان في Firebase Console',
-                'permission-denied': '❌ لا توجد صلاحية لتنفيذ هذه العملية\n💡 تأكد من قواعد الأمان في Firebase Console'
+                'PERMISSION_DENIED': '❌ لا توجد صلاحية لتنفيذ هذه العملية\n💡 تأكد من قواعد الأمان في لوحة تحكم Firebase',
+                'permission-denied': '❌ لا توجد صلاحية لتنفيذ هذه العملية\n💡 تأكد من قواعد الأمان في لوحة تحكم Firebase'
             };
 
-            let arabicMessage = null;
+            // البحث عن الترجمة
             if (error.code && errorMap[error.code]) {
-                arabicMessage = errorMap[error.code];
-            }
-            if (!arabicMessage && error.message) {
-                for (const [key, value] of Object.entries(errorMap)) {
-                    if (error.message.includes(key) || error.message.includes(key.replace('auth/', ''))) {
-                        arabicMessage = value;
-                        break;
-                    }
-                }
+                return errorMap[error.code];
             }
 
-            if (arabicMessage) {
-                return arabicMessage;
-            }
-
-            console.error('❌ خطأ غير متوقع:', error);
-            return `❌ كود الخطأ: ${error.code || 'غير معروف'}\n❌ الرسالة: ${error.message || 'لا توجد رسالة'}`;
+            // خطأ غير معروف - رسالة عربية
+            return '❌ حدث خطأ غير متوقع\n💡 إذا استمرت المشكلة، يرجى التواصل مع الدعم الفني';
         }
 
         // ============================================================
@@ -1378,7 +1372,6 @@
                 }
                 return { isBanned: false, reason: null };
             } catch (e) {
-                console.warn('خطأ في التحقق من الحظر:', e);
                 return { isBanned: false, reason: null };
             }
         }
@@ -1409,9 +1402,7 @@
                         hideBannedScreen();
                     }
                 }
-            }, (err) => {
-                console.warn('خطأ في مراقبة الحظر:', err);
-            });
+            }, () => {});
         }
 
         // ============================================================
@@ -1475,11 +1466,10 @@
 
                 showMessage('🎉 تم إنشاء حسابك بنجاح!\nأهلاً بك في يلا كيمياء مع مستر زياد مبروك.', 'success');
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'app.html';
                 }, 1500);
 
             } catch (e) {
-                console.error('❌ خطأ في التسجيل:', e);
                 signupBtn.classList.remove('loading');
                 signupBtn.disabled = false;
                 isSubmitting = false;
@@ -1487,6 +1477,7 @@
                 const arabicMsg = getArabicErrorMessage(e);
                 showMessage(arabicMsg, 'error');
 
+                // تمييز الحقل المسبب
                 if (e.code === 'auth/email-already-in-use') {
                     const field = document.getElementById('signupEmail');
                     if (field) {
@@ -1501,8 +1492,6 @@
                         field.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         field.focus();
                     }
-                } else if (e.code === 'PERMISSION_DENIED' || e.code === 'permission-denied') {
-                    showMessage('❌ لا توجد صلاحية لتنفيذ هذه العملية\n💡 تأكد من قواعد الأمان في Firebase Console\n\n📌 قم بتحديث القواعد إلى:\n{\n  "rules": {\n    ".read": "auth != null",\n    ".write": "auth != null"\n  }\n}', 'error');
                 }
             }
         }
@@ -1677,6 +1666,7 @@
                 const result = await signInWithEmailAndPassword(auth, email, password);
                 const uid = result.user.uid;
 
+                // التحقق من الحظر
                 const banResult = await checkBanStatus(uid);
                 if (banResult.isBanned) {
                     try { await signOut(auth); } catch (e) { /* ignore */ }
@@ -1687,6 +1677,7 @@
                     return;
                 }
 
+                // تحديث إحصائيات الدخول
                 const snap = await get(ref(db, 'users/' + uid));
                 if (snap.exists()) {
                     await update(ref(db, 'users/' + uid), {
@@ -1701,11 +1692,10 @@
 
                 showMessage('✅ مرحباً بك! جاري التحويل...', 'success');
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'app.html';
                 }, 1200);
 
             } catch (e) {
-                console.error('❌ خطأ في تسجيل الدخول:', e);
                 loginBtn.classList.remove('loading');
                 loginBtn.disabled = false;
                 isSubmitting = false;
@@ -1816,11 +1806,6 @@
         // ============================================================
         authImage.src = 'https://res.cloudinary.com/d5nyosrm/image/upload/v1786446760/%D8%AA%D8%B3%D8%AC%D9%8A%D9%84_%D8%AF%D8%AE%D9%88%D9%84.jpg';
         window.updateEducationFields();
-
-        console.log('✅ تم تهيئة نظام المصادقة - يلا كيمياء');
-        console.log('✅ جميع رسائل الخطأ بالعربية');
-        console.log('⚠️ في حالة ظهور "Permission denied" تأكد من قواعد الأمان في Firebase Console');
-        console.log('📌 قم بتحديث القواعد إلى: { "rules": { ".read": "auth != null", ".write": "auth != null" } }');
     </script>
 
 </body>
