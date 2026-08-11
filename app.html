@@ -3951,6 +3951,7 @@
             ytPlayerQueue = [];
         }
 
+        // ✅ FIX: Mobile-friendly YouTube player with playsinline
         function createYouTubePlayer(_ref) {
             var videoId = _ref.videoId;
             var containerId = _ref.containerId;
@@ -3998,6 +3999,7 @@
                 dynamicWM.style.top = randomY + 'px';
             }, 4000);
 
+            // ✅ Mobile-friendly player with playsinline
             var player = new YT.Player(containerId, {
                 height: '100%',
                 width: '100%',
@@ -4008,10 +4010,13 @@
                     fs: 0,
                     iv_load_policy: 3,
                     modestbranding: 1,
-                    playsinline: 1,
+                    playsinline: 1, // ✅ KEY: works on mobile
                     rel: 0,
                     showinfo: 0,
-                    origin: window.location.origin
+                    origin: window.location.origin,
+                    autoplay: 0,
+                    enablejsapi: 1,
+                    widget_referrer: window.location.href
                 },
                 events: {
                     onReady: function(event) {
@@ -4104,7 +4109,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO
+        // LESSON VIDEO - Mobile optimized
         // ============================================================
         function openLessonVideo(lessonId) {
             if (!currentUser) {
@@ -4155,6 +4160,7 @@
                     videoWatchStartTime = Date.now();
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
+                    // ✅ Mobile optimized layout with visible controls on touch
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -4167,41 +4173,42 @@
                         .title) + '</span></div>' +
                         '<h1 style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text-dark);margin-bottom:12px;">🎥 ' +
                         escapeHtml(lessonData.title) + '</h1>' +
-                        '<div class="video-protected" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);">' +
+                        '<div class="video-protected" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);touch-action:manipulation;">' +
                         '<div id="youtube-player" style="width:100%;height:100%;"></div>' +
-                        '<div class="player-controls" id="playerControls">' +
-                        '<div class="top-row">' +
-                        '<button id="playPauseBtn" aria-label="تشغيل/إيقاف" style="background:none;border:none;color:#fff;font-size:clamp(1.2rem,1.5vw,1.5rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">' +
+                        '<div class="player-controls" id="playerControls" style="position:absolute;bottom:0;left:0;right:0;padding:12px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.85));opacity:0;transition:opacity 0.3s ease;z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:none;' +
+                        (window.innerWidth < 768 ? 'opacity:1 !important;' : '') + '">' +
+                        '<div class="top-row" style="display:flex;align-items:center;gap:8px;">' +
+                        '<button id="playPauseBtn" aria-label="تشغيل/إيقاف" style="background:none;border:none;color:#fff;font-size:clamp(1.2rem,1.5vw,1.5rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;' +
+                        (window.innerWidth < 768 ? 'font-size:1.4rem;padding:6px;' : '') + '">' +
                         '<i class="fas fa-play"></i></button>' +
-                        '<button id="rewindBtn" aria-label="تأخير 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(1rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">' +
+                        '<button id="rewindBtn" aria-label="تأخير 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">' +
                         '<i class="fas fa-backward"></i> 10</button>' +
-                        '<button id="forwardBtn" aria-label="تقديم 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(1rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">10 <i class="fas fa-forward"></i></button>' +
-                        '<span class="time-display" id="timeDisplay">00:00 / 00:00</span></div>' +
-                        '<div class="progress-bar" id="progressBar"><div class="fill" id="progressFill" style="width:0%;"><div class="thumb"></div></div></div>' +
-                        '<div class="bottom-row">' +
-                        '<button id="muteBtn" aria-label="كتم الصوت" style="background:none;border:none;color:#fff;font-size:clamp(1rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">' +
+                        '<button id="forwardBtn" aria-label="تقديم 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">10 <i class="fas fa-forward"></i></button>' +
+                        '<span class="time-display" id="timeDisplay" style="color:#fff;font-size:clamp(0.65rem,0.9vw,0.8rem);font-weight:500;min-width:60px;text-align:center;">00:00 / 00:00</span></div>' +
+                        '<div class="progress-bar" id="progressBar" style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;cursor:pointer;position:relative;transition:height 0.2s;touch-action:none;pointer-events:auto;">' +
+                        '<div class="fill" id="progressFill" style="height:100%;background:var(--primary);border-radius:2px;width:0%;position:relative;"><div class="thumb" style="position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;background:var(--primary);border-radius:50%;opacity:0;transition:opacity 0.2s;"></div></div></div>' +
+                        '<div class="bottom-row" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+                        '<button id="muteBtn" aria-label="كتم الصوت" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;">' +
                         '<i class="fas fa-volume-up"></i></button>' +
-                        '<div class="volume-container"><input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" aria-label="مستوى الصوت" style="pointer-events:auto;"></div>' +
+                        '<div class="volume-container" style="display:flex;align-items:center;gap:4px;">' +
+                        '<input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" aria-label="مستوى الصوت" style="width:50px;height:3px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.3);border-radius:2px;outline:none;pointer-events:auto;">' +
+                        '</div>' +
                         '<div style="flex:1;"></div>' +
-                        '<select class="speed-select" id="speedSelect" aria-label="سرعة التشغيل" style="pointer-events:auto;">' +
+                        '<select class="speed-select" id="speedSelect" aria-label="سرعة التشغيل" style="background:rgba(0,0,0,0.7);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:2px 6px;font-size:clamp(0.6rem,0.7vw,0.7rem);cursor:pointer;font-family:\'Cairo\',sans-serif;min-height:28px;pointer-events:auto;">' +
                         '<option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="1.75">1.75x</option><option value="2">2x</option></select>' +
-                        '<select class="quality-select" id="qualitySelect" aria-label="جودة الفيديو" style="pointer-events:auto;">' +
-                        '<option value="auto">Auto</option><option value="1080p">1080p</option><option value="720p">720p</option><option value="480p">480p</option><option value="360p">360p</option></select>' +
-                        '<button id="pipBtn" aria-label="Picture in Picture" style="background:none;border:none;color:#fff;font-size:clamp(1rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">' +
-                        '<i class="fas fa-window-restore"></i></button>' +
-                        '<button id="fullscreenBtn" aria-label="ملء الشاشة" style="background:none;border:none;color:#fff;font-size:clamp(1rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">' +
+                        '<button id="fullscreenBtn" aria-label="ملء الشاشة" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;">' +
                         '<i class="fas fa-expand"></i></button></div></div></div>' +
-                        '<div class="watch-progress-container">' +
-                        '<div class="timer-row"><span>⏱ وقت المشاهدة</span><span class="time-display" id="watchTimer">00:00</span></div>' +
-                        '<div class="watch-progress-bar"><div class="fill" id="watchProgressFill" style="width:0%;"></div></div>' +
-                        '<div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-secondary);margin-top:4px;">' +
-                        '<span>0%</span><span id="progressPercentLabel">0%</span><span>100%</span></div></div>' +
+                        '<div class="watch-progress-container" style="margin-top:12px;">' +
+                        '<div class="timer-row" style="display:flex;justify-content:space-between;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);margin-bottom:4px;"><span>⏱ وقت المشاهدة</span><span class="time-display" id="watchTimer" style="font-weight:700;color:var(--primary);font-family:var(--font-display);font-size:clamp(1rem,1.1vw,1.1rem);">00:00</span></div>' +
+                        '<div class="watch-progress-bar" style="width:100%;height:8px;background:var(--white);border-radius:10px;overflow:hidden;"><div class="fill" id="watchProgressFill" style="height:100%;border-radius:10px;background:var(--gradient-primary);transition:width 0.5s ease;width:0%;"></div></div>' +
+                        '<div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-secondary);margin-top:4px;"><span>0%</span><span id="progressPercentLabel">0%</span><span>100%</span></div></div>' +
                         '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">' +
                         '<button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.handleVideoExit(\'' +
                         lessonId +
                         '\')" style="min-height:36px;">📚 العودة للكورس</button>' +
                         '<button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.showHome()" style="min-height:36px;">🏠 الرئيسية</button></div>' +
                         '<p style="text-align:center;font-size:0.7rem;color:var(--text-secondary);margin-top:12px;">🔒 هذا المحتوى محمي بحقوق النشر - ممنوع النسخ أو المشاركة</p></div>';
+
                     window.scrollTo({ top: 0, behavior: 'smooth' });
 
                     setTimeout(function() { protectVideoPlayer(); }, 500);
@@ -4213,7 +4220,22 @@
                         lessonTitle: lessonData.title,
                         onReady: function(event) {
                             var player = event.target;
-                            player.playVideo();
+                            // Play video with mobile-friendly approach
+                            try {
+                                var container = document.getElementById('videoContainer');
+                                if (container) {
+                                    container.addEventListener('click', function() {
+                                        try {
+                                            var state = player.getPlayerState();
+                                            if (state !== 1 && state !== 3) {
+                                                player.playVideo();
+                                            }
+                                        } catch (e) {}
+                                    }, { once: true });
+                                }
+                            } catch (e) {
+                                console.log('Auto-play setup:', e);
+                            }
                             setupPlayerControls(lessonId);
                         },
                         onStateChange: function(event) {
@@ -4243,8 +4265,6 @@
             var muteBtn = document.getElementById('muteBtn');
             var volumeSlider = document.getElementById('volumeSlider');
             var speedSelect = document.getElementById('speedSelect');
-            var qualitySelect = document.getElementById('qualitySelect');
-            var pipBtn = document.getElementById('pipBtn');
             var fullscreenBtn = document.getElementById('fullscreenBtn');
             var progressBar = document.getElementById('progressBar');
             var playerControls = document.getElementById('playerControls');
@@ -4403,45 +4423,6 @@
                 });
             }
 
-            // Quality Select
-            if (qualitySelect) {
-                var newSelect = qualitySelect.cloneNode(true);
-                qualitySelect.parentNode.replaceChild(newSelect, qualitySelect);
-
-                newSelect.addEventListener('change', function() {
-                    showToast('📺 الجودة: ' + this.value, 'info');
-                });
-            }
-
-            // Picture in Picture
-            if (pipBtn) {
-                var newBtn = pipBtn.cloneNode(true);
-                pipBtn.parentNode.replaceChild(newBtn, pipBtn);
-
-                newBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    try {
-                        var iframe = document.querySelector('#youtube-player iframe');
-                        if (iframe) {
-                            if (document.pictureInPictureElement) {
-                                document.exitPictureInPicture();
-                                showToast('🖥️ خروج من Picture in Picture', 'info');
-                            } else {
-                                iframe.requestPictureInPicture();
-                                showToast('🖥️ Picture in Picture', 'info');
-                            }
-                        } else {
-                            showToast('❌ Picture in Picture غير مدعوم', 'warning');
-                        }
-                    } catch (err) {
-                        console.error('PiP error:', err);
-                        showToast('❌ Picture in Picture غير مدعوم', 'warning');
-                    }
-                });
-            }
-
             // Fullscreen
             if (fullscreenBtn) {
                 var newBtn = fullscreenBtn.cloneNode(true);
@@ -4564,130 +4545,7 @@
                 }
             }
 
-            // Keyboard Shortcuts
-            document.addEventListener('keydown', function(e) {
-                var isVideoFocused = videoContainer &&
-                    document.activeElement && document.activeElement.tagName !== 'INPUT' &&
-                    document.activeElement.tagName !== 'TEXTAREA' &&
-                    document.activeElement.tagName !== 'SELECT';
-
-                if (!isVideoFocused || !playerInstance) return;
-
-                try {
-                    switch (e.key) {
-                        case ' ':
-                            e.preventDefault();
-                            var state = playerInstance.getPlayerState();
-                            if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
-                                playerInstance.pauseVideo();
-                                if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                            } else {
-                                playerInstance.playVideo();
-                                if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                                if (playerControls) playerControls.classList.add('visible');
-                            }
-                            break;
-                        case 'ArrowLeft':
-                            e.preventDefault();
-                            var currentL = playerInstance.getCurrentTime();
-                            playerInstance.seekTo(Math.max(0, currentL - 10), true);
-                            showToast('⏪ تأخير 10 ثوان', 'info');
-                            break;
-                        case 'ArrowRight':
-                            e.preventDefault();
-                            var currentR = playerInstance.getCurrentTime();
-                            var durationR = playerInstance.getDuration();
-                            playerInstance.seekTo(Math.min(durationR, currentR + 10), true);
-                            showToast('⏩ تقديم 10 ثوان', 'info');
-                            break;
-                        case 'ArrowUp':
-                            e.preventDefault();
-                            var volUp = Math.min(100, playerInstance.getVolume() + 10);
-                            playerInstance.setVolume(volUp);
-                            if (volumeSlider) volumeSlider.value = volUp / 100;
-                            if (muteBtn) muteBtn.innerHTML = volUp > 0 ? '<i class="fas fa-volume-up"></i>' :
-                                '<i class="fas fa-volume-mute"></i>';
-                            break;
-                        case 'ArrowDown':
-                            e.preventDefault();
-                            var volDown = Math.max(0, playerInstance.getVolume() - 10);
-                            playerInstance.setVolume(volDown);
-                            if (volumeSlider) volumeSlider.value = volDown / 100;
-                            if (muteBtn) muteBtn.innerHTML = volDown > 0 ? '<i class="fas fa-volume-up"></i>' :
-                                '<i class="fas fa-volume-mute"></i>';
-                            break;
-                        case 'f':
-                        case 'F':
-                            e.preventDefault();
-                            if (fullscreenBtn) fullscreenBtn.click();
-                            break;
-                        case 'm':
-                        case 'M':
-                            e.preventDefault();
-                            if (muteBtn) muteBtn.click();
-                            break;
-                    }
-                } catch (err) {
-                    console.error('Keyboard shortcut error:', err);
-                }
-            });
-
-            // Double Tap
-            if (videoContainer) {
-                var lastTap = 0;
-
-                videoContainer.addEventListener('dblclick', function(e) {
-                    if (!playerInstance) return;
-                    try {
-                        var rect = this.getBoundingClientRect();
-                        var x = e.clientX - rect.left;
-                        var width = rect.width;
-                        var current = playerInstance.getCurrentTime();
-                        var duration = playerInstance.getDuration();
-
-                        if (x < width / 2) {
-                            playerInstance.seekTo(Math.max(0, current - 10), true);
-                            showToast('⏪ تأخير 10 ثوان (نقر مزدوج)', 'info');
-                        } else {
-                            playerInstance.seekTo(Math.min(duration, current + 10), true);
-                            showToast('⏩ تقديم 10 ثوان (نقر مزدوج)', 'info');
-                        }
-                        if (playerControls) playerControls.classList.add('visible');
-                    } catch (err) {
-                        console.error('Double tap error:', err);
-                    }
-                });
-
-                videoContainer.addEventListener('touchstart', function(e) {
-                    var now = Date.now();
-                    var timeDiff = now - lastTap;
-                    if (timeDiff < 300 && timeDiff > 0) {
-                        if (!playerInstance) return;
-                        try {
-                            var touch = e.touches[0];
-                            var rect = this.getBoundingClientRect();
-                            var x = touch.clientX - rect.left;
-                            var width = rect.width;
-                            var current = playerInstance.getCurrentTime();
-                            var duration = playerInstance.getDuration();
-
-                            if (x < width / 2) {
-                                playerInstance.seekTo(Math.max(0, current - 10), true);
-                                showToast('⏪ تأخير 10 ثوان (نقر مزدوج)', 'info');
-                            } else {
-                                playerInstance.seekTo(Math.min(duration, current + 10), true);
-                                showToast('⏩ تقديم 10 ثوان (نقر مزدوج)', 'info');
-                            }
-                            if (playerControls) playerControls.classList.add('visible');
-                        } catch (err) {
-                            console.error('Touch double tap error:', err);
-                        }
-                    }
-                    lastTap = now;
-                });
-            }
-
-            // Auto Hide Controls
+            // Auto Hide Controls - Mobile friendly
             var hideTimeout = null;
 
             function showControls() {
@@ -4701,7 +4559,7 @@
             function hideControls() {
                 if (!playerInstance) return;
                 var state = playerInstance.getPlayerState();
-                if (state === YT.PlayerState.PLAYING) {
+                if (state === YT.PlayerState.PLAYING && window.innerWidth >= 768) {
                     hideTimeout = setTimeout(function() {
                         if (playerControls) playerControls.classList.remove('visible');
                         hideTimeout = null;
@@ -4724,6 +4582,7 @@
                 });
             }
 
+            // Show controls on mobile touch
             if (videoContainer) {
                 videoContainer.addEventListener('touchstart', function() {
                     showControls();
@@ -4743,7 +4602,7 @@
         }
 
         // ============================================================
-        // COMPLETE LESSON WATCH - UPDATED: 80% completion threshold
+        // COMPLETE LESSON WATCH
         // ============================================================
         function completeLessonWatch(lessonId) {
             try {
@@ -5144,7 +5003,7 @@
         }
 
         // ============================================================
-        // LEADERBOARD
+        // LEADERBOARD - FIXED: Shows for all users
         // ============================================================
         function loadLeaderboard() {
             var container = document.getElementById('leaderboardContainer');
@@ -5180,6 +5039,9 @@
             }
         }
 
+        // ============================================================
+        // RENDER LEADERBOARD - FIXED: Shows all top 5
+        // ============================================================
         function renderLeaderboard(users, container) {
             if (!container) {
                 container = document.getElementById('leaderboardContainer');
@@ -5190,6 +5052,7 @@
             var top3 = top5.slice(0, 3);
             var html = '';
 
+            // Display podium for top 3
             if (top3.length > 0) {
                 html +=
                     '<div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">';
@@ -5231,6 +5094,7 @@
                 html += '</div>';
             }
 
+            // Display remaining top 5 (positions 4-5)
             var rest = top5.slice(3);
             if (rest.length > 0) {
                 html +=
@@ -5260,6 +5124,7 @@
 
             container.innerHTML = html;
 
+            // Show current user's rank
             if (currentUser && userData) {
                 container.innerHTML +=
                     '<div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">' +
