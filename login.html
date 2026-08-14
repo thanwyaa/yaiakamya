@@ -1252,7 +1252,6 @@
         // ERROR HANDLER - 100% عربي
         // ============================================================
         function getArabicErrorMessage(error) {
-            // الأخطاء المعروفة مترجمة بالكامل للعربية
             const errorMap = {
                 'auth/email-already-in-use': '❌ البريد الإلكتروني مستخدم بالفعل\n💡 استخدم بريداً آخر أو سجل الدخول',
                 'auth/invalid-email': '❌ البريد الإلكتروني غير صحيح\n💡 اكتب بريداً إلكترونياً صحيحاً',
@@ -1295,12 +1294,10 @@
                 'permission-denied': '❌ لا توجد صلاحية لتنفيذ هذه العملية\n💡 تأكد من قواعد الأمان في لوحة تحكم Firebase'
             };
 
-            // البحث عن الترجمة
             if (error.code && errorMap[error.code]) {
                 return errorMap[error.code];
             }
 
-            // خطأ غير معروف - رسالة عربية
             return '❌ حدث خطأ غير متوقع\n💡 إذا استمرت المشكلة، يرجى التواصل مع الدعم الفني';
         }
 
@@ -1406,7 +1403,7 @@
         }
 
         // ============================================================
-        // EXECUTE SIGNUP
+        // ⭐⭐⭐ EXECUTE SIGNUP - تم إصلاح المشكلة ⭐⭐⭐
         // ============================================================
         async function executeSignup(data) {
             const {
@@ -1433,11 +1430,11 @@
                     return;
                 }
 
-                // إنشاء المستخدم
+                // إنشاء المستخدم في Firebase Authentication
                 const result = await createUserWithEmailAndPassword(auth, email, password);
                 const uid = result.user.uid;
 
-                // حفظ البيانات
+                // ⭐⭐⭐ حفظ البيانات - الحقول المتوافقة مع القواعد ⭐⭐⭐
                 await set(ref(db, 'users/' + uid), {
                     uid: uid,
                     name: name,
@@ -1458,13 +1455,32 @@
                     role: 'student',
                     active: true,
                     loginCount: 0,
-                    lastLogin: null,
-                    lastPasswordChange: Date.now()
+                    lastPasswordChange: Date.now(),
+                    rank: 'newbie',
+                    // ⭐ تم إزالة lastLogin نهائياً - لن يتم إرساله في التسجيل
+                    // سيتم إضافته لاحقاً عند أول تسجيل دخول
+                    lastActive: null,
+                    lastStudyDate: null,
+                    streak: 0,
+                    videosWatched: 0,
+                    lessonsCompleted: 0,
+                    examsPassed: 0,
+                    quizzesPassed: 0,
+                    perfectExams: 0,
+                    studyTime: 0
                 });
 
+                // حفظ في فهرس الهواتف
                 await set(ref(db, 'phoneIndex/' + phone), { uid: uid });
 
                 showMessage('🎉 تم إنشاء حسابك بنجاح!\nأهلاً بك في يلا كيمياء مع مستر زياد مبروك.', 'success');
+                
+                // تحديث بيانات الدخول بعد التسجيل مباشرة
+                await update(ref(db, 'users/' + uid), {
+                    lastLogin: Date.now(),
+                    lastActive: Date.now()
+                });
+
                 setTimeout(() => {
                     window.location.href = 'app.html';
                 }, 1500);
@@ -1477,7 +1493,6 @@
                 const arabicMsg = getArabicErrorMessage(e);
                 showMessage(arabicMsg, 'error');
 
-                // تمييز الحقل المسبب
                 if (e.code === 'auth/email-already-in-use') {
                     const field = document.getElementById('signupEmail');
                     if (field) {
@@ -1682,7 +1697,8 @@
                 if (snap.exists()) {
                     await update(ref(db, 'users/' + uid), {
                         loginCount: (snap.val().loginCount || 0) + 1,
-                        lastLogin: Date.now()
+                        lastLogin: Date.now(),
+                        lastActive: Date.now()
                     });
                 }
 
