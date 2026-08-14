@@ -1403,7 +1403,7 @@
         }
 
         // ============================================================
-        // ⭐⭐⭐ EXECUTE SIGNUP - تم إصلاح المشكلة ⭐⭐⭐
+        // ⭐⭐⭐ EXECUTE SIGNUP - النسخة المعدلة ⭐⭐⭐
         // ============================================================
         async function executeSignup(data) {
             const {
@@ -1430,11 +1430,11 @@
                     return;
                 }
 
-                // إنشاء المستخدم في Firebase Authentication
+                // إنشاء المستخدم
                 const result = await createUserWithEmailAndPassword(auth, email, password);
                 const uid = result.user.uid;
 
-                // ⭐⭐⭐ حفظ البيانات - الحقول المتوافقة مع القواعد ⭐⭐⭐
+                // ⭐ حفظ البيانات - بدون lastLogin
                 await set(ref(db, 'users/' + uid), {
                     uid: uid,
                     name: name,
@@ -1456,26 +1456,14 @@
                     active: true,
                     loginCount: 0,
                     lastPasswordChange: Date.now(),
-                    rank: 'newbie',
-                    // ⭐ تم إزالة lastLogin نهائياً - لن يتم إرساله في التسجيل
-                    // سيتم إضافته لاحقاً عند أول تسجيل دخول
-                    lastActive: null,
-                    lastStudyDate: null,
-                    streak: 0,
-                    videosWatched: 0,
-                    lessonsCompleted: 0,
-                    examsPassed: 0,
-                    quizzesPassed: 0,
-                    perfectExams: 0,
-                    studyTime: 0
+                    rank: 'newbie'
                 });
 
-                // حفظ في فهرس الهواتف
                 await set(ref(db, 'phoneIndex/' + phone), { uid: uid });
 
                 showMessage('🎉 تم إنشاء حسابك بنجاح!\nأهلاً بك في يلا كيمياء مع مستر زياد مبروك.', 'success');
                 
-                // تحديث بيانات الدخول بعد التسجيل مباشرة
+                // تحديث lastLogin بعد التسجيل
                 await update(ref(db, 'users/' + uid), {
                     lastLogin: Date.now(),
                     lastActive: Date.now()
