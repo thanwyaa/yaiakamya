@@ -1520,7 +1520,7 @@
         /* ============================================================
            EXISTING - Video Protection, Modals
            ============================================================ */
-        .login-overlay, .exam-security-modal, .completed-modal, #adminPopup {
+        .login-overlay, .exam-security-modal, .completed-modal, #adminPopup, #installModal {
             position: fixed;
             inset: 0;
             z-index: 9998;
@@ -1533,11 +1533,11 @@
             -webkit-backdrop-filter: blur(12px);
         }
 
-        .login-overlay.open, .exam-security-modal.open, .completed-modal.open, #adminPopup.open {
+        .login-overlay.open, .exam-security-modal.open, .completed-modal.open, #adminPopup.open, #installModal.open {
             display: flex;
         }
 
-        .login-box, .security-box, .modal-box, .admin-popup-content {
+        .login-box, .security-box, .modal-box, .admin-popup-content, .install-modal-content {
             background: var(--white);
             border-radius: var(--radius-lg);
             padding: 32px 24px;
@@ -1556,6 +1556,254 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
+        /* ============================================================
+           ⭐ NEW: PWA Install Modal Styles
+           ============================================================ */
+        .install-modal-content {
+            text-align: center;
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .install-modal-content .install-icon {
+            font-size: 4rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .install-modal-content .install-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            border: 3px solid var(--primary);
+            box-shadow: 0 8px 30px rgba(231,42,155,0.2);
+            object-fit: cover;
+        }
+
+        .install-modal-content h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .install-modal-content h2 .highlight {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .install-modal-content p {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 1vw, 1rem);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .install-modal-content .features-list {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .install-modal-content .features-list .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-light);
+            min-width: 60px;
+        }
+
+        .install-modal-content .features-list .feature-item i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .install-modal-content .features-list .feature-item span {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .install-modal-content .install-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 4px;
+        }
+
+        .install-modal-content .install-actions .btn-install {
+            background: var(--gradient-primary);
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 1vw, 1rem);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: var(--font-primary);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(231,42,155,0.25);
+        }
+
+        .install-modal-content .install-actions .btn-install:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(231,42,155,0.35);
+        }
+
+        .install-modal-content .install-actions .btn-later {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid rgba(231,42,155,0.06);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: clamp(0.85rem, 0.9vw, 0.95rem);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: var(--font-primary);
+            min-height: 44px;
+        }
+
+        .install-modal-content .install-actions .btn-later:hover {
+            background: var(--bg-light);
+            border-color: rgba(231,42,155,0.12);
+        }
+
+        /* ============================================================
+           ⭐ NEW: Code Input Styles
+           ============================================================ */
+        .code-input-group {
+            margin: 16px 0;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: var(--radius);
+            border: 1px solid rgba(231,42,155,0.06);
+        }
+
+        .code-input-group label {
+            display: block;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: clamp(0.85rem, 0.9vw, 0.9rem);
+            margin-bottom: 8px;
+        }
+
+        .code-input-group .code-input-wrapper {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .code-input-group .code-input-wrapper input {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px 16px;
+            border: 2px solid rgba(231,42,155,0.08);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            color: var(--text-dark);
+            font-family: var(--font-primary);
+            font-size: clamp(0.9rem, 1vw, 1rem);
+            transition: var(--transition-smooth);
+            min-height: 44px;
+            direction: ltr;
+            text-align: center;
+            letter-spacing: 2px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .code-input-group .code-input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(231,42,155,0.1);
+        }
+
+        .code-input-group .code-input-wrapper input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .code-input-group .code-input-wrapper .btn-verify-code {
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 700;
+            font-size: clamp(0.85rem, 0.9vw, 0.9rem);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            font-family: var(--font-primary);
+            min-height: 44px;
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(231,42,155,0.15);
+        }
+
+        .code-input-group .code-input-wrapper .btn-verify-code:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(231,42,155,0.25);
+        }
+
+        .code-input-group .code-input-wrapper .btn-verify-code:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .code-status-message {
+            margin-top: 8px;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: clamp(0.8rem, 0.85vw, 0.85rem);
+            display: none;
+        }
+
+        .code-status-message.success {
+            display: block;
+            background: rgba(34,197,94,0.06);
+            color: #16A34A;
+            border: 1px solid rgba(34,197,94,0.12);
+        }
+
+        .code-status-message.error {
+            display: block;
+            background: rgba(239,68,68,0.06);
+            color: #DC2626;
+            border: 1px solid rgba(239,68,68,0.12);
+        }
+
+        .code-status-message.warning {
+            display: block;
+            background: rgba(245,158,11,0.06);
+            color: #D97706;
+            border: 1px solid rgba(245,158,11,0.12);
+        }
+
+        .code-status-message.info {
+            display: block;
+            background: rgba(59,130,246,0.06);
+            color: #2563EB;
+            border: 1px solid rgba(59,130,246,0.12);
+        }
+
+        /* ============================================================
+           VIDEO PLAYER IMPROVEMENTS - Mobile Friendly
+           ============================================================ */
         .video-protected {
             position: relative;
             width: 100%;
@@ -1631,6 +1879,9 @@
             user-select: none;
         }
 
+        /* ============================================================
+           ⭐ IMPROVED: Player Controls - Always visible on mobile
+           ============================================================ */
         .player-controls {
             position: absolute;
             bottom: 0;
@@ -1638,31 +1889,67 @@
             right: 0;
             padding: 20px 16px 16px;
             background: linear-gradient(transparent, rgba(0,0,0,0.85));
-            opacity: 0;
+            opacity: 1;
             transition: opacity 0.3s ease;
             z-index: 20;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            pointer-events: none;
+            pointer-events: auto;
         }
 
-        .player-controls.visible {
-            opacity: 1;
-            pointer-events: auto;
+        /* On desktop, hide controls when not hovering */
+        @media (min-width: 769px) {
+            .player-controls {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .video-protected:hover .player-controls,
+            .video-protected:focus-within .player-controls,
+            .player-controls.visible {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .player-controls.visible {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        /* On mobile, always show controls */
+        @media (max-width: 768px) {
+            .player-controls {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                padding: 12px 12px 10px;
+                gap: 4px;
+            }
+
+            .video-protected .player-controls {
+                opacity: 1 !important;
+            }
         }
 
         .player-controls .top-row {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 480px) {
+            .player-controls .top-row {
+                gap: 6px;
+            }
         }
 
         .player-controls .top-row .time-display {
             color: #fff;
-            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            font-size: clamp(0.6rem, 0.8vw, 0.75rem);
             font-weight: 500;
-            min-width: 60px;
+            min-width: 50px;
             text-align: center;
         }
 
@@ -1676,6 +1963,7 @@
             transition: height 0.2s;
             touch-action: none;
             pointer-events: auto;
+            min-height: 8px;
         }
 
         .player-controls .progress-bar:hover { height: 6px; }
@@ -1710,22 +1998,37 @@
             flex-wrap: wrap;
         }
 
+        @media (max-width: 480px) {
+            .player-controls .bottom-row {
+                gap: 4px;
+            }
+        }
+
         .player-controls .bottom-row button {
             background: none;
             border: none;
             color: #fff;
-            font-size: clamp(1rem, 1.2vw, 1.3rem);
+            font-size: clamp(0.9rem, 1.1vw, 1.2rem);
             cursor: pointer;
             padding: 6px;
             border-radius: 4px;
             transition: background 0.2s;
-            min-height: 36px;
-            min-width: 36px;
+            min-height: 32px;
+            min-width: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: auto;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (max-width: 480px) {
+            .player-controls .bottom-row button {
+                min-height: 36px;
+                min-width: 36px;
+                font-size: 1rem;
+                padding: 4px;
+            }
         }
 
         .player-controls .bottom-row button:hover { background: rgba(255,255,255,0.12); }
@@ -1746,6 +2049,12 @@
             border-radius: 2px;
             outline: none;
             pointer-events: auto;
+        }
+
+        @media (max-width: 480px) {
+            .player-controls .bottom-row .volume-container input[type="range"] {
+                width: 40px;
+            }
         }
 
         .player-controls .bottom-row .volume-container input[type="range"]::-webkit-slider-thumb {
@@ -1774,11 +2083,20 @@
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 4px;
             padding: 4px 8px;
-            font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+            font-size: clamp(0.6rem, 0.7vw, 0.7rem);
             cursor: pointer;
             font-family: 'Cairo', sans-serif;
-            min-height: 32px;
+            min-height: 28px;
             pointer-events: auto;
+        }
+
+        @media (max-width: 480px) {
+            .player-controls .bottom-row .speed-select,
+            .player-controls .bottom-row .quality-select {
+                font-size: 0.6rem;
+                padding: 2px 6px;
+                min-height: 24px;
+            }
         }
 
         .player-controls .bottom-row .speed-select option,
@@ -2239,6 +2557,44 @@
         .contact-buttons .telegram-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,136,204,0.4); }
         .contact-buttons .whatsapp-btn { background: #25D366; color: #fff; box-shadow: 0 4px 20px rgba(37,211,102,0.3); }
         .contact-buttons .whatsapp-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(37,211,102,0.4); }
+
+        /* ============================================================
+           ⭐ NEW: Code status in subscription page
+           ============================================================ */
+        .code-activated-banner {
+            margin: 12px 0;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.12);
+            text-align: center;
+            font-weight: 700;
+            color: #16A34A;
+            font-size: clamp(0.9rem, 1vw, 1rem);
+        }
+
+        .code-activated-banner .code-display {
+            display: inline-block;
+            background: var(--white);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            border: 1px solid rgba(34,197,94,0.12);
+            margin-top: 4px;
+        }
+
+        /* ============================================================
+           ⭐ NEW: Admin Panel Link (Hidden from users)
+           ============================================================ */
+        .admin-panel-link {
+            display: none;
+        }
+
+        .admin-panel-link.visible {
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -2334,6 +2690,42 @@
         </div>
     </div>
 
+    <!-- ============================================================
+    ⭐ NEW: PWA Install Modal
+    ============================================================ -->
+    <div id="installModal" role="dialog" aria-modal="true" aria-label="تثبيت التطبيق">
+        <div class="install-modal-content">
+            <div class="install-icon">📱</div>
+            <img src="https://res.cloudinary.com/d5nyosrm/image/upload/v1786398649/%D9%84%D9%88%D8%AC%D9%88_%D9%83%D9%85%D9%8A%D8%A7.jpg" alt="يلا كيمياء" class="install-logo" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22 viewBox=%220 0 80 80%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23E72A9B%22 rx=%2220%22/%3E%3Ctext x=%2240%22 y=%2248%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-size=%2236%22 font-weight=%22bold%22 font-family=%22Arial%22%3EYK%3C/text%3E%3C/svg%3E';">
+            <h2>ثبّت تطبيق <span class="highlight">يلا كيمياء</span></h2>
+            <p>ثبّت المنصة على جهازك وخلي المذاكرة أسهل وأسرع ❤️</p>
+            <div class="features-list">
+                <div class="feature-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>أسرع</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-wifi"></i>
+                    <span>بدون نت</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>شاشة كاملة</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bell"></i>
+                    <span>إشعارات</span>
+                </div>
+            </div>
+            <div class="install-actions">
+                <button class="btn-install" onclick="window.APP.installApp()">
+                    <i class="fas fa-download"></i> تثبيت التطبيق
+                </button>
+                <button class="btn-later" onclick="window.APP.closeInstallModal()">ليس الآن</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ====== NAVBAR ====== -->
     <nav class="navbar-premium" id="navbar" role="navigation" aria-label="القائمة الرئيسية">
         <div class="nav-container-premium">
@@ -2359,7 +2751,7 @@
             </ul>
 
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <button class="install-app-btn" id="installAppBtn" onclick="window.APP.installApp()" aria-label="تحميل التطبيق" style="display:none;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;background:var(--gradient-primary);color:#fff;font-weight:700;border:none;cursor:pointer;font-family:var(--font-primary);font-size:clamp(0.6rem,0.7vw,0.8rem);min-height:36px;transition:var(--transition-smooth);">
+                <button class="install-app-btn" id="installAppBtn" onclick="window.APP.showInstallModal()" aria-label="تحميل التطبيق" style="display:none;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;background:var(--gradient-primary);color:#fff;font-weight:700;border:none;cursor:pointer;font-family:var(--font-primary);font-size:clamp(0.6rem,0.7vw,0.8rem);min-height:36px;transition:var(--transition-smooth);">
                     <i class="fas fa-download" aria-hidden="true"></i> حمل التطبيق
                 </button>
 
@@ -2417,7 +2809,7 @@
                 </div>
             </div>
             <div class="banner-actions">
-                <button class="install-btn" onclick="window.APP.installApp()">
+                <button class="install-btn" onclick="window.APP.showInstallModal()">
                     <i class="fas fa-download"></i> تثبيت التطبيق
                 </button>
                 <button class="dismiss-btn" onclick="window.APP.dismissInstallBanner()">✕ إغلاق</button>
@@ -2864,8 +3256,54 @@
             if (installBtn) installBtn.style.display = 'none';
             var banner = document.getElementById('installBanner');
             if (banner) banner.style.display = 'none';
+            var modal = document.getElementById('installModal');
+            if (modal) modal.classList.remove('open');
             showToast('✅ تم تثبيت التطبيق بنجاح! 🎉', 'success');
         });
+
+        // ============================================================
+        // ⭐ NEW: INSTALL MODAL FUNCTIONS
+        // ============================================================
+        function showInstallModal() {
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                showToast('✅ التطبيق مثبت بالفعل على جهازك', 'success');
+                return;
+            }
+
+            // If we have a deferred prompt, use it directly
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function(choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast('✅ تم تثبيت التطبيق بنجاح! 🎉', 'success');
+                        var banner = document.getElementById('installBanner');
+                        if (banner) banner.style.display = 'none';
+                        var installBtn = document.getElementById('installAppBtn');
+                        if (installBtn) installBtn.style.display = 'none';
+                    } else {
+                        showToast('تم إلغاء تثبيت التطبيق', 'info');
+                    }
+                    deferredPrompt = null;
+                });
+                return;
+            }
+
+            // Otherwise show the modal
+            var modal = document.getElementById('installModal');
+            if (modal) {
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeInstallModal() {
+            var modal = document.getElementById('installModal');
+            if (modal) {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
 
         // ============================================================
         // INSTALL BANNER FUNCTIONS
@@ -2918,6 +3356,7 @@
         // INSTALL APP - Enhanced
         // ============================================================
         function installApp() {
+            closeInstallModal();
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then(function(choiceResult) {
@@ -2941,6 +3380,11 @@
                     '📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة (المربع مع السهم)\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط "إضافة"' :
                     '📱 لتثبيت التطبيق:\n\n1. افتح القائمة (النقاط الثلاث ☰)\n2. اختر "تثبيت التطبيق" أو "Install App"\n3. اتبع الخطوات للتثبيت';
 
+                // Show instructions in a nice way
+                var modal = document.getElementById('installModal');
+                if (modal) {
+                    modal.classList.remove('open');
+                }
                 alert(msg);
             }
         }
@@ -3396,67 +3840,158 @@
         }
 
         // ============================================================
-        // SUBMIT SUBSCRIPTION REQUEST - FIXED (No form, just contact)
+        // ⭐ NEW: CODE VERIFICATION SYSTEM
+        // ============================================================
+        function verifyActivationCode(code, courseId) {
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول أولاً', 'error');
+                return Promise.resolve({ valid: false, error: 'يجب تسجيل الدخول أولاً' });
+            }
+
+            if (!code || code.length < 9) {
+                return Promise.resolve({ valid: false, error: 'الكود يجب أن يكون 9 أحرف على الأقل' });
+            }
+
+            // Clean code - uppercase only
+            code = code.toUpperCase().trim();
+
+            return database.ref('activationCodes/' + code).once('value')
+                .then(function(snapshot) {
+                    if (!snapshot.exists()) {
+                        return { valid: false, error: '❌ هذا الكود غير صحيح أو غير موجود' };
+                    }
+
+                    var codeData = snapshot.val();
+
+                    // Check if code is disabled
+                    if (codeData.status === 'DISABLED' || codeData.disabled === true) {
+                        return { valid: false, error: '❌ هذا الكود غير صالح أو تم إيقافه' };
+                    }
+
+                    // Check if code is already used
+                    if (codeData.status === 'USED' || codeData.used === true) {
+                        return { valid: false, error: '❌ هذا الكود تم استخدامه بالفعل' };
+                    }
+
+                    // Check if code is for the right course
+                    if (codeData.courseId && codeData.courseId !== courseId) {
+                        return { valid: false, error: '❌ هذا الكود غير صالح لهذا الكورس' };
+                    }
+
+                    // Check expiry if exists
+                    if (codeData.expiryDate) {
+                        var expiry = new Date(codeData.expiryDate);
+                        if (expiry < new Date()) {
+                            return { valid: false, error: '❌ انتهت صلاحية هذا الكود' };
+                        }
+                    }
+
+                    return { valid: true, codeData: codeData };
+                })
+                .catch(function(err) {
+                    console.error('Error verifying code:', err);
+                    return { valid: false, error: '❌ حدث خطأ في التحقق من الكود' };
+                });
+        }
+
+        function useActivationCode(code, courseId) {
+            if (!currentUser) {
+                return Promise.resolve({ success: false, error: 'يجب تسجيل الدخول أولاً' });
+            }
+
+            code = code.toUpperCase().trim();
+
+            return database.ref('activationCodes/' + code).once('value')
+                .then(function(snapshot) {
+                    if (!snapshot.exists()) {
+                        return { success: false, error: '❌ الكود غير موجود' };
+                    }
+
+                    var codeData = snapshot.val();
+
+                    // Check if code is valid
+                    if (codeData.status === 'DISABLED' || codeData.disabled === true) {
+                        return { success: false, error: '❌ هذا الكود غير صالح' };
+                    }
+
+                    if (codeData.status === 'USED' || codeData.used === true) {
+                        return { success: false, error: '❌ هذا الكود تم استخدامه بالفعل' };
+                    }
+
+                    if (codeData.courseId && codeData.courseId !== courseId) {
+                        return { success: false, error: '❌ هذا الكود غير صالح لهذا الكورس' };
+                    }
+
+                    // Mark code as used
+                    var updates = {};
+                    updates['activationCodes/' + code + '/status'] = 'USED';
+                    updates['activationCodes/' + code + '/used'] = true;
+                    updates['activationCodes/' + code + '/usedAt'] = new Date().toISOString();
+                    updates['activationCodes/' + code + '/studentUID'] = currentUser.uid;
+                    updates['activationCodes/' + code + '/studentName'] = userData ? userData.name : 'مستخدم';
+                    updates['activationCodes/' + code + '/studentPhone'] = userData ? userData.phone || '' : '';
+                    updates['activationCodes/' + code + '/usedBy'] = currentUser.uid;
+
+                    if (codeData.courseId) {
+                        updates['activationCodes/' + code + '/courseId'] = codeData.courseId;
+                    }
+
+                    return database.ref().update(updates).then(function() {
+                        // Activate subscription for user
+                        if (userData) {
+                            if (!userData.premiumCourses) userData.premiumCourses = {};
+                            userData.premiumCourses[courseId] = true;
+                            cache.userData = userData;
+                            updateCache();
+                        }
+
+                        // Add to subscriptions
+                        var subscriptionRef = database.ref('subscriptions').push();
+                        return subscriptionRef.set({
+                            userId: currentUser.uid,
+                            courseId: courseId,
+                            status: 'active',
+                            type: 'code',
+                            code: code,
+                            activatedAt: new Date().toISOString(),
+                            createdAt: new Date().toISOString()
+                        }).then(function() {
+                            addNotification(
+                                currentUser.uid,
+                                '🎉 تم تفعيل اشتراكك بالكود!',
+                                'تم تفعيل اشتراكك في الكورس باستخدام الكود: ' + code,
+                                '🎉'
+                            );
+                            return { success: true, message: '✅ تم تفعيل اشتراكك بنجاح!' };
+                        });
+                    });
+                })
+                .catch(function(err) {
+                    console.error('Error using code:', err);
+                    return { success: false, error: '❌ حدث خطأ أثناء تفعيل الكود' };
+                });
+        }
+
+        // ============================================================
+        // SUBMIT SUBSCRIPTION REQUEST - With Code Support
         // ============================================================
         function submitSubscriptionRequest(courseId) {
             showPaidCourseDetails(courseId);
         }
 
         // ============================================================
-        // CHECK SUBSCRIPTION STATUS
+        // CHECK SUBSCRIPTION STATUS - With Code Check
         // ============================================================
         function checkSubscriptionStatus(courseId) {
             if (!currentUser) return false;
 
             if (isUserSubscribed(courseId)) return true;
 
+            // Check if there's a code used for this course
             try {
-                database.ref('subscriptionRequests')
-                    .orderByChild('userId')
-                    .equalTo(currentUser.uid)
-                    .once('value')
-                    .then(function(snapshot) {
-                        var isApproved = false;
-                        var requestData = null;
-                        snapshot.forEach(function(child) {
-                            var data = child.val();
-                            if (data.courseId === courseId && data.status === 'approved') {
-                                isApproved = true;
-                                requestData = data;
-                            }
-                        });
-
-                        if (isApproved && requestData && !isUserSubscribed(courseId)) {
-                            try {
-                                var subscriptionRef = database.ref('subscriptions').push();
-                                subscriptionRef.set({
-                                    userId: currentUser.uid,
-                                    courseId: courseId,
-                                    status: 'active',
-                                    type: 'paid',
-                                    createdAt: new Date().toISOString(),
-                                    activatedAt: new Date().toISOString(),
-                                    requestId: requestData.requestId || null
-                                });
-
-                                if (userData) {
-                                    if (!userData.premiumCourses) userData.premiumCourses = {};
-                                    userData.premiumCourses[courseId] = true;
-                                    cache.userData = userData;
-                                    updateCache();
-                                }
-
-                                loadUserSubscriptions(currentUser.uid);
-                                showToast('✅ تم تفعيل اشتراكك تلقائياً!', 'success');
-                                return true;
-                            } catch (fixErr) {
-                                console.error('Error fixing subscription:', fixErr);
-                                return false;
-                            }
-                        }
-
-                        return isApproved;
-                    });
+                var userRef = database.ref('users/' + currentUser.uid);
+                // Check if user has used any code for this course
+                // This will be checked via the subscriptions node
                 return false;
             } catch (err) {
                 console.error('Error checking subscription:', err);
@@ -3465,7 +4000,7 @@
         }
 
         // ============================================================
-        // PAID COURSE DETAILS PAGE - FIXED (Contact only)
+        // PAID COURSE DETAILS PAGE - With Code Input
         // ============================================================
         function showPaidCourseDetails(courseId) {
             var course = allCourses.find(function(c) { return c.id === courseId; });
@@ -3523,6 +4058,17 @@
                 escapeHtml(level) + '</span></div>' +
                 '</div>' +
 
+                // ⭐ NEW: Code Activation Section
+                '<div class="code-input-group">' +
+                '<label>🔑 لديك كود تفعيل؟ أدخله هنا</label>' +
+                '<div class="code-input-wrapper">' +
+                '<input type="text" id="activationCodeInput" placeholder="مثال: ZK2027A91" maxlength="20" style="text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:2px;font-weight:600;">' +
+                '<button class="btn-verify-code" id="verifyCodeBtn" onclick="window.APP.verifyAndActivateCode(\'' + courseId +
+                '\')">تفعيل الكود</button>' +
+                '</div>' +
+                '<div class="code-status-message" id="codeStatusMessage"></div>' +
+                '</div>' +
+
                 '<div class="course-subscription-banner">' +
                 '<h3>💰 سعر الكورس</h3>' +
                 '<div class="price"><span class="old">' + (course.oldPrice ? course.oldPrice + ' جنيه' : '') +
@@ -3547,6 +4093,85 @@
                 '</div></div>';
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ============================================================
+        // ⭐ NEW: Verify and Activate Code
+        // ============================================================
+        function verifyAndActivateCode(courseId) {
+            var codeInput = document.getElementById('activationCodeInput');
+            var statusEl = document.getElementById('codeStatusMessage');
+            
+            if (!codeInput || !statusEl) return;
+
+            var code = codeInput.value.trim().toUpperCase();
+            
+            if (!code || code.length < 9) {
+                statusEl.className = 'code-status-message error';
+                statusEl.textContent = '⚠️ الكود يجب أن يكون 9 أحرف على الأقل';
+                return;
+            }
+
+            // Disable button while processing
+            var btn = document.getElementById('verifyCodeBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ جاري التحقق...';
+            }
+
+            // First verify the code
+            verifyActivationCode(code, courseId)
+                .then(function(result) {
+                    if (!result.valid) {
+                        statusEl.className = 'code-status-message error';
+                        statusEl.textContent = result.error;
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.textContent = 'تفعيل الكود';
+                        }
+                        return;
+                    }
+
+                    // Code is valid, now use it
+                    return useActivationCode(code, courseId)
+                        .then(function(useResult) {
+                            if (useResult.success) {
+                                statusEl.className = 'code-status-message success';
+                                statusEl.textContent = useResult.message;
+                                codeInput.disabled = true;
+                                codeInput.value = '';
+                                if (btn) {
+                                    btn.disabled = true;
+                                    btn.textContent = '✅ مفعل';
+                                }
+                                
+                                // Refresh user data and course access
+                                loadUserData(currentUser.uid);
+                                loadUserSubscriptions(currentUser.uid);
+                                
+                                // Show success and redirect
+                                setTimeout(function() {
+                                    openCoursePage(courseId);
+                                }, 1500);
+                            } else {
+                                statusEl.className = 'code-status-message error';
+                                statusEl.textContent = useResult.error || 'حدث خطأ في تفعيل الكود';
+                                if (btn) {
+                                    btn.disabled = false;
+                                    btn.textContent = 'تفعيل الكود';
+                                }
+                            }
+                        });
+                })
+                .catch(function(err) {
+                    console.error('Verification error:', err);
+                    statusEl.className = 'code-status-message error';
+                    statusEl.textContent = '❌ حدث خطأ أثناء التحقق من الكود';
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = 'تفعيل الكود';
+                    }
+                });
         }
 
         // ============================================================
@@ -4077,16 +4702,22 @@
                 }
 
                 if (controls) {
-                    if (state === YT.PlayerState.PLAYING) {
+                    // On mobile, always keep visible. On desktop, hide after inactivity.
+                    if (window.innerWidth < 769) {
                         controls.classList.add('visible');
-                        setTimeout(function() {
-                            if (controls.classList.contains('visible') && playerInstance &&
-                                playerInstance.getPlayerState() === YT.PlayerState.PLAYING) {
-                                controls.classList.remove('visible');
-                            }
-                        }, 3000);
                     } else {
-                        controls.classList.add('visible');
+                        if (state === YT.PlayerState.PLAYING) {
+                            controls.classList.add('visible');
+                            setTimeout(function() {
+                                if (controls.classList.contains('visible') && playerInstance &&
+                                    playerInstance.getPlayerState() === YT.PlayerState.PLAYING && 
+                                    window.innerWidth >= 769) {
+                                    controls.classList.remove('visible');
+                                }
+                            }, 3000);
+                        } else {
+                            controls.classList.add('visible');
+                        }
                     }
                 }
 
@@ -4109,7 +4740,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO - Mobile optimized
+        // LESSON VIDEO - Mobile optimized with always visible controls
         // ============================================================
         function openLessonVideo(lessonId) {
             if (!currentUser) {
@@ -4160,7 +4791,7 @@
                     videoWatchStartTime = Date.now();
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
-                    // ✅ Mobile optimized layout with visible controls on touch
+                    // ✅ Mobile optimized layout with always visible controls
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -4175,28 +4806,34 @@
                         escapeHtml(lessonData.title) + '</h1>' +
                         '<div class="video-protected" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);touch-action:manipulation;">' +
                         '<div id="youtube-player" style="width:100%;height:100%;"></div>' +
-                        '<div class="player-controls" id="playerControls" style="position:absolute;bottom:0;left:0;right:0;padding:12px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.85));opacity:0;transition:opacity 0.3s ease;z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:none;' +
-                        (window.innerWidth < 768 ? 'opacity:1 !important;' : '') + '">' +
-                        '<div class="top-row" style="display:flex;align-items:center;gap:8px;">' +
+                        '<div class="player-controls" id="playerControls" style="position:absolute;bottom:0;left:0;right:0;padding:12px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.85));z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;' +
+                        (window.innerWidth < 769 ? 'opacity:1 !important;' : '') + '">' +
+                        '<div class="top-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
                         '<button id="playPauseBtn" aria-label="تشغيل/إيقاف" style="background:none;border:none;color:#fff;font-size:clamp(1.2rem,1.5vw,1.5rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;' +
-                        (window.innerWidth < 768 ? 'font-size:1.4rem;padding:6px;' : '') + '">' +
+                        (window.innerWidth < 480 ? 'font-size:1.2rem;padding:4px;min-height:32px;min-width:32px;' : '') + '">' +
                         '<i class="fas fa-play"></i></button>' +
-                        '<button id="rewindBtn" aria-label="تأخير 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">' +
+                        '<button id="rewindBtn" aria-label="تأخير 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;' +
+                        (window.innerWidth < 480 ? 'font-size:0.9rem;padding:4px;min-height:32px;min-width:32px;' : '') + '">' +
                         '<i class="fas fa-backward"></i> 10</button>' +
-                        '<button id="forwardBtn" aria-label="تقديم 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;">10 <i class="fas fa-forward"></i></button>' +
-                        '<span class="time-display" id="timeDisplay" style="color:#fff;font-size:clamp(0.65rem,0.9vw,0.8rem);font-weight:500;min-width:60px;text-align:center;">00:00 / 00:00</span></div>' +
-                        '<div class="progress-bar" id="progressBar" style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;cursor:pointer;position:relative;transition:height 0.2s;touch-action:none;pointer-events:auto;">' +
+                        '<button id="forwardBtn" aria-label="تقديم 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;' +
+                        (window.innerWidth < 480 ? 'font-size:0.9rem;padding:4px;min-height:32px;min-width:32px;' : '') + '">10 <i class="fas fa-forward"></i></button>' +
+                        '<span class="time-display" id="timeDisplay" style="color:#fff;font-size:clamp(0.6rem,0.8vw,0.75rem);font-weight:500;min-width:50px;text-align:center;">00:00 / 00:00</span></div>' +
+                        '<div class="progress-bar" id="progressBar" style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;cursor:pointer;position:relative;transition:height 0.2s;touch-action:none;pointer-events:auto;min-height:8px;">' +
                         '<div class="fill" id="progressFill" style="height:100%;background:var(--primary);border-radius:2px;width:0%;position:relative;"><div class="thumb" style="position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;background:var(--primary);border-radius:50%;opacity:0;transition:opacity 0.2s;"></div></div></div>' +
                         '<div class="bottom-row" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
-                        '<button id="muteBtn" aria-label="كتم الصوت" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;">' +
+                        '<button id="muteBtn" aria-label="كتم الصوت" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;' +
+                        (window.innerWidth < 480 ? 'font-size:0.85rem;padding:3px;min-height:28px;min-width:28px;' : '') + '">' +
                         '<i class="fas fa-volume-up"></i></button>' +
                         '<div class="volume-container" style="display:flex;align-items:center;gap:4px;">' +
-                        '<input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" aria-label="مستوى الصوت" style="width:50px;height:3px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.3);border-radius:2px;outline:none;pointer-events:auto;">' +
+                        '<input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" aria-label="مستوى الصوت" style="width:50px;height:3px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.3);border-radius:2px;outline:none;pointer-events:auto;' +
+                        (window.innerWidth < 480 ? 'width:35px;' : '') + '">' +
                         '</div>' +
                         '<div style="flex:1;"></div>' +
-                        '<select class="speed-select" id="speedSelect" aria-label="سرعة التشغيل" style="background:rgba(0,0,0,0.7);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:2px 6px;font-size:clamp(0.6rem,0.7vw,0.7rem);cursor:pointer;font-family:\'Cairo\',sans-serif;min-height:28px;pointer-events:auto;">' +
+                        '<select class="speed-select" id="speedSelect" aria-label="سرعة التشغيل" style="background:rgba(0,0,0,0.7);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:2px 6px;font-size:clamp(0.6rem,0.7vw,0.7rem);cursor:pointer;font-family:\'Cairo\',sans-serif;min-height:28px;pointer-events:auto;' +
+                        (window.innerWidth < 480 ? 'font-size:0.55rem;padding:2px 4px;min-height:24px;' : '') + '">' +
                         '<option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="1.75">1.75x</option><option value="2">2x</option></select>' +
-                        '<button id="fullscreenBtn" aria-label="ملء الشاشة" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;">' +
+                        '<button id="fullscreenBtn" aria-label="ملء الشاشة" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;' +
+                        (window.innerWidth < 480 ? 'font-size:0.85rem;padding:3px;min-height:28px;min-width:28px;' : '') + '">' +
                         '<i class="fas fa-expand"></i></button></div></div></div>' +
                         '<div class="watch-progress-container" style="margin-top:12px;">' +
                         '<div class="timer-row" style="display:flex;justify-content:space-between;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);margin-bottom:4px;"><span>⏱ وقت المشاهدة</span><span class="time-display" id="watchTimer" style="font-weight:700;color:var(--primary);font-family:var(--font-display);font-size:clamp(1rem,1.1vw,1.1rem);">00:00</span></div>' +
@@ -4256,7 +4893,7 @@
         }
 
         // ============================================================
-        // Player Controls Setup
+        // Player Controls Setup - Improved mobile support
         // ============================================================
         function setupPlayerControls(lessonId) {
             var playPauseBtn = document.getElementById('playPauseBtn');
@@ -4557,9 +5194,10 @@
             }
 
             function hideControls() {
+                if (window.innerWidth < 769) return; // Don't hide on mobile
                 if (!playerInstance) return;
                 var state = playerInstance.getPlayerState();
-                if (state === YT.PlayerState.PLAYING && window.innerWidth >= 768) {
+                if (state === YT.PlayerState.PLAYING) {
                     hideTimeout = setTimeout(function() {
                         if (playerControls) playerControls.classList.remove('visible');
                         hideTimeout = null;
@@ -4593,10 +5231,8 @@
                 });
             }
 
+            // On mobile, controls are always visible via CSS
             showControls();
-            setTimeout(function() {
-                hideControls();
-            }, 4000);
 
             console.log('✅ Player controls initialized successfully');
         }
@@ -7666,6 +8302,11 @@
             hasCourseAccess: hasCourseAccess,
             checkCourseAccess: checkCourseAccess,
 
+            // ⭐ NEW: Code System
+            verifyActivationCode: verifyActivationCode,
+            useActivationCode: useActivationCode,
+            verifyAndActivateCode: verifyAndActivateCode,
+
             // Video
             openLessonVideo: openLessonVideo,
             handleVideoExit: handleVideoExit,
@@ -7711,6 +8352,8 @@
             showInstallBanner: showInstallBanner,
             dismissInstallBanner: dismissInstallBanner,
             checkInstallStatus: checkInstallStatus,
+            showInstallModal: showInstallModal,
+            closeInstallModal: closeInstallModal,
 
             // Misc
             showPrivacy: showPrivacy,
