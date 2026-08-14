@@ -3,7 +3,7 @@
 <head>
     <!-- 🔒 حماية view-source -->
     <script>
-        if (window.location.href.includes('view-source')) {
+        if (window.location.protocol === 'view-source:') {
             window.location.href = window.location.href.replace('view-source:', '');
         }
         document.addEventListener('keydown', function(e) {
@@ -1824,7 +1824,7 @@
             height: 100%;
             border: none;
             display: block;
-            pointer-events: auto;
+            pointer-events: none;
         }
 
         .video-blocker {
@@ -1953,22 +1953,20 @@
             text-align: center;
         }
 
-        .player-controls .progress-bar {
+        .player-controls .top-row .progress-bar {
             flex: 1;
             height: 4px;
             background: rgba(255,255,255,0.3);
             border-radius: 2px;
-            cursor: pointer;
+            cursor: default;
             position: relative;
             transition: height 0.2s;
             touch-action: none;
-            pointer-events: auto;
+            pointer-events: none;
             min-height: 8px;
         }
 
-        .player-controls .progress-bar:hover { height: 6px; }
-
-        .player-controls .progress-bar .fill {
+        .player-controls .top-row .progress-bar .fill {
             height: 100%;
             background: var(--primary);
             border-radius: 2px;
@@ -1976,26 +1974,12 @@
             position: relative;
         }
 
-        .player-controls .progress-bar .fill .thumb {
-            position: absolute;
-            right: -6px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 12px;
-            height: 12px;
-            background: var(--primary);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .player-controls .progress-bar:hover .fill .thumb { opacity: 1; }
-
         .player-controls .bottom-row {
             display: flex;
             align-items: center;
             gap: 8px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         @media (max-width: 480px) {
@@ -2008,13 +1992,13 @@
             background: none;
             border: none;
             color: #fff;
-            font-size: clamp(0.9rem, 1.1vw, 1.2rem);
+            font-size: clamp(1.2rem, 1.5vw, 1.5rem);
             cursor: pointer;
             padding: 6px;
             border-radius: 4px;
             transition: background 0.2s;
-            min-height: 32px;
-            min-width: 32px;
+            min-height: 36px;
+            min-width: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2026,84 +2010,13 @@
             .player-controls .bottom-row button {
                 min-height: 36px;
                 min-width: 36px;
-                font-size: 1rem;
+                font-size: 1.2rem;
                 padding: 4px;
             }
         }
 
         .player-controls .bottom-row button:hover { background: rgba(255,255,255,0.12); }
         .player-controls .bottom-row button:active { transform: scale(0.95); }
-
-        .player-controls .bottom-row .volume-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .player-controls .bottom-row .volume-container input[type="range"] {
-            width: 60px;
-            height: 4px;
-            -webkit-appearance: none;
-            appearance: none;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-            outline: none;
-            pointer-events: auto;
-        }
-
-        @media (max-width: 480px) {
-            .player-controls .bottom-row .volume-container input[type="range"] {
-                width: 40px;
-            }
-        }
-
-        .player-controls .bottom-row .volume-container input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 12px;
-            height: 12px;
-            background: var(--primary);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .player-controls .bottom-row .volume-container input[type="range"]::-moz-range-thumb {
-            width: 12px;
-            height: 12px;
-            background: var(--primary);
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-        }
-
-        .player-controls .bottom-row .speed-select,
-        .player-controls .bottom-row .quality-select {
-            background: rgba(0,0,0,0.7);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: clamp(0.6rem, 0.7vw, 0.7rem);
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            min-height: 28px;
-            pointer-events: auto;
-        }
-
-        @media (max-width: 480px) {
-            .player-controls .bottom-row .speed-select,
-            .player-controls .bottom-row .quality-select {
-                font-size: 0.6rem;
-                padding: 2px 6px;
-                min-height: 24px;
-            }
-        }
-
-        .player-controls .bottom-row .speed-select option,
-        .player-controls .bottom-row .quality-select option {
-            background: #1a1a1a;
-            color: #fff;
-        }
 
         .watch-progress-container {
             margin-top: 16px;
@@ -2594,6 +2507,61 @@
 
         .admin-panel-link.visible {
             display: inline-block;
+        }
+
+        /* ============================================================
+           ⭐ FIX: Exam options - keep text visible
+           ============================================================ */
+        .exam-option {
+            padding: 8px 16px;
+            margin: 6px 0;
+            border: 2px solid rgba(231,42,155,0.08);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        .exam-option .option-text {
+            font-weight: 600;
+            font-size: clamp(0.9rem, 1vw, 1rem);
+        }
+
+        .exam-option .option-check {
+            font-size: 1rem;
+            margin-right: 8px;
+        }
+
+        .exam-option.selected {
+            border-color: var(--primary);
+            background: var(--gradient-primary);
+            color: #fff;
+        }
+
+        .exam-option .option-check {
+            display: none;
+        }
+
+        .exam-option.selected .option-check {
+            display: inline-block;
+        }
+
+        /* ============================================================
+           ⭐ FIX: Prevent clicking on YouTube title
+           ============================================================ */
+        .video-protected iframe {
+            pointer-events: none;
+        }
+
+        .video-protected .player-controls {
+            pointer-events: auto;
+        }
+
+        .video-protected .player-controls button {
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -3265,13 +3233,11 @@
         // ⭐ NEW: INSTALL MODAL FUNCTIONS
         // ============================================================
         function showInstallModal() {
-            // Check if already installed
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 showToast('✅ التطبيق مثبت بالفعل على جهازك', 'success');
                 return;
             }
 
-            // If we have a deferred prompt, use it directly
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then(function(choiceResult) {
@@ -3289,7 +3255,6 @@
                 return;
             }
 
-            // Otherwise show the modal
             var modal = document.getElementById('installModal');
             if (modal) {
                 modal.classList.add('open');
@@ -3312,19 +3277,16 @@
             var banner = document.getElementById('installBanner');
             if (!banner) return;
 
-            // إذا كان المستخدم أغلق الشريط من قبل
             if (localStorage.getItem('installBannerDismissed') === 'true') {
                 banner.style.display = 'none';
                 return;
             }
 
-            // إذا كان التطبيق مثبت بالفعل
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 banner.style.display = 'none';
                 return;
             }
 
-            // إذا كان المتصفح لا يدعم PWA
             if (!('serviceWorker' in navigator) && !deferredPrompt) {
                 banner.style.display = 'none';
                 return;
@@ -3372,7 +3334,6 @@
                     deferredPrompt = null;
                 });
             } else {
-                // إرشادات التثبيت اليدوي
                 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
@@ -3380,7 +3341,6 @@
                     '📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة (المربع مع السهم)\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط "إضافة"' :
                     '📱 لتثبيت التطبيق:\n\n1. افتح القائمة (النقاط الثلاث ☰)\n2. اختر "تثبيت التطبيق" أو "Install App"\n3. اتبع الخطوات للتثبيت';
 
-                // Show instructions in a nice way
                 var modal = document.getElementById('installModal');
                 if (modal) {
                     modal.classList.remove('open');
@@ -3780,7 +3740,6 @@
             if (isUserSubscribed(courseId)) {
                 return true;
             }
-            // Show subscription page for paid courses
             showPaidCourseDetails(courseId);
             return false;
         }
@@ -3840,11 +3799,10 @@
         }
 
         // ============================================================
-        // ⭐ NEW: CODE VERIFICATION SYSTEM
+        // ⭐ NEW: CODE VERIFICATION SYSTEM - FIXED
         // ============================================================
         function verifyActivationCode(code, courseId) {
             if (!currentUser) {
-                showToast('يجب تسجيل الدخول أولاً', 'error');
                 return Promise.resolve({ valid: false, error: 'يجب تسجيل الدخول أولاً' });
             }
 
@@ -3852,7 +3810,6 @@
                 return Promise.resolve({ valid: false, error: 'الكود يجب أن يكون 9 أحرف على الأقل' });
             }
 
-            // Clean code - uppercase only
             code = code.toUpperCase().trim();
 
             return database.ref('activationCodes/' + code).once('value')
@@ -3863,22 +3820,18 @@
 
                     var codeData = snapshot.val();
 
-                    // Check if code is disabled
                     if (codeData.status === 'DISABLED' || codeData.disabled === true) {
                         return { valid: false, error: '❌ هذا الكود غير صالح أو تم إيقافه' };
                     }
 
-                    // Check if code is already used
                     if (codeData.status === 'USED' || codeData.used === true) {
                         return { valid: false, error: '❌ هذا الكود تم استخدامه بالفعل' };
                     }
 
-                    // Check if code is for the right course
                     if (codeData.courseId && codeData.courseId !== courseId) {
                         return { valid: false, error: '❌ هذا الكود غير صالح لهذا الكورس' };
                     }
 
-                    // Check expiry if exists
                     if (codeData.expiryDate) {
                         var expiry = new Date(codeData.expiryDate);
                         if (expiry < new Date()) {
@@ -3909,7 +3862,6 @@
 
                     var codeData = snapshot.val();
 
-                    // Check if code is valid
                     if (codeData.status === 'DISABLED' || codeData.disabled === true) {
                         return { success: false, error: '❌ هذا الكود غير صالح' };
                     }
@@ -3922,7 +3874,6 @@
                         return { success: false, error: '❌ هذا الكود غير صالح لهذا الكورس' };
                     }
 
-                    // Mark code as used
                     var updates = {};
                     updates['activationCodes/' + code + '/status'] = 'USED';
                     updates['activationCodes/' + code + '/used'] = true;
@@ -3937,7 +3888,6 @@
                     }
 
                     return database.ref().update(updates).then(function() {
-                        // Activate subscription for user
                         if (userData) {
                             if (!userData.premiumCourses) userData.premiumCourses = {};
                             userData.premiumCourses[courseId] = true;
@@ -3945,7 +3895,6 @@
                             updateCache();
                         }
 
-                        // Add to subscriptions
                         var subscriptionRef = database.ref('subscriptions').push();
                         return subscriptionRef.set({
                             userId: currentUser.uid,
@@ -3984,19 +3933,8 @@
         // ============================================================
         function checkSubscriptionStatus(courseId) {
             if (!currentUser) return false;
-
             if (isUserSubscribed(courseId)) return true;
-
-            // Check if there's a code used for this course
-            try {
-                var userRef = database.ref('users/' + currentUser.uid);
-                // Check if user has used any code for this course
-                // This will be checked via the subscriptions node
-                return false;
-            } catch (err) {
-                console.error('Error checking subscription:', err);
-                return false;
-            }
+            return false;
         }
 
         // ============================================================
@@ -4058,7 +3996,6 @@
                 escapeHtml(level) + '</span></div>' +
                 '</div>' +
 
-                // ⭐ NEW: Code Activation Section
                 '<div class="code-input-group">' +
                 '<label>🔑 لديك كود تفعيل؟ أدخله هنا</label>' +
                 '<div class="code-input-wrapper">' +
@@ -4096,7 +4033,7 @@
         }
 
         // ============================================================
-        // ⭐ NEW: Verify and Activate Code
+        // ⭐ FIXED: Verify and Activate Code - Atomic
         // ============================================================
         function verifyAndActivateCode(courseId) {
             var codeInput = document.getElementById('activationCodeInput');
@@ -4112,14 +4049,12 @@
                 return;
             }
 
-            // Disable button while processing
             var btn = document.getElementById('verifyCodeBtn');
             if (btn) {
                 btn.disabled = true;
                 btn.textContent = '⏳ جاري التحقق...';
             }
 
-            // First verify the code
             verifyActivationCode(code, courseId)
                 .then(function(result) {
                     if (!result.valid) {
@@ -4132,7 +4067,6 @@
                         return;
                     }
 
-                    // Code is valid, now use it
                     return useActivationCode(code, courseId)
                         .then(function(useResult) {
                             if (useResult.success) {
@@ -4145,11 +4079,9 @@
                                     btn.textContent = '✅ مفعل';
                                 }
                                 
-                                // Refresh user data and course access
                                 loadUserData(currentUser.uid);
                                 loadUserSubscriptions(currentUser.uid);
                                 
-                                // Show success and redirect
                                 setTimeout(function() {
                                     openCoursePage(courseId);
                                 }, 1500);
@@ -4273,7 +4205,7 @@
         }
 
         // ============================================================
-        // RENDER COURSES
+        // RENDER COURSES - FIXED: No completed lock
         // ============================================================
         function renderCourses(courses) {
             var grid = document.getElementById('coursesGrid');
@@ -4291,12 +4223,10 @@
                 var lessons = allLessons.filter(function(l) { return l.courseId === c.id; });
                 var completed = lessons.filter(function(l) { return userCourseProgress[l.id] && userCourseProgress[
                     l.id].watched; });
-                var isCompleted = lessons.length > 0 && completed.length === lessons.length;
+                // ✅ FIX: No completed check for course - always openable
                 var cardAction = "window.APP.openCoursePage('" + c.id + "')";
                 if (isLocked) {
                     cardAction = "window.APP.showSubscriptionPage('" + c.id + "')";
-                } else if (isCompleted) {
-                    cardAction = "window.APP.showCompletedModal()";
                 }
 
                 return '<div class="glass-card" style="cursor:pointer;position:relative;" onclick="' + cardAction +
@@ -4316,15 +4246,9 @@
                     (isLocked ?
                         '<span style="font-size:clamp(0.6rem,0.7vw,0.8rem);padding:4px 16px;border-radius:50px;background:rgba(0,0,0,0.5);color:#fff;font-weight:700;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.1);">🔒</span>' :
                         '') +
-                    (isCompleted ?
-                        '<span style="font-size:clamp(0.6rem,0.7vw,0.8rem);padding:4px 16px;border-radius:50px;background:#22C55E;color:#fff;font-weight:700;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.1);">✅ مكتمل</span>' :
-                        '') +
                     '</div>' +
                     (isLocked ?
                         '<div class="lock-overlay"><span class="lock-text">🔒 هذا الكورس مدفوع</span></div>' : '') +
-                    (isCompleted ?
-                        '<div class="completed-overlay"><div class="check">✅</div><div class="label">مكتمل</div></div>' :
-                        '') +
                     '</div>' +
                     '<div class="card-body" style="padding:16px 20px 20px;flex:1;display:flex;flex-direction:column;">' +
                     '<h3 style="font-weight:800;font-size:clamp(1rem,1.1vw,1.2rem);color:var(--text-dark);margin-bottom:4px;font-family:var(--font-display);">' +
@@ -4339,13 +4263,8 @@
                     '</div>' +
                     (currentUser ?
                         (subscribed ?
-                            '<button class="btn-primary-premium btn-sm-premium" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:8px 12px;min-height:40px;background:' +
-                            (isCompleted ? '#22C55E' : 'var(--gradient-primary)') +
-                            ';" onclick="event.stopPropagation(); ' + (isCompleted ?
-                                "window.APP.showCompletedModal()" : "window.APP.openCoursePage('" + c.id + "')") +
-                            '">' +
-                            (isCompleted ? '✅ مكتمل' : '📖 متابعة') +
-                            '</button>' :
+                            '<button class="btn-primary-premium btn-sm-premium" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:8px 12px;min-height:40px;background:var(--gradient-primary);" onclick="event.stopPropagation(); window.APP.openCoursePage(\'' + c.id + '\')">' +
+                            '📖 متابعة</button>' :
                             '<button class="btn-primary-premium btn-sm-premium" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:8px 12px;min-height:40px;" onclick="event.stopPropagation(); window.APP.subscribeToCourse(\'' +
                             c.id + '\')">' +
                             (isFree ? '📝 ابدأ الآن' : '💰 اشترك الآن') +
@@ -4576,7 +4495,7 @@
             ytPlayerQueue = [];
         }
 
-        // ✅ FIX: Mobile-friendly YouTube player with playsinline
+        // ✅ FIX: Mobile-friendly YouTube player with playsinline & limited controls
         function createYouTubePlayer(_ref) {
             var videoId = _ref.videoId;
             var containerId = _ref.containerId;
@@ -4624,7 +4543,7 @@
                 dynamicWM.style.top = randomY + 'px';
             }, 4000);
 
-            // ✅ Mobile-friendly player with playsinline
+            // ✅ FIX: Professional player with minimal controls
             var player = new YT.Player(containerId, {
                 height: '100%',
                 width: '100%',
@@ -4635,13 +4554,16 @@
                     fs: 0,
                     iv_load_policy: 3,
                     modestbranding: 1,
-                    playsinline: 1, // ✅ KEY: works on mobile
+                    playsinline: 1,
                     rel: 0,
                     showinfo: 0,
                     origin: window.location.origin,
                     autoplay: 0,
                     enablejsapi: 1,
-                    widget_referrer: window.location.href
+                    widget_referrer: window.location.href,
+                    cc_load_policy: 0,
+                    hl: 'ar',
+                    loop: 0
                 },
                 events: {
                     onReady: function(event) {
@@ -4702,7 +4624,6 @@
                 }
 
                 if (controls) {
-                    // On mobile, always keep visible. On desktop, hide after inactivity.
                     if (window.innerWidth < 769) {
                         controls.classList.add('visible');
                     } else {
@@ -4729,10 +4650,7 @@
                         database.ref('users/' + currentUser.uid + '/progress/' + activeVideoLessonId +
                             '/watchDuration').set(Math.round(currentTime));
                     }
-                    if (progressVal >= 80 && !(userCourseProgress[activeVideoLessonId] && userCourseProgress[
-                            activeVideoLessonId].watched)) {
-                        completeLessonWatch(activeVideoLessonId);
-                    }
+                    // ✅ FIX: No auto-complete from video watching - removed completeLessonWatch call
                 }
             } catch (e) {
                 // Ignore errors
@@ -4740,7 +4658,7 @@
         }
 
         // ============================================================
-        // LESSON VIDEO - Mobile optimized with always visible controls
+        // LESSON VIDEO - Professional player with only Play/Pause
         // ============================================================
         function openLessonVideo(lessonId) {
             if (!currentUser) {
@@ -4761,11 +4679,7 @@
                 return;
             }
 
-            if (userCourseProgress[lessonId] && userCourseProgress[lessonId].watched) {
-                showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل', 'info');
-                return;
-            }
-
+            // ✅ FIX: Always allow video playback, even if watched before
             var main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -4791,7 +4705,7 @@
                     videoWatchStartTime = Date.now();
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
-                    // ✅ Mobile optimized layout with always visible controls
+                    // ✅ FIX: Professional player with only Play/Pause
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -4806,35 +4720,17 @@
                         escapeHtml(lessonData.title) + '</h1>' +
                         '<div class="video-protected" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);touch-action:manipulation;">' +
                         '<div id="youtube-player" style="width:100%;height:100%;"></div>' +
+                        // ✅ FIX: Minimal controls - only Play/Pause
                         '<div class="player-controls" id="playerControls" style="position:absolute;bottom:0;left:0;right:0;padding:12px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.85));z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;' +
                         (window.innerWidth < 769 ? 'opacity:1 !important;' : '') + '">' +
-                        '<div class="top-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-                        '<button id="playPauseBtn" aria-label="تشغيل/إيقاف" style="background:none;border:none;color:#fff;font-size:clamp(1.2rem,1.5vw,1.5rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;' +
-                        (window.innerWidth < 480 ? 'font-size:1.2rem;padding:4px;min-height:32px;min-width:32px;' : '') + '">' +
+                        '<div class="top-row" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;">' +
+                        '<button id="playPauseBtn" aria-label="تشغيل/إيقاف" style="background:none;border:none;color:#fff;font-size:clamp(1.5rem,2vw,2rem);cursor:pointer;min-height:44px;min-width:44px;pointer-events:auto;transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.1)\'" onmouseout="this.style.transform=\'scale(1)\'">' +
                         '<i class="fas fa-play"></i></button>' +
-                        '<button id="rewindBtn" aria-label="تأخير 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;' +
-                        (window.innerWidth < 480 ? 'font-size:0.9rem;padding:4px;min-height:32px;min-width:32px;' : '') + '">' +
-                        '<i class="fas fa-backward"></i> 10</button>' +
-                        '<button id="forwardBtn" aria-label="تقديم 10 ثوان" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.2vw,1.2rem);cursor:pointer;min-height:36px;min-width:36px;pointer-events:auto;' +
-                        (window.innerWidth < 480 ? 'font-size:0.9rem;padding:4px;min-height:32px;min-width:32px;' : '') + '">10 <i class="fas fa-forward"></i></button>' +
-                        '<span class="time-display" id="timeDisplay" style="color:#fff;font-size:clamp(0.6rem,0.8vw,0.75rem);font-weight:500;min-width:50px;text-align:center;">00:00 / 00:00</span></div>' +
-                        '<div class="progress-bar" id="progressBar" style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;cursor:pointer;position:relative;transition:height 0.2s;touch-action:none;pointer-events:auto;min-height:8px;">' +
-                        '<div class="fill" id="progressFill" style="height:100%;background:var(--primary);border-radius:2px;width:0%;position:relative;"><div class="thumb" style="position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;background:var(--primary);border-radius:50%;opacity:0;transition:opacity 0.2s;"></div></div></div>' +
-                        '<div class="bottom-row" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
-                        '<button id="muteBtn" aria-label="كتم الصوت" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;' +
-                        (window.innerWidth < 480 ? 'font-size:0.85rem;padding:3px;min-height:28px;min-width:28px;' : '') + '">' +
-                        '<i class="fas fa-volume-up"></i></button>' +
-                        '<div class="volume-container" style="display:flex;align-items:center;gap:4px;">' +
-                        '<input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" aria-label="مستوى الصوت" style="width:50px;height:3px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,0.3);border-radius:2px;outline:none;pointer-events:auto;' +
-                        (window.innerWidth < 480 ? 'width:35px;' : '') + '">' +
-                        '</div>' +
-                        '<div style="flex:1;"></div>' +
-                        '<select class="speed-select" id="speedSelect" aria-label="سرعة التشغيل" style="background:rgba(0,0,0,0.7);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:2px 6px;font-size:clamp(0.6rem,0.7vw,0.7rem);cursor:pointer;font-family:\'Cairo\',sans-serif;min-height:28px;pointer-events:auto;' +
-                        (window.innerWidth < 480 ? 'font-size:0.55rem;padding:2px 4px;min-height:24px;' : '') + '">' +
-                        '<option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="1.75">1.75x</option><option value="2">2x</option></select>' +
-                        '<button id="fullscreenBtn" aria-label="ملء الشاشة" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;' +
-                        (window.innerWidth < 480 ? 'font-size:0.85rem;padding:3px;min-height:28px;min-width:28px;' : '') + '">' +
-                        '<i class="fas fa-expand"></i></button></div></div></div>' +
+                        '<span class="time-display" id="timeDisplay" style="color:#fff;font-size:clamp(0.7rem,0.9vw,0.8rem);font-weight:500;min-width:60px;text-align:center;">00:00 / 00:00</span></div>' +
+                        // ✅ FIX: Progress bar shows but cannot be interacted with
+                        '<div class="progress-bar" style="flex:1;height:4px;background:rgba(255,255,255,0.3);border-radius:2px;cursor:default;position:relative;touch-action:none;pointer-events:none;min-height:8px;">' +
+                        '<div class="fill" id="progressFill" style="height:100%;background:var(--primary);border-radius:2px;width:0%;position:relative;"></div></div>' +
+                        '</div></div>' +
                         '<div class="watch-progress-container" style="margin-top:12px;">' +
                         '<div class="timer-row" style="display:flex;justify-content:space-between;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);margin-bottom:4px;"><span>⏱ وقت المشاهدة</span><span class="time-display" id="watchTimer" style="font-weight:700;color:var(--primary);font-family:var(--font-display);font-size:clamp(1rem,1.1vw,1.1rem);">00:00</span></div>' +
                         '<div class="watch-progress-bar" style="width:100%;height:8px;background:var(--white);border-radius:10px;overflow:hidden;"><div class="fill" id="watchProgressFill" style="height:100%;border-radius:10px;background:var(--gradient-primary);transition:width 0.5s ease;width:0%;"></div></div>' +
@@ -4857,7 +4753,6 @@
                         lessonTitle: lessonData.title,
                         onReady: function(event) {
                             var player = event.target;
-                            // Play video with mobile-friendly approach
                             try {
                                 var container = document.getElementById('videoContainer');
                                 if (container) {
@@ -4893,17 +4788,10 @@
         }
 
         // ============================================================
-        // Player Controls Setup - Improved mobile support
+        // Player Controls Setup - Only Play/Pause
         // ============================================================
         function setupPlayerControls(lessonId) {
             var playPauseBtn = document.getElementById('playPauseBtn');
-            var rewindBtn = document.getElementById('rewindBtn');
-            var forwardBtn = document.getElementById('forwardBtn');
-            var muteBtn = document.getElementById('muteBtn');
-            var volumeSlider = document.getElementById('volumeSlider');
-            var speedSelect = document.getElementById('speedSelect');
-            var fullscreenBtn = document.getElementById('fullscreenBtn');
-            var progressBar = document.getElementById('progressBar');
             var playerControls = document.getElementById('playerControls');
             var videoContainer = document.getElementById('videoContainer');
 
@@ -4912,7 +4800,7 @@
                 return;
             }
 
-            // Play/Pause
+            // ✅ FIX: Only Play/Pause button
             if (playPauseBtn) {
                 var newBtn = playPauseBtn.cloneNode(true);
                 playPauseBtn.parentNode.replaceChild(newBtn, playPauseBtn);
@@ -4945,243 +4833,6 @@
                 });
             }
 
-            // Rewind 10s
-            if (rewindBtn) {
-                var newBtn = rewindBtn.cloneNode(true);
-                rewindBtn.parentNode.replaceChild(newBtn, rewindBtn);
-
-                newBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    if (!playerInstance) return;
-                    try {
-                        var current = playerInstance.getCurrentTime();
-                        playerInstance.seekTo(Math.max(0, current - 10), true);
-                        showToast('⏪ تأخير 10 ثوان', 'info');
-                        if (playerControls) playerControls.classList.add('visible');
-                    } catch (err) {
-                        console.error('Rewind error:', err);
-                    }
-                });
-            }
-
-            // Forward 10s
-            if (forwardBtn) {
-                var newBtn = forwardBtn.cloneNode(true);
-                forwardBtn.parentNode.replaceChild(newBtn, forwardBtn);
-
-                newBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    if (!playerInstance) return;
-                    try {
-                        var current = playerInstance.getCurrentTime();
-                        var duration = playerInstance.getDuration();
-                        playerInstance.seekTo(Math.min(duration, current + 10), true);
-                        showToast('⏩ تقديم 10 ثوان', 'info');
-                        if (playerControls) playerControls.classList.add('visible');
-                    } catch (err) {
-                        console.error('Forward error:', err);
-                    }
-                });
-            }
-
-            // Mute
-            if (muteBtn) {
-                var newBtn = muteBtn.cloneNode(true);
-                muteBtn.parentNode.replaceChild(newBtn, muteBtn);
-                var isMuted = false;
-
-                newBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    if (!playerInstance) return;
-                    try {
-                        isMuted = !isMuted;
-                        if (isMuted) {
-                            playerInstance.mute();
-                            this.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                            showToast('🔇 تم كتم الصوت', 'info');
-                        } else {
-                            playerInstance.unMute();
-                            var vol = playerInstance.getVolume();
-                            this.innerHTML = vol > 0 ? '<i class="fas fa-volume-up"></i>' :
-                                '<i class="fas fa-volume-mute"></i>';
-                            showToast('🔊 تم إلغاء كتم الصوت', 'info');
-                        }
-                        if (volumeSlider) {
-                            volumeSlider.value = isMuted ? 0 : playerInstance.getVolume() / 100;
-                        }
-                    } catch (err) {
-                        console.error('Mute error:', err);
-                    }
-                });
-            }
-
-            // Volume Slider
-            if (volumeSlider) {
-                var newSlider = volumeSlider.cloneNode(true);
-                volumeSlider.parentNode.replaceChild(newSlider, volumeSlider);
-
-                newSlider.addEventListener('input', function() {
-                    if (!playerInstance) return;
-                    try {
-                        var val = parseFloat(this.value);
-                        playerInstance.setVolume(val * 100);
-                        if (muteBtn) {
-                            muteBtn.innerHTML = val === 0 ? '<i class="fas fa-volume-mute"></i>' :
-                                '<i class="fas fa-volume-up"></i>';
-                        }
-                    } catch (err) {
-                        console.error('Volume error:', err);
-                    }
-                });
-            }
-
-            // Speed Select
-            if (speedSelect) {
-                var newSelect = speedSelect.cloneNode(true);
-                speedSelect.parentNode.replaceChild(newSelect, speedSelect);
-
-                newSelect.addEventListener('change', function() {
-                    if (!playerInstance) return;
-                    try {
-                        var speed = parseFloat(this.value);
-                        playerInstance.setPlaybackRate(speed);
-                        showToast('⚡ السرعة: ' + speed + 'x', 'info');
-                        if (playerControls) playerControls.classList.add('visible');
-                    } catch (err) {
-                        console.error('Speed error:', err);
-                        showToast('⚠️ تغيير السرعة غير مدعوم', 'warning');
-                    }
-                });
-            }
-
-            // Fullscreen
-            if (fullscreenBtn) {
-                var newBtn = fullscreenBtn.cloneNode(true);
-                fullscreenBtn.parentNode.replaceChild(newBtn, fullscreenBtn);
-
-                newBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-
-                    if (!videoContainer) {
-                        showToast('❌ عنصر الفيديو غير موجود', 'error');
-                        return;
-                    }
-
-                    try {
-                        if (!document.fullscreenElement) {
-                            if (videoContainer.requestFullscreen) {
-                                videoContainer.requestFullscreen();
-                            } else if (videoContainer.webkitRequestFullscreen) {
-                                videoContainer.webkitRequestFullscreen();
-                            } else if (videoContainer.mozRequestFullScreen) {
-                                videoContainer.mozRequestFullScreen();
-                            } else {
-                                showToast('❌ Fullscreen غير مدعوم', 'warning');
-                                return;
-                            }
-                            this.innerHTML = '<i class="fas fa-compress"></i>';
-                            showToast('⛶ وضع ملء الشاشة', 'info');
-                        } else {
-                            if (document.exitFullscreen) {
-                                document.exitFullscreen();
-                            } else if (document.webkitExitFullscreen) {
-                                document.webkitExitFullscreen();
-                            } else if (document.mozCancelFullScreen) {
-                                document.mozCancelFullScreen();
-                            }
-                            this.innerHTML = '<i class="fas fa-expand"></i>';
-                            showToast('⛶ خروج من ملء الشاشة', 'info');
-                        }
-                    } catch (err) {
-                        console.error('Fullscreen error:', err);
-                        showToast('❌ حدث خطأ في Fullscreen', 'error');
-                    }
-                });
-            }
-
-            // Progress Bar
-            if (progressBar) {
-                var newBar = progressBar.cloneNode(true);
-                progressBar.parentNode.replaceChild(newBar, progressBar);
-                var isDragging = false;
-
-                newBar.addEventListener('mousedown', function(e) {
-                    isDragging = true;
-                    updateSeek(e);
-                });
-
-                document.addEventListener('mousemove', function(e) {
-                    if (isDragging) {
-                        updateSeek(e);
-                    }
-                });
-
-                document.addEventListener('mouseup', function() {
-                    if (isDragging) {
-                        isDragging = false;
-                        if (playerControls) playerControls.classList.add('visible');
-                    }
-                });
-
-                newBar.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    isDragging = true;
-                    var touch = e.touches[0];
-                    updateSeekTouch(touch);
-                });
-
-                newBar.addEventListener('touchmove', function(e) {
-                    e.preventDefault();
-                    if (isDragging) {
-                        var touch = e.touches[0];
-                        updateSeekTouch(touch);
-                    }
-                });
-
-                newBar.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    isDragging = false;
-                    if (playerControls) playerControls.classList.add('visible');
-                });
-
-                function updateSeek(e) {
-                    if (!playerInstance) return;
-                    try {
-                        var rect = newBar.getBoundingClientRect();
-                        var x = (e.clientX - rect.left) / rect.width;
-                        var percent = Math.max(0, Math.min(1, x));
-                        var duration = playerInstance.getDuration();
-                        if (duration > 0) {
-                            playerInstance.seekTo(percent * duration, true);
-                        }
-                    } catch (err) {
-                        console.error('Seek error:', err);
-                    }
-                }
-
-                function updateSeekTouch(touch) {
-                    if (!playerInstance) return;
-                    try {
-                        var rect = newBar.getBoundingClientRect();
-                        var x = (touch.clientX - rect.left) / rect.width;
-                        var percent = Math.max(0, Math.min(1, x));
-                        var duration = playerInstance.getDuration();
-                        if (duration > 0) {
-                            playerInstance.seekTo(percent * duration, true);
-                        }
-                    } catch (err) {
-                        console.error('Seek touch error:', err);
-                    }
-                }
-            }
-
             // Auto Hide Controls - Mobile friendly
             var hideTimeout = null;
 
@@ -5194,7 +4845,7 @@
             }
 
             function hideControls() {
-                if (window.innerWidth < 769) return; // Don't hide on mobile
+                if (window.innerWidth < 769) return;
                 if (!playerInstance) return;
                 var state = playerInstance.getPlayerState();
                 if (state === YT.PlayerState.PLAYING) {
@@ -5220,7 +4871,6 @@
                 });
             }
 
-            // Show controls on mobile touch
             if (videoContainer) {
                 videoContainer.addEventListener('touchstart', function() {
                     showControls();
@@ -5231,22 +4881,31 @@
                 });
             }
 
-            // On mobile, controls are always visible via CSS
             showControls();
 
-            console.log('✅ Player controls initialized successfully');
+            // ✅ FIX: Prevent keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (document.querySelector('.video-protected')) {
+                    if ([' ', 'k', 'K', 'j', 'J', 'l', 'L', 'm', 'M', 'f', 'F', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                }
+            });
+
+            console.log('✅ Player controls initialized - Professional mode');
         }
 
         // ============================================================
-        // COMPLETE LESSON WATCH
+        // COMPLETE LESSON WATCH - Only tracks, does not lock
         // ============================================================
         function completeLessonWatch(lessonId) {
             try {
-                if (userCourseProgress[lessonId] && userCourseProgress[lessonId].watched) return;
+                // ✅ FIX: Only track watch, do NOT mark as completed
                 var lesson = allLessons.find(function(l) { return l.id === lessonId; });
                 if (!lesson) return;
 
-                var atomsReward = lesson.atomsReward || 5;
                 var userRef = database.ref('users/' + currentUser.uid);
                 userRef.once('value').then(function(userSnap) {
                     if (userSnap.exists()) {
@@ -5256,13 +4915,14 @@
                         var studyHours = actualWatchTime / 3600;
                         var currentStudyTime = userSnap.val().studyTime || 0;
 
+                        // ✅ FIX: Save watch progress but do NOT set completed
                         database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                             watched: true,
                             watchPercent: 100,
-                            completedAt: new Date().toISOString(),
                             lastPosition: 0,
                             type: 'lesson',
-                            watchDuration: actualWatchTime
+                            watchDuration: actualWatchTime,
+                            // ✅ FIX: No completed flag
                         });
 
                         var lastStudyDate = userSnap.val().lastStudyDate;
@@ -5276,18 +4936,16 @@
                         }
 
                         userRef.update({
-                            atoms: currentAtoms + atomsReward,
+                            atoms: currentAtoms + 5,
                             videosWatched: (userSnap.val().videosWatched || 0) + 1,
-                            lessonsCompleted: (userSnap.val().lessonsCompleted || 0) + 1,
                             streak: streak,
                             lastStudyDate: today,
                             studyTime: currentStudyTime + studyHours
                         });
 
                         if (userData) {
-                            userData.atoms = currentAtoms + atomsReward;
+                            userData.atoms = currentAtoms + 5;
                             userData.videosWatched = (userData.videosWatched || 0) + 1;
-                            userData.lessonsCompleted = (userData.lessonsCompleted || 0) + 1;
                             userData.streak = streak;
                             userData.lastStudyDate = today;
                             userData.studyTime = currentStudyTime + studyHours;
@@ -5298,7 +4956,6 @@
                         userCourseProgress[lessonId] = {
                             watched: true,
                             watchPercent: 100,
-                            completedAt: new Date().toISOString(),
                             watchDuration: actualWatchTime
                         };
                         cache.progress = userCourseProgress;
@@ -5307,14 +4964,13 @@
                         if (videoWatchTotal && videoWatchTotal[lessonId]) {
                             delete videoWatchTotal[lessonId];
                         }
-                        animateAtoms('atomsCount', currentAtoms + atomsReward);
-                        animateAtoms('userAtomsCount', currentAtoms + atomsReward);
-                        showToast('🎉 +' + atomsReward + ' ذرة! (أكملت مشاهدة ' + lesson.title + ')', 'success');
+                        animateAtoms('atomsCount', currentAtoms + 5);
+                        animateAtoms('userAtomsCount', currentAtoms + 5);
+                        showToast('🎉 +5 ذرة! (أكملت مشاهدة ' + lesson.title + ')', 'success');
                         addNotification(currentUser.uid, '🎥 تم إكمال مشاهدة حصة!',
-                            'أكملت مشاهدة "' + lesson.title + '" وحصلت على ' + atomsReward + ' ذرة.', '🎥');
+                            'أكملت مشاهدة "' + lesson.title + '" وحصلت على 5 ذرات.', '🎥');
                         loadUserProgress(currentUser.uid);
-                        calculateUserRank(currentUser.uid, currentAtoms + atomsReward);
-                        checkCourseCompletion(lesson.courseId);
+                        calculateUserRank(currentUser.uid, currentAtoms + 5);
 
                         if (videoProgressTimer) {
                             clearInterval(videoProgressTimer);
@@ -5368,22 +5024,19 @@
             }
         }
 
-        function checkCourseCompletion(courseId) {
-            var lessons = allLessons.filter(function(l) { return l.courseId === courseId; });
-            var completed = lessons.filter(function(l) { return userCourseProgress[l.id] && userCourseProgress[l.id]
-                    .watched; });
-            if (lessons.length > 0 && completed.length === lessons.length) {
-                var course = allCourses.find(function(c) { return c.id === courseId; });
-                if (course) {
-                    addNotification(currentUser.uid, '🎓 تم إكمال كورس كامل!',
-                        'مبروك! لقد أكملت كورس "' + course.title + '" بالكامل!', '🎓');
-                }
-            }
+        // ============================================================
+        // OPEN COURSE PAGE - With lesson completion check
+        // ============================================================
+        function isLessonComplete(lessonId) {
+            var examProgress = userCourseProgress['exam_' + lessonId];
+            var quizProgress = userCourseProgress['quiz_' + lessonId];
+            var assignmentProgress = userCourseProgress['assignment_' + lessonId];
+            
+            return (examProgress && examProgress.completed) || 
+                   (quizProgress && quizProgress.completed) || 
+                   (assignmentProgress && assignmentProgress.completed);
         }
 
-        // ============================================================
-        // OPEN COURSE PAGE
-        // ============================================================
         function openCoursePage(courseId) {
             if (!currentUser) {
                 showLoginOverlay();
@@ -5418,14 +5071,13 @@
                 var completedCount = 0;
                 var totalAtoms = 0;
                 lessons.forEach(function(l) {
-                    if (userCourseProgress[l.id] && userCourseProgress[l.id].watched) completedCount++;
+                    if (isLessonComplete(l.id)) completedCount++;
                     totalAtoms += (l.atomsReward || 5);
                 });
                 var progressPercent = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
 
                 var lessonsHtml = lessons.map(function(lesson, idx) {
-                    var isCompleted = !!(userCourseProgress[lesson.id] && userCourseProgress[lesson.id]
-                        .watched);
+                    var isCompleted = isLessonComplete(lesson.id);
                     var statusText = isCompleted ? 'مكتملة ✅' : 'قيد التقدم';
                     var watchPercent = userCourseProgress[lesson.id] ? userCourseProgress[lesson.id]
                         .watchPercent || 0 : 0;
@@ -5439,8 +5091,9 @@
                             iconClass: 'video',
                             title: '🎬 مشاهدة الشرح',
                             action: "window.APP.openLessonVideo('" + lesson.id + "')",
-                            completed: isCompleted,
-                            progress: watchPercent
+                            completed: false,
+                            progress: watchPercent,
+                            isVideo: true
                         });
                     }
 
@@ -5464,7 +5117,8 @@
                             iconClass: 'assignment',
                             title: '📝 واجب الحصة',
                             action: "window.APP.openLessonAssignment('" + lesson.id + "')",
-                            completed: isAssignmentCompleted
+                            completed: isAssignmentCompleted,
+                            isLocked: isAssignmentCompleted
                         });
                     }
 
@@ -5477,7 +5131,8 @@
                             iconClass: 'quiz',
                             title: '🧪 كويز الحصة',
                             action: "window.APP.openLessonQuiz('" + lesson.id + "')",
-                            completed: isQuizCompleted
+                            completed: isQuizCompleted,
+                            isLocked: isQuizCompleted
                         });
                     }
 
@@ -5490,16 +5145,27 @@
                             iconClass: 'exam',
                             title: '🎓 الامتحان الشامل',
                             action: "window.APP.openLessonExam('" + lesson.id + "')",
-                            completed: isExamCompleted
+                            completed: isExamCompleted,
+                            isLocked: isExamCompleted
                         });
                     }
 
                     var contentHtml = contentItems.length > 0 ?
                         '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">' +
                         contentItems.map(function(item) {
-                            return '<div class="lesson-content-item ' + (item.completed ?
-                                'completed-item' : '') + '" onclick="' + item.action +
-                                '" style="cursor:pointer;padding:12px 16px;border-radius:var(--radius);border:1px solid rgba(231,42,155,0.06);display:flex;align-items:center;gap:14px;transition:all 0.3s;min-height:56px;background:var(--white);">' +
+                            // ✅ FIX: Video is never locked, other items lock when completed
+                            var isItemLocked = item.isLocked === true && !item.isVideo;
+                            var clickAction = isItemLocked ? 
+                                "window.APP.showCompletedModal(); event.stopPropagation();" : 
+                                item.action;
+                            
+                            return '<div class="lesson-content-item ' + (item.completed ? 'completed-item' : '') + 
+                                '" onclick="' + clickAction + 
+                                '" style="cursor:' + (isItemLocked ? 'default' : 'pointer') + 
+                                ';padding:12px 16px;border-radius:var(--radius);border:1px solid ' +
+                                (item.completed ? '#22C55E' : 'rgba(231,42,155,0.06)') +
+                                ';display:flex;align-items:center;gap:14px;transition:all 0.3s;min-height:56px;background:' +
+                                (item.completed ? 'rgba(34,197,94,0.04)' : 'var(--white)') + ';">' +
                                 '<div class="item-icon ' + item.iconClass +
                                 '" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:1.1rem;background:' +
                                 (item.iconClass === 'video' ?
@@ -5515,18 +5181,25 @@
                                 '<i class="fas fa-' + item.icon + '"></i></div>' +
                                 '<div class="item-text" style="flex:1;min-width:120px;">' +
                                 '<div class="title" style="font-weight:600;color:var(--text-dark);font-size:clamp(0.9rem,0.95vw,0.95rem);">' +
-                                item.title + '</div>' +
-                                (item.type === 'video' && !item.completed && item.progress > 0 ?
+                                item.title + 
+                                (item.isVideo && !item.completed && item.progress > 0 ?
+                                    ' <span style="font-size:0.7rem;color:var(--text-secondary);">(' + item.progress + '%)</span>' : 
+                                    '') +
+                                '</div>' +
+                                (item.isVideo && item.progress > 0 ?
                                     '<div class="sub" style="font-size:0.7rem;color:var(--text-secondary);">تقدم: ' +
                                     item.progress + '%</div>' : '') +
                                 '</div>' +
                                 (item.completed ?
                                     '<span class="completed-badge" style="display:inline-flex;align-items:center;gap:4px;background:#22C55E;color:#fff;padding:2px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;">✅ مكتمل</span>' :
                                     '') +
-                                (!item.completed && item.type === 'video' ?
-                                    '<span class="item-progress" style="font-size:0.7rem;color:var(--text-secondary);background:var(--white);padding:2px 10px;border-radius:20px;border:1px solid rgba(231,42,155,0.06);">' +
-                                    item.progress + '%</span>' : '') +
-                                '<i class="fas fa-chevron-left item-arrow" style="color:var(--text-secondary);font-size:0.7rem;opacity:0.5;transition:var(--transition-smooth);"></i></div>';
+                                (isItemLocked && item.completed ?
+                                    '<span class="locked-badge" style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,0.5);color:#fff;padding:2px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;">🔒 مكتمل</span>' :
+                                    '') +
+                                (item.isVideo && !item.completed ?
+                                    '<i class="fas fa-chevron-left item-arrow" style="color:var(--primary);font-size:0.7rem;"></i>' :
+                                    '') +
+                                '</div>';
                         }).join('') +
                         '</div>' :
                         '<div style="margin-top:12px;color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:12px;background:var(--white);border-radius:var(--radius);">📭 لا يوجد محتوى لهذه الحصة</div>';
@@ -5688,7 +5361,6 @@
             var top3 = top5.slice(0, 3);
             var html = '';
 
-            // Display podium for top 3
             if (top3.length > 0) {
                 html +=
                     '<div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">';
@@ -5730,7 +5402,6 @@
                 html += '</div>';
             }
 
-            // Display remaining top 5 (positions 4-5)
             var rest = top5.slice(3);
             if (rest.length > 0) {
                 html +=
@@ -5760,7 +5431,6 @@
 
             container.innerHTML = html;
 
-            // Show current user's rank
             if (currentUser && userData) {
                 container.innerHTML +=
                     '<div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">' +
@@ -5786,7 +5456,7 @@
         }
 
         // ============================================================
-        // DASHBOARD
+        // DASHBOARD - Unchanged
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -5797,9 +5467,8 @@
             if (!main) return;
 
             var totalLessons = allLessons.length;
-            var completedLessons = Object.keys(userCourseProgress).filter(function(key) { return userCourseProgress[
-                    key] && userCourseProgress[key].watched; })
-            .length;
+            // ✅ FIX: Use isLessonComplete for completed lessons count
+            var completedLessons = allLessons.filter(function(l) { return isLessonComplete(l.id); }).length;
             var progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
             var studyTimeHours = Math.round(userData ? userData.studyTime || 0 : 0);
             var atoms = userData ? userData.atoms || 0 : 0;
@@ -5979,11 +5648,9 @@
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
                     
-                    // Filter unsolved errors and remove duplicates by questionId
                     var seenQuestions = new Set();
                     var unsolved = errors.filter(function(e) { 
                         if (!e.solved && !e.corrected) {
-                            // Use questionId as unique key
                             var key = e.questionId || e.id || e.question;
                             if (seenQuestions.has(key)) {
                                 return false;
@@ -6054,7 +5721,6 @@
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
                     
-                    // Get unique unsolved errors
                     var seenQuestions = new Set();
                     var unsolved = errors.filter(function(e) { 
                         if (!e.solved && !e.corrected) {
@@ -6073,7 +5739,6 @@
                         return;
                     }
 
-                    // Create exam from actual errors only
                     var questions = unsolved.map(function(err) {
                         return {
                             id: err.questionId || err.id || 'error_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
@@ -6085,10 +5750,8 @@
                         };
                     });
 
-                    // Shuffle questions
                     questions = questions.sort(function() { return Math.random() - 0.5; });
                     
-                    // Limit to 10 questions max
                     if (questions.length > 10) {
                         questions = questions.slice(0, 10);
                     }
@@ -6123,7 +5786,6 @@
                 return;
             }
             
-            // Set correct answers for the exam
             var correctAnswers = {};
             currentExamData.questions.forEach(function(q) {
                 correctAnswers[q.id] = q.correctAnswer;
@@ -6188,7 +5850,6 @@
                 .then(function(snapshot) {
                     if (snapshot.exists()) {
                         var data = snapshot.val();
-                        // Check if completed or 80% threshold reached
                         if (data.completed === true) {
                             return { completed: true, data: data };
                         }
@@ -6376,43 +6037,6 @@
             });
         }
 
-        function renderExamQuestions(containerId, questions, type) {
-            type = type || 'exam';
-            var container = document.getElementById(containerId);
-            if (!container) return;
-
-            container.innerHTML = questions.map(function(q, index) {
-                var optionsHtml = q.options.map(function(opt, optIndex) {
-                    var isCorrect = optIndex === q.correctAnswer;
-                    var isSelected = examAnswers[type + '_' + q.id] === optIndex;
-                    return '<div class="exam-option" style="padding:8px 16px;margin:6px 0;border:2px solid ' +
-                        (isSelected ? 'var(--primary)' : 'rgba(231,42,155,0.08)') +
-                        ';border-radius:var(--radius);cursor:pointer;background:' + (isSelected ?
-                            'var(--gradient-primary)' : 'var(--white)') + ';color:' + (isSelected ?
-                            '#fff' : 'var(--text-dark)') +
-                        ';transition:all 0.2s;" onclick="window.APP.selectAnswer(\'' + type + '\', \'' + q
-                        .id + '\', ' + optIndex + ')">' +
-                        '<span style="font-weight:600;font-size:clamp(0.9rem,1vw,1rem);">' + String
-                        .fromCharCode(65 + optIndex) + '. ' + escapeHtml(opt) + '</span>' +
-                        (isSelected ? '<span style="float:left;"><i class="fas fa-check-circle"></i></span>' :
-                            '') +
-                        '</div>';
-                }).join('');
-
-                return '<div class="exam-question" style="margin-bottom:20px;padding:16px;background:var(--white);border-radius:var(--radius);border:1px solid rgba(231,42,155,0.06);">' +
-                    '<div style="font-weight:700;font-size:clamp(0.95rem,1.05vw,1.1rem);color:var(--text-dark);margin-bottom:8px;">' +
-                    '<span style="color:var(--primary);">' + (index + 1) + '.</span> ' + escapeHtml(q
-                    .question) + '</div>' +
-                    '<div class="exam-options">' + optionsHtml + '</div>' +
-                    (q.image ?
-                        '<div style="margin-top:8px;text-align:center;"><img src="' + q.image +
-                        '" alt="سؤال ' + (index + 1) +
-                        '" style="max-width:300px;max-height:200px;border-radius:var(--radius);cursor:pointer;" onclick="window.APP.openImageZoom(\'' +
-                        q.image + '\')"></div>' : '') +
-                    '</div>';
-            }).join('');
-        }
-
         // ============================================================
         // OPEN LESSON EXAM - With Server-side attempt check
         // ============================================================
@@ -6424,7 +6048,6 @@
 
             var progressKey = 'exam_' + lessonId;
             
-            // Check progress first (server-side)
             checkProgressCompletion(progressKey).then(function(result) {
                 if (result.completed) {
                     showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً ولا يمكن إعادته', 'warning');
@@ -6432,7 +6055,6 @@
                     return;
                 }
                 
-                // Also check attempts
                 checkUserAttempt('exam_' + lessonId, 'exam').then(function(attempt) {
                     if (attempt.exists && attempt.data.status === 'completed') {
                         showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً', 'warning');
@@ -6499,7 +6121,6 @@
                         _correctAnswers: correctAnswers
                     };
 
-                    // Create attempt record BEFORE starting
                     createUserAttempt('exam_' + lessonId, 'exam', {
                         examId: examId,
                         lessonId: lessonId,
@@ -6680,7 +6301,6 @@
                         return;
                     }
 
-                    // Create attempt record
                     createUserAttempt('assignment_' + lessonId, 'assignment', {
                         assignmentId: assignmentId,
                         lessonId: lessonId,
@@ -6832,7 +6452,6 @@
 
             var progressKey = 'assignment_' + lessonId;
 
-            // Complete the attempt
             completeUserAttempt('assignment_' + lessonId, resultData).then(function() {
                 return awardPointsAndUpdateProgress(
                     currentUser.uid,
@@ -6891,7 +6510,7 @@
         }
 
         // ============================================================
-        // RENDER EXAM INTERFACE (Unchanged - but preserved)
+        // RENDER EXAM INTERFACE - FIXED: Options stay visible
         // ============================================================
         function renderExamInterface(examData) {
             var main = document.getElementById('mainContent');
@@ -6933,16 +6552,10 @@
             return questions.map(function(q, index) {
                 var optionsHtml = q.options.map(function(opt, optIndex) {
                     var isSelected = examAnswers[q.id] === optIndex;
-                    return '<div class="exam-option" style="padding:8px 16px;margin:6px 0;border:2px solid ' +
-                        (isSelected ? 'var(--primary)' : 'rgba(231,42,155,0.08)') +
-                        ';border-radius:var(--radius);cursor:pointer;background:' + (isSelected ?
-                            'var(--gradient-primary)' : 'var(--white)') + ';color:' + (isSelected ?
-                            '#fff' : 'var(--text-dark)') +
-                        ';transition:all 0.2s;display:flex;justify-content:space-between;align-items:center;min-height:44px;" onclick="window.APP.selectAnswer(\'' +
+                    return '<div class="exam-option ' + (isSelected ? 'selected' : '') + '" onclick="window.APP.selectAnswer(\'' +
                         q.id + '\', ' + optIndex + ')">' +
-                        '<span style="font-weight:600;font-size:clamp(0.9rem,1vw,1rem);">' + String
-                        .fromCharCode(65 + optIndex) + '. ' + escapeHtml(opt) + '</span>' +
-                        (isSelected ? '<span><i class="fas fa-check-circle"></i></span>' : '') +
+                        '<span class="option-text">' + String.fromCharCode(65 + optIndex) + '. ' + escapeHtml(opt) + '</span>' +
+                        '<span class="option-check">✅</span>' +
                         '</div>';
                 }).join('');
 
@@ -6998,19 +6611,7 @@
                 var options = div.querySelectorAll('.exam-option');
                 options.forEach(function(opt, idx) {
                     var isSelected = idx === selected;
-                    // Only change styles, keep all elements visible
-                    opt.style.borderColor = isSelected ? 'var(--primary)' : 'rgba(231,42,155,0.08)';
-                    opt.style.background = isSelected ? 'var(--gradient-primary)' : 'var(--white)';
-                    opt.style.color = isSelected ? '#fff' : 'var(--text-dark)';
-                    // Update checkmark
-                    var checkSpan = opt.querySelector('span:last-child');
-                    if (checkSpan) {
-                        if (isSelected) {
-                            checkSpan.innerHTML = '<span><i class="fas fa-check-circle"></i></span>';
-                        } else {
-                            checkSpan.innerHTML = '';
-                        }
-                    }
+                    opt.classList.toggle('selected', isSelected);
                 });
             });
         }
@@ -7145,12 +6746,10 @@
 
                 var progressKey = examData.type + '_' + examData.lessonId;
 
-                // Save wrong answers to error bank
                 if (wrongQuestions.length > 0) {
                     saveWrongAnswersToErrorBank(wrongQuestions);
                 }
 
-                // Complete the attempt
                 var attemptId = examData.type + '_' + examData.lessonId;
                 completeUserAttempt(attemptId, resultData).then(function() {
                     return awardPointsAndUpdateProgress(
@@ -7905,7 +7504,6 @@
             var main = document.getElementById('mainContent');
             if (!main) return;
 
-            // Hide user elements
             document.getElementById('atomsBadge').style.display = 'none';
             document.getElementById('notificationWrapper').style.display = 'none';
             document.getElementById('userMenuWrapper').style.display = 'none';
@@ -8192,7 +7790,6 @@
             initTheme();
             showHome();
 
-            // إظهار شريط التثبيت بعد ثانية
             setTimeout(function() {
                 showInstallBanner();
             }, 1000);
@@ -8302,7 +7899,7 @@
             hasCourseAccess: hasCourseAccess,
             checkCourseAccess: checkCourseAccess,
 
-            // ⭐ NEW: Code System
+            // Code System
             verifyActivationCode: verifyActivationCode,
             useActivationCode: useActivationCode,
             verifyAndActivateCode: verifyAndActivateCode,
@@ -8311,7 +7908,7 @@
             openLessonVideo: openLessonVideo,
             handleVideoExit: handleVideoExit,
 
-            // Exams - FIXED
+            // Exams
             openLessonExam: openLessonExam,
             openExamSecurityModal: openExamSecurityModal,
             closeExamSecurityModal: closeExamSecurityModal,
@@ -8378,7 +7975,7 @@
             approveSubscription: approveSubscription,
             rejectSubscription: rejectSubscription,
 
-            // New functions for error exam
+            // Error exam
             startErrorBasedExam: startErrorBasedExam,
 
             scrollToTop: function() {
