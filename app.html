@@ -4295,7 +4295,7 @@
                 if (isLocked) {
                     cardAction = "window.APP.showSubscriptionPage('" + c.id + "')";
                 } else if (isCompleted) {
-                    cardAction = "window.APP.showCompletedModal()";
+                    cardAction = "window.APP.openCoursePage('" + c.id + "')"; // ✅ FIX: Always open course, don't lock
                 }
 
                 return '<div class="glass-card" style="cursor:pointer;position:relative;" onclick="' + cardAction +
@@ -4341,7 +4341,7 @@
                             '<button class="btn-primary-premium btn-sm-premium" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:8px 12px;min-height:40px;background:' +
                             (isCompleted ? '#22C55E' : 'var(--gradient-primary)') +
                             ';" onclick="event.stopPropagation(); ' + (isCompleted ?
-                                "window.APP.showCompletedModal()" : "window.APP.openCoursePage('" + c.id + "')") +
+                                "window.APP.openCoursePage('" + c.id + "')" : "window.APP.openCoursePage('" + c.id + "')") +
                             '">' +
                             (isCompleted ? '✅ مكتمل' : '📖 متابعة') +
                             '</button>' :
@@ -4720,16 +4720,21 @@
                     }
                 }
 
+                // ✅ FIX: Update watch progress only while playing
                 if (duration > 0 && activeVideoLessonId) {
                     var progressVal = Math.min(Math.round((currentTime / duration) * 100), 99);
                     if (progressVal % 5 === 0 || progressVal > 80) {
-                        database.ref('users/' + currentUser.uid + '/progress/' + activeVideoLessonId +
-                            '/watchPercent').set(progressVal);
-                        database.ref('users/' + currentUser.uid + '/progress/' + activeVideoLessonId +
-                            '/watchDuration').set(Math.round(currentTime));
+                        // Only update if user is watching (state = PLAYING or BUFFERING)
+                        if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
+                            database.ref('users/' + currentUser.uid + '/progress/' + activeVideoLessonId +
+                                '/watchPercent').set(progressVal);
+                            database.ref('users/' + currentUser.uid + '/progress/' + activeVideoLessonId +
+                                '/watchDuration').set(Math.round(currentTime));
+                        }
                     }
+                    // ✅ FIX: Complete lesson only if watched 80% and state was PLAYING
                     if (progressVal >= 80 && !(userCourseProgress[activeVideoLessonId] && userCourseProgress[
-                            activeVideoLessonId].watched)) {
+                            activeVideoLessonId].watched) && (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING)) {
                         completeLessonWatch(activeVideoLessonId);
                     }
                 }
@@ -4861,14 +4866,15 @@
                             try {
                                 var container = document.getElementById('videoContainer');
                                 if (container) {
-                                    container.addEventListener('click', function() {
-                                        try {
-                                            var state = player.getPlayerState();
-                                            if (state !== 1 && state !== 3) {
-                                                player.playVideo();
-                                            }
-                                        } catch (e) {}
-                                    }, { once: true });
+                                    // ✅ FIX: Remove click autoplay to avoid conflict
+                                    // container.addEventListener('click', function() {
+                                    //     try {
+                                    //         var state = player.getPlayerState();
+                                    //         if (state !== 1 && state !== 3) {
+                                    //             player.playVideo();
+                                    //         }
+                                    //     } catch (e) {}
+                                    // }, { once: true });
                                 }
                             } catch (e) {
                                 console.log('Auto-play setup:', e);
@@ -5014,7 +5020,7 @@
                 });
             }
 
-            // Rewind 10s
+            // ✅ FIX: Rewind 10s - only within max watched
             if (rewindBtn) {
                 var newBtn = rewindBtn.cloneNode(true);
                 rewindBtn.parentNode.replaceChild(newBtn, rewindBtn);
@@ -5028,7 +5034,7 @@
                         var current = playerInstance.getCurrentTime();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTarget = Math.max(0, current - 10);
-                        // Allow rewind only if within max watched
+                        // ✅ Allow rewind only if within max watched
                         if (seekTarget <= maxWatched) {
                             playerInstance.seekTo(seekTarget, true);
                             showToast('⏪ تأخير 10 ثوان', 'info');
@@ -5042,7 +5048,7 @@
                 });
             }
 
-            // Forward 10s - only if within max watched
+            // ✅ FIX: Forward 10s - only if within max watched
             if (forwardBtn) {
                 var newBtn = forwardBtn.cloneNode(true);
                 forwardBtn.parentNode.replaceChild(newBtn, forwardBtn);
@@ -5057,7 +5063,7 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTarget = Math.min(duration, current + 10);
-                        // Allow forward only if seek target <= max watched
+                        // ✅ Allow forward only if seek target <= max watched
                         if (seekTarget <= maxWatched + 1) { // +1 second tolerance
                             playerInstance.seekTo(seekTarget, true);
                             showToast('⏩ تقديم 10 ثوان', 'info');
@@ -5191,7 +5197,7 @@
                 });
             }
 
-            // Progress Bar
+            // ✅ FIX: Progress Bar - Seek only within max watched
             if (progressBar) {
                 var newBar = progressBar.cloneNode(true);
                 progressBar.parentNode.replaceChild(newBar, progressBar);
@@ -5245,7 +5251,7 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTime = percent * duration;
-                        // Only allow seek if within max watched
+                        // ✅ Only allow seek if within max watched
                         if (seekTime <= maxWatched + 0.5) {
                             playerInstance.seekTo(seekTime, true);
                         } else {
