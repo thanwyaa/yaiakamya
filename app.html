@@ -1557,7 +1557,7 @@
         }
 
         /* ============================================================
-           ⭐ NEW: PWA Install Modal Styles - Enhanced
+           ⭐ NEW: PWA Install Modal Styles
            ============================================================ */
         .install-modal-content {
             text-align: center;
@@ -2736,15 +2736,14 @@
     </div>
 
     <!-- ============================================================
-    ⭐ NEW: PWA Install Modal - Enhanced (Real PWA)
+    ⭐ NEW: PWA Install Modal
     ============================================================ -->
     <div id="installModal" role="dialog" aria-modal="true" aria-label="تثبيت التطبيق">
         <div class="install-modal-content">
-            <button onclick="window.APP.closeInstallModal()" class="close-btn" style="position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);color:var(--text-dark);font-size:1.2rem;cursor:pointer;font-weight:700;transition:var(--transition-smooth);display:flex;align-items:center;justify-content:center;z-index:10;" aria-label="إغلاق">✕</button>
             <div class="install-icon">📱</div>
             <img src="https://res.cloudinary.com/d5nyosrm/image/upload/v1786398649/%D9%84%D9%88%D8%AC%D9%88_%D9%83%D9%85%D9%8A%D8%A7.jpg" alt="يلا كيمياء" class="install-logo" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22 viewBox=%220 0 80 80%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23E72A9B%22 rx=%2220%22/%3E%3Ctext x=%2240%22 y=%2248%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-size=%2236%22 font-weight=%22bold%22 font-family=%22Arial%22%3EYK%3C/text%3E%3C/svg%3E';">
-            <h2>ثبّت <span class="highlight">يلا كيمياء</span></h2>
-            <p>ثبّت يلا كيمياء على جهازك للوصول إليها بسرعة وتجربة أفضل.</p>
+            <h2>ثبّت تطبيق <span class="highlight">يلا كيمياء</span></h2>
+            <p>ثبّت المنصة على جهازك وخلي المذاكرة أسهل وأسرع ❤️</p>
             <div class="features-list">
                 <div class="feature-item">
                     <i class="fas fa-bolt"></i>
@@ -2764,8 +2763,8 @@
                 </div>
             </div>
             <div class="install-actions">
-                <button class="btn-install" id="installModalBtn" onclick="window.APP.installApp()">
-                    <i class="fas fa-download"></i> 📲 تثبيت التطبيق
+                <button class="btn-install" onclick="window.APP.installApp()">
+                    <i class="fas fa-download"></i> تثبيت التطبيق
                 </button>
                 <button class="btn-later" onclick="window.APP.closeInstallModal()">ليس الآن</button>
             </div>
@@ -3286,273 +3285,170 @@
         }
 
         // ============================================================
-        // ⭐ PWA - Enhanced Real Installation
+        // PWA
         // ============================================================
-        
-        // ============================================================
-        // isAppInstalled() - Check if app is installed
-        // ============================================================
-        function isAppInstalled() {
-            // Check for standalone mode (Android/Chrome/Edge)
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                return true;
-            }
-            // Check for iOS standalone
-            if (navigator.standalone === true) {
-                return true;
-            }
-            return false;
-        }
-
-        // ============================================================
-        // PWA Event Listeners
-        // ============================================================
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the default browser prompt
+        window.addEventListener('beforeinstallprompt', function(e) {
             e.preventDefault();
-            
-            // Store the event for later use
             deferredPrompt = e;
-            
-            console.log('✅ PWA: beforeinstallprompt fired - app can be installed');
-            
-            // Show install buttons
-            const installBtn = document.getElementById('installAppBtn');
-            if (installBtn) {
-                installBtn.style.display = 'inline-flex';
-                installBtn.disabled = false;
-            }
-            
-            const installBtnNav = document.getElementById('installAppBtnNav');
-            if (installBtnNav) {
-                installBtnNav.style.display = 'inline-flex';
-                installBtnNav.disabled = false;
-            }
-            
-            // Show install banner
-            const banner = document.getElementById('installBanner');
-            if (banner) {
-                banner.style.display = 'block';
-            }
-            
-            // Show install modal if not installed and not already shown in this session
-            if (!isAppInstalled() && !window._installModalShown) {
-                setTimeout(() => {
-                    showInstallModal();
-                }, 1500);
-            }
+            var installBtn = document.getElementById('installAppBtn');
+            if (installBtn) installBtn.style.display = 'inline-flex';
+            var installBtnNav = document.getElementById('installAppBtnNav');
+            if (installBtnNav) installBtnNav.style.display = 'inline-flex';
+            var banner = document.getElementById('installBanner');
+            if (banner) banner.style.display = 'block';
+            console.log('📱 التطبيق جاهز للتثبيت');
         });
 
-        // ============================================================
-        // appinstalled event
-        // ============================================================
-        window.addEventListener('appinstalled', () => {
-            console.log('✅ PWA: App installed successfully!');
-            
-            // Hide all install buttons
-            document.querySelectorAll('#installAppBtn, #installAppBtnNav').forEach(btn => {
-                btn.style.display = 'none';
-            });
-            
-            // Hide install banner
-            const banner = document.getElementById('installBanner');
+        window.addEventListener('appinstalled', function() {
+            var installBtn = document.getElementById('installAppBtn');
+            if (installBtn) installBtn.style.display = 'none';
+            var installBtnNav = document.getElementById('installAppBtnNav');
+            if (installBtnNav) installBtnNav.style.display = 'none';
+            var banner = document.getElementById('installBanner');
             if (banner) banner.style.display = 'none';
-            
-            // Close install modal
-            closeInstallModal();
-            
+            var modal = document.getElementById('installModal');
+            if (modal) modal.classList.remove('open');
             showToast('✅ تم تثبيت التطبيق بنجاح! 🎉', 'success');
-            
-            // Reset deferredPrompt
-            deferredPrompt = null;
-            
-            // Mark as installed
-            window._installModalShown = true;
         });
 
         // ============================================================
-        // showInstallModal - Show the install popup
+        // ⭐ NEW: INSTALL MODAL FUNCTIONS
         // ============================================================
         function showInstallModal() {
-            // Don't show if already installed
-            if (isAppInstalled()) {
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                showToast('✅ التطبيق مثبت بالفعل على جهازك', 'success');
                 return;
             }
-            
-            // Don't show if already shown in this session
-            if (window._installModalShown) {
+
+            // If we have a deferred prompt, use it directly
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function(choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast('✅ تم تثبيت التطبيق بنجاح! 🎉', 'success');
+                        var banner = document.getElementById('installBanner');
+                        if (banner) banner.style.display = 'none';
+                        var installBtn = document.getElementById('installAppBtn');
+                        if (installBtn) installBtn.style.display = 'none';
+                        var installBtnNav = document.getElementById('installAppBtnNav');
+                        if (installBtnNav) installBtnNav.style.display = 'none';
+                    } else {
+                        showToast('تم إلغاء تثبيت التطبيق', 'info');
+                    }
+                    deferredPrompt = null;
+                });
                 return;
             }
-            
-            const modal = document.getElementById('installModal');
+
+            // Otherwise show the modal
+            var modal = document.getElementById('installModal');
             if (modal) {
                 modal.classList.add('open');
                 document.body.style.overflow = 'hidden';
-                window._installModalShown = true;
             }
         }
 
-        // ============================================================
-        // closeInstallModal - Close the install popup (X button)
-        // ============================================================
         function closeInstallModal() {
-            const modal = document.getElementById('installModal');
+            var modal = document.getElementById('installModal');
             if (modal) {
                 modal.classList.remove('open');
                 document.body.style.overflow = '';
             }
-            // Do NOT set any localStorage flag - X just closes the popup
         }
 
         // ============================================================
-        // installApp - Real installation using deferredPrompt
-        // ============================================================
-        function installApp() {
-            console.log('📱 installApp() called');
-            
-            // Check if already installed
-            if (isAppInstalled()) {
-                showToast('✅ التطبيق مثبت بالفعل على جهازك', 'success');
-                closeInstallModal();
-                return;
-            }
-            
-            // If we have a deferredPrompt, use it
-            if (deferredPrompt) {
-                // Show the native install prompt
-                deferredPrompt.prompt();
-                
-                // Wait for user choice
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('✅ User accepted the install prompt');
-                        showToast('✅ جاري تثبيت التطبيق...', 'info');
-                        // The appinstalled event will handle the rest
-                    } else {
-                        console.log('❌ User dismissed the install prompt');
-                        showToast('تم إلغاء التثبيت', 'info');
-                        // Reset so we can show again if needed
-                        deferredPrompt = null;
-                    }
-                }).catch((err) => {
-                    console.error('❌ Error during install:', err);
-                    showToast('❌ حدث خطأ أثناء التثبيت', 'error');
-                    deferredPrompt = null;
-                });
-                
-                // Close the modal
-                closeInstallModal();
-            } else {
-                // If no deferredPrompt, show manual instructions
-                console.warn('⚠️ No deferredPrompt available - showing manual instructions');
-                showManualInstallInstructions();
-            }
-        }
-
-        // ============================================================
-        // showManualInstallInstructions - For browsers without prompt support
-        // ============================================================
-        function showManualInstallInstructions() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            
-            let message = '';
-            
-            if (isIOS) {
-                message = `📱 لتثبيت تطبيق "يلا كيمياء" على iPhone/iPad:\n\n` +
-                          `1️⃣ اضغط على زر المشاركة (المربع مع السهم)\n` +
-                          `2️⃣ اختر "إضافة إلى الشاشة الرئيسية"\n` +
-                          `3️⃣ اضغط "إضافة" في الأعلى`;
-            } else if (navigator.userAgent.includes('Android')) {
-                message = `📱 لتثبيت تطبيق "يلا كيمياء" على Android:\n\n` +
-                          `1️⃣ اضغط على النقاط الثلاث (☰) في المتصفح\n` +
-                          `2️⃣ اختر "تثبيت التطبيق" أو "Install App"\n` +
-                          `3️⃣ اتبع الخطوات للتثبيت`;
-            } else {
-                message = `📱 لتثبيت تطبيق "يلا كيمياء":\n\n` +
-                          `1️⃣ افتح القائمة (☰) في المتصفح\n` +
-                          `2️⃣ اختر "تثبيت التطبيق" أو "Install App"\n` +
-                          `3️⃣ اتبع الخطوات للتثبيت`;
-            }
-            
-            alert(message);
-        }
-
-        // ============================================================
-        // dismissInstallBanner - Close the top banner
-        // ============================================================
-        function dismissInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            if (banner) {
-                banner.style.display = 'none';
-                // Do NOT store in localStorage - X just closes the banner
-            }
-        }
-
-        // ============================================================
-        // checkInstallStatus - Check if app is installed on load
-        // ============================================================
-        function checkInstallStatus() {
-            const installed = isAppInstalled();
-            
-            if (installed) {
-                console.log('✅ App is already installed');
-                
-                // Hide all install buttons
-                document.querySelectorAll('#installAppBtn, #installAppBtnNav').forEach(btn => {
-                    btn.style.display = 'none';
-                });
-                
-                // Hide install banner
-                const banner = document.getElementById('installBanner');
-                if (banner) banner.style.display = 'none';
-                
-                // Hide modal if open
-                closeInstallModal();
-                
-                return true;
-            }
-            
-            return false;
-        }
-
-        // ============================================================
-        // showInstallBanner - Show the top banner
+        // INSTALL BANNER FUNCTIONS
         // ============================================================
         function showInstallBanner() {
-            const banner = document.getElementById('installBanner');
+            var banner = document.getElementById('installBanner');
             if (!banner) return;
-            
-            // If already installed, hide
-            if (isAppInstalled()) {
+
+            // إذا كان المستخدم أغلق الشريط من قبل
+            if (localStorage.getItem('installBannerDismissed') === 'true') {
                 banner.style.display = 'none';
                 return;
             }
-            
-            // If browser doesn't support PWA, hide
+
+            // إذا كان التطبيق مثبت بالفعل
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                banner.style.display = 'none';
+                return;
+            }
+
+            // إذا كان المتصفح لا يدعم PWA
             if (!('serviceWorker' in navigator) && !deferredPrompt) {
                 banner.style.display = 'none';
                 return;
             }
-            
-            // Show banner
+
             banner.style.display = 'block';
         }
 
+        function dismissInstallBanner() {
+            var banner = document.getElementById('installBanner');
+            if (banner) {
+                banner.style.display = 'none';
+                localStorage.setItem('installBannerDismissed', 'true');
+            }
+        }
+
+        function checkInstallStatus() {
+            var isInstalled = false;
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                isInstalled = true;
+            } else if (navigator.standalone === true) {
+                isInstalled = true;
+            }
+
+            if (isInstalled) {
+                var banner = document.getElementById('installBanner');
+                if (banner) banner.style.display = 'none';
+                var installBtn = document.getElementById('installAppBtn');
+                if (installBtn) installBtn.style.display = 'none';
+                var installBtnNav = document.getElementById('installAppBtnNav');
+                if (installBtnNav) installBtnNav.style.display = 'none';
+                return true;
+            }
+            return false;
+        }
+
         // ============================================================
-        // Register Service Worker
+        // INSTALL APP - Enhanced
         // ============================================================
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('✅ Service Worker registered successfully:', registration);
-                    })
-                    .catch((error) => {
-                        console.error('❌ Service Worker registration failed:', error);
-                    });
+        function installApp() {
+            closeInstallModal();
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function(choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast('✅ تم تثبيت التطبيق بنجاح! 🎉', 'success');
+                        var banner = document.getElementById('installBanner');
+                        if (banner) banner.style.display = 'none';
+                        var installBtn = document.getElementById('installAppBtn');
+                        if (installBtn) installBtn.style.display = 'none';
+                        var installBtnNav = document.getElementById('installAppBtnNav');
+                        if (installBtnNav) installBtnNav.style.display = 'none';
+                    } else {
+                        showToast('تم إلغاء تثبيت التطبيق', 'info');
+                    }
+                    deferredPrompt = null;
+                });
             } else {
-                console.warn('⚠️ Service Worker not supported in this browser');
+                // إرشادات التثبيت اليدوي
+                var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+                var msg = isIOS ?
+                    '📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة (المربع مع السهم)\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط "إضافة"' :
+                    '📱 لتثبيت التطبيق:\n\n1. افتح القائمة (النقاط الثلاث ☰)\n2. اختر "تثبيت التطبيق" أو "Install App"\n3. اتبع الخطوات للتثبيت';
+
+                // Show instructions in a nice way
+                var modal = document.getElementById('installModal');
+                if (modal) {
+                    modal.classList.remove('open');
+                }
+                alert(msg);
             }
         }
 
@@ -4462,7 +4358,7 @@
                 if (isLocked) {
                     cardAction = "window.APP.showSubscriptionPage('" + c.id + "')";
                 } else if (isCompleted) {
-                    cardAction = "window.APP.openCoursePage('" + c.id + "')";
+                    cardAction = "window.APP.openCoursePage('" + c.id + "')"; // ✅ FIX: Always open course, don't lock
                 }
 
                 return '<div class="glass-card" style="cursor:pointer;position:relative;" onclick="' + cardAction +
@@ -4742,6 +4638,7 @@
             ytPlayerQueue = [];
         }
 
+        // ✅ FIX: Mobile-friendly YouTube player with playsinline
         function createYouTubePlayer(_ref) {
             var videoId = _ref.videoId;
             var containerId = _ref.containerId;
@@ -4789,6 +4686,7 @@
                 dynamicWM.style.top = randomY + 'px';
             }, 4000);
 
+            // ✅ Mobile-friendly player with playsinline
             var player = new YT.Player(containerId, {
                 height: '100%',
                 width: '100%',
@@ -4799,7 +4697,7 @@
                     fs: 0,
                     iv_load_policy: 3,
                     modestbranding: 1,
-                    playsinline: 1,
+                    playsinline: 1, // ✅ KEY: works on mobile
                     rel: 0,
                     showinfo: 0,
                     origin: window.location.origin,
@@ -4866,6 +4764,7 @@
                 }
 
                 if (controls) {
+                    // On mobile, always keep visible. On desktop, hide after inactivity.
                     if (window.innerWidth < 769) {
                         controls.classList.add('visible');
                     } else {
@@ -4884,9 +4783,11 @@
                     }
                 }
 
+                // ✅ FIX: Update watch progress only while playing
                 if (duration > 0 && activeVideoLessonId) {
                     var progressVal = Math.min(Math.round((currentTime / duration) * 100), 99);
                     if (progressVal % 5 === 0 || progressVal > 80) {
+                        // Only update if user is watching (state = PLAYING or BUFFERING)
                         if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
                             database.ref('users/' + currentUser.uid + '/progress/' + activeVideoLessonId +
                                 '/watchPercent').set(progressVal);
@@ -4894,6 +4795,7 @@
                                 '/watchDuration').set(Math.round(currentTime));
                         }
                     }
+                    // ✅ FIX: Complete lesson only if watched 80% and state was PLAYING
                     if (progressVal >= 80 && !(userCourseProgress[activeVideoLessonId] && userCourseProgress[
                             activeVideoLessonId].watched) && (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING)) {
                         completeLessonWatch(activeVideoLessonId);
@@ -4926,6 +4828,9 @@
                 return;
             }
 
+            // ✅ FIX: Allow re-opening even if watched
+            // No blocking based on watched status
+
             var main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -4951,7 +4856,8 @@
                     videoWatchStartTime = Date.now();
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
-                    // ✅ FIX: Video title is NOT clickable - text only
+                    // ✅ Mobile optimized layout with always visible controls
+                    // ✅ FIX: Video title is not clickable (span instead of a)
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -4960,12 +4866,10 @@
                         '<i class="fas fa-arrow-right"></i> ' + escapeHtml(courseName) +
                         '</button>' +
                         '<span style="color:rgba(231,42,155,0.2);">/</span>' +
-                        // ✅ FIX: Title is plain text, NOT clickable, NOT a link
-                        '<span style="font-weight:600;color:var(--text-dark);cursor:default;pointer-events:none;">' + escapeHtml(lessonData
+                        '<span style="font-weight:600;color:var(--text-dark);">' + escapeHtml(lessonData
                         .title) + '</span></div>' +
                         '<h1 style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text-dark);margin-bottom:12px;">🎥 ' +
-                        // ✅ FIX: Title is plain text, NOT clickable
-                        '<span style="cursor:default;pointer-events:none;">' + escapeHtml(lessonData.title) + '</span></h1>' +
+                        escapeHtml(lessonData.title) + '</h1>' +
                         '<div class="video-protected" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);touch-action:manipulation;">' +
                         '<div id="youtube-player" style="width:100%;height:100%;"></div>' +
                         '<div class="player-controls" id="playerControls" style="position:absolute;bottom:0;left:0;right:0;padding:12px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.85));z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;' +
@@ -5022,10 +4926,19 @@
                         lessonTitle: lessonData.title,
                         onReady: function(event) {
                             var player = event.target;
+                            // Play video with mobile-friendly approach
                             try {
                                 var container = document.getElementById('videoContainer');
                                 if (container) {
-                                    // No click handler on title
+                                    // ✅ FIX: Remove click autoplay to avoid conflict
+                                    // container.addEventListener('click', function() {
+                                    //     try {
+                                    //         var state = player.getPlayerState();
+                                    //         if (state !== 1 && state !== 3) {
+                                    //             player.playVideo();
+                                    //         }
+                                    //     } catch (e) {}
+                                    // }, { once: true });
                                 }
                             } catch (e) {
                                 console.log('Auto-play setup:', e);
@@ -5077,13 +4990,16 @@
                     var availableQualities = playerInstance.getAvailableQualityLevels() || [];
                     var currentQuality = playerInstance.getPlaybackQuality() || 'auto';
                     
+                    // Clear existing options
                     qualitySelect.innerHTML = '';
                     
+                    // Add auto option
                     var autoOpt = document.createElement('option');
                     autoOpt.value = 'auto';
                     autoOpt.textContent = 'تلقائي';
                     qualitySelect.appendChild(autoOpt);
                     
+                    // Add available qualities
                     var qualityMap = {
                         'hd1080': '1080p',
                         'hd720': '720p',
@@ -5101,8 +5017,10 @@
                         qualitySelect.appendChild(opt);
                     });
                     
+                    // Set current quality
                     qualitySelect.value = currentQuality;
                     
+                    // If no specific quality available, default to auto
                     if (!qualitySelect.value) {
                         qualitySelect.value = 'auto';
                     }
@@ -5111,6 +5029,7 @@
                 }
             }
 
+            // Try to populate qualities after player is ready
             setTimeout(populateQualityOptions, 1000);
 
             // Quality change
@@ -5165,7 +5084,7 @@
                 });
             }
 
-            // Rewind 10s
+            // ✅ FIX: Rewind 10s - only within max watched
             if (rewindBtn) {
                 var newBtn = rewindBtn.cloneNode(true);
                 rewindBtn.parentNode.replaceChild(newBtn, rewindBtn);
@@ -5179,6 +5098,7 @@
                         var current = playerInstance.getCurrentTime();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTarget = Math.max(0, current - 10);
+                        // ✅ Allow rewind only if within max watched
                         if (seekTarget <= maxWatched) {
                             playerInstance.seekTo(seekTarget, true);
                             showToast('⏪ تأخير 10 ثوان', 'info');
@@ -5192,7 +5112,7 @@
                 });
             }
 
-            // Forward 10s
+            // ✅ FIX: Forward 10s - only if within max watched
             if (forwardBtn) {
                 var newBtn = forwardBtn.cloneNode(true);
                 forwardBtn.parentNode.replaceChild(newBtn, forwardBtn);
@@ -5207,11 +5127,13 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTarget = Math.min(duration, current + 10);
-                        if (seekTarget <= maxWatched + 1) {
+                        // ✅ Allow forward only if seek target <= max watched
+                        if (seekTarget <= maxWatched + 1) { // +1 second tolerance
                             playerInstance.seekTo(seekTarget, true);
                             showToast('⏩ تقديم 10 ثوان', 'info');
                         } else {
                             showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
+                            // Snap back to max watched
                             playerInstance.seekTo(maxWatched, true);
                         }
                         if (playerControls) playerControls.classList.add('visible');
@@ -5339,7 +5261,7 @@
                 });
             }
 
-            // Progress Bar
+            // ✅ FIX: Progress Bar - Seek only within max watched
             if (progressBar) {
                 var newBar = progressBar.cloneNode(true);
                 progressBar.parentNode.replaceChild(newBar, progressBar);
@@ -5393,10 +5315,12 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTime = percent * duration;
+                        // ✅ Only allow seek if within max watched
                         if (seekTime <= maxWatched + 0.5) {
                             playerInstance.seekTo(seekTime, true);
                         } else {
                             showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
+                            // Snap back to max watched
                             var snapPercent = (maxWatched / duration) * 100;
                             newBar.querySelector('.fill').style.width = Math.min(snapPercent, 99) + '%';
                             playerInstance.seekTo(maxWatched, true);
@@ -5441,7 +5365,7 @@
             }
 
             function hideControls() {
-                if (window.innerWidth < 769) return;
+                if (window.innerWidth < 769) return; // Don't hide on mobile
                 if (!playerInstance) return;
                 var state = playerInstance.getPlayerState();
                 if (state === YT.PlayerState.PLAYING) {
@@ -5467,6 +5391,7 @@
                 });
             }
 
+            // Show controls on mobile touch
             if (videoContainer) {
                 videoContainer.addEventListener('touchstart', function() {
                     showControls();
@@ -5477,6 +5402,7 @@
                 });
             }
 
+            // On mobile, controls are always visible via CSS
             showControls();
 
             console.log('✅ Player controls initialized successfully');
@@ -5495,7 +5421,7 @@
         }
 
         // ============================================================
-        // COMPLETE LESSON WATCH - Only marks watched
+        // COMPLETE LESSON WATCH - Only marks watched, no course completion
         // ============================================================
         function completeLessonWatch(lessonId) {
             try {
@@ -5513,6 +5439,7 @@
                         var studyHours = actualWatchTime / 3600;
                         var currentStudyTime = userSnap.val().studyTime || 0;
 
+                        // ✅ FIX: Only mark the lesson as watched, don't affect course completion
                         database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                             watched: true,
                             watchPercent: 100,
@@ -5520,6 +5447,7 @@
                             lastPosition: 0,
                             type: 'lesson',
                             watchDuration: actualWatchTime,
+                            // ✅ No course level completion
                         });
 
                         var lastStudyDate = userSnap.val().lastStudyDate;
@@ -5571,6 +5499,7 @@
                             'أكملت مشاهدة "' + lesson.title + '" وحصلت على ' + atomsReward + ' ذرة.', '🎥');
                         loadUserProgress(currentUser.uid);
                         calculateUserRank(currentUser.uid, currentAtoms + atomsReward);
+                        // ✅ No automatic course completion
                     }
                 });
             } catch (err) {
@@ -5616,7 +5545,9 @@
         }
 
         function checkCourseCompletion(courseId) {
-            // No automatic course completion
+            // ✅ FIX: No automatic course completion from lessons
+            // This function is kept for backward compatibility but does nothing
+            // Course completion is managed separately via explicit actions
         }
 
         // ============================================================
@@ -5775,8 +5706,7 @@
                         '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;">' +
                         '<span class="lesson-num" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--gradient-primary);color:#fff;font-size:0.8rem;flex-shrink:0;font-weight:700;">' +
                         (idx + 1) + '</span>' +
-                        // ✅ FIX: Lesson title in header - plain text, not clickable
-                        '<span style="font-weight:700;cursor:default;pointer-events:none;">' + escapeHtml(lesson.title) + '</span>' +
+                        '<span style="font-weight:700;">' + escapeHtml(lesson.title) + '</span>' +
                         '<span class="lesson-status ' + (isCompleted ? 'completed' : '') +
                         '" style="font-size:0.75rem;color:var(--text-secondary);padding:2px 12px;border-radius:20px;background:var(--white);border:1px solid rgba(231,42,155,0.06);' +
                         (isCompleted ? 'background:#22C55E;color:#fff;border-color:#22C55E;' : '') + '">' +
@@ -5849,7 +5779,7 @@
                     '<span class="price-tag" style="display:inline-block;padding:4px 16px;border-radius:50px;font-weight:700;font-size:clamp(0.8rem,0.9vw,0.9rem);background:' +
                     (isFree ? '#22C55E' : 'var(--gradient-primary)') + ';color:#fff;">' +
                     (isFree ? '🆓 مجاني' : '💰 ' + priceDisplay) +
-                    '</span></div></div></div>' +
+                    '</span></div></div></div></div>' +
                     '<div class="motivational-message" style="margin:16px 0;padding:12px 20px;border-radius:var(--radius);background:var(--white);border:1px solid rgba(231,42,155,0.06);text-align:center;font-weight:600;font-size:clamp(0.9rem,1vw,1rem);color:var(--text-dark);">' +
                     '<span class="emoji">' + motivationalMessage.split(' ')[0] + '</span> ' +
                     motivationalMessage + '</div>' +
@@ -5878,7 +5808,7 @@
         }
 
         // ============================================================
-        // LEADERBOARD
+        // LEADERBOARD - FIXED: Shows for all users
         // ============================================================
         function loadLeaderboard() {
             var container = document.getElementById('leaderboardContainer');
@@ -5914,6 +5844,9 @@
             }
         }
 
+        // ============================================================
+        // RENDER LEADERBOARD - FIXED: Shows all top 5
+        // ============================================================
         function renderLeaderboard(users, container) {
             if (!container) {
                 container = document.getElementById('leaderboardContainer');
@@ -5924,6 +5857,7 @@
             var top3 = top5.slice(0, 3);
             var html = '';
 
+            // Display podium for top 3
             if (top3.length > 0) {
                 html +=
                     '<div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">';
@@ -5965,6 +5899,7 @@
                 html += '</div>';
             }
 
+            // Display remaining top 5 (positions 4-5)
             var rest = top5.slice(3);
             if (rest.length > 0) {
                 html +=
@@ -5994,6 +5929,7 @@
 
             container.innerHTML = html;
 
+            // Show current user's rank
             if (currentUser && userData) {
                 container.innerHTML +=
                     '<div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">' +
@@ -6198,7 +6134,7 @@
         }
 
         // ============================================================
-        // ERROR BANK
+        // ERROR BANK - FIXED: Shows only actual errors without duplication
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -6212,9 +6148,11 @@
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
                     
+                    // Filter unsolved errors and remove duplicates by questionId
                     var seenQuestions = new Set();
                     var unsolved = errors.filter(function(e) { 
                         if (!e.solved && !e.corrected) {
+                            // Use questionId as unique key
                             var key = e.questionId || e.id || e.question;
                             if (seenQuestions.has(key)) {
                                 return false;
@@ -6273,7 +6211,7 @@
         }
 
         // ============================================================
-        // START ERROR EXAM
+        // START ERROR EXAM - FIXED: Uses actual errors only
         // ============================================================
         function startErrorExam() {
             if (!currentUser) {
@@ -6285,6 +6223,7 @@
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
                     
+                    // Get unique unsolved errors
                     var seenQuestions = new Set();
                     var unsolved = errors.filter(function(e) { 
                         if (!e.solved && !e.corrected) {
@@ -6303,6 +6242,7 @@
                         return;
                     }
 
+                    // Create exam from actual errors only
                     var questions = unsolved.map(function(err) {
                         return {
                             id: err.questionId || err.id || 'error_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
@@ -6314,8 +6254,10 @@
                         };
                     });
 
+                    // Shuffle questions
                     questions = questions.sort(function() { return Math.random() - 0.5; });
                     
+                    // Limit to 10 questions max
                     if (questions.length > 10) {
                         questions = questions.slice(0, 10);
                     }
@@ -6342,7 +6284,7 @@
         }
 
         // ============================================================
-        // START ERROR BASED EXAM
+        // START ERROR BASED EXAM - FIXED: Only shows actual errors
         // ============================================================
         function startErrorBasedExam() {
             if (!currentExamData || !currentExamData.isErrorExam) {
@@ -6350,6 +6292,7 @@
                 return;
             }
             
+            // Set correct answers for the exam
             var correctAnswers = {};
             currentExamData.questions.forEach(function(q) {
                 correctAnswers[q.id] = q.correctAnswer;
@@ -6414,6 +6357,7 @@
                 .then(function(snapshot) {
                     if (snapshot.exists()) {
                         var data = snapshot.val();
+                        // Check if completed or 80% threshold reached
                         if (data.completed === true) {
                             return { completed: true, data: data };
                         }
@@ -6649,6 +6593,7 @@
 
             var progressKey = 'exam_' + lessonId;
             
+            // Check progress first (server-side)
             checkProgressCompletion(progressKey).then(function(result) {
                 if (result.completed) {
                     showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً ولا يمكن إعادته', 'warning');
@@ -6656,6 +6601,7 @@
                     return;
                 }
                 
+                // Also check attempts
                 checkUserAttempt('exam_' + lessonId, 'exam').then(function(attempt) {
                     if (attempt.exists && attempt.data.status === 'completed') {
                         showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً', 'warning');
@@ -6722,6 +6668,7 @@
                         _correctAnswers: correctAnswers
                     };
 
+                    // Create attempt record BEFORE starting
                     createUserAttempt('exam_' + lessonId, 'exam', {
                         examId: examId,
                         lessonId: lessonId,
@@ -6902,6 +6849,7 @@
                         return;
                     }
 
+                    // Create attempt record
                     createUserAttempt('assignment_' + lessonId, 'assignment', {
                         assignmentId: assignmentId,
                         lessonId: lessonId,
@@ -7053,6 +7001,7 @@
 
             var progressKey = 'assignment_' + lessonId;
 
+            // Complete the attempt
             completeUserAttempt('assignment_' + lessonId, resultData).then(function() {
                 return awardPointsAndUpdateProgress(
                     currentUser.uid,
@@ -7111,7 +7060,7 @@
         }
 
         // ============================================================
-        // RENDER EXAM INTERFACE
+        // RENDER EXAM INTERFACE (Unchanged - but preserved)
         // ============================================================
         function renderExamInterface(examData) {
             var main = document.getElementById('mainContent');
@@ -7147,7 +7096,7 @@
         }
 
         // ============================================================
-        // RENDER EXAM QUESTIONS HTML
+        // RENDER EXAM QUESTIONS HTML - FIXED: Options stay visible
         // ============================================================
         function renderExamQuestionsHTML(questions) {
             return questions.map(function(q, index) {
@@ -7182,7 +7131,7 @@
         }
 
         // ============================================================
-        // SELECT ANSWER
+        // SELECT ANSWER - Options stay visible, no disappearing
         // ============================================================
         function selectAnswer(questionId, optionIndex) {
             if (window._examLocked) {
@@ -7204,7 +7153,7 @@
         }
 
         // ============================================================
-        // RE-RENDER EXAM OPTIONS
+        // RE-RENDER EXAM OPTIONS - FIXED: Only styles change, no DOM rebuild
         // ============================================================
         function reRenderExamOptions() {
             var container = document.getElementById('examQuestionsContainer');
@@ -7218,9 +7167,11 @@
                 var options = div.querySelectorAll('.exam-option');
                 options.forEach(function(opt, idx) {
                     var isSelected = idx === selected;
+                    // Only change styles, keep all elements visible
                     opt.style.borderColor = isSelected ? 'var(--primary)' : 'rgba(231,42,155,0.08)';
                     opt.style.background = isSelected ? 'var(--gradient-primary)' : 'var(--white)';
                     opt.style.color = isSelected ? '#fff' : 'var(--text-dark)';
+                    // Update checkmark
                     var checkSpan = opt.querySelector('span:last-child');
                     if (checkSpan) {
                         if (isSelected) {
@@ -7363,10 +7314,12 @@
 
                 var progressKey = examData.type + '_' + examData.lessonId;
 
+                // Save wrong answers to error bank
                 if (wrongQuestions.length > 0) {
                     saveWrongAnswersToErrorBank(wrongQuestions);
                 }
 
+                // Complete the attempt
                 var attemptId = examData.type + '_' + examData.lessonId;
                 completeUserAttempt(attemptId, resultData).then(function() {
                     return awardPointsAndUpdateProgress(
@@ -7404,7 +7357,7 @@
         }
 
         // ============================================================
-        // SAVE WRONG ANSWERS TO ERROR BANK
+        // SAVE WRONG ANSWERS TO ERROR BANK - With deduplication
         // ============================================================
         function saveWrongAnswersToErrorBank(wrongQuestions) {
             if (!currentUser || wrongQuestions.length === 0) return;
@@ -7429,7 +7382,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM RESULT
+        // SHOW EXAM RESULT (Unchanged)
         // ============================================================
         function showExamResult(resultData) {
             var main = document.getElementById('mainContent');
@@ -7482,7 +7435,7 @@
         }
 
         // ============================================================
-        // RESULTS
+        // RESULTS (Unchanged)
         // ============================================================
         function showResults() {
             if (!currentUser) {
@@ -7539,7 +7492,7 @@
         }
 
         // ============================================================
-        // CERTIFICATE, STUDENT CARD, ACHIEVEMENTS, AI INSIGHTS
+        // CERTIFICATE, STUDENT CARD, ACHIEVEMENTS, AI INSIGHTS (Unchanged)
         // ============================================================
         function showCertificate() {
             if (!currentUser) {
@@ -7890,7 +7843,7 @@
         }
 
         // ============================================================
-        // PRIVACY & TERMS
+        // PRIVACY & TERMS (Unchanged)
         // ============================================================
         function showPrivacy() {
             var main = document.getElementById('mainContent');
@@ -7913,7 +7866,7 @@
         }
 
         // ============================================================
-        // HOME PAGE - Premium Redesign with All Sections
+        // HOME PAGE - Premium Redesign with All Sections (Unchanged)
         // ============================================================
         function showHome() {
             var main = document.getElementById('mainContent');
@@ -8035,7 +7988,7 @@
         }
 
         // ============================================================
-        // SCROLL REVEAL
+        // SCROLL REVEAL (Unchanged)
         // ============================================================
         function setupScrollReveal() {
             var observer = new IntersectionObserver(function(entries) {
@@ -8055,7 +8008,7 @@
         }
 
         // ============================================================
-        // ADMIN POPUP
+        // ADMIN POPUP (Unchanged)
         // ============================================================
         function showAdminPopup() {
             var popup = document.getElementById('adminPopup');
@@ -8092,7 +8045,7 @@
         }
 
         // ============================================================
-        // BAN SYSTEM - Server-side permanent ban
+        // BAN SYSTEM - FIXED: Server-side permanent ban
         // ============================================================
         function checkUserBan(uid) {
             if (!uid) return Promise.resolve({ isBanned: false });
@@ -8121,6 +8074,7 @@
             var main = document.getElementById('mainContent');
             if (!main) return;
 
+            // Hide user elements
             document.getElementById('atomsBadge').style.display = 'none';
             document.getElementById('notificationWrapper').style.display = 'none';
             document.getElementById('userMenuWrapper').style.display = 'none';
@@ -8241,7 +8195,7 @@
         }
 
         // ============================================================
-        // SUBSCRIPTION REQUEST HANDLING FOR ADMIN
+        // SUBSCRIPTION REQUEST HANDLING FOR ADMIN (Unchanged)
         // ============================================================
         function approveSubscription(requestId) {
             if (!currentUser) {
@@ -8407,18 +8361,15 @@
             initTheme();
             showHome();
 
-            // ⭐ Register Service Worker
-            registerServiceWorker();
-
-            // ⭐ Check if app is already installed
-            checkInstallStatus();
-
-            // ⭐ Show install banner if not installed
+            // إظهار شريط التثبيت بعد ثانية
             setTimeout(function() {
                 showInstallBanner();
             }, 1000);
 
-            console.log('🚀 Yalla Chemistry Platform v51.0 - FIXED: Video titles not clickable, PWA real installation');
+            // Check installation status
+            checkInstallStatus();
+
+            console.log('🚀 Yalla Chemistry Platform v50.0 - FULLY FIXED');
 
             var navToggle = document.getElementById('navToggle');
             if (navToggle) {
@@ -8523,7 +8474,7 @@
             hasCourseAccess: hasCourseAccess,
             checkCourseAccess: checkCourseAccess,
 
-            // Code System
+            // ⭐ NEW: Code System
             verifyActivationCode: verifyActivationCode,
             useActivationCode: useActivationCode,
             verifyAndActivateCode: verifyAndActivateCode,
@@ -8532,7 +8483,7 @@
             openLessonVideo: openLessonVideo,
             handleVideoExit: handleVideoExit,
 
-            // Exams
+            // Exams - FIXED
             openLessonExam: openLessonExam,
             openExamSecurityModal: openExamSecurityModal,
             closeExamSecurityModal: closeExamSecurityModal,
@@ -8568,16 +8519,13 @@
             markAllNotificationsRead: markAllNotificationsRead,
             deleteAllNotifications: deleteAllNotifications,
 
-            // ⭐ PWA - Enhanced Real Installation
+            // Install
             installApp: installApp,
             showInstallBanner: showInstallBanner,
             dismissInstallBanner: dismissInstallBanner,
             checkInstallStatus: checkInstallStatus,
             showInstallModal: showInstallModal,
             closeInstallModal: closeInstallModal,
-            isAppInstalled: isAppInstalled,
-            showManualInstallInstructions: showManualInstallInstructions,
-            registerServiceWorker: registerServiceWorker,
 
             // Misc
             showPrivacy: showPrivacy,
@@ -8602,7 +8550,7 @@
             approveSubscription: approveSubscription,
             rejectSubscription: rejectSubscription,
 
-            // Error exam
+            // New functions for error exam
             startErrorBasedExam: startErrorBasedExam,
 
             scrollToTop: function() {
