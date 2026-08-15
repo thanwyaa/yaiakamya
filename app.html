@@ -2595,6 +2595,51 @@
         .admin-panel-link.visible {
             display: inline-block;
         }
+
+        /* ============================================================
+           ⭐ NEW: Install Button Style
+           ============================================================ */
+        .install-app-btn-nav {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: var(--gradient-primary);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-primary);
+            font-size: clamp(0.7rem, 0.8vw, 0.85rem);
+            min-height: 40px;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 20px rgba(231, 42, 155, 0.25);
+        }
+
+        .install-app-btn-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(231, 42, 155, 0.35);
+        }
+
+        .install-app-btn-nav:active {
+            transform: scale(0.97);
+        }
+
+        .install-app-btn-nav i {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .install-app-btn-nav {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                min-height: 36px;
+            }
+            .install-app-btn-nav i {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2751,8 +2796,9 @@
             </ul>
 
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <button class="install-app-btn" id="installAppBtn" onclick="window.APP.showInstallModal()" aria-label="تحميل التطبيق" style="display:none;align-items:center;gap:6px;padding:6px 16px;border-radius:50px;background:var(--gradient-primary);color:#fff;font-weight:700;border:none;cursor:pointer;font-family:var(--font-primary);font-size:clamp(0.6rem,0.7vw,0.8rem);min-height:36px;transition:var(--transition-smooth);">
-                    <i class="fas fa-download" aria-hidden="true"></i> حمل التطبيق
+                <!-- ⭐ NEW: Install App Button in Navbar -->
+                <button class="install-app-btn-nav" id="installAppBtnNav" onclick="window.APP.installApp()" aria-label="تحميل التطبيق" style="display:none;">
+                    <i class="fas fa-download" aria-hidden="true"></i> 📲 تثبيت التطبيق
                 </button>
 
                 <button class="theme-toggle" onclick="window.APP.toggleTheme()" aria-label="تغيير المظهر" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:50px;padding:6px 12px;cursor:pointer;transition:var(--transition-smooth);display:flex;align-items:center;gap:8px;font-size:clamp(0.9rem,1vw,1rem);color:#fff;min-width:44px;justify-content:center;min-height:36px;">
@@ -2809,7 +2855,7 @@
                 </div>
             </div>
             <div class="banner-actions">
-                <button class="install-btn" onclick="window.APP.showInstallModal()">
+                <button class="install-btn" onclick="window.APP.installApp()">
                     <i class="fas fa-download"></i> تثبيت التطبيق
                 </button>
                 <button class="dismiss-btn" onclick="window.APP.dismissInstallBanner()">✕ إغلاق</button>
@@ -3246,6 +3292,8 @@
             deferredPrompt = e;
             var installBtn = document.getElementById('installAppBtn');
             if (installBtn) installBtn.style.display = 'inline-flex';
+            var installBtnNav = document.getElementById('installAppBtnNav');
+            if (installBtnNav) installBtnNav.style.display = 'inline-flex';
             var banner = document.getElementById('installBanner');
             if (banner) banner.style.display = 'block';
             console.log('📱 التطبيق جاهز للتثبيت');
@@ -3254,6 +3302,8 @@
         window.addEventListener('appinstalled', function() {
             var installBtn = document.getElementById('installAppBtn');
             if (installBtn) installBtn.style.display = 'none';
+            var installBtnNav = document.getElementById('installAppBtnNav');
+            if (installBtnNav) installBtnNav.style.display = 'none';
             var banner = document.getElementById('installBanner');
             if (banner) banner.style.display = 'none';
             var modal = document.getElementById('installModal');
@@ -3281,6 +3331,8 @@
                         if (banner) banner.style.display = 'none';
                         var installBtn = document.getElementById('installAppBtn');
                         if (installBtn) installBtn.style.display = 'none';
+                        var installBtnNav = document.getElementById('installAppBtnNav');
+                        if (installBtnNav) installBtnNav.style.display = 'none';
                     } else {
                         showToast('تم إلغاء تثبيت التطبيق', 'info');
                     }
@@ -3342,11 +3394,20 @@
         }
 
         function checkInstallStatus() {
+            var isInstalled = false;
             if (window.matchMedia('(display-mode: standalone)').matches) {
+                isInstalled = true;
+            } else if (navigator.standalone === true) {
+                isInstalled = true;
+            }
+
+            if (isInstalled) {
                 var banner = document.getElementById('installBanner');
                 if (banner) banner.style.display = 'none';
                 var installBtn = document.getElementById('installAppBtn');
                 if (installBtn) installBtn.style.display = 'none';
+                var installBtnNav = document.getElementById('installAppBtnNav');
+                if (installBtnNav) installBtnNav.style.display = 'none';
                 return true;
             }
             return false;
@@ -3366,6 +3427,8 @@
                         if (banner) banner.style.display = 'none';
                         var installBtn = document.getElementById('installAppBtn');
                         if (installBtn) installBtn.style.display = 'none';
+                        var installBtnNav = document.getElementById('installAppBtnNav');
+                        if (installBtnNav) installBtnNav.style.display = 'none';
                     } else {
                         showToast('تم إلغاء تثبيت التطبيق', 'info');
                     }
@@ -4794,6 +4857,7 @@
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
                     // ✅ Mobile optimized layout with always visible controls
+                    // ✅ FIX: Video title is not clickable (span instead of a)
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -8301,6 +8365,9 @@
             setTimeout(function() {
                 showInstallBanner();
             }, 1000);
+
+            // Check installation status
+            checkInstallStatus();
 
             console.log('🚀 Yalla Chemistry Platform v50.0 - FULLY FIXED');
 
