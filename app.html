@@ -4760,10 +4760,8 @@
                 return;
             }
 
-            if (userCourseProgress[lessonId] && userCourseProgress[lessonId].watched) {
-                showToast('✅ لقد أكملت مشاهدة هذه الحصة بالفعل', 'info');
-                return;
-            }
+            // ✅ FIX: Allow re-opening even if watched
+            // No blocking based on watched status
 
             var main = document.getElementById('mainContent');
             if (!main) return;
@@ -4831,6 +4829,9 @@
                         '<select class="speed-select" id="speedSelect" aria-label="سرعة التشغيل" style="background:rgba(0,0,0,0.7);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:2px 6px;font-size:clamp(0.6rem,0.7vw,0.7rem);cursor:pointer;font-family:\'Cairo\',sans-serif;min-height:28px;pointer-events:auto;' +
                         (window.innerWidth < 480 ? 'font-size:0.55rem;padding:2px 4px;min-height:24px;' : '') + '">' +
                         '<option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option><option value="1.75">1.75x</option><option value="2">2x</option></select>' +
+                        '<select class="quality-select" id="qualitySelect" aria-label="الجودة" style="background:rgba(0,0,0,0.7);color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:2px 6px;font-size:clamp(0.6rem,0.7vw,0.7rem);cursor:pointer;font-family:\'Cairo\',sans-serif;min-height:28px;pointer-events:auto;' +
+                        (window.innerWidth < 480 ? 'font-size:0.55rem;padding:2px 4px;min-height:24px;' : '') + '">' +
+                        '</select>' +
                         '<button id="fullscreenBtn" aria-label="ملء الشاشة" style="background:none;border:none;color:#fff;font-size:clamp(0.9rem,1.1vw,1.1rem);cursor:pointer;min-height:32px;min-width:32px;pointer-events:auto;' +
                         (window.innerWidth < 480 ? 'font-size:0.85rem;padding:3px;min-height:28px;min-width:28px;' : '') + '">' +
                         '<i class="fas fa-expand"></i></button></div></div></div>' +
@@ -4901,6 +4902,7 @@
             var muteBtn = document.getElementById('muteBtn');
             var volumeSlider = document.getElementById('volumeSlider');
             var speedSelect = document.getElementById('speedSelect');
+            var qualitySelect = document.getElementById('qualitySelect');
             var fullscreenBtn = document.getElementById('fullscreenBtn');
             var progressBar = document.getElementById('progressBar');
             var playerControls = document.getElementById('playerControls');
@@ -4909,6 +4911,74 @@
             if (!playerInstance) {
                 console.warn('⚠️ playerInstance not ready');
                 return;
+            }
+
+            // Populate quality options
+            function populateQualityOptions() {
+                if (!qualitySelect) return;
+                try {
+                    var availableQualities = playerInstance.getAvailableQualityLevels() || [];
+                    var currentQuality = playerInstance.getPlaybackQuality() || 'auto';
+                    
+                    // Clear existing options
+                    qualitySelect.innerHTML = '';
+                    
+                    // Add auto option
+                    var autoOpt = document.createElement('option');
+                    autoOpt.value = 'auto';
+                    autoOpt.textContent = 'تلقائي';
+                    qualitySelect.appendChild(autoOpt);
+                    
+                    // Add available qualities
+                    var qualityMap = {
+                        'hd1080': '1080p',
+                        'hd720': '720p',
+                        'large': '480p',
+                        'medium': '360p',
+                        'small': '240p',
+                        'tiny': '144p'
+                    };
+                    
+                    availableQualities.forEach(function(q) {
+                        if (q === 'auto') return;
+                        var opt = document.createElement('option');
+                        opt.value = q;
+                        opt.textContent = qualityMap[q] || q;
+                        qualitySelect.appendChild(opt);
+                    });
+                    
+                    // Set current quality
+                    qualitySelect.value = currentQuality;
+                    
+                    // If no specific quality available, default to auto
+                    if (!qualitySelect.value) {
+                        qualitySelect.value = 'auto';
+                    }
+                } catch (e) {
+                    console.warn('Could not populate qualities:', e);
+                }
+            }
+
+            // Try to populate qualities after player is ready
+            setTimeout(populateQualityOptions, 1000);
+
+            // Quality change
+            if (qualitySelect) {
+                var newQualitySelect = qualitySelect.cloneNode(true);
+                qualitySelect.parentNode.replaceChild(newQualitySelect, qualitySelect);
+                
+                newQualitySelect.addEventListener('change', function() {
+                    if (!playerInstance) return;
+                    try {
+                        var quality = this.value;
+                        playerInstance.setPlaybackQuality(quality);
+                        showToast('📺 الجودة: ' + this.options[this.selectedIndex].text, 'info');
+                        if (playerControls) playerControls.classList.add('visible');
+                    } catch (err) {
+                        console.error('Quality error:', err);
+                        showToast('⚠️ تغيير الجودة غير مدعوم', 'warning');
+                    }
+                });
             }
 
             // Play/Pause
@@ -4956,8 +5026,15 @@
                     if (!playerInstance) return;
                     try {
                         var current = playerInstance.getCurrentTime();
-                        playerInstance.seekTo(Math.max(0, current - 10), true);
-                        showToast('⏪ تأخير 10 ثوان', 'info');
+                        var maxWatched = getMaxWatchedTime(lessonId);
+                        var seekTarget = Math.max(0, current - 10);
+                        // Allow rewind only if within max watched
+                        if (seekTarget <= maxWatched) {
+                            playerInstance.seekTo(seekTarget, true);
+                            showToast('⏪ تأخير 10 ثوان', 'info');
+                        } else {
+                            showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
+                        }
                         if (playerControls) playerControls.classList.add('visible');
                     } catch (err) {
                         console.error('Rewind error:', err);
@@ -4965,7 +5042,7 @@
                 });
             }
 
-            // Forward 10s
+            // Forward 10s - only if within max watched
             if (forwardBtn) {
                 var newBtn = forwardBtn.cloneNode(true);
                 forwardBtn.parentNode.replaceChild(newBtn, forwardBtn);
@@ -4978,8 +5055,17 @@
                     try {
                         var current = playerInstance.getCurrentTime();
                         var duration = playerInstance.getDuration();
-                        playerInstance.seekTo(Math.min(duration, current + 10), true);
-                        showToast('⏩ تقديم 10 ثوان', 'info');
+                        var maxWatched = getMaxWatchedTime(lessonId);
+                        var seekTarget = Math.min(duration, current + 10);
+                        // Allow forward only if seek target <= max watched
+                        if (seekTarget <= maxWatched + 1) { // +1 second tolerance
+                            playerInstance.seekTo(seekTarget, true);
+                            showToast('⏩ تقديم 10 ثوان', 'info');
+                        } else {
+                            showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
+                            // Snap back to max watched
+                            playerInstance.seekTo(maxWatched, true);
+                        }
                         if (playerControls) playerControls.classList.add('visible');
                     } catch (err) {
                         console.error('Forward error:', err);
@@ -5157,8 +5243,17 @@
                         var x = (e.clientX - rect.left) / rect.width;
                         var percent = Math.max(0, Math.min(1, x));
                         var duration = playerInstance.getDuration();
-                        if (duration > 0) {
-                            playerInstance.seekTo(percent * duration, true);
+                        var maxWatched = getMaxWatchedTime(lessonId);
+                        var seekTime = percent * duration;
+                        // Only allow seek if within max watched
+                        if (seekTime <= maxWatched + 0.5) {
+                            playerInstance.seekTo(seekTime, true);
+                        } else {
+                            showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
+                            // Snap back to max watched
+                            var snapPercent = (maxWatched / duration) * 100;
+                            newBar.querySelector('.fill').style.width = Math.min(snapPercent, 99) + '%';
+                            playerInstance.seekTo(maxWatched, true);
                         }
                     } catch (err) {
                         console.error('Seek error:', err);
@@ -5172,8 +5267,15 @@
                         var x = (touch.clientX - rect.left) / rect.width;
                         var percent = Math.max(0, Math.min(1, x));
                         var duration = playerInstance.getDuration();
-                        if (duration > 0) {
-                            playerInstance.seekTo(percent * duration, true);
+                        var maxWatched = getMaxWatchedTime(lessonId);
+                        var seekTime = percent * duration;
+                        if (seekTime <= maxWatched + 0.5) {
+                            playerInstance.seekTo(seekTime, true);
+                        } else {
+                            showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
+                            var snapPercent = (maxWatched / duration) * 100;
+                            newBar.querySelector('.fill').style.width = Math.min(snapPercent, 99) + '%';
+                            playerInstance.seekTo(maxWatched, true);
                         }
                     } catch (err) {
                         console.error('Seek touch error:', err);
@@ -5237,7 +5339,19 @@
         }
 
         // ============================================================
-        // COMPLETE LESSON WATCH
+        // Get Max Watched Time - Helper
+        // ============================================================
+        function getMaxWatchedTime(lessonId) {
+            if (!lessonId) return 0;
+            var progress = userCourseProgress[lessonId];
+            if (progress && progress.watchDuration) {
+                return progress.watchDuration;
+            }
+            return 0;
+        }
+
+        // ============================================================
+        // COMPLETE LESSON WATCH - Only marks watched, no course completion
         // ============================================================
         function completeLessonWatch(lessonId) {
             try {
@@ -5255,13 +5369,15 @@
                         var studyHours = actualWatchTime / 3600;
                         var currentStudyTime = userSnap.val().studyTime || 0;
 
+                        // ✅ FIX: Only mark the lesson as watched, don't affect course completion
                         database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                             watched: true,
                             watchPercent: 100,
                             completedAt: new Date().toISOString(),
                             lastPosition: 0,
                             type: 'lesson',
-                            watchDuration: actualWatchTime
+                            watchDuration: actualWatchTime,
+                            // ✅ No course level completion
                         });
 
                         var lastStudyDate = userSnap.val().lastStudyDate;
@@ -5313,16 +5429,7 @@
                             'أكملت مشاهدة "' + lesson.title + '" وحصلت على ' + atomsReward + ' ذرة.', '🎥');
                         loadUserProgress(currentUser.uid);
                         calculateUserRank(currentUser.uid, currentAtoms + atomsReward);
-                        checkCourseCompletion(lesson.courseId);
-
-                        if (videoProgressTimer) {
-                            clearInterval(videoProgressTimer);
-                            videoProgressTimer = null;
-                        }
-                        if (dynamicWatermarkTimer) {
-                            clearInterval(dynamicWatermarkTimer);
-                            dynamicWatermarkTimer = null;
-                        }
+                        // ✅ No automatic course completion
                     }
                 });
             } catch (err) {
@@ -5368,16 +5475,9 @@
         }
 
         function checkCourseCompletion(courseId) {
-            var lessons = allLessons.filter(function(l) { return l.courseId === courseId; });
-            var completed = lessons.filter(function(l) { return userCourseProgress[l.id] && userCourseProgress[l.id]
-                    .watched; });
-            if (lessons.length > 0 && completed.length === lessons.length) {
-                var course = allCourses.find(function(c) { return c.id === courseId; });
-                if (course) {
-                    addNotification(currentUser.uid, '🎓 تم إكمال كورس كامل!',
-                        'مبروك! لقد أكملت كورس "' + course.title + '" بالكامل!', '🎓');
-                }
-            }
+            // ✅ FIX: No automatic course completion from lessons
+            // This function is kept for backward compatibility but does nothing
+            // Course completion is managed separately via explicit actions
         }
 
         // ============================================================
