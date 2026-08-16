@@ -2657,12 +2657,10 @@
             display: none !important;
         }
 
-        /* Hide YouTube title via iframe parent */
         .video-title-hidden iframe {
             pointer-events: auto !important;
         }
 
-        /* Additional YouTube title hiding */
         .video-protected .ytp-title {
             display: none !important;
         }
@@ -2676,12 +2674,10 @@
             pointer-events: none !important;
         }
 
-        /* Override for mobile */
         .video-protected .ytp-title-channel {
             display: none !important;
         }
 
-        /* Custom wrapper to hide YouTube overlay title */
         .video-wrapper {
             position: relative;
             width: 100%;
@@ -2699,7 +2695,6 @@
             border: 0;
         }
 
-        /* Hide YouTube title using CSS overlay trick */
         .video-title-overlay {
             position: absolute;
             top: 0;
@@ -2711,7 +2706,6 @@
             pointer-events: none;
         }
 
-        /* Additional YouTube UI hiding */
         .video-wrapper .ytp-title {
             display: none !important;
         }
@@ -2733,12 +2727,10 @@
             display: none !important;
         }
 
-        /* Hide title on all devices */
         .video-wrapper .ytp-title-enable-channel-logo {
             display: none !important;
         }
 
-        /* Prevent clicking on YouTube title area */
         .video-title-blocker {
             position: absolute;
             top: 0;
@@ -2750,7 +2742,6 @@
             pointer-events: none;
         }
 
-        /* Ensure video controls still work */
         .video-wrapper .ytp-chrome-controls {
             pointer-events: auto !important;
         }
@@ -2792,7 +2783,7 @@
         <div class="modal-box">
             <div class="icon" aria-hidden="true">🚫</div>
             <h2>🚫 لا يمكن إعادة الاختبار</h2>
-            <p>لقد أديت هذا الاختبار مسبقاً.<br>يمكنك مراجعة النتيجة من خلال صفحة <strong>نتائجي</strong>.</p>
+            <p>لقد سبق لك أداء هذا الاختبار.<br>يمكنك مراجعة النتيجة من خلال صفحة <strong>نتائجي</strong>.</p>
             <button class="btn-primary-premium" onclick="window.APP.closeCompletedModal()" style="width:100%;justify-content:center;">حسناً</button>
         </div>
     </div>
@@ -2914,7 +2905,6 @@
             </ul>
 
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <!-- ⭐ NEW: Install App Button in Navbar -->
                 <button class="install-app-btn-nav" id="installAppBtnNav" onclick="window.APP.installApp()" aria-label="تحميل التطبيق" style="display:none;">
                     <i class="fas fa-download" aria-hidden="true"></i> 📲 تثبيت التطبيق
                 </button>
@@ -3433,13 +3423,11 @@
         // ⭐ NEW: INSTALL MODAL FUNCTIONS
         // ============================================================
         function showInstallModal() {
-            // Check if already installed
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 showToast('✅ التطبيق مثبت بالفعل على جهازك', 'success');
                 return;
             }
 
-            // If we have a deferred prompt, use it directly
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then(function(choiceResult) {
@@ -3459,7 +3447,6 @@
                 return;
             }
 
-            // Otherwise show the modal
             var modal = document.getElementById('installModal');
             if (modal) {
                 modal.classList.add('open');
@@ -3482,19 +3469,16 @@
             var banner = document.getElementById('installBanner');
             if (!banner) return;
 
-            // إذا كان المستخدم أغلق الشريط من قبل
             if (localStorage.getItem('installBannerDismissed') === 'true') {
                 banner.style.display = 'none';
                 return;
             }
 
-            // إذا كان التطبيق مثبت بالفعل
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 banner.style.display = 'none';
                 return;
             }
 
-            // إذا كان المتصفح لا يدعم PWA
             if (!('serviceWorker' in navigator) && !deferredPrompt) {
                 banner.style.display = 'none';
                 return;
@@ -3553,7 +3537,6 @@
                     deferredPrompt = null;
                 });
             } else {
-                // إرشادات التثبيت اليدوي
                 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
@@ -3561,7 +3544,6 @@
                     '📱 لتثبيت التطبيق على iPhone/iPad:\n\n1. اضغط على زر المشاركة (المربع مع السهم)\n2. اختر "إضافة إلى الشاشة الرئيسية"\n3. اضغط "إضافة"' :
                     '📱 لتثبيت التطبيق:\n\n1. افتح القائمة (النقاط الثلاث ☰)\n2. اختر "تثبيت التطبيق" أو "Install App"\n3. اتبع الخطوات للتثبيت';
 
-                // Show instructions in a nice way
                 var modal = document.getElementById('installModal');
                 if (modal) {
                     modal.classList.remove('open');
@@ -3961,7 +3943,6 @@
             if (isUserSubscribed(courseId)) {
                 return true;
             }
-            // Show subscription page for paid courses
             showPaidCourseDetails(courseId);
             return false;
         }
@@ -4033,7 +4014,6 @@
                 return Promise.resolve({ valid: false, error: 'الكود يجب أن يكون 9 أحرف على الأقل' });
             }
 
-            // Clean code - uppercase only
             code = code.toUpperCase().trim();
 
             return database.ref('activationCodes/' + code).once('value')
@@ -4044,22 +4024,18 @@
 
                     var codeData = snapshot.val();
 
-                    // Check if code is disabled
                     if (codeData.status === 'DISABLED' || codeData.disabled === true) {
                         return { valid: false, error: '❌ هذا الكود غير صالح أو تم إيقافه' };
                     }
 
-                    // Check if code is already used
                     if (codeData.status === 'USED' || codeData.used === true) {
                         return { valid: false, error: '❌ هذا الكود تم استخدامه بالفعل' };
                     }
 
-                    // Check if code is for the right course
                     if (codeData.courseId && codeData.courseId !== courseId) {
                         return { valid: false, error: '❌ هذا الكود غير صالح لهذا الكورس' };
                     }
 
-                    // Check expiry if exists
                     if (codeData.expiryDate) {
                         var expiry = new Date(codeData.expiryDate);
                         if (expiry < new Date()) {
@@ -4090,7 +4066,6 @@
 
                     var codeData = snapshot.val();
 
-                    // Check if code is valid
                     if (codeData.status === 'DISABLED' || codeData.disabled === true) {
                         return { success: false, error: '❌ هذا الكود غير صالح' };
                     }
@@ -4103,7 +4078,6 @@
                         return { success: false, error: '❌ هذا الكود غير صالح لهذا الكورس' };
                     }
 
-                    // Mark code as used
                     var updates = {};
                     updates['activationCodes/' + code + '/status'] = 'USED';
                     updates['activationCodes/' + code + '/used'] = true;
@@ -4118,7 +4092,6 @@
                     }
 
                     return database.ref().update(updates).then(function() {
-                        // Activate subscription for user
                         if (userData) {
                             if (!userData.premiumCourses) userData.premiumCourses = {};
                             userData.premiumCourses[courseId] = true;
@@ -4126,7 +4099,6 @@
                             updateCache();
                         }
 
-                        // Add to subscriptions
                         var subscriptionRef = database.ref('subscriptions').push();
                         return subscriptionRef.set({
                             userId: currentUser.uid,
@@ -4153,26 +4125,17 @@
                 });
         }
 
-        // ============================================================
-        // SUBMIT SUBSCRIPTION REQUEST - With Code Support
-        // ============================================================
         function submitSubscriptionRequest(courseId) {
             showPaidCourseDetails(courseId);
         }
 
-        // ============================================================
-        // CHECK SUBSCRIPTION STATUS - With Code Check
-        // ============================================================
         function checkSubscriptionStatus(courseId) {
             if (!currentUser) return false;
 
             if (isUserSubscribed(courseId)) return true;
 
-            // Check if there's a code used for this course
             try {
                 var userRef = database.ref('users/' + currentUser.uid);
-                // Check if user has used any code for this course
-                // This will be checked via the subscriptions node
                 return false;
             } catch (err) {
                 console.error('Error checking subscription:', err);
@@ -4180,9 +4143,6 @@
             }
         }
 
-        // ============================================================
-        // PAID COURSE DETAILS PAGE - With Code Input
-        // ============================================================
         function showPaidCourseDetails(courseId) {
             var course = allCourses.find(function(c) { return c.id === courseId; });
             if (!course) {
@@ -4239,7 +4199,7 @@
                 escapeHtml(level) + '</span></div>' +
                 '</div>' +
 
-                // ⭐ NEW: Code Activation Section                '<div class="code-input-group">' +
+                '<div class="code-input-group">' +
                 '<label>🔑 لديك كود تفعيل؟ أدخله هنا</label>' +
                 '<div class="code-input-wrapper">' +
                 '<input type="text" id="activationCodeInput" placeholder="مثال: ZK2027A91" maxlength="20" style="text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:2px;font-weight:600;">' +
@@ -4292,14 +4252,12 @@
                 return;
             }
 
-            // Disable button while processing
             var btn = document.getElementById('verifyCodeBtn');
             if (btn) {
                 btn.disabled = true;
                 btn.textContent = '⏳ جاري التحقق...';
             }
 
-            // First verify the code
             verifyActivationCode(code, courseId)
                 .then(function(result) {
                     if (!result.valid) {
@@ -4312,7 +4270,6 @@
                         return;
                     }
 
-                    // Code is valid, now use it
                     return useActivationCode(code, courseId)
                         .then(function(useResult) {
                             if (useResult.success) {
@@ -4325,11 +4282,9 @@
                                     btn.textContent = '✅ مفعل';
                                 }
 
-                                // Refresh user data and course access
                                 loadUserData(currentUser.uid);
                                 loadUserSubscriptions(currentUser.uid);
 
-                                // Show success and redirect
                                 setTimeout(function() {
                                     openCoursePage(courseId);
                                 }, 1500);
@@ -4476,7 +4431,7 @@
                 if (isLocked) {
                     cardAction = "window.APP.showSubscriptionPage('" + c.id + "')";
                 } else if (isCompleted) {
-                    cardAction = "window.APP.openCoursePage('" + c.id + "')"; // ✅ FIX: Always open course, don't lock
+                    cardAction = "window.APP.openCoursePage('" + c.id + "')";
                 }
 
                 return '<div class="glass-card" style="cursor:pointer;position:relative;" onclick="' + cardAction +
@@ -4756,7 +4711,6 @@
             ytPlayerQueue = [];
         }
 
-        // ✅ FIX: Mobile-friendly YouTube player with playsinline
         function createYouTubePlayer(_ref) {
             var videoId = _ref.videoId;
             var containerId = _ref.containerId;
@@ -4804,7 +4758,6 @@
                 dynamicWM.style.top = randomY + 'px';
             }, 4000);
 
-            // ✅ Mobile-friendly player with playsinline
             var player = new YT.Player(containerId, {
                 height: '100%',
                 width: '100%',
@@ -4815,7 +4768,7 @@
                     fs: 0,
                     iv_load_policy: 3,
                     modestbranding: 1,
-                    playsinline: 1, // ✅ KEY: works on mobile
+                    playsinline: 1,
                     rel: 0,
                     showinfo: 0,
                     origin: window.location.origin,
@@ -4882,7 +4835,6 @@
                 }
 
                 if (controls) {
-                    // On mobile, always keep visible. On desktop, hide after inactivity.
                     if (window.innerWidth < 769) {
                         controls.classList.add('visible');
                     } else {
@@ -4901,11 +4853,9 @@
                     }
                 }
 
-                // ✅ FIX: Update watch progress only while playing
                 if (duration > 0 && activeVideoLessonId) {
                     var progressVal = Math.min(Math.round((currentTime / duration) * 100), 99);
                     if (progressVal % 5 === 0 || progressVal > 80) {
-                        // Only update if user is watching (state = PLAYING or BUFFERING)
                         if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
                             database.ref('users/' + currentUser.uid + '/progress/' + activeVideoLessonId +
                                 '/watchPercent').set(progressVal);
@@ -4913,7 +4863,6 @@
                                 '/watchDuration').set(Math.round(currentTime));
                         }
                     }
-                    // ✅ FIX: Complete lesson only if watched 80% and state was PLAYING
                     if (progressVal >= 80 && !(userCourseProgress[activeVideoLessonId] && userCourseProgress[
                             activeVideoLessonId].watched) && (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING)) {
                         completeLessonWatch(activeVideoLessonId);
@@ -4946,9 +4895,6 @@
                 return;
             }
 
-            // ✅ FIX: Allow re-opening even if watched
-            // No blocking based on watched status
-
             var main = document.getElementById('mainContent');
             if (!main) return;
 
@@ -4964,7 +4910,7 @@
 
                     if (!videoId) {
                         console.error('❌ رابط الفيديو غير صالح للحصة:', lessonId, 'الرابط:', lessonData
-                            .videoUrl);
+                        .videoUrl);
                         showToast('⚠️ رابط الفيديو غير صحيح أو تالف. يرجى التواصل مع الإدارة.', 'error');
                         return;
                     }
@@ -4974,8 +4920,6 @@
                     videoWatchStartTime = Date.now();
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
-                    // ✅ Mobile optimized layout with always visible controls
-                    // ✅ FIX: Video title is not clickable (span instead of a) - YouTube title hidden via CSS
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -4985,7 +4929,7 @@
                         '</button>' +
                         '<span style="color:rgba(231,42,155,0.2);">/</span>' +
                         '<span style="font-weight:600;color:var(--text-dark);">' + escapeHtml(lessonData
-                            .title) + '</span></div>' +
+                        .title) + '</span></div>' +
                         '<h1 style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text-dark);margin-bottom:12px;">🎥 ' +
                         escapeHtml(lessonData.title) + '</h1>' +
                         '<div class="video-protected video-title-hidden" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);touch-action:manipulation;">' +
@@ -5044,19 +4988,11 @@
                         lessonTitle: lessonData.title,
                         onReady: function(event) {
                             var player = event.target;
-                            // Play video with mobile-friendly approach
                             try {
                                 var container = document.getElementById('videoContainer');
                                 if (container) {
-                                    // ✅ FIX: Remove click autoplay to avoid conflict
-                                    // container.addEventListener('click', function() {
-                                    //     try {
-                                    //         var state = player.getPlayerState();
-                                    //         if (state !== 1 && state !== 3) {
-                                    //             player.playVideo();
-                                    //         }
-                                    //     } catch (e) {}
-                                    // }, { once: true });
+                                    // Auto-play attempt (will be muted if needed)
+                                    // player.playVideo(); // Uncomment if you want autoplay
                                 }
                             } catch (e) {
                                 console.log('Auto-play setup:', e);
@@ -5101,23 +5037,19 @@
                 return;
             }
 
-            // Populate quality options
             function populateQualityOptions() {
                 if (!qualitySelect) return;
                 try {
                     var availableQualities = playerInstance.getAvailableQualityLevels() || [];
                     var currentQuality = playerInstance.getPlaybackQuality() || 'auto';
 
-                    // Clear existing options
                     qualitySelect.innerHTML = '';
 
-                    // Add auto option
                     var autoOpt = document.createElement('option');
                     autoOpt.value = 'auto';
                     autoOpt.textContent = 'تلقائي';
                     qualitySelect.appendChild(autoOpt);
 
-                    // Add available qualities
                     var qualityMap = {
                         'hd1080': '1080p',
                         'hd720': '720p',
@@ -5135,10 +5067,8 @@
                         qualitySelect.appendChild(opt);
                     });
 
-                    // Set current quality
                     qualitySelect.value = currentQuality;
 
-                    // If no specific quality available, default to auto
                     if (!qualitySelect.value) {
                         qualitySelect.value = 'auto';
                     }
@@ -5147,10 +5077,8 @@
                 }
             }
 
-            // Try to populate qualities after player is ready
             setTimeout(populateQualityOptions, 1000);
 
-            // Quality change
             if (qualitySelect) {
                 var newQualitySelect = qualitySelect.cloneNode(true);
                 qualitySelect.parentNode.replaceChild(newQualitySelect, qualitySelect);
@@ -5169,7 +5097,6 @@
                 });
             }
 
-            // Play/Pause
             if (playPauseBtn) {
                 var newBtn = playPauseBtn.cloneNode(true);
                 playPauseBtn.parentNode.replaceChild(newBtn, playPauseBtn);
@@ -5202,7 +5129,6 @@
                 });
             }
 
-            // ✅ FIX: Rewind 10s - only within max watched
             if (rewindBtn) {
                 var newBtn = rewindBtn.cloneNode(true);
                 rewindBtn.parentNode.replaceChild(newBtn, rewindBtn);
@@ -5216,7 +5142,6 @@
                         var current = playerInstance.getCurrentTime();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTarget = Math.max(0, current - 10);
-                        // ✅ Allow rewind only if within max watched
                         if (seekTarget <= maxWatched) {
                             playerInstance.seekTo(seekTarget, true);
                             showToast('⏪ تأخير 10 ثوان', 'info');
@@ -5230,7 +5155,6 @@
                 });
             }
 
-            // ✅ FIX: Forward 10s - only if within max watched
             if (forwardBtn) {
                 var newBtn = forwardBtn.cloneNode(true);
                 forwardBtn.parentNode.replaceChild(newBtn, forwardBtn);
@@ -5245,13 +5169,11 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTarget = Math.min(duration, current + 10);
-                        // ✅ Allow forward only if seek target <= max watched
-                        if (seekTarget <= maxWatched + 1) { // +1 second tolerance
+                        if (seekTarget <= maxWatched + 1) {
                             playerInstance.seekTo(seekTarget, true);
                             showToast('⏩ تقديم 10 ثوان', 'info');
                         } else {
                             showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
-                            // Snap back to max watched
                             playerInstance.seekTo(maxWatched, true);
                         }
                         if (playerControls) playerControls.classList.add('visible');
@@ -5261,7 +5183,6 @@
                 });
             }
 
-            // Mute
             if (muteBtn) {
                 var newBtn = muteBtn.cloneNode(true);
                 muteBtn.parentNode.replaceChild(newBtn, muteBtn);
@@ -5294,7 +5215,6 @@
                 });
             }
 
-            // Volume Slider
             if (volumeSlider) {
                 var newSlider = volumeSlider.cloneNode(true);
                 volumeSlider.parentNode.replaceChild(newSlider, volumeSlider);
@@ -5314,7 +5234,6 @@
                 });
             }
 
-            // Speed Select
             if (speedSelect) {
                 var newSelect = speedSelect.cloneNode(true);
                 speedSelect.parentNode.replaceChild(newSelect, speedSelect);
@@ -5333,7 +5252,6 @@
                 });
             }
 
-            // Fullscreen
             if (fullscreenBtn) {
                 var newBtn = fullscreenBtn.cloneNode(true);
                 fullscreenBtn.parentNode.replaceChild(newBtn, fullscreenBtn);
@@ -5379,7 +5297,6 @@
                 });
             }
 
-            // ✅ FIX: Progress Bar - Seek only within max watched
             if (progressBar) {
                 var newBar = progressBar.cloneNode(true);
                 progressBar.parentNode.replaceChild(newBar, progressBar);
@@ -5433,12 +5350,10 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTime = percent * duration;
-                        // ✅ Only allow seek if within max watched
                         if (seekTime <= maxWatched + 0.5) {
                             playerInstance.seekTo(seekTime, true);
                         } else {
                             showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
-                            // Snap back to max watched
                             var snapPercent = (maxWatched / duration) * 100;
                             newBar.querySelector('.fill').style.width = Math.min(snapPercent, 99) + '%';
                             playerInstance.seekTo(maxWatched, true);
@@ -5471,7 +5386,6 @@
                 }
             }
 
-            // Auto Hide Controls - Mobile friendly
             var hideTimeout = null;
 
             function showControls() {
@@ -5483,7 +5397,7 @@
             }
 
             function hideControls() {
-                if (window.innerWidth < 769) return; // Don't hide on mobile
+                if (window.innerWidth < 769) return;
                 if (!playerInstance) return;
                 var state = playerInstance.getPlayerState();
                 if (state === YT.PlayerState.PLAYING) {
@@ -5509,7 +5423,6 @@
                 });
             }
 
-            // Show controls on mobile touch
             if (videoContainer) {
                 videoContainer.addEventListener('touchstart', function() {
                     showControls();
@@ -5520,7 +5433,6 @@
                 });
             }
 
-            // On mobile, controls are always visible via CSS
             showControls();
 
             console.log('✅ Player controls initialized successfully');
@@ -5557,7 +5469,6 @@
                         var studyHours = actualWatchTime / 3600;
                         var currentStudyTime = userSnap.val().studyTime || 0;
 
-                        // ✅ FIX: Only mark the lesson as watched, don't affect course completion
                         database.ref('users/' + currentUser.uid + '/progress/' + lessonId).set({
                             watched: true,
                             watchPercent: 100,
@@ -5565,7 +5476,6 @@
                             lastPosition: 0,
                             type: 'lesson',
                             watchDuration: actualWatchTime,
-                            // ✅ No course level completion
                         });
 
                         var lastStudyDate = userSnap.val().lastStudyDate;
@@ -5617,7 +5527,6 @@
                             'أكملت مشاهدة "' + lesson.title + '" وحصلت على ' + atomsReward + ' ذرة.', '🎥');
                         loadUserProgress(currentUser.uid);
                         calculateUserRank(currentUser.uid, currentAtoms + atomsReward);
-                        // ✅ No automatic course completion
                     }
                 });
             } catch (err) {
@@ -5664,8 +5573,6 @@
 
         function checkCourseCompletion(courseId) {
             // ✅ FIX: No automatic course completion from lessons
-            // This function is kept for backward compatibility but does nothing
-            // Course completion is managed separately via explicit actions
         }
 
         // ============================================================
@@ -5845,9 +5752,9 @@
 
                 var motivationalMessage = '';
                 if (progressPercent === 100) motivationalMessage =
-                    '🎉 مبروك! أكملت الكورس بالكامل! أنت رائع!';
+                '🎉 مبروك! أكملت الكورس بالكامل! أنت رائع!';
                 else if (progressPercent >= 75) motivationalMessage = '🔥 اقتربت من إنهاء الكورس! بقيت لك ' + (lessons
-                        .length - completedCount) + ' حصص فقط!';
+                    .length - completedCount) + ' حصص فقط!';
                 else if (progressPercent >= 50) motivationalMessage = '💪 أحسنت! أكملت نصف الكورس، استمر!';
                 else if (progressPercent >= 25) motivationalMessage = '🌟 أحسنت! أكملت 25% من الكورس!';
                 else if (completedCount > 0) motivationalMessage = '📚 بداية ممتازة! أكملت ' + completedCount +
@@ -5975,7 +5882,6 @@
             var top3 = top5.slice(0, 3);
             var html = '';
 
-            // Display podium for top 3
             if (top3.length > 0) {
                 html +=
                     '<div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">';
@@ -5990,7 +5896,7 @@
                         '<img src="' + p.user.photoURL + '" alt="' + escapeHtml(p.user.name) +
                         '" style="width:100%;height:100%;object-fit:cover;">' :
                         '<span style="font-size:1.5rem;">' + (p.user.name || '👤')[0].toUpperCase() +
-                        '</span>';
+                    '</span>';
                     html +=
                         '<div class="podium-item ' + p.class +
                         '" style="display:flex;flex-direction:column;align-items:center;text-align:center;transition:var(--transition-smooth);position:relative;">' +
@@ -6017,7 +5923,6 @@
                 html += '</div>';
             }
 
-            // Display remaining top 5 (positions 4-5)
             var rest = top5.slice(3);
             if (rest.length > 0) {
                 html +=
@@ -6028,7 +5933,7 @@
                         '<img src="' + user.photoURL + '" alt="' + escapeHtml(user.name) +
                         '" style="width:100%;height:100%;object-fit:cover;">' :
                         '<span style="font-size:0.9rem;">' + (user.name || '👤')[0].toUpperCase() +
-                        '</span>';
+                    '</span>';
                     html +=
                         '<div class="leaderboard-item" style="display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:var(--radius);transition:var(--transition-smooth);border:1px solid rgba(231,42,155,0.06);background:var(--white);margin-bottom:8px;">' +
                         '<div class="rank" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;flex-shrink:0;background:var(--white);color:var(--text-secondary);">#' +
@@ -6047,7 +5952,6 @@
 
             container.innerHTML = html;
 
-            // Show current user's rank
             if (currentUser && userData) {
                 container.innerHTML +=
                     '<div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">' +
@@ -6086,7 +5990,7 @@
             var totalLessons = allLessons.length;
             var completedLessons = Object.keys(userCourseProgress).filter(function(key) { return userCourseProgress[
                     key] && userCourseProgress[key].watched; })
-                .length;
+            .length;
             var progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
             var studyTimeHours = Math.round(userData ? userData.studyTime || 0 : 0);
             var atoms = userData ? userData.atoms || 0 : 0;
@@ -6266,11 +6170,9 @@
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
 
-                    // Filter unsolved errors and remove duplicates by questionId
                     var seenQuestions = new Set();
                     var unsolved = errors.filter(function(e) {
                         if (!e.solved && !e.corrected) {
-                            // Use questionId as unique key
                             var key = e.questionId || e.id || e.question;
                             if (seenQuestions.has(key)) {
                                 return false;
@@ -6341,7 +6243,6 @@
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
 
-                    // Get unique unsolved errors
                     var seenQuestions = new Set();
                     var unsolved = errors.filter(function(e) {
                         if (!e.solved && !e.corrected) {
@@ -6360,7 +6261,6 @@
                         return;
                     }
 
-                    // Create exam from actual errors only
                     var questions = unsolved.map(function(err) {
                         return {
                             id: err.questionId || err.id || 'error_' + Date.now() + '_' + Math.random().toString(36)
@@ -6375,10 +6275,8 @@
                         };
                     });
 
-                    // Shuffle questions
                     questions = questions.sort(function() { return Math.random() - 0.5; });
 
-                    // Limit to 10 questions max
                     if (questions.length > 10) {
                         questions = questions.slice(0, 10);
                     }
@@ -6413,7 +6311,6 @@
                 return;
             }
 
-            // Set correct answers for the exam
             var correctAnswers = {};
             currentExamData.questions.forEach(function(q) {
                 correctAnswers[q.id] = q.correctAnswer;
@@ -6478,7 +6375,6 @@
                 .then(function(snapshot) {
                     if (snapshot.exists()) {
                         var data = snapshot.val();
-                        // Check if completed or 80% threshold reached
                         if (data.completed === true) {
                             return { completed: true, data: data };
                         }
@@ -6692,7 +6588,7 @@
                 return '<div class="exam-question" style="margin-bottom:20px;padding:16px;background:var(--white);border-radius:var(--radius);border:1px solid rgba(231,42,155,0.06);">' +
                     '<div style="font-weight:700;font-size:clamp(0.95rem,1.05vw,1.1rem);color:var(--text-dark);margin-bottom:8px;">' +
                     '<span style="color:var(--primary);">' + (index + 1) + '.</span> ' + escapeHtml(q
-                        .question) + '</div>' +
+                    .question) + '</div>' +
                     '<div class="exam-options">' + optionsHtml + '</div>' +
                     (q.image ?
                         '<div style="margin-top:8px;text-align:center;"><img src="' + q.image +
@@ -6704,7 +6600,7 @@
         }
 
         // ============================================================
-        // OPEN LESSON EXAM - With Server-side attempt check
+        // OPEN LESSON EXAM - With Server-side attempt check - FIXED
         // ============================================================
         function openLessonExam(lessonId) {
             if (!currentUser) {
@@ -6712,53 +6608,65 @@
                 return;
             }
 
-            var progressKey = 'exam_' + lessonId;
+            var attemptId = 'exam_' + lessonId;
+            var attemptPath = 'users/' + currentUser.uid + '/attempts/' + attemptId;
 
-            // Check progress first (server-side)
-            checkProgressCompletion(progressKey).then(function(result) {
-                if (result.completed) {
-                    showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً ولا يمكن إعادته', 'warning');
-                    showCompletedModal();
-                    return;
-                }
-
-                // Also check attempts
-                checkUserAttempt('exam_' + lessonId, 'exam').then(function(attempt) {
-                    if (attempt.exists && attempt.data.status === 'completed') {
-                        showToast('❌ لقد قمت بأداء هذا الامتحان مسبقاً', 'warning');
+            // ✅ Check if attempt exists using transaction-safe approach
+            database.ref(attemptPath).once('value').then(function(snapshot) {
+                if (snapshot.exists()) {
+                    var attempt = snapshot.val();
+                    // ✅ If attempt is completed or in_progress, block re-entry
+                    if (attempt.status === 'completed' || attempt.status === 'in_progress') {
+                        showToast('🚫 لا يمكن إعادة الاختبار، لقد سبق لك أداء هذا الاختبار.', 'warning');
                         showCompletedModal();
                         return;
                     }
+                }
 
-                    var lesson = allLessons.find(function(l) { return l.id === lessonId; });
-                    if (!lesson) {
-                        showToast('الحصة غير موجودة', 'error');
-                        return;
-                    }
+                var lesson = allLessons.find(function(l) { return l.id === lessonId; });
+                if (!lesson) {
+                    showToast('الحصة غير موجودة', 'error');
+                    return;
+                }
 
-                    var examId = lesson.examId;
-                    if (!examId) {
-                        showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning');
-                        return;
-                    }
+                var examId = lesson.examId;
+                if (!examId) {
+                    showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning');
+                    return;
+                }
 
-                    var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
-                    if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
-                        showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
-                        showSubscriptionPage(course.id);
-                        return;
-                    }
+                var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
+                if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
+                    showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                    showSubscriptionPage(course.id);
+                    return;
+                }
 
-                    openExamSecurityModal(examId, function() {
-                        startExam(examId, lessonId, 'exam', lesson.title);
-                    }, 'exam');
-                });
+                openExamSecurityModal(examId, function() {
+                    startExam(examId, lessonId, 'exam', lesson.title);
+                }, 'exam');
             }).catch(function(err) {
-                console.error('Error checking progress:', err);
-                showToast('حدث خطأ في التحقق من التقدم', 'error');
+                console.error('Error checking attempt:', err);
+                // In case of error, still allow starting exam
+                var lesson = allLessons.find(function(l) { return l.id === lessonId; });
+                if (!lesson) {
+                    showToast('الحصة غير موجودة', 'error');
+                    return;
+                }
+                var examId = lesson.examId;
+                if (!examId) {
+                    showToast('⚠️ لا يوجد امتحان لهذه الحصة', 'warning');
+                    return;
+                }
+                openExamSecurityModal(examId, function() {
+                    startExam(examId, lessonId, 'exam', lesson.title);
+                }, 'exam');
             });
         }
 
+        // ============================================================
+        // START EXAM - With Transaction for atomic creation - FIXED
+        // ============================================================
         function startExam(examId, lessonId, type, lessonTitle) {
             try {
                 getExamData(examId).then(function(examData) {
@@ -6767,39 +6675,79 @@
                         return;
                     }
 
-                    var correctAnswers = {};
-                    var questions = examData.questions.map(function(q) {
-                        correctAnswers[q.id] = q.correctAnswer;
+                    var attemptId = type + '_' + lessonId;
+                    var attemptPath = 'users/' + currentUser.uid + '/attempts/' + attemptId;
+
+                    // ✅ Use Transaction to prevent race conditions
+                    database.ref(attemptPath).transaction(function(currentData) {
+                        // If attempt already exists, abort transaction
+                        if (currentData !== null) {
+                            return; // This will abort the transaction
+                        }
+
+                        var now = new Date().toISOString();
+                        var expiryDate = new Date();
+                        expiryDate.setMinutes(expiryDate.getMinutes() + (examData.duration || 30));
+
                         return {
-                            id: q.id,
-                            question: q.question,
-                            options: q.options,
-                            image: q.image || null
+                            id: attemptId,
+                            examId: examId,
+                            lessonId: lessonId,
+                            type: type,
+                            title: examData.title || 'امتحان',
+                            status: 'in_progress',
+                            startedAt: now,
+                            expiresAt: expiryDate.toISOString(),
+                            duration: examData.duration || 30,
+                            createdAt: now
                         };
-                    });
+                    }, function(error, committed, snapshot) {
+                        if (error) {
+                            console.error('Transaction error:', error);
+                            showToast('حدث خطأ في بدء الامتحان', 'error');
+                            return;
+                        }
 
-                    currentExamData = {
-                        id: examId,
-                        type: type,
-                        lessonId: lessonId,
-                        title: examData.title || 'امتحان',
-                        questions: questions,
-                        duration: examData.duration || 30,
-                        atomsReward: examData.atomsReward || 10,
-                        _correctAnswers: correctAnswers
-                    };
+                        if (!committed) {
+                            // Attempt already exists (race condition prevented)
+                            showToast('🚫 لا يمكن بدء الامتحان، محاولة سابقة موجودة', 'warning');
+                            showCompletedModal();
+                            return;
+                        }
 
-                    // Create attempt record BEFORE starting
-                    createUserAttempt('exam_' + lessonId, 'exam', {
-                        examId: examId,
-                        lessonId: lessonId,
-                        title: currentExamData.title
-                    }).then(function() {
+                        var attemptData = snapshot.val();
+                        if (!attemptData) {
+                            showToast('حدث خطأ في بدء الامتحان', 'error');
+                            return;
+                        }
+
+                        var correctAnswers = {};
+                        var questions = examData.questions.map(function(q) {
+                            correctAnswers[q.id] = q.correctAnswer;
+                            return {
+                                id: q.id,
+                                question: q.question,
+                                options: q.options,
+                                image: q.image || null
+                            };
+                        });
+
+                        currentExamData = {
+                            id: examId,
+                            type: type,
+                            lessonId: lessonId,
+                            title: examData.title || 'امتحان',
+                            questions: questions,
+                            duration: examData.duration || 30,
+                            atomsReward: examData.atomsReward || 10,
+                            _correctAnswers: correctAnswers,
+                            _attemptId: attemptId,
+                            _startedAt: attemptData.startedAt,
+                            _expiresAt: attemptData.expiresAt
+                        };
+
                         examAnswers = {};
                         renderExamInterface(currentExamData);
-                    }).catch(function(err) {
-                        console.error('Error creating attempt:', err);
-                        showToast('حدث خطأ في بدء الامتحان', 'error');
                     });
                 });
             } catch (error) {
@@ -6809,7 +6757,7 @@
         }
 
         // ============================================================
-        // OPEN LESSON QUIZ - With Server-side attempt check
+        // OPEN LESSON QUIZ - With Server-side attempt check - FIXED
         // ============================================================
         function openLessonQuiz(lessonId) {
             if (!currentUser) {
@@ -6817,51 +6765,62 @@
                 return;
             }
 
-            var progressKey = 'quiz_' + lessonId;
+            var attemptId = 'quiz_' + lessonId;
+            var attemptPath = 'users/' + currentUser.uid + '/attempts/' + attemptId;
 
-            checkProgressCompletion(progressKey).then(function(result) {
-                if (result.completed) {
-                    showToast('❌ لقد قمت بأداء هذا الكويز مسبقاً ولا يمكن إعادته', 'warning');
-                    showCompletedModal();
-                    return;
-                }
-
-                checkUserAttempt('quiz_' + lessonId, 'quiz').then(function(attempt) {
-                    if (attempt.exists && attempt.data.status === 'completed') {
-                        showToast('❌ لقد قمت بأداء هذا الكويز مسبقاً', 'warning');
+            database.ref(attemptPath).once('value').then(function(snapshot) {
+                if (snapshot.exists()) {
+                    var attempt = snapshot.val();
+                    if (attempt.status === 'completed' || attempt.status === 'in_progress') {
+                        showToast('🚫 لا يمكن إعادة الكويز، لقد سبق لك أداء هذا الكويز.', 'warning');
                         showCompletedModal();
                         return;
                     }
+                }
 
-                    var lesson = allLessons.find(function(l) { return l.id === lessonId; });
-                    if (!lesson) {
-                        showToast('الحصة غير موجودة', 'error');
-                        return;
-                    }
+                var lesson = allLessons.find(function(l) { return l.id === lessonId; });
+                if (!lesson) {
+                    showToast('الحصة غير موجودة', 'error');
+                    return;
+                }
 
-                    var quizId = lesson.quizId;
-                    if (!quizId) {
-                        showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning');
-                        return;
-                    }
+                var quizId = lesson.quizId;
+                if (!quizId) {
+                    showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning');
+                    return;
+                }
 
-                    var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
-                    if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
-                        showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
-                        showSubscriptionPage(course.id);
-                        return;
-                    }
+                var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
+                if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
+                    showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                    showSubscriptionPage(course.id);
+                    return;
+                }
 
-                    openExamSecurityModal(quizId, function() {
-                        startQuiz(quizId, lessonId, lesson.title);
-                    }, 'quiz');
-                });
+                openExamSecurityModal(quizId, function() {
+                    startQuiz(quizId, lessonId, lesson.title);
+                }, 'quiz');
             }).catch(function(err) {
-                console.error('Error checking progress:', err);
-                showToast('حدث خطأ في التحقق من التقدم', 'error');
+                console.error('Error checking quiz attempt:', err);
+                var lesson = allLessons.find(function(l) { return l.id === lessonId; });
+                if (!lesson) {
+                    showToast('الحصة غير موجودة', 'error');
+                    return;
+                }
+                var quizId = lesson.quizId;
+                if (!quizId) {
+                    showToast('⚠️ لا يوجد كويز لهذه الحصة', 'warning');
+                    return;
+                }
+                openExamSecurityModal(quizId, function() {
+                    startQuiz(quizId, lessonId, lesson.title);
+                }, 'quiz');
             });
         }
 
+        // ============================================================
+        // START QUIZ - With Transaction for atomic creation - FIXED
+        // ============================================================
         function startQuiz(quizId, lessonId, lessonTitle) {
             try {
                 getQuizData(quizId).then(function(quizData) {
@@ -6870,38 +6829,76 @@
                         return;
                     }
 
-                    var correctAnswers = {};
-                    var questions = quizData.questions.map(function(q) {
-                        correctAnswers[q.id] = q.correctAnswer;
+                    var attemptId = 'quiz_' + lessonId;
+                    var attemptPath = 'users/' + currentUser.uid + '/attempts/' + attemptId;
+
+                    database.ref(attemptPath).transaction(function(currentData) {
+                        if (currentData !== null) {
+                            return;
+                        }
+
+                        var now = new Date().toISOString();
+                        var expiryDate = new Date();
+                        expiryDate.setMinutes(expiryDate.getMinutes() + (quizData.duration || 15));
+
                         return {
-                            id: q.id,
-                            question: q.question,
-                            options: q.options,
-                            image: q.image || null
+                            id: attemptId,
+                            quizId: quizId,
+                            lessonId: lessonId,
+                            type: 'quiz',
+                            title: quizData.title || 'كويز',
+                            status: 'in_progress',
+                            startedAt: now,
+                            expiresAt: expiryDate.toISOString(),
+                            duration: quizData.duration || 15,
+                            createdAt: now
                         };
-                    });
+                    }, function(error, committed, snapshot) {
+                        if (error) {
+                            console.error('Transaction error:', error);
+                            showToast('حدث خطأ في بدء الكويز', 'error');
+                            return;
+                        }
 
-                    currentExamData = {
-                        id: quizId,
-                        type: 'quiz',
-                        lessonId: lessonId,
-                        title: quizData.title || 'كويز',
-                        questions: questions,
-                        duration: quizData.duration || 15,
-                        atomsReward: quizData.atomsReward || 5,
-                        _correctAnswers: correctAnswers
-                    };
+                        if (!committed) {
+                            showToast('🚫 لا يمكن بدء الكويز، محاولة سابقة موجودة', 'warning');
+                            showCompletedModal();
+                            return;
+                        }
 
-                    createUserAttempt('quiz_' + lessonId, 'quiz', {
-                        quizId: quizId,
-                        lessonId: lessonId,
-                        title: currentExamData.title
-                    }).then(function() {
+                        var attemptData = snapshot.val();
+                        if (!attemptData) {
+                            showToast('حدث خطأ في بدء الكويز', 'error');
+                            return;
+                        }
+
+                        var correctAnswers = {};
+                        var questions = quizData.questions.map(function(q) {
+                            correctAnswers[q.id] = q.correctAnswer;
+                            return {
+                                id: q.id,
+                                question: q.question,
+                                options: q.options,
+                                image: q.image || null
+                            };
+                        });
+
+                        currentExamData = {
+                            id: quizId,
+                            type: 'quiz',
+                            lessonId: lessonId,
+                            title: quizData.title || 'كويز',
+                            questions: questions,
+                            duration: quizData.duration || 15,
+                            atomsReward: quizData.atomsReward || 5,
+                            _correctAnswers: correctAnswers,
+                            _attemptId: attemptId,
+                            _startedAt: attemptData.startedAt,
+                            _expiresAt: attemptData.expiresAt
+                        };
+
                         examAnswers = {};
                         renderExamInterface(currentExamData);
-                    }).catch(function(err) {
-                        console.error('Error creating attempt:', err);
-                        showToast('حدث خطأ في بدء الكويز', 'error');
                     });
                 });
             } catch (error) {
@@ -6911,7 +6908,7 @@
         }
 
         // ============================================================
-        // OPEN LESSON ASSIGNMENT - With Server-side attempt check
+        // OPEN LESSON ASSIGNMENT - With Server-side attempt check - FIXED
         // ============================================================
         function openLessonAssignment(lessonId) {
             if (!currentUser) {
@@ -6970,7 +6967,6 @@
                         return;
                     }
 
-                    // Create attempt record
                     createUserAttempt('assignment_' + lessonId, 'assignment', {
                         assignmentId: assignmentId,
                         lessonId: lessonId,
@@ -7045,9 +7041,6 @@
             };
         }
 
-        // ============================================================
-        // SUBMIT ASSIGNMENT - With attempt completion
-        // ============================================================
         function submitAssignment(assignmentId, lessonId) {
             if (!currentUser) return;
             if (window._isSubmittingAssignment) {
@@ -7122,7 +7115,6 @@
 
             var progressKey = 'assignment_' + lessonId;
 
-            // Complete the attempt
             completeUserAttempt('assignment_' + lessonId, resultData).then(function() {
                 return awardPointsAndUpdateProgress(
                     currentUser.uid,
@@ -7181,14 +7173,31 @@
         }
 
         // ============================================================
-        // RENDER EXAM INTERFACE (Unchanged - but preserved)
+        // RENDER EXAM INTERFACE - FIXED with time from Firebase
         // ============================================================
         function renderExamInterface(examData) {
             var main = document.getElementById('mainContent');
             if (!main) return;
 
             var totalQuestions = examData.questions.length;
-            var duration = examData.duration || 30;
+
+            // ✅ Calculate remaining time from Firebase
+            var remainingTime = examData.duration * 60;
+            if (examData._startedAt && examData._expiresAt) {
+                var now = Date.now();
+                var expiry = new Date(examData._expiresAt).getTime();
+                var remaining = Math.floor((expiry - now) / 1000);
+                if (remaining > 0 && remaining < examData.duration * 60) {
+                    remainingTime = remaining;
+                } else if (remaining <= 0) {
+                    // ✅ Time expired - auto submit immediately
+                    remainingTime = 0;
+                }
+            }
+
+            var minutes = Math.floor(remainingTime / 60);
+            var seconds = remainingTime % 60;
+            var timerDisplay = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
 
             main.innerHTML =
                 '<div style="max-width:900px;margin:0 auto;padding:20px;">' +
@@ -7197,7 +7206,7 @@
                 escapeHtml(examData.title) + '</h1>' +
                 '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">' +
                 '<div style="background:var(--white);padding:6px 16px;border-radius:50px;font-weight:700;color:var(--primary);font-size:clamp(0.8rem,0.9vw,0.9rem);border:1px solid rgba(231,42,155,0.06);">' +
-                '<i class="fas fa-clock"></i> <span id="examTimer">' + duration + ':00</span></div>' +
+                '<i class="fas fa-clock"></i> <span id="examTimer">' + timerDisplay + '</span></div>' +
                 '<div style="background:var(--white);padding:6px 16px;border-radius:50px;font-weight:700;color:var(--text-secondary);font-size:clamp(0.8rem,0.9vw,0.9rem);border:1px solid rgba(231,42,155,0.06);">' +
                 '<i class="fas fa-question-circle"></i> <span id="answeredCount">0</span>/' + totalQuestions +
                 '</div>' +
@@ -7206,13 +7215,24 @@
                 renderExamQuestionsHTML(examData.questions) +
                 '</div>' +
                 '<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:20px;">' +
-                '<button class="btn-primary-premium" id="submitExamBtn" onclick="window.APP.submitExam()" style="min-height:44px;padding:12px 40px;font-size:clamp(1rem,1.1vw,1.2rem);">' +
+                '<button class="btn-primary-premium" id="submitExamBtn" onclick="window.APP.submitExam(false)" style="min-height:44px;padding:12px 40px;font-size:clamp(1rem,1.1vw,1.2rem);">' +
                 '<i class="fas fa-paper-plane"></i> تسليم الامتحان</button>' +
                 '<button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.closeExam()" style="min-height:36px;">✕ إلغاء</button></div>' +
                 '<p style="text-align:center;font-size:0.75rem;color:var(--text-secondary);margin-top:12px;">' +
-                '<i class="fas fa-info-circle"></i> سيتم تسليم الامتحان تلقائياً عند انتهاء الوقت</p></div>';
+                '<i class="fas fa-info-circle"></i> سيتم تسليم الامتحان تلقائياً عند انتهاء الوقت</p>' +
+                '<div id="unansweredWarning" style="display:none;margin-top:12px;padding:12px;background:rgba(239,68,68,0.06);border-radius:var(--radius);border-right:4px solid #EF4444;text-align:center;">' +
+                '</div></div>';
 
-            startExamTimer(duration);
+            // ✅ If time already expired, auto submit
+            if (remainingTime <= 0) {
+                setTimeout(function() {
+                    showToast('⏰ انتهى الوقت! يتم تسليم الامتحان تلقائياً...', 'warning');
+                    submitExam(true);
+                }, 500);
+                return;
+            }
+
+            startExamTimer(remainingTime);
             updateAnsweredCount();
         }
 
@@ -7240,7 +7260,7 @@
                     q.id + '">' +
                     '<div style="font-weight:700;font-size:clamp(0.95rem,1.05vw,1.1rem);color:var(--text-dark);margin-bottom:8px;">' +
                     '<span style="color:var(--primary);">' + (index + 1) + '.</span> ' + escapeHtml(q
-                        .question) + '</div>' +
+                    .question) + '</div>' +
                     '<div class="exam-options">' + optionsHtml + '</div>' +
                     (q.image ?
                         '<div style="margin-top:8px;text-align:center;"><img src="' + q.image +
@@ -7252,7 +7272,7 @@
         }
 
         // ============================================================
-        // SELECT ANSWER - Options stay visible, no disappearing
+        // SELECT ANSWER - FIXED: Full rebuild for reliability
         // ============================================================
         function selectAnswer(questionId, optionIndex) {
             if (window._examLocked) {
@@ -7260,9 +7280,22 @@
                 return;
             }
 
-            examAnswers[questionId] = optionIndex;
+            // ✅ Toggle selection: if same option selected, deselect it
+            if (examAnswers[questionId] === optionIndex) {
+                delete examAnswers[questionId];
+            } else {
+                examAnswers[questionId] = optionIndex;
+            }
+
             updateAnsweredCount();
-            reRenderExamOptions();
+
+            // ✅ Full rebuild for reliability
+            if (currentExamData && currentExamData.questions) {
+                var container = document.getElementById('examQuestionsContainer');
+                if (container) {
+                    container.innerHTML = renderExamQuestionsHTML(currentExamData.questions);
+                }
+            }
         }
 
         function updateAnsweredCount() {
@@ -7274,42 +7307,21 @@
         }
 
         // ============================================================
-        // RE-RENDER EXAM OPTIONS - FIXED: Only styles change, no DOM rebuild
+        // RE-RENDER EXAM OPTIONS - DEPRECATED (use full rebuild)
         // ============================================================
         function reRenderExamOptions() {
-            var container = document.getElementById('examQuestionsContainer');
-            if (!container) return;
-
-            var questionDivs = container.querySelectorAll('.exam-question');
-            questionDivs.forEach(function(div) {
-                var qId = div.dataset.questionId;
-                if (!qId) return;
-                var selected = examAnswers[qId];
-                var options = div.querySelectorAll('.exam-option');
-                options.forEach(function(opt, idx) {
-                    var isSelected = idx === selected;
-                    // Only change styles, keep all elements visible
-                    opt.style.borderColor = isSelected ? 'var(--primary)' : 'rgba(231,42,155,0.08)';
-                    opt.style.background = isSelected ? 'var(--gradient-primary)' : 'var(--white)';
-                    opt.style.color = isSelected ? '#fff' : 'var(--text-dark)';
-                    // Update checkmark
-                    var checkSpan = opt.querySelector('span:last-child');
-                    if (checkSpan) {
-                        if (isSelected) {
-                            checkSpan.innerHTML = '<span><i class="fas fa-check-circle"></i></span>';
-                        } else {
-                            checkSpan.innerHTML = '';
-                        }
-                    }
-                });
-            });
+            // ✅ This function is now empty - we use full rebuild instead
+            // This is more reliable and prevents UI issues
         }
 
         var examTimerInterval = null;
         var examTimeLeft = 0;
 
-        function startExamTimer(duration) {
-            examTimeLeft = duration * 60;
+        // ============================================================
+        // START EXAM TIMER - FIXED: Uses Firebase time
+        // ============================================================
+        function startExamTimer(durationInSeconds) {
+            examTimeLeft = durationInSeconds || 0;
             var timerEl = document.getElementById('examTimer');
             if (!timerEl) return;
 
@@ -7318,25 +7330,38 @@
                 examTimerInterval = null;
             }
 
+            // ✅ If time already expired, auto submit
+            if (examTimeLeft <= 0) {
+                setTimeout(function() {
+                    showToast('⏰ انتهى الوقت! يتم تسليم الامتحان تلقائياً...', 'warning');
+                    submitExam(true);
+                }, 500);
+                return;
+            }
+
             examTimerInterval = setInterval(function() {
                 examTimeLeft--;
                 if (examTimeLeft <= 0) {
                     clearInterval(examTimerInterval);
                     examTimerInterval = null;
-                    autoSubmitExam();
+                    // ✅ Auto submit with unanswered questions allowed
+                    submitExam(true);
                     return;
                 }
 
                 var minutes = Math.floor(examTimeLeft / 60);
                 var seconds = examTimeLeft % 60;
                 timerEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2,
-                    '0');
+                '0');
 
                 if (examTimeLeft === 60) {
                     showToast('⏰ دقيقة واحدة متبقية!', 'warning');
                 }
                 if (examTimeLeft === 30) {
                     showToast('⏰ 30 ثانية متبقية!', 'warning');
+                }
+                if (examTimeLeft === 10) {
+                    showToast('⏰ 10 ثوانٍ متبقية!', 'warning');
                 }
             }, 1000);
         }
@@ -7345,12 +7370,13 @@
 
         function autoSubmitExam() {
             if (isSubmitting) return;
-            showToast('⏰ انتهى الوقت! يتم تسليم الامتحان تلقائياً...', 'info');
+            showToast('⏰ انتهى الوقت! يتم تسليم الامتحان تلقائياً...', 'warning');
+            // ✅ Pass true for auto submit (ignore unanswered questions)
             submitExam(true);
         }
 
         // ============================================================
-        // SUBMIT EXAM - Saves results + wrong answers for error bank
+        // SUBMIT EXAM - FIXED: Manual vs Auto with proper validation
         // ============================================================
         function submitExam(isAuto) {
             isAuto = isAuto || false;
@@ -7364,116 +7390,197 @@
                 return;
             }
 
-            window._examLocked = true;
-
-            if (examTimerInterval) {
-                clearInterval(examTimerInterval);
-                examTimerInterval = null;
+            var attemptId = currentExamData._attemptId;
+            if (!attemptId) {
+                showToast('⚠️ لا توجد محاولة نشطة', 'error');
+                return;
             }
 
-            isSubmitting = true;
-            var submitBtn = document.getElementById('submitExamBtn');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسليم...';
-            }
+            var attemptPath = 'users/' + currentUser.uid + '/attempts/' + attemptId;
 
-            try {
+            database.ref(attemptPath).once('value').then(function(snapshot) {
+                if (!snapshot.exists()) {
+                    showToast('⚠️ المحاولة غير موجودة', 'error');
+                    return;
+                }
+
+                var attempt = snapshot.val();
+                if (attempt.status === 'completed') {
+                    showToast('🚫 تم تسليم هذا الامتحان مسبقاً', 'warning');
+                    return;
+                }
+
                 var examData = currentExamData;
-                var correctAnswers = examData._correctAnswers || {};
+                var unansweredQuestions = [];
 
-                var correctCount = 0;
-                var wrongCount = 0;
-                var unansweredCount = 0;
-                var wrongQuestions = [];
-
+                // ✅ Check for unanswered questions
                 examData.questions.forEach(function(q) {
-                    var userAnswer = examAnswers[q.id];
-                    var correct = correctAnswers[q.id];
-                    if (userAnswer === undefined) {
-                        unansweredCount++;
-                    } else if (userAnswer === correct) {
-                        correctCount++;
-                    } else {
-                        wrongCount++;
-                        wrongQuestions.push({
-                            questionId: q.id,
-                            question: q.question,
-                            userAnswer: q.options[userAnswer] || 'إجابة غير معروفة',
-                            correctAnswer: q.options[correct] || 'الإجابة الصحيحة',
-                            options: q.options,
-                            correctIndex: correct,
-                            userIndex: userAnswer
-                        });
+                    if (examAnswers[q.id] === undefined) {
+                        unansweredQuestions.push(q.id);
                     }
                 });
 
-                var totalQuestions = examData.questions.length;
-                var score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+                // ✅ Manual submit: reject if unanswered questions exist
+                if (!isAuto && unansweredQuestions.length > 0) {
+                    var msg = '⚠️ لا يمكن تسليم الامتحان الآن\nلديك ' + unansweredQuestions.length +
+                        ' سؤال لم تتم الإجابة عنه.\nيجب الإجابة عن جميع الأسئلة أولاً.';
+                    showToast(msg, 'warning');
 
-                var atomsEarned = 0;
-                if (score >= 90) atomsEarned = examData.atomsReward || 10;
-                else if (score >= 70) atomsEarned = Math.round((examData.atomsReward || 10) * 0.7);
-                else if (score >= 50) atomsEarned = Math.round((examData.atomsReward || 10) * 0.4);
-                else atomsEarned = 0;
-
-                var resultData = {
-                    id: examData.id,
-                    title: examData.title,
-                    type: examData.type || 'exam',
-                    score: score,
-                    correctAnswers: correctCount,
-                    totalQuestions: totalQuestions,
-                    wrongAnswers: wrongCount,
-                    unanswered: unansweredCount,
-                    atomsEarned: atomsEarned,
-                    answers: examAnswers,
-                    correctAnswersMap: correctAnswers,
-                    wrongQuestions: wrongQuestions,
-                    completedAt: new Date().toISOString()
-                };
-
-                var progressKey = examData.type + '_' + examData.lessonId;
-
-                // Save wrong answers to error bank
-                if (wrongQuestions.length > 0) {
-                    saveWrongAnswersToErrorBank(wrongQuestions);
+                    // ✅ Highlight unanswered questions
+                    highlightUnansweredQuestions(unansweredQuestions);
+                    return;
                 }
 
-                // Complete the attempt
-                var attemptId = examData.type + '_' + examData.lessonId;
-                completeUserAttempt(attemptId, resultData).then(function() {
-                    return awardPointsAndUpdateProgress(
-                        currentUser.uid,
-                        progressKey,
-                        atomsEarned,
-                        resultData
-                    );
-                }).then(function() {
-                    delete currentExamData._correctAnswers;
-                    showExamResult(resultData);
+                // ✅ Lock exam to prevent further changes
+                window._examLocked = true;
 
-                    addNotification(
-                        currentUser.uid,
-                        '📝 تم إكمال ' + (examData.type === 'exam' ? 'امتحان' : 'كويز'),
-                        'حصلت على ' + score + '% في "' + examData.title + '" وربحت ' + atomsEarned +
-                        ' ذرة.',
-                        '📝'
-                    );
+                if (examTimerInterval) {
+                    clearInterval(examTimerInterval);
+                    examTimerInterval = null;
+                }
 
-                    showToast('✅ تم تسليم ' + (examData.type === 'exam' ? 'الامتحان' : 'الكويز') +
-                        ' بنجاح!', 'success');
-                });
-            } catch (error) {
-                console.error('Error submitting exam:', error);
-                showToast('❌ حدث خطأ أثناء تسليم الامتحان', 'error');
-                window._examLocked = false;
-            } finally {
-                isSubmitting = false;
+                isSubmitting = true;
+                var submitBtn = document.getElementById('submitExamBtn');
                 if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تسليم الامتحان';
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسليم...';
                 }
+
+                try {
+                    var correctAnswers = examData._correctAnswers || {};
+
+                    var correctCount = 0;
+                    var wrongCount = 0;
+                    var unansweredCount = 0;
+                    var wrongQuestions = [];
+
+                    examData.questions.forEach(function(q) {
+                        var userAnswer = examAnswers[q.id];
+                        var correct = correctAnswers[q.id];
+                        if (userAnswer === undefined) {
+                            unansweredCount++;
+                        } else if (userAnswer === correct) {
+                            correctCount++;
+                        } else {
+                            wrongCount++;
+                            wrongQuestions.push({
+                                questionId: q.id,
+                                question: q.question,
+                                userAnswer: q.options[userAnswer] || 'إجابة غير معروفة',
+                                correctAnswer: q.options[correct] || 'الإجابة الصحيحة',
+                                options: q.options,
+                                correctIndex: correct,
+                                userIndex: userAnswer
+                            });
+                        }
+                    });
+
+                    var totalQuestions = examData.questions.length;
+                    var score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+                    var atomsEarned = 0;
+                    if (score >= 90) atomsEarned = examData.atomsReward || 10;
+                    else if (score >= 70) atomsEarned = Math.round((examData.atomsReward || 10) * 0.7);
+                    else if (score >= 50) atomsEarned = Math.round((examData.atomsReward || 10) * 0.4);
+                    else atomsEarned = 0;
+
+                    var resultData = {
+                        id: examData.id,
+                        title: examData.title,
+                        type: examData.type || 'exam',
+                        score: score,
+                        correctAnswers: correctCount,
+                        totalQuestions: totalQuestions,
+                        wrongAnswers: wrongCount,
+                        unanswered: unansweredCount,
+                        atomsEarned: atomsEarned,
+                        answers: examAnswers,
+                        correctAnswersMap: correctAnswers,
+                        wrongQuestions: wrongQuestions,
+                        completedAt: new Date().toISOString(),
+                        isAutoSubmit: isAuto
+                    };
+
+                    var progressKey = examData.type + '_' + examData.lessonId;
+
+                    // ✅ Save wrong answers to error bank
+                    if (wrongQuestions.length > 0) {
+                        saveWrongAnswersToErrorBank(wrongQuestions);
+                    }
+
+                    // ✅ Complete the attempt
+                    completeUserAttempt(attemptId, resultData).then(function() {
+                        return awardPointsAndUpdateProgress(
+                            currentUser.uid,
+                            progressKey,
+                            atomsEarned,
+                            resultData
+                        );
+                    }).then(function() {
+                        delete currentExamData._correctAnswers;
+                        showExamResult(resultData);
+
+                        addNotification(
+                            currentUser.uid,
+                            '📝 تم إكمال ' + (examData.type === 'exam' ? 'امتحان' : 'كويز'),
+                            'حصلت على ' + score + '% في "' + examData.title + '" وربحت ' + atomsEarned +
+                            ' ذرة.',
+                            '📝'
+                        );
+
+                        var msg = (examData.type === 'exam' ? 'الامتحان' : 'الكويز');
+                        if (isAuto) {
+                            showToast('⏰ تم تسليم ' + msg + ' تلقائياً!', 'success');
+                        } else {
+                            showToast('✅ تم تسليم ' + msg + ' بنجاح!', 'success');
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error submitting exam:', error);
+                    showToast('❌ حدث خطأ أثناء تسليم الامتحان', 'error');
+                    window._examLocked = false;
+                } finally {
+                    isSubmitting = false;
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> تسليم الامتحان';
+                    }
+                }
+            }).catch(function(err) {
+                console.error('Error checking attempt:', err);
+                showToast('حدث خطأ في التحقق من المحاولة', 'error');
+            });
+        }
+
+        // ============================================================
+        // HIGHLIGHT UNANSWERED QUESTIONS - Helper
+        // ============================================================
+        function highlightUnansweredQuestions(unansweredIds) {
+            if (!unansweredIds || unansweredIds.length === 0) return;
+
+            var container = document.getElementById('examQuestionsContainer');
+            if (!container) return;
+
+            // Reset all highlights first
+            var allQuestions = container.querySelectorAll('.exam-question');
+            allQuestions.forEach(function(q) {
+                q.style.border = '1px solid rgba(231,42,155,0.06)';
+                q.style.background = 'var(--white)';
+            });
+
+            // Highlight unanswered
+            unansweredIds.forEach(function(qId) {
+                var questionEl = container.querySelector('.exam-question[data-question-id="' + qId + '"]');
+                if (questionEl) {
+                    questionEl.style.border = '3px solid #EF4444';
+                    questionEl.style.background = 'rgba(239, 68, 68, 0.04)';
+                }
+            });
+
+            // Scroll to first unanswered
+            var firstUnanswered = container.querySelector('.exam-question[style*="border: 3px solid #EF4444"]');
+            if (firstUnanswered) {
+                firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
 
@@ -7503,7 +7610,7 @@
         }
 
         // ============================================================
-        // SHOW EXAM RESULT (Unchanged)
+        // SHOW EXAM RESULT - FIXED: No re-entry button
         // ============================================================
         function showExamResult(resultData) {
             var main = document.getElementById('mainContent');
@@ -7531,9 +7638,15 @@
                 '<div style="text-align:center;"><div style="font-size:clamp(2rem,2.5vw,3rem);font-weight:900;color:var(--primary);">+' +
                 resultData.atomsEarned + '</div>' +
                 '<div style="font-size:0.8rem;color:var(--text-secondary);">ذرات مضافة</div></div></div>' +
+                // ✅ Only navigation buttons, NO re-exam button
                 '<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:16px;">' +
                 '<button class="btn-primary-premium" onclick="window.APP.showResults()" style="min-height:44px;">📊 عرض النتائج</button>' +
-                '<button class="btn-outline-premium" onclick="window.APP.showHome()" style="min-height:44px;">🏠 الرئيسية</button></div></div></div>';
+                '<button class="btn-outline-premium" onclick="window.APP.showHome()" style="min-height:44px;">🏠 الرئيسية</button>' +
+                '</div>' +
+                // ✅ Lock message
+                '<div style="margin-top:16px;padding:12px;background:rgba(239,68,68,0.04);border-radius:var(--radius);border-right:4px solid #EF4444;">' +
+                '<p style="font-size:0.85rem;color:var(--text-secondary);">🚫 لا يمكن إعادة هذا الاختبار مرة أخرى، لقد تم تسجيل نتيجتك.</p>' +
+                '</div></div></div>';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -8195,7 +8308,6 @@
             var main = document.getElementById('mainContent');
             if (!main) return;
 
-            // Hide user elements
             document.getElementById('atomsBadge').style.display = 'none';
             document.getElementById('notificationWrapper').style.display = 'none';
             document.getElementById('userMenuWrapper').style.display = 'none';
@@ -8346,7 +8458,7 @@
                         database.ref('subscriptionRequests/' + requestId + '/approvedAt').set(new Date()
                             .toISOString());
                         database.ref('subscriptionRequests/' + requestId + '/approvedBy').set(currentUser
-                            .uid);
+                        .uid);
                         database.ref('subscriptionRequests/' + requestId + '/approvedByName').set(
                             currentUser.displayName || 'Admin');
 
@@ -8430,7 +8542,7 @@
                         database.ref('subscriptionRequests/' + requestId + '/rejectedAt').set(new Date()
                             .toISOString());
                         database.ref('subscriptionRequests/' + requestId + '/rejectedBy').set(currentUser
-                            .uid);
+                        .uid);
                         database.ref('subscriptionRequests/' + requestId + '/rejectedByName').set(
                             currentUser.displayName || 'Admin');
                         database.ref('subscriptionRequests/' + requestId + '/rejectionReason').set(
@@ -8482,12 +8594,10 @@
             initTheme();
             showHome();
 
-            // إظهار شريط التثبيت بعد ثانية
             setTimeout(function() {
                 showInstallBanner();
             }, 1000);
 
-            // Check installation status
             checkInstallStatus();
 
             console.log('🚀 Yalla Chemistry Platform v50.0 - FULLY FIXED');
