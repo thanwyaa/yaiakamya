@@ -2640,6 +2640,124 @@
                 font-size: 0.8rem;
             }
         }
+
+        /* ============================================================
+           ⭐ NEW: Hide YouTube title on video page
+           ============================================================ */
+        .video-title-hidden .ytp-title {
+            display: none !important;
+        }
+
+        .video-title-hidden .ytp-title-link {
+            display: none !important;
+            pointer-events: none !important;
+        }
+
+        .video-title-hidden .ytp-title-text {
+            display: none !important;
+        }
+
+        /* Hide YouTube title via iframe parent */
+        .video-title-hidden iframe {
+            pointer-events: auto !important;
+        }
+
+        /* Additional YouTube title hiding */
+        .video-protected .ytp-title {
+            display: none !important;
+        }
+
+        .video-protected .ytp-title-text {
+            display: none !important;
+        }
+
+        .video-protected .ytp-title-link {
+            display: none !important;
+            pointer-events: none !important;
+        }
+
+        /* Override for mobile */
+        .video-protected .ytp-title-channel {
+            display: none !important;
+        }
+
+        /* Custom wrapper to hide YouTube overlay title */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Hide YouTube title using CSS overlay trick */
+        .video-title-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: transparent;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Additional YouTube UI hiding */
+        .video-wrapper .ytp-title {
+            display: none !important;
+        }
+
+        .video-wrapper .ytp-title-link {
+            display: none !important;
+            pointer-events: none !important;
+        }
+
+        .video-wrapper .ytp-title-text {
+            display: none !important;
+        }
+
+        .video-wrapper .ytp-chrome-top {
+            display: none !important;
+        }
+
+        .video-wrapper .ytp-title-channel {
+            display: none !important;
+        }
+
+        /* Hide title on all devices */
+        .video-wrapper .ytp-title-enable-channel-logo {
+            display: none !important;
+        }
+
+        /* Prevent clicking on YouTube title area */
+        .video-title-blocker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            z-index: 15;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        /* Ensure video controls still work */
+        .video-wrapper .ytp-chrome-controls {
+            pointer-events: auto !important;
+        }
+
+        .video-wrapper .ytp-chrome-bottom {
+            pointer-events: auto !important;
+        }
     </style>
 </head>
 <body>
@@ -2672,9 +2790,9 @@
     <!-- ====== Completed Modal ====== -->
     <div class="completed-modal" id="completedModal" role="dialog" aria-modal="true" aria-label="اختبار مكتمل">
         <div class="modal-box">
-            <div class="icon" aria-hidden="true">✅</div>
-            <h2>لقد قمت بإتمام هذا الاختبار بالفعل</h2>
-            <p>لا يمكن إعادة دخوله مرة أخرى.<br>يمكنك مراجعة النتيجة من خلال صفحة <strong>نتائجي</strong>.</p>
+            <div class="icon" aria-hidden="true">🚫</div>
+            <h2>🚫 لا يمكن إعادة الاختبار</h2>
+            <p>لقد أديت هذا الاختبار مسبقاً.<br>يمكنك مراجعة النتيجة من خلال صفحة <strong>نتائجي</strong>.</p>
             <button class="btn-primary-premium" onclick="window.APP.closeCompletedModal()" style="width:100%;justify-content:center;">حسناً</button>
         </div>
     </div>
@@ -4163,11 +4281,11 @@
         function verifyAndActivateCode(courseId) {
             var codeInput = document.getElementById('activationCodeInput');
             var statusEl = document.getElementById('codeStatusMessage');
-            
+
             if (!codeInput || !statusEl) return;
 
             var code = codeInput.value.trim().toUpperCase();
-            
+
             if (!code || code.length < 9) {
                 statusEl.className = 'code-status-message error';
                 statusEl.textContent = '⚠️ الكود يجب أن يكون 9 أحرف على الأقل';
@@ -4206,11 +4324,11 @@
                                     btn.disabled = true;
                                     btn.textContent = '✅ مفعل';
                                 }
-                                
+
                                 // Refresh user data and course access
                                 loadUserData(currentUser.uid);
                                 loadUserSubscriptions(currentUser.uid);
-                                
+
                                 // Show success and redirect
                                 setTimeout(function() {
                                     openCoursePage(courseId);
@@ -4772,7 +4890,7 @@
                             controls.classList.add('visible');
                             setTimeout(function() {
                                 if (controls.classList.contains('visible') && playerInstance &&
-                                    playerInstance.getPlayerState() === YT.PlayerState.PLAYING && 
+                                    playerInstance.getPlayerState() === YT.PlayerState.PLAYING &&
                                     window.innerWidth >= 769) {
                                     controls.classList.remove('visible');
                                 }
@@ -4846,7 +4964,7 @@
 
                     if (!videoId) {
                         console.error('❌ رابط الفيديو غير صالح للحصة:', lessonId, 'الرابط:', lessonData
-                        .videoUrl);
+                            .videoUrl);
                         showToast('⚠️ رابط الفيديو غير صحيح أو تالف. يرجى التواصل مع الإدارة.', 'error');
                         return;
                     }
@@ -4857,7 +4975,7 @@
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
                     // ✅ Mobile optimized layout with always visible controls
-                    // ✅ FIX: Video title is not clickable (span instead of a)
+                    // ✅ FIX: Video title is not clickable (span instead of a) - YouTube title hidden via CSS
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -4867,10 +4985,10 @@
                         '</button>' +
                         '<span style="color:rgba(231,42,155,0.2);">/</span>' +
                         '<span style="font-weight:600;color:var(--text-dark);">' + escapeHtml(lessonData
-                        .title) + '</span></div>' +
+                            .title) + '</span></div>' +
                         '<h1 style="font-family:var(--font-display);font-size:clamp(1.3rem,2.5vw,2rem);color:var(--text-dark);margin-bottom:12px;">🎥 ' +
                         escapeHtml(lessonData.title) + '</h1>' +
-                        '<div class="video-protected" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);touch-action:manipulation;">' +
+                        '<div class="video-protected video-title-hidden" id="videoContainer" style="position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;border-radius:var(--radius-lg);touch-action:manipulation;">' +
                         '<div id="youtube-player" style="width:100%;height:100%;"></div>' +
                         '<div class="player-controls" id="playerControls" style="position:absolute;bottom:0;left:0;right:0;padding:12px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.85));z-index:20;display:flex;flex-direction:column;gap:6px;pointer-events:auto;' +
                         (window.innerWidth < 769 ? 'opacity:1 !important;' : '') + '">' +
@@ -4989,16 +5107,16 @@
                 try {
                     var availableQualities = playerInstance.getAvailableQualityLevels() || [];
                     var currentQuality = playerInstance.getPlaybackQuality() || 'auto';
-                    
+
                     // Clear existing options
                     qualitySelect.innerHTML = '';
-                    
+
                     // Add auto option
                     var autoOpt = document.createElement('option');
                     autoOpt.value = 'auto';
                     autoOpt.textContent = 'تلقائي';
                     qualitySelect.appendChild(autoOpt);
-                    
+
                     // Add available qualities
                     var qualityMap = {
                         'hd1080': '1080p',
@@ -5008,7 +5126,7 @@
                         'small': '240p',
                         'tiny': '144p'
                     };
-                    
+
                     availableQualities.forEach(function(q) {
                         if (q === 'auto') return;
                         var opt = document.createElement('option');
@@ -5016,10 +5134,10 @@
                         opt.textContent = qualityMap[q] || q;
                         qualitySelect.appendChild(opt);
                     });
-                    
+
                     // Set current quality
                     qualitySelect.value = currentQuality;
-                    
+
                     // If no specific quality available, default to auto
                     if (!qualitySelect.value) {
                         qualitySelect.value = 'auto';
@@ -5036,7 +5154,7 @@
             if (qualitySelect) {
                 var newQualitySelect = qualitySelect.cloneNode(true);
                 qualitySelect.parentNode.replaceChild(newQualitySelect, qualitySelect);
-                
+
                 newQualitySelect.addEventListener('change', function() {
                     if (!playerInstance) return;
                     try {
@@ -5727,9 +5845,9 @@
 
                 var motivationalMessage = '';
                 if (progressPercent === 100) motivationalMessage =
-                '🎉 مبروك! أكملت الكورس بالكامل! أنت رائع!';
+                    '🎉 مبروك! أكملت الكورس بالكامل! أنت رائع!';
                 else if (progressPercent >= 75) motivationalMessage = '🔥 اقتربت من إنهاء الكورس! بقيت لك ' + (lessons
-                    .length - completedCount) + ' حصص فقط!';
+                        .length - completedCount) + ' حصص فقط!';
                 else if (progressPercent >= 50) motivationalMessage = '💪 أحسنت! أكملت نصف الكورس، استمر!';
                 else if (progressPercent >= 25) motivationalMessage = '🌟 أحسنت! أكملت 25% من الكورس!';
                 else if (completedCount > 0) motivationalMessage = '📚 بداية ممتازة! أكملت ' + completedCount +
@@ -5872,7 +5990,7 @@
                         '<img src="' + p.user.photoURL + '" alt="' + escapeHtml(p.user.name) +
                         '" style="width:100%;height:100%;object-fit:cover;">' :
                         '<span style="font-size:1.5rem;">' + (p.user.name || '👤')[0].toUpperCase() +
-                    '</span>';
+                        '</span>';
                     html +=
                         '<div class="podium-item ' + p.class +
                         '" style="display:flex;flex-direction:column;align-items:center;text-align:center;transition:var(--transition-smooth);position:relative;">' +
@@ -5910,7 +6028,7 @@
                         '<img src="' + user.photoURL + '" alt="' + escapeHtml(user.name) +
                         '" style="width:100%;height:100%;object-fit:cover;">' :
                         '<span style="font-size:0.9rem;">' + (user.name || '👤')[0].toUpperCase() +
-                    '</span>';
+                        '</span>';
                     html +=
                         '<div class="leaderboard-item" style="display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:var(--radius);transition:var(--transition-smooth);border:1px solid rgba(231,42,155,0.06);background:var(--white);margin-bottom:8px;">' +
                         '<div class="rank" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;flex-shrink:0;background:var(--white);color:var(--text-secondary);">#' +
@@ -5968,7 +6086,7 @@
             var totalLessons = allLessons.length;
             var completedLessons = Object.keys(userCourseProgress).filter(function(key) { return userCourseProgress[
                     key] && userCourseProgress[key].watched; })
-            .length;
+                .length;
             var progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
             var studyTimeHours = Math.round(userData ? userData.studyTime || 0 : 0);
             var atoms = userData ? userData.atoms || 0 : 0;
@@ -6147,10 +6265,10 @@
                 database.ref('users/' + currentUser.uid + '/errorBank').once('value').then(function(snapshot) {
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
-                    
+
                     // Filter unsolved errors and remove duplicates by questionId
                     var seenQuestions = new Set();
-                    var unsolved = errors.filter(function(e) { 
+                    var unsolved = errors.filter(function(e) {
                         if (!e.solved && !e.corrected) {
                             // Use questionId as unique key
                             var key = e.questionId || e.id || e.question;
@@ -6222,10 +6340,10 @@
                 database.ref('users/' + currentUser.uid + '/errorBank').once('value').then(function(snapshot) {
                     var errorsData = snapshot.exists() ? snapshot.val() : {};
                     var errors = Object.values(errorsData);
-                    
+
                     // Get unique unsolved errors
                     var seenQuestions = new Set();
-                    var unsolved = errors.filter(function(e) { 
+                    var unsolved = errors.filter(function(e) {
                         if (!e.solved && !e.corrected) {
                             var key = e.questionId || e.id || e.question;
                             if (seenQuestions.has(key)) {
@@ -6236,7 +6354,7 @@
                         }
                         return false;
                     });
-                    
+
                     if (unsolved.length === 0) {
                         showToast('🎉 لا توجد أخطاء! أنت متميز!', 'success');
                         return;
@@ -6245,9 +6363,12 @@
                     // Create exam from actual errors only
                     var questions = unsolved.map(function(err) {
                         return {
-                            id: err.questionId || err.id || 'error_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                            id: err.questionId || err.id || 'error_' + Date.now() + '_' + Math.random().toString(36)
+                                .substr(2, 5),
                             question: err.question,
-                            options: err.options || ['الإجابة الصحيحة', 'خيار بديل 1', 'خيار بديل 2', 'خيار بديل 3'],
+                            options: err.options || ['الإجابة الصحيحة', 'خيار بديل 1', 'خيار بديل 2',
+                                'خيار بديل 3'
+                            ],
                             correctAnswer: 0,
                             isFromErrorBank: true,
                             errorKey: err.id || err.questionId
@@ -6256,7 +6377,7 @@
 
                     // Shuffle questions
                     questions = questions.sort(function() { return Math.random() - 0.5; });
-                    
+
                     // Limit to 10 questions max
                     if (questions.length > 10) {
                         questions = questions.slice(0, 10);
@@ -6272,7 +6393,7 @@
                         lessonId: 'error_bank',
                         isErrorExam: true
                     };
-                    
+
                     openExamSecurityModal('error_exam', function() {
                         startErrorBasedExam();
                     }, 'exam');
@@ -6291,14 +6412,14 @@
                 showToast('⚠️ لا يوجد اختبار أخطاء نشط', 'error');
                 return;
             }
-            
+
             // Set correct answers for the exam
             var correctAnswers = {};
             currentExamData.questions.forEach(function(q) {
                 correctAnswers[q.id] = q.correctAnswer;
             });
             currentExamData._correctAnswers = correctAnswers;
-            
+
             examAnswers = {};
             renderExamInterface(currentExamData);
         }
@@ -6312,7 +6433,7 @@
         // ============================================================
         function checkUserAttempt(activityId, type) {
             if (!currentUser) return Promise.resolve({ exists: false });
-            
+
             return database.ref('users/' + currentUser.uid + '/attempts/' + activityId).once('value')
                 .then(function(snapshot) {
                     if (snapshot.exists()) {
@@ -6327,7 +6448,7 @@
 
         function createUserAttempt(activityId, type, data) {
             if (!currentUser) return Promise.reject('No user');
-            
+
             return database.ref('users/' + currentUser.uid + '/attempts/' + activityId).set({
                 id: activityId,
                 type: type,
@@ -6339,7 +6460,7 @@
 
         function completeUserAttempt(activityId, resultData) {
             if (!currentUser) return Promise.reject('No user');
-            
+
             return database.ref('users/' + currentUser.uid + '/attempts/' + activityId).update({
                 status: 'completed',
                 completedAt: new Date().toISOString(),
@@ -6352,7 +6473,7 @@
 
         function checkProgressCompletion(progressKey) {
             if (!currentUser) return Promise.resolve({ completed: false });
-            
+
             return database.ref('users/' + currentUser.uid + '/progress/' + progressKey).once('value')
                 .then(function(snapshot) {
                     if (snapshot.exists()) {
@@ -6571,7 +6692,7 @@
                 return '<div class="exam-question" style="margin-bottom:20px;padding:16px;background:var(--white);border-radius:var(--radius);border:1px solid rgba(231,42,155,0.06);">' +
                     '<div style="font-weight:700;font-size:clamp(0.95rem,1.05vw,1.1rem);color:var(--text-dark);margin-bottom:8px;">' +
                     '<span style="color:var(--primary);">' + (index + 1) + '.</span> ' + escapeHtml(q
-                    .question) + '</div>' +
+                        .question) + '</div>' +
                     '<div class="exam-options">' + optionsHtml + '</div>' +
                     (q.image ?
                         '<div style="margin-top:8px;text-align:center;"><img src="' + q.image +
@@ -6592,7 +6713,7 @@
             }
 
             var progressKey = 'exam_' + lessonId;
-            
+
             // Check progress first (server-side)
             checkProgressCompletion(progressKey).then(function(result) {
                 if (result.completed) {
@@ -6600,7 +6721,7 @@
                     showCompletedModal();
                     return;
                 }
-                
+
                 // Also check attempts
                 checkUserAttempt('exam_' + lessonId, 'exam').then(function(attempt) {
                     if (attempt.exists && attempt.data.status === 'completed') {
@@ -6608,7 +6729,7 @@
                         showCompletedModal();
                         return;
                     }
-                    
+
                     var lesson = allLessons.find(function(l) { return l.id === lessonId; });
                     if (!lesson) {
                         showToast('الحصة غير موجودة', 'error');
@@ -6697,21 +6818,21 @@
             }
 
             var progressKey = 'quiz_' + lessonId;
-            
+
             checkProgressCompletion(progressKey).then(function(result) {
                 if (result.completed) {
                     showToast('❌ لقد قمت بأداء هذا الكويز مسبقاً ولا يمكن إعادته', 'warning');
                     showCompletedModal();
                     return;
                 }
-                
+
                 checkUserAttempt('quiz_' + lessonId, 'quiz').then(function(attempt) {
                     if (attempt.exists && attempt.data.status === 'completed') {
                         showToast('❌ لقد قمت بأداء هذا الكويز مسبقاً', 'warning');
                         showCompletedModal();
                         return;
                     }
-                    
+
                     var lesson = allLessons.find(function(l) { return l.id === lessonId; });
                     if (!lesson) {
                         showToast('الحصة غير موجودة', 'error');
@@ -6799,21 +6920,21 @@
             }
 
             var progressKey = 'assignment_' + lessonId;
-            
+
             checkProgressCompletion(progressKey).then(function(result) {
                 if (result.completed) {
                     showToast('❌ لقد قمت بتسليم هذا الواجب مسبقاً', 'warning');
                     showCompletedModal();
                     return;
                 }
-                
+
                 checkUserAttempt('assignment_' + lessonId, 'assignment').then(function(attempt) {
                     if (attempt.exists && attempt.data.status === 'completed') {
                         showToast('❌ لقد قمت بتسليم هذا الواجب مسبقاً', 'warning');
                         showCompletedModal();
                         return;
                     }
-                    
+
                     var lesson = allLessons.find(function(l) { return l.id === lessonId; });
                     if (!lesson) {
                         showToast('الحصة غير موجودة', 'error');
@@ -7119,7 +7240,7 @@
                     q.id + '">' +
                     '<div style="font-weight:700;font-size:clamp(0.95rem,1.05vw,1.1rem);color:var(--text-dark);margin-bottom:8px;">' +
                     '<span style="color:var(--primary);">' + (index + 1) + '.</span> ' + escapeHtml(q
-                    .question) + '</div>' +
+                        .question) + '</div>' +
                     '<div class="exam-options">' + optionsHtml + '</div>' +
                     (q.image ?
                         '<div style="margin-top:8px;text-align:center;"><img src="' + q.image +
@@ -7209,7 +7330,7 @@
                 var minutes = Math.floor(examTimeLeft / 60);
                 var seconds = examTimeLeft % 60;
                 timerEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2,
-                '0');
+                    '0');
 
                 if (examTimeLeft === 60) {
                     showToast('⏰ دقيقة واحدة متبقية!', 'warning');
@@ -7633,25 +7754,25 @@
             var studyTime = Math.round(userData ? userData.studyTime || 0 : 0);
             var achievements = [
                 { id: 'first_lesson', icon: '📚', name: 'البداية', desc: 'أكملت أول حصة', unlocked: lessonsCompleted >=
-                    1 },
+                        1 },
                 { id: 'first_exam', icon: '📝', name: 'أول امتحان', desc: 'حللت أول امتحان', unlocked: examsPassed >=
-                    1 },
+                        1 },
                 { id: 'first_quiz', icon: '🧪', name: 'أول كويز', desc: 'حللت أول كويز', unlocked: quizzesPassed >=
-                    1 },
+                        1 },
                 { id: 'perfect_exam', icon: '⭐', name: 'امتحان كامل', desc: 'حصلت على 100% في امتحان',
                     unlocked: perfectExams >= 1 },
                 { id: 'streak_3', icon: '🔥', name: 'التزام 3 أيام', desc: 'درست 3 أيام متتالية', unlocked: streak >=
-                    3 },
+                        3 },
                 { id: 'streak_7', icon: '⚡', name: 'التزام أسبوع', desc: 'درست 7 أيام متتالية', unlocked: streak >=
-                    7 },
+                        7 },
                 { id: 'atoms_50', icon: '💎', name: 'جامع ذرات', desc: 'جمعت 50 ذرة', unlocked: atoms >= 50 },
                 { id: 'atoms_100', icon: '🏆', name: 'خبير ذرات', desc: 'جمعت 100 ذرة', unlocked: atoms >= 100 },
                 { id: 'lessons_5', icon: '📖', name: 'طالب مجتهد', desc: 'أكملت 5 حصص', unlocked: lessonsCompleted >=
-                    5 },
+                        5 },
                 { id: 'lessons_10', icon: '🎓', name: 'طالب متميز', desc: 'أكملت 10 حصص', unlocked: lessonsCompleted >=
-                    10 },
+                        10 },
                 { id: 'study_5h', icon: '⏱️', name: 'دراسة 5 ساعات', desc: 'سجلت 5 ساعات دراسة', unlocked: studyTime >=
-                    5 },
+                        5 },
                 { id: 'study_10h', icon: '🧠', name: 'دراسة 10 ساعات', desc: 'سجلت 10 ساعات دراسة',
                     unlocked: studyTime >= 10 },
             ];
@@ -7668,7 +7789,7 @@
                         '" style="background:var(--white);border-radius:var(--radius);padding:16px;text-align:center;border:2px solid ' +
                         (a.unlocked ? 'var(--primary)' : 'rgba(231,42,155,0.06)') +
                         ';transition:var(--transition-smooth);' + (a.unlocked ? '' :
-                        'opacity:0.5;filter:grayscale(1);') + '">' +
+                            'opacity:0.5;filter:grayscale(1);') + '">' +
                         '<div class="icon" style="font-size:clamp(2rem,2.2vw,2.5rem);margin-bottom:4px;">' +
                         a.icon + '</div>' +
                         '<div class="name" style="font-weight:700;font-size:clamp(0.8rem,0.85vw,0.85rem);color:var(--text-dark);">' +
@@ -8181,7 +8302,7 @@
         function getBannedUsers() {
             try {
                 return database.ref('users').orderByChild('isBanned').equalTo(true).once('value').then(function(
-                snapshot) {
+                    snapshot) {
                     var bannedUsers = [];
                     snapshot.forEach(function(child) {
                         bannedUsers.push({ id: child.key, ...child.val() });
@@ -8225,7 +8346,7 @@
                         database.ref('subscriptionRequests/' + requestId + '/approvedAt').set(new Date()
                             .toISOString());
                         database.ref('subscriptionRequests/' + requestId + '/approvedBy').set(currentUser
-                        .uid);
+                            .uid);
                         database.ref('subscriptionRequests/' + requestId + '/approvedByName').set(
                             currentUser.displayName || 'Admin');
 
@@ -8309,7 +8430,7 @@
                         database.ref('subscriptionRequests/' + requestId + '/rejectedAt').set(new Date()
                             .toISOString());
                         database.ref('subscriptionRequests/' + requestId + '/rejectedBy').set(currentUser
-                        .uid);
+                            .uid);
                         database.ref('subscriptionRequests/' + requestId + '/rejectedByName').set(
                             currentUser.displayName || 'Admin');
                         database.ref('subscriptionRequests/' + requestId + '/rejectionReason').set(
