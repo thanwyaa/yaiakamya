@@ -5835,15 +5835,101 @@
             }
         }
 
-        // ============================================================
-// 🏆 LEADERBOARD - قراءة من leaderboardTop5
+       // ============================================================
+// 🏆 LEADERBOARD - قراءة من leaderboardTop5 مع تحديث تلقائي
+// ============================================================
+
+// ============================================================
+// 🔄 تحديث leaderboardTop5 تلقائياً من users
+// ============================================================
+function updateLeaderboardTop5() {
+    console.log('🔄 جاري تحديث المتصدرين...');
+    
+    // ✅ جلب جميع المستخدمين
+    database.ref('users').once('value').then(function(snapshot) {
+        var users = [];
+        
+        snapshot.forEach(function(child) {
+            var data = child.val();
+            
+            // ✅ استبعاد المحظورين
+            if (data.banned !== true && data.isBanned !== true) {
+                users.push({
+                    uid: child.key,
+                    name: data.name || 'مستخدم',
+                    points: data.points || 0,
+                    grade: data.grade || 'غير محدد'
+                });
+            }
+        });
+        
+        // ✅ ترتيب تنازلي حسب النقاط
+        users.sort(function(a, b) { 
+            return (b.points || 0) - (a.points || 0); 
+        });
+        
+        // ✅ أخذ أول 5 فقط
+        var top5 = users.slice(0, 5);
+        
+        // ✅ بناء البيانات
+        var leaderboardData = {};
+        top5.forEach(function(user, index) {
+            leaderboardData[user.uid] = {
+                name: user.name,
+                points: user.points || 0,
+                grade: user.grade || 'غير محدد',
+                rank: index + 1,
+                updatedAt: new Date().toISOString()
+            };
+        });
+        
+        // ✅ حفظ في leaderboardTop5
+        database.ref('leaderboardTop5').set(leaderboardData).then(function() {
+            console.log('✅ تم تحديث المتصدرين:', top5);
+            if (top5.length === 0) {
+                console.log('⚠️ لا يوجد مستخدمين');
+            } else {
+                console.log('🏆 أفضل 5:', top5.map(u => u.name + ': ' + u.points + ' نقطة').join(', '));
+            }
+        });
+        
+    }).catch(function(err) {
+        console.error('❌ خطأ في تحديث المتصدرين:', err);
+    });
+}
+
+// ============================================================
+// 🔄 استماع لتغيرات النقاط وتحديث المتصدرين تلقائياً
+// ============================================================
+function listenToPointsChanges() {
+    // ✅ استمع لتغيرات النقاط في users
+    database.ref('users').on('child_changed', function(snapshot) {
+        var data = snapshot.val();
+        if (data && data.points !== undefined) {
+            console.log('📊 تغيرت نقاط المستخدم:', snapshot.key, data.points);
+            updateLeaderboardTop5();
+        }
+    });
+    
+    // ✅ استمع لإضافة مستخدم جديد
+    database.ref('users').on('child_added', function(snapshot) {
+        console.log('👤 مستخدم جديد:', snapshot.key);
+        updateLeaderboardTop5();
+    });
+}
+
+// ============================================================
+// 🏆 تحميل وعرض المتصدرين من leaderboardTop5
 // ============================================================
 function loadLeaderboard() {
     var container = document.getElementById('leaderboardContainer');
     if (!container) return;
 
+    // ✅ أولاً: تحديث البيانات من users
+    updateLeaderboardTop5();
+
     try {
-        // ✅ قراءة من leaderboardTop5 بدلاً من users
+        // ✅ قراءة من leaderboardTop5
         database.ref('leaderboardTop5').once('value').then(function(snapshot) {
             var data = snapshot.val();
             
@@ -5862,7 +5948,7 @@ function loadLeaderboard() {
             var users = Object.entries(data).map(([uid, info]) => ({
                 id: uid,
                 name: info.name || 'مستخدم',
-                atoms: info.points || 0,  // points → atoms
+                atoms: info.points || 0,
                 photoURL: '',
                 rank: info.rank || '--',
                 coursesCount: 0
@@ -5890,7 +5976,7 @@ function loadLeaderboard() {
 }
 
 // ============================================================
-// 🏆 RENDER LEADERBOARD - عرض أفضل 5 طلاب من leaderboardTop5
+// 🏆 عرض المتصدرين في واجهة المستخدم
 // ============================================================
 function renderLeaderboard(users, container) {
     if (!container) {
@@ -5971,6 +6057,35 @@ function renderLeaderboard(users, container) {
             </div>
         `;
     }
+}
+
+// ============================================================
+// 🏆 عرض صفحة المتصدرين
+// ============================================================
+function showLeaderboard() {
+    var main = document.getElementById('mainContent');
+    if (!main) return;
+    
+    main.innerHTML = `
+        <div style="max-width:1280px;margin:0 auto;padding:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+                <button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.showHome()">
+                    <i class="fas fa-arrow-right"></i> العودة
+                </button>
+                <button class="btn-primary-premium btn-sm-premium" onclick="window.APP.updateLeaderboardTop5(); window.APP.loadLeaderboard();" style="min-height:36px;">
+                    🔄 تحديث المتصدرين
+                </button>
+            </div>
+            <h1 style="font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text-dark);margin:4px 0;">🏆 المتصدرين</h1>
+            <p style="color:var(--text-secondary);margin-bottom:16px;font-size:clamp(0.9rem,1vw,1rem);">أفضل 5 طلاب على المنصة</p>
+            <div id="leaderboardContainer">
+                <div class="glass-card skeleton" style="height:400px;"></div>
+            </div>
+        </div>
+    `;
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    loadLeaderboard();
 }
         function showLeaderboard() {
             var main = document.getElementById('mainContent');
