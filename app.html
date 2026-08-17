@@ -4924,6 +4924,10 @@
                     videoWatchStartTime = Date.now();
                     if (!videoWatchTotal[lessonId]) videoWatchTotal[lessonId] = 0;
 
+                    // ✅ Load saved progress
+                    var savedProgress = userCourseProgress[lessonId];
+                    var savedDuration = savedProgress ? savedProgress.watchDuration || 0 : 0;
+
                     main.innerHTML =
                         '<div style="max-width:1100px;margin:0 auto;padding:16px;" class="no-copy">' +
                         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:clamp(0.8rem,0.9vw,0.85rem);color:var(--text-secondary);flex-wrap:wrap;">' +
@@ -4993,6 +4997,10 @@
                         onReady: function(event) {
                             var player = event.target;
                             try {
+                                // Resume from saved position
+                                if (savedDuration > 0) {
+                                    player.seekTo(savedDuration, true);
+                                }
                                 var container = document.getElementById('videoContainer');
                                 if (container) {
                                     // Auto-play attempt
@@ -5145,7 +5153,7 @@
                         var current = playerInstance.getCurrentTime();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTarget = Math.max(0, current - 10);
-                        if (seekTarget <= maxWatched) {
+                        if (seekTarget <= maxWatched + 1) {
                             playerInstance.seekTo(seekTarget, true);
                             showToast('⏪ تأخير 10 ثوان', 'info');
                         } else {
@@ -5353,7 +5361,7 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTime = percent * duration;
-                        if (seekTime <= maxWatched + 0.5) {
+                        if (seekTime <= maxWatched + 1) {
                             playerInstance.seekTo(seekTime, true);
                         } else {
                             showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
@@ -5375,7 +5383,7 @@
                         var duration = playerInstance.getDuration();
                         var maxWatched = getMaxWatchedTime(lessonId);
                         var seekTime = percent * duration;
-                        if (seekTime <= maxWatched + 0.5) {
+                        if (seekTime <= maxWatched + 1) {
                             playerInstance.seekTo(seekTime, true);
                         } else {
                             showToast('🚫 لا يمكنك التقديم إلى ما بعد نقطة مشاهدتك', 'warning');
@@ -5835,258 +5843,130 @@
             }
         }
 
-       // ============================================================
-// 🏆 LEADERBOARD - قراءة من leaderboardTop5 مع تحديث تلقائي
-// ============================================================
+        // ============================================================
+        // 🏆 LEADERBOARD - Real-Time Top 5 from separate public source
+        // ============================================================
+        var leaderboardListener = null;
 
-// ============================================================
-// 🔄 تحديث leaderboardTop5 تلقائياً من users
-// ============================================================
-function updateLeaderboardTop5() {
-    console.log('🔄 جاري تحديث المتصدرين...');
-    
-    // ✅ جلب جميع المستخدمين
-    database.ref('users').once('value').then(function(snapshot) {
-        var users = [];
-        
-        snapshot.forEach(function(child) {
-            var data = child.val();
-            
-            // ✅ استبعاد المحظورين
-            if (data.banned !== true && data.isBanned !== true) {
-                users.push({
-                    uid: child.key,
-                    name: data.name || 'مستخدم',
-                    points: data.points || 0,
-                    grade: data.grade || 'غير محدد'
-                });
+        function setupLeaderboardListener() {
+            if (leaderboardListener) {
+                leaderboardListener();
+                leaderboardListener = null;
             }
-        });
-        
-        // ✅ ترتيب تنازلي حسب النقاط
-        users.sort(function(a, b) { 
-            return (b.points || 0) - (a.points || 0); 
-        });
-        
-        // ✅ أخذ أول 5 فقط
-        var top5 = users.slice(0, 5);
-        
-        // ✅ بناء البيانات
-        var leaderboardData = {};
-        top5.forEach(function(user, index) {
-            leaderboardData[user.uid] = {
-                name: user.name,
-                points: user.points || 0,
-                grade: user.grade || 'غير محدد',
-                rank: index + 1,
-                updatedAt: new Date().toISOString()
-            };
-        });
-        
-        // ✅ حفظ في leaderboardTop5
-        database.ref('leaderboardTop5').set(leaderboardData).then(function() {
-            console.log('✅ تم تحديث المتصدرين:', top5);
-            if (top5.length === 0) {
-                console.log('⚠️ لا يوجد مستخدمين');
-            } else {
-                console.log('🏆 أفضل 5:', top5.map(u => u.name + ': ' + u.points + ' نقطة').join(', '));
-            }
-        });
-        
-    }).catch(function(err) {
-        console.error('❌ خطأ في تحديث المتصدرين:', err);
-    });
-}
 
-// ============================================================
-// 🔄 استماع لتغيرات النقاط وتحديث المتصدرين تلقائياً
-// ============================================================
-function listenToPointsChanges() {
-    // ✅ استمع لتغيرات النقاط في users
-    database.ref('users').on('child_changed', function(snapshot) {
-        var data = snapshot.val();
-        if (data && data.points !== undefined) {
-            console.log('📊 تغيرت نقاط المستخدم:', snapshot.key, data.points);
-            updateLeaderboardTop5();
+            // ✅ Listen to topLeaderboard changes
+            leaderboardListener = database.ref('topLeaderboard').on('value', function(snapshot) {
+                var container = document.getElementById('leaderboardContainer');
+                if (!container) return;
+
+                var data = snapshot.val();
+                if (!data) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="padding:40px;">
+                            <div style="font-size:3rem;">🏆</div>
+                            <h3 style="margin-top:8px;">لا يوجد متصدرين</h3>
+                            <p style="color:var(--text-secondary);">كن أول من ينضم ويبدأ في جمع الذرات!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Convert to array and sort by points
+                var users = Object.entries(data).map(([uid, info]) => ({
+                    id: uid,
+                    name: info.name || 'مستخدم',
+                    atoms: info.points || 0,
+                    photoURL: info.photoURL || '',
+                    rank: info.rank || '--'
+                }));
+
+                users.sort(function(a, b) { return b.atoms - a.atoms; });
+
+                renderLeaderboard(users, container);
+            });
         }
-    });
-    
-    // ✅ استمع لإضافة مستخدم جديد
-    database.ref('users').on('child_added', function(snapshot) {
-        console.log('👤 مستخدم جديد:', snapshot.key);
-        updateLeaderboardTop5();
-    });
-}
 
-// ============================================================
-// 🏆 تحميل وعرض المتصدرين من leaderboardTop5
-// ============================================================
-function loadLeaderboard() {
-    var container = document.getElementById('leaderboardContainer');
-    if (!container) return;
+        function renderLeaderboard(users, container) {
+            if (!container) {
+                container = document.getElementById('leaderboardContainer');
+                if (!container) return;
+            }
 
-    // ✅ أولاً: تحديث البيانات من users
-    updateLeaderboardTop5();
+            var top5 = users.slice(0, 5);
+            var top3 = top5.slice(0, 3);
+            var html = '';
 
-    try {
-        // ✅ قراءة من leaderboardTop5
-        database.ref('leaderboardTop5').once('value').then(function(snapshot) {
-            var data = snapshot.val();
-            
-            if (!data) {
-                container.innerHTML = `
-                    <div class="empty-state" style="padding:40px;">
-                        <div style="font-size:3rem;">🏆</div>
-                        <h3 style="margin-top:8px;">لا يوجد متصدرين</h3>
-                        <p style="color:var(--text-secondary);">كن أول من ينضم ويبدأ في جمع الذرات!</p>
+            // ✅ Display top 3 with podium
+            if (top3.length > 0) {
+                html += `
+                    <div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">
+                `;
+
+                var podiumData = [
+                    { index: 1, user: top3[1], class: 'silver', rank: '🥈' },
+                    { index: 0, user: top3[0], class: 'gold', rank: '👑' },
+                    { index: 2, user: top3[2], class: 'bronze', rank: '🥉' }
+                ];
+
+                podiumData.forEach(function(p) {
+                    if (!p.user) return;
+                    var firstLetter = (p.user.name || '👤')[0].toUpperCase();
+                    html += `
+                        <div class="podium-item ${p.class}" style="display:flex;flex-direction:column;align-items:center;text-align:center;transition:var(--transition-smooth);position:relative;">
+                            ${p.class === 'gold' ? '<div class="crown" style="position:absolute;top:-25px;font-size:2.2rem;animation:bounceCrown 2s ease-in-out infinite;">👑</div>' : ''}
+                            <div class="podium-rank" style="font-size:clamp(1.5rem,2vw,2.5rem);margin-bottom:4px;">${p.rank}</div>
+                            <div class="podium-avatar" style="width:clamp(50px,6vw,70px);height:clamp(50px,6vw,70px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;margin-bottom:8px;border:4px solid ${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};background:var(--white);color:var(--text-dark);transition:var(--transition-smooth);overflow:hidden;">
+                                ${p.user.photoURL ? `<img src="${p.user.photoURL}" style="width:100%;height:100%;object-fit:cover;">` : firstLetter}
+                            </div>
+                            <div style="font-weight:700;color:var(--text-dark);font-size:clamp(0.8rem,0.9vw,0.9rem);">${escapeHtml(p.user.name)}</div>
+                            <div style="font-size:clamp(0.7rem,0.8vw,0.8rem);color:var(--text-secondary);">⚛️ ${p.user.atoms || 0}</div>
+                            <div class="podium-base" style="height:${p.class === 'gold' ? '12px' : p.class === 'silver' ? '10px' : '8px'};width:${p.class === 'gold' ? 'clamp(50px,6vw,80px)' : p.class === 'silver' ? 'clamp(45px,5vw,70px)' : 'clamp(40px,4vw,60px)'};border-radius:4px;margin-top:8px;background:${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};"></div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            // ✅ Display positions 4 and 5
+            var rest = top5.slice(3);
+            if (rest.length > 0) {
+                html += `
+                    <div style="background:var(--white);border-radius:var(--radius-lg);border:1px solid rgba(231,42,155,0.06);overflow:hidden;">
+                `;
+                rest.forEach(function(user, idx) {
+                    var rank = idx + 4;
+                    var firstLetter = (user.name || '👤')[0].toUpperCase();
+                    html += `
+                        <div class="leaderboard-item" style="display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:var(--radius);transition:var(--transition-smooth);border:1px solid rgba(231,42,155,0.06);background:var(--white);margin-bottom:8px;">
+                            <div class="rank" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;flex-shrink:0;background:var(--white);color:var(--text-secondary);">#${rank}</div>
+                            <div class="avatar" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;background:var(--gradient-primary);color:#fff;overflow:hidden;">
+                                ${user.photoURL ? `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;">` : firstLetter}
+                            </div>
+                            <div class="info" style="flex:1;">
+                                <div class="name" style="font-weight:700;color:var(--text-dark);font-size:clamp(0.85rem,0.9vw,0.95rem);">${escapeHtml(user.name)}</div>
+                            </div>
+                            <div class="points" style="font-weight:800;color:var(--primary);font-size:clamp(0.9rem,1vw,1rem);">⚛️ ${user.atoms || 0}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+
+            // ✅ Show current user rank
+            if (currentUser && userData) {
+                container.innerHTML += `
+                    <div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">
+                        <span style="font-size:clamp(1rem,1.1vw,1.1rem);font-weight:700;color:var(--text-dark);">
+                            🏅 ترتيبك الحالي: <span style="color:var(--primary);font-size:clamp(1.1rem,1.2vw,1.3rem);">#${userData.rank || '--'}</span>
+                        </span>
+                        <span style="margin-right:16px;font-size:clamp(0.8rem,0.9vw,0.9rem);color:var(--text-secondary);">⚛️ ${userData.atoms || 0} ذرة</span>
                     </div>
                 `;
-                return;
             }
+        }
 
-            // ✅ تحويل البيانات إلى مصفوفة
-            var users = Object.entries(data).map(([uid, info]) => ({
-                id: uid,
-                name: info.name || 'مستخدم',
-                atoms: info.points || 0,
-                photoURL: '',
-                rank: info.rank || '--',
-                coursesCount: 0
-            }));
-
-            // ✅ ترتيب حسب النقاط (تنازلياً)
-            users.sort(function(a, b) { return b.atoms - a.atoms; });
-
-            renderLeaderboard(users, container);
-        });
-    } catch (error) {
-        console.error('Error loading leaderboard:', error);
-        container.innerHTML = `
-            <div style="text-align:center;padding:20px;color:#EF4444;">
-                ⚠️ حدث خطأ في تحميل المتصدرين
-                <br>
-                <button onclick="window.APP.loadLeaderboard()" 
-                        class="btn-primary-premium btn-sm-premium" 
-                        style="margin-top:10px;">
-                    🔄 إعادة المحاولة
-                </button>
-            </div>
-        `;
-    }
-}
-
-// ============================================================
-// 🏆 عرض المتصدرين في واجهة المستخدم
-// ============================================================
-function renderLeaderboard(users, container) {
-    if (!container) {
-        container = document.getElementById('leaderboardContainer');
-        if (!container) return;
-    }
-
-    var top5 = users.slice(0, 5);
-    var top3 = top5.slice(0, 3);
-    var html = '';
-
-    // ✅ عرض أول 3 (منصة)
-    if (top3.length > 0) {
-        html += `
-            <div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">
-        `;
-        
-        var podiumData = [
-            { index: 1, user: top3[1], class: 'silver', rank: '🥈' },
-            { index: 0, user: top3[0], class: 'gold', rank: '👑' },
-            { index: 2, user: top3[2], class: 'bronze', rank: '🥉' }
-        ];
-        
-        podiumData.forEach(function(p) {
-            if (!p.user) return;
-            var firstLetter = (p.user.name || '👤')[0].toUpperCase();
-            html += `
-                <div class="podium-item ${p.class}" style="display:flex;flex-direction:column;align-items:center;text-align:center;transition:var(--transition-smooth);position:relative;">
-                    ${p.class === 'gold' ? '<div class="crown" style="position:absolute;top:-25px;font-size:2.2rem;animation:bounceCrown 2s ease-in-out infinite;">👑</div>' : ''}
-                    <div class="podium-rank" style="font-size:clamp(1.5rem,2vw,2.5rem);margin-bottom:4px;">${p.rank}</div>
-                    <div class="podium-avatar" style="width:clamp(50px,6vw,70px);height:clamp(50px,6vw,70px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;margin-bottom:8px;border:4px solid ${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};background:var(--white);color:var(--text-dark);transition:var(--transition-smooth);overflow:hidden;">
-                        ${firstLetter}
-                    </div>
-                    <div style="font-weight:700;color:var(--text-dark);font-size:clamp(0.8rem,0.9vw,0.9rem);">${escapeHtml(p.user.name)}</div>
-                    <div style="font-size:clamp(0.7rem,0.8vw,0.8rem);color:var(--text-secondary);">⚛️ ${p.user.atoms || 0}</div>
-                    <div class="podium-base" style="height:${p.class === 'gold' ? '12px' : p.class === 'silver' ? '10px' : '8px'};width:${p.class === 'gold' ? 'clamp(50px,6vw,80px)' : p.class === 'silver' ? 'clamp(45px,5vw,70px)' : 'clamp(40px,4vw,60px)'};border-radius:4px;margin-top:8px;background:${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};"></div>
-                </div>
-            `;
-        });
-        html += `</div>`;
-    }
-
-    // ✅ عرض المركز 4 و 5
-    var rest = top5.slice(3);
-    if (rest.length > 0) {
-        html += `
-            <div style="background:var(--white);border-radius:var(--radius-lg);border:1px solid rgba(231,42,155,0.06);overflow:hidden;">
-        `;
-        rest.forEach(function(user, idx) {
-            var rank = idx + 4;
-            var firstLetter = (user.name || '👤')[0].toUpperCase();
-            html += `
-                <div class="leaderboard-item" style="display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:var(--radius);transition:var(--transition-smooth);border:1px solid rgba(231,42,155,0.06);background:var(--white);margin-bottom:8px;">
-                    <div class="rank" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;flex-shrink:0;background:var(--white);color:var(--text-secondary);">#${rank}</div>
-                    <div class="avatar" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;background:var(--gradient-primary);color:#fff;overflow:hidden;">
-                        ${firstLetter}
-                    </div>
-                    <div class="info" style="flex:1;">
-                        <div class="name" style="font-weight:700;color:var(--text-dark);font-size:clamp(0.85rem,0.9vw,0.95rem);">${escapeHtml(user.name)}</div>
-                    </div>
-                    <div class="points" style="font-weight:800;color:var(--primary);font-size:clamp(0.9rem,1vw,1rem);">⚛️ ${user.atoms || 0}</div>
-                </div>
-            `;
-        });
-        html += `</div>`;
-    }
-
-    container.innerHTML = html;
-
-    // ✅ عرض ترتيب المستخدم الحالي
-    if (currentUser && userData) {
-        container.innerHTML += `
-            <div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">
-                <span style="font-size:clamp(1rem,1.1vw,1.1rem);font-weight:700;color:var(--text-dark);">
-                    🏅 ترتيبك الحالي: <span style="color:var(--primary);font-size:clamp(1.1rem,1.2vw,1.3rem);">#${userData.rank || '--'}</span>
-                </span>
-                <span style="margin-right:16px;font-size:clamp(0.8rem,0.9vw,0.9rem);color:var(--text-secondary);">⚛️ ${userData.atoms || 0} ذرة</span>
-            </div>
-        `;
-    }
-}
-
-// ============================================================
-// 🏆 عرض صفحة المتصدرين
-// ============================================================
-function showLeaderboard() {
-    var main = document.getElementById('mainContent');
-    if (!main) return;
-    
-    main.innerHTML = `
-        <div style="max-width:1280px;margin:0 auto;padding:20px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
-                <button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.showHome()">
-                    <i class="fas fa-arrow-right"></i> العودة
-                </button>
-                <button class="btn-primary-premium btn-sm-premium" onclick="window.APP.updateLeaderboardTop5(); window.APP.loadLeaderboard();" style="min-height:36px;">
-                    🔄 تحديث المتصدرين
-                </button>
-            </div>
-            <h1 style="font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text-dark);margin:4px 0;">🏆 المتصدرين</h1>
-            <p style="color:var(--text-secondary);margin-bottom:16px;font-size:clamp(0.9rem,1vw,1rem);">أفضل 5 طلاب على المنصة</p>
-            <div id="leaderboardContainer">
-                <div class="glass-card skeleton" style="height:400px;"></div>
-            </div>
-        </div>
-    `;
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    loadLeaderboard();
-}
         function showLeaderboard() {
             var main = document.getElementById('mainContent');
             if (!main) return;
@@ -6097,7 +5977,9 @@ function showLeaderboard() {
                 '<p style="color:var(--text-secondary);margin-bottom:16px;font-size:clamp(0.9rem,1vw,1rem);">أفضل 5 طلاب على المنصة</p>' +
                 '<div id="leaderboardContainer"></div></div>';
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            loadLeaderboard();
+
+            // Setup real-time listener
+            setupLeaderboardListener();
         }
 
         // ============================================================
@@ -8558,9 +8440,9 @@ function showLeaderboard() {
                 '';
 
             loadCourses();
-            loadLeaderboard();
 
-            setTimeout(setupScrollReveal, 300);
+            // Setup leaderboard listener if already on home
+            setupLeaderboardListener();
         }
 
         // ============================================================
@@ -9000,7 +8882,7 @@ function showLeaderboard() {
                             loadLessons();
                             loadExams();
                             loadQuizzes();
-                            loadLeaderboard();
+                            setupLeaderboardListener();
                         }, 100);
                     });
                 } else {
@@ -9008,7 +8890,7 @@ function showLeaderboard() {
                     loadLessons();
                     loadExams();
                     loadQuizzes();
-                    loadLeaderboard();
+                    setupLeaderboardListener();
                     updateUIForAuth(null);
                 }
             });
@@ -9073,7 +8955,8 @@ function showLeaderboard() {
             // User
             showDashboard: showDashboard,
             showLeaderboard: showLeaderboard,
-            loadLeaderboard: loadLeaderboard,
+            setupLeaderboardListener: setupLeaderboardListener,
+            loadLeaderboard: showLeaderboard,
             showResults: showResults,
             showErrorBank: showErrorBank,
             startErrorExam: startErrorExam,
