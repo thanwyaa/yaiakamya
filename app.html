@@ -5867,57 +5867,54 @@
         // ============================================================
         let leaderboardListener = null;
 
-        function startLeaderboardListener() {
-            if (leaderboardListener) return;
+     function startLeaderboardListener() {
+    if (leaderboardListener) return;
 
-            console.log('🔄 بدء استماع Real-Time للـ Leaderboard...');
+    console.log('🔄 بدء استماع Real-Time للـ Leaderboard من leaderboardTop5...');
 
-            leaderboardListener = database.ref('users').on('value', function(snapshot) {
-                if (!snapshot.exists()) {
-                    console.log('⚠️ لا يوجد مستخدمين');
-                    return;
-                }
-
-                var users = [];
-                snapshot.forEach(function(child) {
-                    var data = child.val();
-
-                    // ✅ استبعاد المحظورين
-                    if (data.banned !== true && data.isBanned !== true) {
-                        users.push({
-                            uid: child.key,
-                            name: data.name || 'مستخدم',
-                            atoms: data.atoms || 0,
-                            grade: data.grade || 'غير محدد',
-                            photoURL: data.photoURL || ''
-                        });
-                    }
-                });
-
-                // ✅ ترتيب تنازلي حسب الذرات (atoms)
-                users.sort(function(a, b) {
-                    return (b.atoms || 0) - (a.atoms || 0);
-                });
-
-                // ✅ أخذ أول 5 فقط
-                var top5 = users.slice(0, 5);
-
-                // ✅ تحديث العرض
-                renderLeaderboardUI(top5);
-                updateUserRank(users);
-
-            }, function(error) {
-                console.error('❌ خطأ في استماع Leaderboard:', error);
-            });
+    // 🔥 التغيير هنا: بنجيب من leaderboardTop5 بدل users
+    leaderboardListener = database.ref('leaderboardTop5').on('value', function(snapshot) {
+        if (!snapshot.exists()) {
+            console.log('⚠️ مفيش بيانات في leaderboardTop5');
+            renderLeaderboardUI([]);
+            return;
         }
 
-        function stopLeaderboardListener() {
-            if (leaderboardListener) {
-                database.ref('users').off('value', leaderboardListener);
-                leaderboardListener = null;
-                console.log('🛑 تم إيقاف استماع Leaderboard');
+        var users = [];
+        snapshot.forEach(function(child) {
+            var data = child.val();
+            users.push({
+                uid: child.key,
+                name: data.name || 'مستخدم',
+                points: data.points || 0,     // ✅ بنستخدم points
+                atoms: data.atoms || 0,
+                rank: data.rank || 0,
+                grade: data.grade || 'غير محدد',
+                photoURL: data.photoURL || ''
+            });
+        });
+
+        // ✅ ترتيب حسب النقاط (points)
+        users.sort(function(a, b) {
+            return (b.points || 0) - (a.points || 0);
+        });
+
+        var top5 = users.slice(0, 5);
+        renderLeaderboardUI(top5);
+
+        // ✅ تحديث ترتيب المستخدم الحالي
+        if (currentUser && userData) {
+            var rank = users.findIndex(function(u) { return u.uid === currentUser.uid; }) + 1;
+            var rankDisplay = rank > 0 ? rank : '--';
+            if (userData.rank !== rankDisplay) {
+                userData.rank = rankDisplay;
+                database.ref('users/' + currentUser.uid + '/rank').set(rankDisplay);
             }
         }
+    }, function(error) {
+        console.error('❌ خطأ في استماع Leaderboard:', error);
+    });
+} 
 
         function renderLeaderboardUI(top5) {
             var container = document.getElementById('leaderboardContainer');
