@@ -5836,19 +5836,22 @@
         }
 
         // ============================================================
-        // 🏆 LEADERBOARD - قراءة من leaderboardTop5 مع تحديث تلقائي
+        // 🏆 LEADERBOARD - REAL-TIME FIXED
         // ============================================================
+        let leaderboardListener = null;
 
-        // ============================================================
-        // 🔄 تحديث leaderboardTop5 تلقائياً من users
-        // ============================================================
-        function updateLeaderboardTop5() {
-            console.log('🔄 جاري تحديث المتصدرين...');
+        function startLeaderboardListener() {
+            if (leaderboardListener) return;
 
-            // ✅ جلب جميع المستخدمين
-            database.ref('users').once('value').then(function(snapshot) {
+            console.log('🔄 بدء استماع Real-Time للـ Leaderboard...');
+
+            leaderboardListener = database.ref('users').on('value', function(snapshot) {
+                if (!snapshot.exists()) {
+                    console.log('⚠️ لا يوجد مستخدمين');
+                    return;
+                }
+
                 var users = [];
-
                 snapshot.forEach(function(child) {
                     var data = child.val();
 
@@ -5857,143 +5860,61 @@
                         users.push({
                             uid: child.key,
                             name: data.name || 'مستخدم',
-                            points: data.points || 0,
-                            grade: data.grade || 'غير محدد'
+                            atoms: data.atoms || 0,
+                            grade: data.grade || 'غير محدد',
+                            photoURL: data.photoURL || ''
                         });
                     }
                 });
 
-                // ✅ ترتيب تنازلي حسب النقاط
+                // ✅ ترتيب تنازلي حسب الذرات (atoms)
                 users.sort(function(a, b) {
-                    return (b.points || 0) - (a.points || 0);
+                    return (b.atoms || 0) - (a.atoms || 0);
                 });
 
                 // ✅ أخذ أول 5 فقط
                 var top5 = users.slice(0, 5);
 
-                // ✅ بناء البيانات
-                var leaderboardData = {};
-                top5.forEach(function(user, index) {
-                    leaderboardData[user.uid] = {
-                        name: user.name,
-                        points: user.points || 0,
-                        grade: user.grade || 'غير محدد',
-                        rank: index + 1,
-                        updatedAt: new Date().toISOString()
-                    };
-                });
+                // ✅ تحديث العرض
+                renderLeaderboardUI(top5);
+                updateUserRank(users);
 
-                // ✅ حفظ في leaderboardTop5
-                database.ref('leaderboardTop5').set(leaderboardData).then(function() {
-                    console.log('✅ تم تحديث المتصدرين:', top5);
-                    if (top5.length === 0) {
-                        console.log('⚠️ لا يوجد مستخدمين');
-                    } else {
-                        console.log('🏆 أفضل 5:', top5.map(u => u.name + ': ' + u.points + ' نقطة').join(
-                        ', '));
-                    }
-                });
-
-            }).catch(function(err) {
-                console.error('❌ خطأ في تحديث المتصدرين:', err);
+            }, function(error) {
+                console.error('❌ خطأ في استماع Leaderboard:', error);
             });
         }
 
-        // ============================================================
-        // 🔄 استماع لتغيرات النقاط وتحديث المتصدرين تلقائياً
-        // ============================================================
-        function listenToPointsChanges() {
-            // ✅ استمع لتغيرات النقاط في users
-            database.ref('users').on('child_changed', function(snapshot) {
-                var data = snapshot.val();
-                if (data && data.points !== undefined) {
-                    console.log('📊 تغيرت نقاط المستخدم:', snapshot.key, data.points);
-                    updateLeaderboardTop5();
-                }
-            });
-
-            // ✅ استمع لإضافة مستخدم جديد
-            database.ref('users').on('child_added', function(snapshot) {
-                console.log('👤 مستخدم جديد:', snapshot.key);
-                updateLeaderboardTop5();
-            });
+        function stopLeaderboardListener() {
+            if (leaderboardListener) {
+                database.ref('users').off('value', leaderboardListener);
+                leaderboardListener = null;
+                console.log('🛑 تم إيقاف استماع Leaderboard');
+            }
         }
 
-        // ============================================================
-        // 🏆 تحميل وعرض المتصدرين من leaderboardTop5
-        // ============================================================
-        function loadLeaderboard() {
+        function renderLeaderboardUI(top5) {
             var container = document.getElementById('leaderboardContainer');
             if (!container) return;
 
-            // ✅ أولاً: تحديث البيانات من users
-            updateLeaderboardTop5();
-
-            try {
-                // ✅ قراءة من leaderboardTop5
-                database.ref('leaderboardTop5').once('value').then(function(snapshot) {
-                    var data = snapshot.val();
-
-                    if (!data) {
-                        container.innerHTML = `
-                            <div class="empty-state" style="padding:40px;">
-                                <div style="font-size:3rem;">🏆</div>
-                                <h3 style="margin-top:8px;">لا يوجد متصدرين</h3>
-                                <p style="color:var(--text-secondary);">كن أول من ينضم ويبدأ في جمع الذرات!</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    // ✅ تحويل البيانات إلى مصفوفة
-                    var users = Object.entries(data).map(([uid, info]) => ({
-                        id: uid,
-                        name: info.name || 'مستخدم',
-                        atoms: info.points || 0,
-                        photoURL: '',
-                        rank: info.rank || '--',
-                        coursesCount: 0
-                    }));
-
-                    // ✅ ترتيب حسب النقاط (تنازلياً)
-                    users.sort(function(a, b) { return b.atoms - a.atoms; });
-
-                    renderLeaderboard(users, container);
-                });
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
+            if (!top5 || top5.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align:center;padding:20px;color:#EF4444;">
-                        ⚠️ حدث خطأ في تحميل المتصدرين
-                        <br>
-                        <button onclick="window.APP.loadLeaderboard()" 
-                                class="btn-primary-premium btn-sm-premium" 
-                                style="margin-top:10px;">
-                            🔄 إعادة المحاولة
-                        </button>
+                    <div class="empty-state" style="padding:40px;">
+                        <div style="font-size:3rem;">🏆</div>
+                        <h3 style="margin-top:8px;">لا يوجد متصدرين</h3>
+                        <p style="color:var(--text-secondary);">كن أول من ينضم ويبدأ في جمع الذرات!</p>
                     </div>
                 `;
-            }
-        }
-
-        // ============================================================
-        // 🏆 عرض المتصدرين في واجهة المستخدم
-        // ============================================================
-        function renderLeaderboard(users, container) {
-            if (!container) {
-                container = document.getElementById('leaderboardContainer');
-                if (!container) return;
+                return;
             }
 
-            var top5 = users.slice(0, 5);
             var top3 = top5.slice(0, 3);
             var html = '';
 
             // ✅ عرض أول 3 (منصة)
             if (top3.length > 0) {
                 html += `
-                        <div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">
-                    `;
+                    <div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">
+                `;
 
                 var podiumData = [
                     { index: 1, user: top3[1], class: 'silver', rank: '🥈' },
@@ -6005,17 +5926,17 @@
                     if (!p.user) return;
                     var firstLetter = (p.user.name || '👤')[0].toUpperCase();
                     html += `
-                            <div class="podium-item ${p.class}" style="display:flex;flex-direction:column;align-items:center;text-align:center;transition:var(--transition-smooth);position:relative;">
-                                ${p.class === 'gold' ? '<div class="crown" style="position:absolute;top:-25px;font-size:2.2rem;animation:bounceCrown 2s ease-in-out infinite;">👑</div>' : ''}
-                                <div class="podium-rank" style="font-size:clamp(1.5rem,2vw,2.5rem);margin-bottom:4px;">${p.rank}</div>
-                                <div class="podium-avatar" style="width:clamp(50px,6vw,70px);height:clamp(50px,6vw,70px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;margin-bottom:8px;border:4px solid ${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};background:var(--white);color:var(--text-dark);transition:var(--transition-smooth);overflow:hidden;">
-                                    ${firstLetter}
-                                </div>
-                                <div style="font-weight:700;color:var(--text-dark);font-size:clamp(0.8rem,0.9vw,0.9rem);">${escapeHtml(p.user.name)}</div>
-                                <div style="font-size:clamp(0.7rem,0.8vw,0.8rem);color:var(--text-secondary);">⚛️ ${p.user.atoms || 0}</div>
-                                <div class="podium-base" style="height:${p.class === 'gold' ? '12px' : p.class === 'silver' ? '10px' : '8px'};width:${p.class === 'gold' ? 'clamp(50px,6vw,80px)' : p.class === 'silver' ? 'clamp(45px,5vw,70px)' : 'clamp(40px,4vw,60px)'};border-radius:4px;margin-top:8px;background:${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};"></div>
+                        <div class="podium-item ${p.class}" style="display:flex;flex-direction:column;align-items:center;text-align:center;transition:var(--transition-smooth);position:relative;">
+                            ${p.class === 'gold' ? '<div class="crown" style="position:absolute;top:-25px;font-size:2.2rem;animation:bounceCrown 2s ease-in-out infinite;">👑</div>' : ''}
+                            <div class="podium-rank" style="font-size:clamp(1.5rem,2vw,2.5rem);margin-bottom:4px;">${p.rank}</div>
+                            <div class="podium-avatar" style="width:clamp(50px,6vw,70px);height:clamp(50px,6vw,70px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;margin-bottom:8px;border:4px solid ${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};background:var(--white);color:var(--text-dark);transition:var(--transition-smooth);overflow:hidden;">
+                                ${firstLetter}
                             </div>
-                        `;
+                            <div style="font-weight:700;color:var(--text-dark);font-size:clamp(0.8rem,0.9vw,0.9rem);">${escapeHtml(p.user.name)}</div>
+                            <div style="font-size:clamp(0.7rem,0.8vw,0.8rem);color:var(--text-secondary);">⚛️ ${p.user.atoms || 0}</div>
+                            <div class="podium-base" style="height:${p.class === 'gold' ? '12px' : p.class === 'silver' ? '10px' : '8px'};width:${p.class === 'gold' ? 'clamp(50px,6vw,80px)' : p.class === 'silver' ? 'clamp(45px,5vw,70px)' : 'clamp(40px,4vw,60px)'};border-radius:4px;margin-top:8px;background:${p.class === 'gold' ? '#FFD60A' : p.class === 'silver' ? '#C0C0C0' : '#CD7F32'};"></div>
+                        </div>
+                    `;
                 });
                 html += `</div>`;
             }
@@ -6024,23 +5945,23 @@
             var rest = top5.slice(3);
             if (rest.length > 0) {
                 html += `
-                        <div style="background:var(--white);border-radius:var(--radius-lg);border:1px solid rgba(231,42,155,0.06);overflow:hidden;">
-                    `;
+                    <div style="background:var(--white);border-radius:var(--radius-lg);border:1px solid rgba(231,42,155,0.06);overflow:hidden;">
+                `;
                 rest.forEach(function(user, idx) {
                     var rank = idx + 4;
                     var firstLetter = (user.name || '👤')[0].toUpperCase();
                     html += `
-                            <div class="leaderboard-item" style="display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:var(--radius);transition:var(--transition-smooth);border:1px solid rgba(231,42,155,0.06);background:var(--white);margin-bottom:8px;">
-                                <div class="rank" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;flex-shrink:0;background:var(--white);color:var(--text-secondary);">#${rank}</div>
-                                <div class="avatar" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;background:var(--gradient-primary);color:#fff;overflow:hidden;">
-                                    ${firstLetter}
-                                </div>
-                                <div class="info" style="flex:1;">
-                                    <div class="name" style="font-weight:700;color:var(--text-dark);font-size:clamp(0.85rem,0.9vw,0.95rem);">${escapeHtml(user.name)}</div>
-                                </div>
-                                <div class="points" style="font-weight:800;color:var(--primary);font-size:clamp(0.9rem,1vw,1rem);">⚛️ ${user.atoms || 0}</div>
+                        <div class="leaderboard-item" style="display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:var(--radius);transition:var(--transition-smooth);border:1px solid rgba(231,42,155,0.06);background:var(--white);margin-bottom:8px;">
+                            <div class="rank" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.8rem;flex-shrink:0;background:var(--white);color:var(--text-secondary);">#${rank}</div>
+                            <div class="avatar" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;background:var(--gradient-primary);color:#fff;overflow:hidden;">
+                                ${firstLetter}
                             </div>
-                        `;
+                            <div class="info" style="flex:1;">
+                                <div class="name" style="font-weight:700;color:var(--text-dark);font-size:clamp(0.85rem,0.9vw,0.95rem);">${escapeHtml(user.name)}</div>
+                            </div>
+                            <div class="points" style="font-weight:800;color:var(--primary);font-size:clamp(0.9rem,1vw,1rem);">⚛️ ${user.atoms || 0}</div>
+                        </div>
+                    `;
                 });
                 html += `</div>`;
             }
@@ -6049,57 +5970,88 @@
 
             // ✅ عرض ترتيب المستخدم الحالي
             if (currentUser && userData) {
+                var userRank = userData.rank || '--';
+                var userAtoms = userData.atoms || 0;
                 container.innerHTML += `
-                        <div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">
-                            <span style="font-size:clamp(1rem,1.1vw,1.1rem);font-weight:700;color:var(--text-dark);">
-                                🏅 ترتيبك الحالي: <span style="color:var(--primary);font-size:clamp(1.1rem,1.2vw,1.3rem);">#${userData.rank || '--'}</span>
-                            </span>
-                            <span style="margin-right:16px;font-size:clamp(0.8rem,0.9vw,0.9rem);color:var(--text-secondary);">⚛️ ${userData.atoms || 0} ذرة</span>
-                        </div>
-                    `;
+                    <div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">
+                        <span style="font-size:clamp(1rem,1.1vw,1.1rem);font-weight:700;color:var(--text-dark);">
+                            🏅 ترتيبك الحالي: <span style="color:var(--primary);font-size:clamp(1.1rem,1.2vw,1.3rem);">#${userRank}</span>
+                        </span>
+                        <span style="margin-right:16px;font-size:clamp(0.8rem,0.9vw,0.9rem);color:var(--text-secondary);">⚛️ ${userAtoms} ذرة</span>
+                    </div>
+                `;
+            }
+        }
+
+        function updateUserRank(allUsers) {
+            if (!currentUser || !userData) return;
+
+            var rank = allUsers.findIndex(function(u) { return u.uid === currentUser.uid; }) + 1;
+            var rankDisplay = rank > 0 ? rank : '--';
+
+            if (userData.rank !== rankDisplay) {
+                userData.rank = rankDisplay;
+                database.ref('users/' + currentUser.uid + '/rank').set(rankDisplay);
+                cache.userData = userData;
+                updateCache();
             }
         }
 
         // ============================================================
-        // 🏆 عرض صفحة المتصدرين
+        // 🏆 SHOW LEADERBOARD - FIXED (removed duplicate)
         // ============================================================
         function showLeaderboard() {
             var main = document.getElementById('mainContent');
             if (!main) return;
 
             main.innerHTML = `
-                    <div style="max-width:1280px;margin:0 auto;padding:20px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
-                            <button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.showHome()">
-                                <i class="fas fa-arrow-right"></i> العودة
-                            </button>
-                            <button class="btn-primary-premium btn-sm-premium" onclick="window.APP.updateLeaderboardTop5(); window.APP.loadLeaderboard();" style="min-height:36px;">
-                                🔄 تحديث المتصدرين
-                            </button>
-                        </div>
-                        <h1 style="font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text-dark);margin:4px 0;">🏆 المتصدرين</h1>
-                        <p style="color:var(--text-secondary);margin-bottom:16px;font-size:clamp(0.9rem,1vw,1rem);">أفضل 5 طلاب على المنصة</p>
-                        <div id="leaderboardContainer">
-                            <div class="glass-card skeleton" style="height:400px;"></div>
-                        </div>
+                <div style="max-width:1280px;margin:0 auto;padding:20px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+                        <button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.showHome()">
+                            <i class="fas fa-arrow-right"></i> العودة
+                        </button>
                     </div>
-                `;
+                    <h1 style="font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text-dark);margin:4px 0;">🏆 المتصدرين</h1>
+                    <p style="color:var(--text-secondary);margin-bottom:16px;font-size:clamp(0.9rem,1vw,1rem);">أفضل 5 طلاب على المنصة</p>
+                    <div id="leaderboardContainer">
+                        <div class="glass-card skeleton" style="height:400px;"></div>
+                    </div>
+                </div>
+            `;
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            loadLeaderboard();
         }
 
-        function showLeaderboard() {
-            var main = document.getElementById('mainContent');
-            if (!main) return;
-            main.innerHTML =
-                '<div style="max-width:1280px;margin:0 auto;padding:20px;">' +
-                '<button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.showHome()"><i class="fas fa-arrow-right"></i> العودة</button>' +
-                '<h1 style="font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text-dark);margin:12px 0 4px;">🏆 المتصدرين</h1>' +
-                '<p style="color:var(--text-secondary);margin-bottom:16px;font-size:clamp(0.9rem,1vw,1rem);">أفضل 5 طلاب على المنصة</p>' +
-                '<div id="leaderboardContainer"></div></div>';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            loadLeaderboard();
+        // ============================================================
+        // LOAD LEADERBOARD - FIXED: uses the real-time listener
+        // ============================================================
+        function loadLeaderboard() {
+            // ✅ تأكد من تشغيل المستمع
+            startLeaderboardListener();
+        }
+
+        // ============================================================
+        // UPDATE LEADERBOARD TOP5 - DEPRECATED (use real-time listener)
+        // ============================================================
+        function updateLeaderboardTop5() {
+            // ✅ هذه الدالة لم تعد ضرورية مع المستمع real-time
+            // لكن نحتفظ بها لتوافق مع الكود القديم
+            console.log('ℹ️ updateLeaderboardTop5: يتم التحديث تلقائياً عبر المستمع Real-Time');
+        }
+
+        // ============================================================
+        // LISTEN TO POINTS CHANGES - DEPRECATED (use real-time listener)
+        // ============================================================
+        function listenToPointsChanges() {
+            // ✅ هذه الدالة لم تعد ضرورية مع المستمع real-time
+            console.log('ℹ️ listenToPointsChanges: يتم التحديث تلقائياً عبر المستمع Real-Time');
+        }
+
+        // ============================================================
+        // RENDER LEADERBOARD - Internal use only
+        // ============================================================
+        function renderLeaderboard(users, container) {
+            renderLeaderboardUI(users);
         }
 
         // ============================================================
@@ -6704,7 +6656,7 @@
                             '#fff' : 'var(--text-dark)') +
                         ';transition:all 0.2s;" onclick="window.APP.selectAnswer(\'' + type + '\', \'' + q
                         .id + '\', ' + optIndex + ')">' +
-                        '<span style="font-weight:600;font-size:clamp(0.9rem,1vw,1rem;">' + String
+                        '<span style="font-weight:600;font-size:clamp(0.9rem,1vw,1rem);">' + String
                         .fromCharCode(65 + optIndex) + '. ' + escapeHtml(opt) + '</span>' +
                         (isSelected ? '<span style="float:left;"><i class="fas fa-check-circle"></i></span>' :
                             '') +
@@ -8917,128 +8869,6 @@
         }
 
         // ============================================================
-        // 🟢 STUDENT PRESENCE - تحديث الحضور
-        // ============================================================
-        function setUserPresence() {
-            if (!currentUser) return;
-
-            var userRef = database.ref('users/' + currentUser.uid);
-            var sessionId = currentUser.uid + '_' + Date.now();
-
-            // ✅ تحديد الجهاز والمتصفح ونظام التشغيل
-            var deviceInfo = getDeviceInfo();
-
-            var presenceData = {
-                uid: currentUser.uid,
-                sessionId: sessionId,
-                name: userData ? userData.name : 'مستخدم',
-                photoURL: userData ? userData.photoURL || '' : '',
-                loginAt: new Date().toISOString(),
-                lastSeen: new Date().toISOString(),
-                status: 'online',
-                deviceType: deviceInfo.deviceType,
-                operatingSystem: deviceInfo.os,
-                browser: deviceInfo.browser,
-                currentPage: window.location.pathname + window.location.search || '/',
-                currentCourseId: null
-            };
-
-            // ✅ إنشاء جلسة جديدة في onlineSessions
-            database.ref('onlineSessions/' + sessionId).set(presenceData);
-
-            // ✅ إضافة الجلسة إلى userSessions
-            database.ref('userSessions/' + sessionId).set(presenceData);
-
-            // ✅ تحديث status في users
-            userRef.update({
-                status: 'online',
-                lastSeen: new Date().toISOString()
-            });
-
-            // ✅ تحديث الحضور كل 30 ثانية
-            if (window.presenceInterval) {
-                clearInterval(window.presenceInterval);
-            }
-
-            window.presenceInterval = setInterval(function() {
-                if (!currentUser) {
-                    clearInterval(window.presenceInterval);
-                    return;
-                }
-
-                var updateData = {
-                    lastSeen: new Date().toISOString(),
-                    currentPage: window.location.pathname + window.location.search || '/'
-                };
-
-                database.ref('onlineSessions/' + sessionId).update(updateData);
-                database.ref('userSessions/' + sessionId).update(updateData);
-                userRef.update({ lastSeen: new Date().toISOString() });
-            }, 30000);
-
-            // ✅ عند الخروج أو إغلاق التبويب
-            var disconnectHandler = function() {
-                if (currentUser) {
-                    var now = new Date().toISOString();
-                    database.ref('onlineSessions/' + sessionId).update({
-                        status: 'offline',
-                        logoutAt: now,
-                        lastSeen: now
-                    });
-                    database.ref('userSessions/' + sessionId).update({
-                        status: 'offline',
-                        logoutAt: now,
-                        lastSeen: now
-                    });
-                    userRef.update({
-                        status: 'offline',
-                        lastSeen: now
-                    });
-                }
-            };
-
-            window.addEventListener('beforeunload', disconnectHandler);
-            window.addEventListener('pagehide', disconnectHandler);
-        }
-
-        // ============================================================
-        // 💻 DEVICE INFORMATION - استخراج معلومات الجهاز
-        // ============================================================
-        function getDeviceInfo() {
-            var ua = navigator.userAgent || '';
-            var deviceType = 'Desktop';
-            var os = 'Unknown';
-            var browser = 'Unknown';
-
-            // ✅ تحديد نوع الجهاز
-            if (/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
-                if (/Tablet|iPad/i.test(ua)) {
-                    deviceType = 'Tablet';
-                } else {
-                    deviceType = 'Mobile';
-                }
-            } else {
-                deviceType = 'Desktop';
-            }
-
-            // ✅ تحديد نظام التشغيل
-            if (/Windows/i.test(ua)) os = 'Windows';
-            else if (/Mac OS X/i.test(ua)) os = 'macOS';
-            else if (/Linux/i.test(ua)) os = 'Linux';
-            else if (/Android/i.test(ua)) os = 'Android';
-            else if (/iOS|iPhone|iPad|iPod/i.test(ua)) os = 'iOS';
-
-            // ✅ تحديد المتصفح
-            if (/Edg/i.test(ua)) browser = 'Edge';
-            else if (/Firefox/i.test(ua)) browser = 'Firefox';
-            else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = 'Safari';
-            else if (/Chrome/i.test(ua)) browser = 'Chrome';
-            else browser = 'Other';
-
-            return { deviceType: deviceType, os: os, browser: browser };
-        }
-
-        // ============================================================
         // INIT
         // ============================================================
         function setupScrollHandlers() {
@@ -9066,7 +8896,7 @@
 
             checkInstallStatus();
 
-            console.log('🚀 Yalla Chemistry Platform v50.0 - FULLY FIXED');
+            console.log('🚀 Yalla Chemistry Platform v51.0 - REAL-TIME LEADERBOARD FIXED');
 
             var navToggle = document.getElementById('navToggle');
             if (navToggle) {
@@ -9120,10 +8950,8 @@
                         loadUserProgress(user.uid);
                         loadNotifications(user.uid);
 
-                        // ✅ إعداد الحضور
-                        setTimeout(function() {
-                            setUserPresence();
-                        }, 1000);
+                        // ✅ بدء الـ Real-Time Listener للـ Leaderboard
+                        startLeaderboardListener();
 
                         setTimeout(function() {
                             loadCourses();
@@ -9134,6 +8962,9 @@
                         }, 100);
                     });
                 } else {
+                    // ✅ إيقاف الـ Listener عند تسجيل الخروج
+                    stopLeaderboardListener();
+
                     loadCourses();
                     loadLessons();
                     loadExams();
@@ -9142,9 +8973,6 @@
                     updateUIForAuth(null);
                 }
             });
-
-            // ✅ استماع لتغيرات النقاط وتحديث المتصدرين
-            listenToPointsChanges();
         }
 
         // ============================================================
@@ -9262,13 +9090,12 @@
             startQuizWithExistingAttempt: startQuizWithExistingAttempt,
 
             // 🏆 Leaderboard Real-Time
+            startLeaderboardListener: startLeaderboardListener,
+            stopLeaderboardListener: stopLeaderboardListener,
+            renderLeaderboardUI: renderLeaderboardUI,
             updateLeaderboardTop5: updateLeaderboardTop5,
             listenToPointsChanges: listenToPointsChanges,
             renderLeaderboard: renderLeaderboard,
-
-            // 🟢 Student Presence
-            setUserPresence: setUserPresence,
-            getDeviceInfo: getDeviceInfo,
 
             scrollToTop: function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
