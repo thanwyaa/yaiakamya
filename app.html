@@ -8923,7 +8923,7 @@
 
             checkInstallStatus();
 
-            console.log('🚀 Yalla Chemistry Platform v52.0 - VIDEO PLAYER & LESSON COUNT FIXED');
+            console.log('🚀 Yalla Chemistry Platform v53.0 - VIDEO PLAYER FIXED');
 
             var navToggle = document.getElementById('navToggle');
             if (navToggle) {
@@ -8957,7 +8957,13 @@
                 }
             });
 
+            // ✅ IMPORTANT: Set the global callback for YouTube API
             window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+            // ✅ If YouTube API already loaded, call ready
+            if (typeof YT !== 'undefined' && YT.loaded) {
+                onYouTubeIframeAPIReady();
+            }
 
             auth.onAuthStateChanged(function(user) {
                 currentUser = user;
