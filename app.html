@@ -3109,7 +3109,6 @@
         let examAnswers = {};
         let playerInstance = null;
         let playerReady = false;
-        let leaderboardListener = null;
 
         // ✅ Global flags for exam locking
         window._examLocked = false;
@@ -3131,7 +3130,7 @@
         const APP_URL = window.location.origin || 'https://yaiakamya.vercel.app/';
 
         // ============================================================
-        // UTILITY FUNCTIONS
+        // UTILITY FUNCTIONS - Defined ONCE
         // ============================================================
         function showToast(msg, type) {
             if (typeof msg !== 'string') msg = String(msg);
@@ -3239,7 +3238,7 @@
         }
 
         // ============================================================
-        // THEME
+        // THEME - Defined ONCE
         // ============================================================
         function applyTheme(isDark) {
             document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
@@ -3267,7 +3266,7 @@
         }
 
         // ============================================================
-        // NAVIGATION HELPERS
+        // NAVIGATION HELPERS - Defined ONCE
         // ============================================================
         function showLoginOverlay() {
             document.getElementById('loginOverlay').classList.add('open');
@@ -3425,7 +3424,7 @@
         });
 
         // ============================================================
-        // INSTALL MODAL FUNCTIONS
+        // ⭐ NEW: INSTALL MODAL FUNCTIONS
         // ============================================================
         function showInstallModal() {
             if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -3521,7 +3520,7 @@
         }
 
         // ============================================================
-        // INSTALL APP
+        // INSTALL APP - Enhanced
         // ============================================================
         function installApp() {
             closeInstallModal();
@@ -3669,6 +3668,8 @@
                     var rankDisplay = rank > 0 ? rank : '--';
                     database.ref('users/' + uid + '/rank').set(rankDisplay);
                     if (userData) userData.rank = rankDisplay;
+                    // ✅ تحديث المتصدرين بعد تغير الرتبة
+                    updateLeaderboardTop5();
                     return rankDisplay;
                 });
             } catch (err) {
@@ -3717,6 +3718,7 @@
                     if (currentUser) updateUIForAuth(currentUser);
                     addNotification(uid, '👋 مرحباً بك في يلا كيمياء!', 'نتمنى لك رحلة تعليمية ممتعة ومفيدة.', '🎉');
                     calculateUserRank(uid, 0);
+                    updateLeaderboardTop5();
                 });
             } catch (err) {
                 console.error('Error creating user:', err);
@@ -3810,14 +3812,8 @@
             icon = icon || '📢';
             try {
                 var ref = database.ref('users/' + uid + '/notifications').push();
-                ref.set({
-                    id: ref.key,
-                    title: title,
-                    description: description,
-                    icon: icon,
-                    read: false,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                });
+                ref.set({ id: ref.key, title: title, description: description, icon: icon, read: false,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP });
             } catch (err) {
                 console.error('Error adding notification:', err);
             }
@@ -3936,7 +3932,7 @@
         }
 
         // ============================================================
-        // ⭐ CHECK COURSE ACCESS - FIXED: Free courses show details first
+        // CHECK COURSE ACCESS - ✅ FIXED: Free courses require subscription
         // ============================================================
         function checkCourseAccess(courseId) {
             if (!currentUser) {
@@ -3948,25 +3944,27 @@
                 showToast('الكورس غير موجود', 'error');
                 return false;
             }
-
-            // ✅ Check if user is already subscribed
-            if (isUserSubscribed(courseId)) {
-                return true;
-            }
-
-            // ✅ For free courses, show subscription page first
+            
+            // ✅ كورس مجاني يحتاج اشتراك (مجاني)
             if (course.isFree === true) {
+                if (isUserSubscribed(courseId)) {
+                    return true;
+                }
+                // ✅ عرض صفحة تفاصيل الكورس مع زر اشتراك
                 showSubscriptionPage(courseId);
                 return false;
             }
-
-            // ✅ For paid courses, show payment details
-            showPaidCourseDetails(courseId);
+            
+            // ✅ كورس مدفوع - يحتاج اشتراك مدفوع
+            if (isUserSubscribed(courseId)) {
+                return true;
+            }
+            showSubscriptionPage(courseId);
             return false;
         }
 
         // ============================================================
-        // SUBSCRIBE TO FREE COURSE - FIXED: No duplicate subscriptions
+        // SUBSCRIBE TO FREE COURSE - ✅ FIXED: No duplicate subscriptions
         // ============================================================
         function subscribeToFreeCourse(courseId) {
             if (!currentUser) {
@@ -3985,80 +3983,90 @@
                 return;
             }
 
-            // ✅ Check if already subscribed
             if (isUserSubscribed(courseId)) {
                 showToast('✅ أنت مشترك بالفعل في هذا الكورس ❤️', 'info');
                 openCoursePage(courseId);
                 return;
             }
 
-            // ✅ Disable button to prevent double click
-            var subscribeBtn = document.querySelector('.btn-subscribe-free');
-            if (subscribeBtn) {
-                subscribeBtn.disabled = true;
-                subscribeBtn.textContent = '⏳ جاري الاشتراك...';
+            // ✅ منع الضغط المتكرر
+            if (window._isSubscribing) {
+                showToast('⏳ جاري الاشتراك، يرجى الانتظار...', 'info');
+                return;
             }
 
+            window._isSubscribing = true;
+            showToast('⏳ جاري الاشتراك...', 'info');
+
             try {
-                var subscriptionRef = database.ref('subscriptions').push();
-                var subscriptionData = {
-                    userId: currentUser.uid,
-                    userName: userData ? userData.name : 'مستخدم',
-                    userEmail: userData ? userData.email || '' : '',
-                    userPhone: userData ? userData.phone || '' : '',
-                    courseId: courseId,
-                    courseTitle: course.title || 'كورس',
-                    teacherName: course.teacher || 'مستر زياد مبروك',
-                    courseType: course.type || 'recorded',
-                    subscriptionType: 'free',
-                    price: 0,
-                    status: 'active',
-                    subscribedAt: firebase.database.ServerValue.TIMESTAMP,
-                    activatedAt: firebase.database.ServerValue.TIMESTAMP,
-                    lastOpenedAt: firebase.database.ServerValue.TIMESTAMP,
-                    openCount: 0,
-                    progressPercent: 0
-                };
-                subscriptionRef.set(subscriptionData).then(function() {
-                    // ✅ Update local state
-                    userSubscriptions.push({
-                        id: subscriptionRef.key,
-                        ...subscriptionData
-                    });
-
-                    if (userData) {
-                        if (!userData.premiumCourses) userData.premiumCourses = {};
-                        userData.premiumCourses[courseId] = true;
-                        cache.userData = userData;
+                // ✅ استخدام بنية subscriptions/userId/courseId لمنع التكرار
+                var subscriptionRef = database.ref('subscriptions/' + currentUser.uid + '/' + courseId);
+                
+                // ✅ التحقق من عدم وجود اشتراك سابق (مرة أخرى)
+                subscriptionRef.once('value').then(function(snapshot) {
+                    if (snapshot.exists()) {
+                        showToast('✅ أنت مشترك بالفعل في هذا الكورس ❤️', 'info');
+                        window._isSubscribing = false;
+                        openCoursePage(courseId);
+                        return;
+                    }
+                    
+                    // ✅ إنشاء الاشتراك مع SERVER_TIMESTAMP
+                    subscriptionRef.set({
+                        userId: currentUser.uid,
+                        userName: userData ? userData.name : 'مستخدم',
+                        userEmail: currentUser.email || '',
+                        userPhone: userData ? userData.phone || '' : '',
+                        courseId: courseId,
+                        courseTitle: course.title || 'كورس',
+                        teacherName: course.teacher || 'مستر زياد مبروك',
+                        courseType: course.type || 'مسجل',
+                        subscriptionType: 'free',
+                        price: 0,
+                        status: 'active',
+                        subscribedAt: firebase.database.ServerValue.TIMESTAMP,
+                        activatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        lastOpenedAt: firebase.database.ServerValue.TIMESTAMP,
+                        openCount: 0,
+                        progressPercent: 0,
+                        lastActivityAt: firebase.database.ServerValue.TIMESTAMP
+                    }).then(function() {
+                        // ✅ تحديث Local State
+                        userSubscriptions.push({
+                            userId: currentUser.uid,
+                            courseId: courseId,
+                            status: 'active',
+                            type: 'free',
+                            courseTitle: course.title || 'كورس'
+                        });
+                        cache.subscriptions = userSubscriptions;
                         updateCache();
-                    }
 
-                    showToast('🎉 تم الاشتراك بنجاح!', 'success');
-                    addNotification(currentUser.uid, '🎉 اشتراك مجاني!', 'تم تفعيل اشتراكك في كورس "' + course.title +
-                        '" مجاناً.', '🎉');
+                        if (userData) {
+                            if (!userData.premiumCourses) userData.premiumCourses = {};
+                            userData.premiumCourses[courseId] = true;
+                            cache.userData = userData;
+                            updateCache();
+                        }
 
-                    // ✅ Open course after successful subscription
-                    openCoursePage(courseId);
-                }).catch(function(err) {
-                    console.error('Subscription error:', err);
-                    showToast('❌ حدث خطأ أثناء الاشتراك', 'error');
-                    if (subscribeBtn) {
-                        subscribeBtn.disabled = false;
-                        subscribeBtn.textContent = '📝 اشترك الآن';
-                    }
+                        window._isSubscribing = false;
+                        showToast('🎉 يبختك! خد اشتراك ببلاش!', 'success');
+                        addNotification(currentUser.uid, '🎉 اشتراك مجاني!', 'تم تفعيل اشتراكك في كورس "' + course.title +
+                            '" مجاناً.', '🎉');
+                        
+                        // ✅ فتح الكورس بعد نجاح الحفظ
+                        openCoursePage(courseId);
+                    });
                 });
             } catch (err) {
                 console.error('Free subscription error:', err);
                 showToast('❌ حدث خطأ أثناء الاشتراك', 'error');
-                if (subscribeBtn) {
-                    subscribeBtn.disabled = false;
-                    subscribeBtn.textContent = '📝 اشترك الآن';
-                }
+                window._isSubscribing = false;
             }
         }
 
         // ============================================================
-        // ⭐ CODE VERIFICATION SYSTEM
+        // ⭐ NEW: CODE VERIFICATION SYSTEM
         // ============================================================
         function verifyActivationCode(code, courseId) {
             if (!currentUser) {
@@ -4155,20 +4163,38 @@
                             updateCache();
                         }
 
-                        var subscriptionRef = database.ref('subscriptions').push();
+                        // ✅ استخدام بنية subscriptions/userId/courseId
+                        var subscriptionRef = database.ref('subscriptions/' + currentUser.uid + '/' + courseId);
                         return subscriptionRef.set({
                             userId: currentUser.uid,
                             userName: userData ? userData.name : 'مستخدم',
-                            userEmail: userData ? userData.email || '' : '',
+                            userEmail: currentUser.email || '',
                             userPhone: userData ? userData.phone || '' : '',
                             courseId: courseId,
-                            courseTitle: courseData.courseName || 'كورس',
+                            courseTitle: codeData.courseTitle || 'كورس',
+                            teacherName: codeData.teacherName || 'مستر زياد مبروك',
+                            courseType: codeData.courseType || 'مسجل',
                             subscriptionType: 'code',
-                            status: 'active',
                             code: code,
+                            price: 0,
+                            status: 'active',
+                            subscribedAt: firebase.database.ServerValue.TIMESTAMP,
                             activatedAt: firebase.database.ServerValue.TIMESTAMP,
-                            subscribedAt: firebase.database.ServerValue.TIMESTAMP
+                            lastOpenedAt: firebase.database.ServerValue.TIMESTAMP,
+                            openCount: 0,
+                            progressPercent: 0,
+                            lastActivityAt: firebase.database.ServerValue.TIMESTAMP
                         }).then(function() {
+                            userSubscriptions.push({
+                                userId: currentUser.uid,
+                                courseId: courseId,
+                                status: 'active',
+                                type: 'code',
+                                courseTitle: codeData.courseTitle || 'كورس'
+                            });
+                            cache.subscriptions = userSubscriptions;
+                            updateCache();
+
                             addNotification(
                                 currentUser.uid,
                                 '🎉 تم تفعيل اشتراكك بالكود!',
@@ -4204,7 +4230,7 @@
         }
 
         // ============================================================
-        // ⭐ SHOW PAID COURSE DETAILS - FULLY DYNAMIC
+        // SHOW PAID COURSE DETAILS - ✅ FIXED: All data from Firebase
         // ============================================================
         function showPaidCourseDetails(courseId) {
             var course = allCourses.find(function(c) { return c.id === courseId; });
@@ -4218,15 +4244,15 @@
 
             var isSubscribed = isUserSubscribed(courseId);
 
-            // ✅ If already subscribed, open course directly
             if (isSubscribed) {
                 openCoursePage(courseId);
                 return;
             }
 
-            // ✅ Get all data from Firebase
+            // ✅ جميع البيانات من Firebase - لا بيانات Hardcoded
             var price = course.price || 'غير محدد';
-            var teacher = course.teacher || 'مستر زياد مبروك';
+            var oldPrice = course.oldPrice || null;
+            var teacher = course.teacher || 'غير محدد';
             var duration = course.duration || 'غير محدد';
             var type = course.type || 'مسجل';
             var level = course.level || 'متقدم';
@@ -4235,12 +4261,12 @@
             var description = course.description || '';
             var details = course.details || '';
             var isFree = course.isFree === true;
-            var courseTypeDisplay = type === 'live' ? '🔴 لايف' : type === 'recorded' ? '🎬 مسجل' : '🔴 لايف + 🎬 مسجل';
-            var priceDisplay = isFree ? '🆓 مجاني' : '💰 ' + price + ' جنيه';
 
-            // ✅ Calculate real lessons count
+            // ✅ حساب عدد الحصص الحقيقي
             var courseLessons = allLessons.filter(function(l) { return l.courseId === courseId; });
-            var lessonsCount = courseLessons.length;
+            var realLessonsCount = courseLessons.length;
+
+            var priceDisplay = isFree ? '🆓 مجاني' : ('💰 ' + price + ' جنيه');
 
             main.innerHTML =
                 '<div style="max-width:900px;margin:0 auto;padding:20px;">' +
@@ -4257,73 +4283,50 @@
                 '<h1 style="font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.5rem);color:var(--text-dark);">' +
                 escapeHtml(course.title) + '</h1>' +
 
-                '<div style="display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 12px;">' +
-                '<span style="background:var(--bg-light);padding:4px 16px;border-radius:50px;font-size:clamp(0.8rem,0.9vw,0.9rem);border:1px solid var(--border-color);">👨‍🏫 ' +
-                escapeHtml(teacher) + '</span>' +
-                '<span style="background:var(--bg-light);padding:4px 16px;border-radius:50px;font-size:clamp(0.8rem,0.9vw,0.9rem);border:1px solid var(--border-color);">⏱️ ' +
-                escapeHtml(duration) + '</span>' +
-                '<span style="background:var(--bg-light);padding:4px 16px;border-radius:50px;font-size:clamp(0.8rem,0.9vw,0.9rem);border:1px solid var(--border-color);">' +
-                courseTypeDisplay + '</span>' +
-                '<span style="background:var(--bg-light);padding:4px 16px;border-radius:50px;font-size:clamp(0.8rem,0.9vw,0.9rem);border:1px solid var(--border-color);">📚 ' +
-                lessonsCount + ' حصة</span>' +
-                '<span style="background:' + (isFree ? 'var(--success-bg)' : 'var(--primary-bg)') +
-                ';padding:4px 16px;border-radius:50px;font-size:clamp(0.8rem,0.9vw,0.9rem);border:1px solid ' +
-                (isFree ? 'var(--success)' : 'var(--primary)') + ';color:' + (isFree ? 'var(--success)' :
-                    'var(--primary)') + ';font-weight:700;">' +
-                priceDisplay +
-                '</span>' +
-                '</div>' +
-
                 (description ?
                     '<p style="font-size:clamp(1rem,1.1vw,1.2rem);color:var(--text-secondary);margin:12px 0;line-height:1.8;">' +
                     escapeHtml(description) + '</p>' : '') +
 
                 (details ?
                     '<div style="background:var(--bg-light);padding:16px;border-radius:var(--radius);margin:12px 0;border-right:4px solid var(--primary);">' +
-                    '<h4 style="font-weight:700;color:var(--text-dark);margin-bottom:4px;font-size:clamp(0.9rem,1vw,1rem);">📖 تفاصيل الكورس</h4>' +
-                    '<p style="font-size:clamp(0.9rem,0.95vw,1rem);color:var(--text-secondary);line-height:1.8;">' +
+                    '<p style="color:var(--text-secondary);font-size:clamp(0.9rem,0.95vw,0.95rem);line-height:1.8;">' +
                     escapeHtml(details) + '</p></div>' : '') +
 
                 '<div class="course-details-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;">' +
                 '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المدرس</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
                 escapeHtml(teacher) + '</span></div>' +
-                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المدة</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">⏱ المدة</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
                 escapeHtml(duration) + '</span></div>' +
-                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">النوع</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
-                courseTypeDisplay + '</span></div>' +
-                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المستوى</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">🎬 النوع</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                escapeHtml(type) + '</span></div>' +
+                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">📊 المستوى</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
                 escapeHtml(level) + '</span></div>' +
+                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;grid-column:1/-1;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">📚 عدد الحصص</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                realLessonsCount + ' حصة</span></div>' +
+                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;grid-column:1/-1;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">💰 السعر</span><span style="font-weight:700;font-size:clamp(1.1rem,1.2vw,1.3rem);color:var(--primary);">' +
+                priceDisplay + (oldPrice ? ' <span style="text-decoration:line-through;color:var(--text-secondary);font-size:0.8rem;">' + oldPrice + ' جنيه</span>' : '') +
+                '</span></div></div>' +
+
+                // ✅ زر الاشتراك - يظهر دائماً للكورسات المجانية والمدفوعة
+                '<div style="text-align:center;margin:16px 0;">' +
+                '<button class="btn-primary-premium" onclick="window.APP.subscribeToCourse(\'' + courseId + '\')" style="min-height:52px;padding:14px 40px;font-size:clamp(1rem,1.1vw,1.2rem);">' +
+                (isFree ? '📝 اشترك مجاناً' : '💰 اشترك الآن') +
+                '</button>' +
+                '<p style="font-size:0.8rem;color:var(--text-secondary);margin-top:8px;">' +
+                (isFree ? '🔓 الاشتراك مجاني - سجل وابدأ التعلم الآن' : '💳 سيتم توجيهك لصفحة الدفع بعد الضغط') +
+                '</p></div>' +
+
+                (isFree ? '' :
+                '<div class="code-input-group">' +
+                '<label>🔑 لديك كود تفعيل؟ أدخله هنا</label>' +
+                '<div class="code-input-wrapper">' +
+                '<input type="text" id="activationCodeInput" placeholder="مثال: ZK2027A91" maxlength="20" style="text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:2px;font-weight:600;">' +
+                '<button class="btn-verify-code" id="verifyCodeBtn" onclick="window.APP.verifyAndActivateCode(\'' + courseId +
+                '\')">تفعيل الكود</button>' +
                 '</div>' +
+                '<div class="code-status-message" id="codeStatusMessage"></div>' +
+                '</div>') +
 
-                // ✅ Code input for paid courses
-                (!isFree ?
-                    '<div class="code-input-group">' +
-                    '<label>🔑 لديك كود تفعيل؟ أدخله هنا</label>' +
-                    '<div class="code-input-wrapper">' +
-                    '<input type="text" id="activationCodeInput" placeholder="مثال: ZK2027A91" maxlength="20" style="text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:2px;font-weight:600;">' +
-                    '<button class="btn-verify-code" id="verifyCodeBtn" onclick="window.APP.verifyAndActivateCode(\'' +
-                    courseId + '\')">تفعيل الكود</button>' +
-                    '</div>' +
-                    '<div class="code-status-message" id="codeStatusMessage"></div>' +
-                    '</div>' : '') +
-
-                // ✅ Subscription button for free or paid
-                '<div class="course-subscription-banner">' +
-                (isFree ?
-                    '<h3>🆓 كورس مجاني</h3>' +
-                    '<p class="sub-desc">اشترك الآن واستمتع بجميع محتويات الكورس مجاناً!</p>' +
-                    '<button class="btn-primary-premium btn-subscribe-free" onclick="window.APP.subscribeToFreeCourse(\'' +
-                    courseId + '\')" style="font-size:clamp(1rem,1.1vw,1.2rem);min-height:50px;padding:12px 40px;">' +
-                    '📝 اشترك الآن</button>' :
-                    '<h3>💰 سعر الكورس</h3>' +
-                    '<div class="price"><span class="old">' + (course.oldPrice ? course.oldPrice + ' جنيه' : '') +
-                    '</span>' + price + ' جنيه</div>' +
-                    '<p class="sub-desc">للاشتراك في هذا الكورس، يرجى التواصل مع الإدارة عبر القنوات التالية:</p>' +
-                    '<div class="contact-buttons">' +
-                    '<a href="https://t.me/llTwasell" target="_blank" class="telegram-btn"><i class="fab fa-telegram-plane"></i> تواصل عبر Telegram</a>' +
-                    '<a href="https://wa.me/201554473480" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> تواصل عبر WhatsApp</a>' +
-                    '</div>'
-                ) +
                 (groupTelegram || groupWhatsApp ?
                     '<div style="margin-top:16px;padding-top:12px;border-top:1px solid rgba(231,42,155,0.06);">' +
                     '<p style="font-size:0.85rem;color:var(--text-secondary);">جروبات الكورس:</p>' +
@@ -4335,14 +4338,13 @@
                         '<a href="' + groupWhatsApp + '" target="_blank" class="whatsapp-btn" style="padding:8px 16px;font-size:0.8rem;"><i class="fab fa-whatsapp"></i> جروب WhatsApp</a>' :
                         '') +
                     '</div></div>' : '') +
-                '</div>' +
                 '</div></div>';
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ============================================================
-        // ⭐ Verify and Activate Code
+        // ⭐ NEW: Verify and Activate Code
         // ============================================================
         function verifyAndActivateCode(courseId) {
             var codeInput = document.getElementById('activationCodeInput');
@@ -4425,9 +4427,8 @@
                 return;
             }
 
-            // ✅ For free courses, show details with subscribe button
             if (course.isFree === true) {
-                showPaidCourseDetails(courseId);
+                subscribeToFreeCourse(courseId);
                 return;
             }
 
@@ -4435,7 +4436,7 @@
         }
 
         // ============================================================
-        // SUBSCRIBE TO COURSE - FIXED
+        // SUBSCRIBE TO COURSE
         // ============================================================
         function subscribeToCourse(courseId) {
             if (!currentUser) {
@@ -4449,7 +4450,6 @@
                 return;
             }
 
-            // ✅ For free courses, use the dedicated function
             if (course.isFree === true) {
                 subscribeToFreeCourse(courseId);
             } else {
@@ -4464,10 +4464,7 @@
             if (!currentUser) return false;
             var course = allCourses.find(function(c) { return c.id === courseId; });
             if (!course) return false;
-            // ✅ Free courses require subscription
-            if (course.isFree === true) {
-                return isUserSubscribed(courseId);
-            }
+            // ✅ حتى الكورس المجاني يحتاج اشتراك
             return isUserSubscribed(courseId);
         }
 
@@ -4519,7 +4516,7 @@
         }
 
         // ============================================================
-        // ⭐ RENDER COURSES - FIXED: Shows real lesson count
+        // RENDER COURSES - ✅ FIXED: Real lessons count
         // ============================================================
         function renderCourses(courses) {
             var grid = document.getElementById('coursesGrid');
@@ -4530,27 +4527,31 @@
                 return;
             }
 
-            // ✅ Build a map of lesson counts per course for performance
-            var lessonCountMap = {};
+            // ✅ حساب عدد الحصص الحقيقي لكل كورس مرة واحدة
+            var lessonsCountMap = {};
             allLessons.forEach(function(l) {
                 if (l.courseId) {
-                    lessonCountMap[l.courseId] = (lessonCountMap[l.courseId] || 0) + 1;
+                    lessonsCountMap[l.courseId] = (lessonsCountMap[l.courseId] || 0) + 1;
                 }
             });
 
             grid.innerHTML = courses.map(function(c) {
                 var subscribed = currentUser ? isUserSubscribed(c.id) : false;
                 var isFree = c.isFree === true;
-                var isLocked = !currentUser || (!subscribed && !isFree);
+                // ✅ استخدام العدد الحقيقي من الحصص
+                var realLessonsCount = lessonsCountMap[c.id] || 0;
+                var isLocked = !currentUser || !subscribed;
                 var priceDisplay = isFree ? 'مجاني' : (c.price || 'مدفوع');
                 var lessons = allLessons.filter(function(l) { return l.courseId === c.id; });
                 var completed = lessons.filter(function(l) { return userCourseProgress[l.id] && userCourseProgress[
                     l.id].watched; });
                 var isCompleted = lessons.length > 0 && completed.length === lessons.length;
-                var realLessonCount = lessonCountMap[c.id] || 0;
-
-                // ✅ Action: show details first, then open after subscription
-                var cardAction = "window.APP.showPaidCourseDetails('" + c.id + "')";
+                var cardAction = "window.APP.openCoursePage('" + c.id + "')";
+                if (isLocked) {
+                    cardAction = "window.APP.showSubscriptionPage('" + c.id + "')";
+                } else if (isCompleted) {
+                    cardAction = "window.APP.openCoursePage('" + c.id + "')";
+                }
 
                 return '<div class="glass-card" style="cursor:pointer;position:relative;" onclick="' + cardAction +
                     '">' +
@@ -4586,7 +4587,7 @@
                     escapeHtml(c.description || '') + '</p>' +
                     '<div style="display:flex;flex-wrap:wrap;gap:4px 10px;font-size:clamp(0.6rem,0.7vw,0.7rem);color:var(--text-secondary);margin-bottom:8px;border-top:1px solid rgba(231,42,155,0.06);padding-top:6px;">' +
                     '<span>🎯 ' + (c.grade || 'تالتة ثانوي') + '</span>' +
-                    '<span>📚 ' + realLessonCount + ' حصة</span>' + // ✅ Real lesson count
+                    '<span>📚 ' + realLessonsCount + ' حصة</span>' +
                     (!isFree ? '<span style="font-weight:700;color:var(--primary);">💰 ' + escapeHtml(priceDisplay) +
                         '</span>' : '') +
                     '</div>' +
@@ -4594,13 +4595,14 @@
                         (subscribed ?
                             '<button class="btn-primary-premium btn-sm-premium" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:8px 12px;min-height:40px;background:' +
                             (isCompleted ? '#22C55E' : 'var(--gradient-primary)') +
-                            ';" onclick="event.stopPropagation(); window.APP.openCoursePage(\'' + c.id +
-                            '\')">' +
+                            ';" onclick="event.stopPropagation(); ' + (isCompleted ?
+                                "window.APP.openCoursePage('" + c.id + "')" : "window.APP.openCoursePage('" + c.id + "')") +
+                            '">' +
                             (isCompleted ? '✅ مكتمل' : '📖 متابعة') +
                             '</button>' :
                             '<button class="btn-primary-premium btn-sm-premium" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:8px 12px;min-height:40px;" onclick="event.stopPropagation(); window.APP.subscribeToCourse(\'' +
                             c.id + '\')">' +
-                            (isFree ? '📝 اشترك مجاناً' : '💰 اشترك الآن') +
+                            (isFree ? '📝 اشترك الآن' : '💰 اشترك الآن') +
                             '</button>') :
                         '<button class="btn-primary-premium btn-sm-premium" style="width:100%;justify-content:center;font-size:clamp(0.7rem,0.8vw,0.8rem);padding:8px 12px;min-height:40px;" onclick="event.stopPropagation(); window.APP.showLoginOverlay()">🔒 تسجيل الدخول للمتابعة</button>'
                         ) +
@@ -4664,6 +4666,8 @@
                 });
                 cache.lessons = allLessons;
                 updateCache();
+                // ✅ تحديث عرض الكورسات بعد تحميل الحصص (لعدد الحصص الحقيقي)
+                renderCourses(allCourses);
             }).catch(function(err) {
                 console.error('Error loading lessons:', err);
             });
@@ -4706,17 +4710,20 @@
         }
 
         function loadUserSubscriptions(uid) {
-            if (cache.subscriptions.length > 0 && isCacheValid()) {
-                userSubscriptions = cache.subscriptions;
-                renderCourses(allCourses);
-                return;
-            }
-            database.ref('subscriptions').orderByChild('userId').equalTo(uid).once('value').then(function(snapshot) {
+            // ✅ استخدام بنية subscriptions/userId/courseId
+            database.ref('subscriptions/' + uid).once('value').then(function(snapshot) {
                 userSubscriptions = [];
-                snapshot.forEach(function(child) {
-                    var data = child.val();
-                    userSubscriptions.push({ id: child.key, ...data });
-                });
+                if (snapshot.exists()) {
+                    var data = snapshot.val();
+                    Object.keys(data).forEach(function(courseId) {
+                        var sub = data[courseId];
+                        userSubscriptions.push({
+                            id: courseId,
+                            courseId: courseId,
+                            ...sub
+                        });
+                    });
+                }
                 cache.subscriptions = userSubscriptions;
                 updateCache();
                 renderCourses(allCourses);
@@ -5006,8 +5013,9 @@
             }
 
             var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
-            if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
-                showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+            // ✅ التحقق من الاشتراك حتى للكورسات المجانية
+            if (course && !isUserSubscribed(course.id)) {
+                showToast('🔒 هذا الكورس يحتاج اشتراك، يرجى الاشتراك أولاً', 'error');
                 showSubscriptionPage(course.id);
                 return;
             }
@@ -5610,8 +5618,7 @@
                             lessonsCompleted: (userSnap.val().lessonsCompleted || 0) + 1,
                             streak: streak,
                             lastStudyDate: today,
-                            studyTime: currentStudyTime + studyHours,
-                            lastActivityAt: firebase.database.ServerValue.TIMESTAMP
+                            studyTime: currentStudyTime + studyHours
                         });
 
                         if (userData) {
@@ -5621,7 +5628,6 @@
                             userData.streak = streak;
                             userData.lastStudyDate = today;
                             userData.studyTime = currentStudyTime + studyHours;
-                            userData.lastActivityAt = Date.now();
                             cache.userData = userData;
                             updateCache();
                         }
@@ -5645,6 +5651,8 @@
                             'أكملت مشاهدة "' + lesson.title + '" وحصلت على ' + atomsReward + ' ذرة.', '🎥');
                         loadUserProgress(currentUser.uid);
                         calculateUserRank(currentUser.uid, currentAtoms + atomsReward);
+                        // ✅ تحديث المتصدرين
+                        updateLeaderboardTop5();
                     }
                 });
             } catch (err) {
@@ -5694,7 +5702,7 @@
         }
 
         // ============================================================
-        // ⭐ OPEN COURSE PAGE - Logs activity
+        // OPEN COURSE PAGE - ✅ FIXED: All data from Firebase
         // ============================================================
         function openCoursePage(courseId) {
             if (!currentUser) {
@@ -5708,30 +5716,9 @@
                 return;
             }
 
-            var hasAccess = hasCourseAccess(courseId);
+            var hasAccess = checkCourseAccess(courseId);
             if (!hasAccess) {
-                showToast('🔒 يرجى الاشتراك أولاً للوصول إلى هذا الكورس', 'error');
-                showSubscriptionPage(courseId);
                 return;
-            }
-
-            // ✅ Log course opening activity
-            if (currentUser) {
-                var updates = {};
-                updates['users/' + currentUser.uid + '/lastActivityAt'] = firebase.database.ServerValue.TIMESTAMP;
-                updates['users/' + currentUser.uid + '/lastCourseId'] = courseId;
-                updates['users/' + currentUser.uid + '/lastCourseTitle'] = course.title;
-                // Update subscription open count
-                var sub = userSubscriptions.find(function(s) { return s.courseId === courseId && s.status === 'active'; });
-                if (sub) {
-                    var openCount = (sub.openCount || 0) + 1;
-                    updates['subscriptions/' + sub.id + '/lastOpenedAt'] = firebase.database.ServerValue.TIMESTAMP;
-                    updates['subscriptions/' + sub.id + '/openCount'] = openCount;
-                    updates['subscriptions/' + sub.id + '/progressPercent'] = calculateCourseProgress(courseId);
-                    sub.openCount = openCount;
-                    sub.lastOpenedAt = Date.now();
-                }
-                database.ref().update(updates);
             }
 
             var main = document.getElementById('mainContent');
@@ -5920,9 +5907,8 @@
                         '<p style="font-size:clamp(0.9rem,1vw,1rem);opacity:0.9;">' + escapeHtml(course
                             .description) + '</p>' : '') +
                     '<div class="stats" style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px;">' +
-                    (course.lessonsCount || lessons.length ?
-                        '<span><i class="fas fa-video"></i> ' + (course.lessonsCount || lessons.length) +
-                        ' حصة</span>' : '') +
+                    // ✅ استخدام عدد الحصص الحقيقي
+                    '<span><i class="fas fa-video"></i> ' + lessons.length + ' حصة</span>' +
                     (course.examsCount ?
                         '<span><i class="fas fa-file-alt"></i> ' + course.examsCount + ' امتحان</span>' :
                         '') +
@@ -5931,6 +5917,7 @@
                     (course.lastUpdated ?
                         '<span><i class="fas fa-clock"></i> ' + formatTime(course.lastUpdated) +
                         '</span>' : '') +
+                    // ✅ جميع البيانات من Firebase
                     (course.teacher ?
                         '<span><i class="fas fa-user-tie"></i> ' + escapeHtml(course.teacher) +
                         '</span>' : '') +
@@ -5940,10 +5927,13 @@
                     (course.type ?
                         '<span><i class="fas fa-tag"></i> ' + escapeHtml(course.type) + '</span>' :
                         '') +
+                    (course.duration ?
+                        '<span><i class="fas fa-clock"></i> ' + escapeHtml(course.duration) +
+                        '</span>' : '') +
                     '<span class="price-tag" style="display:inline-block;padding:4px 16px;border-radius:50px;font-weight:700;font-size:clamp(0.8rem,0.9vw,0.9rem);background:' +
                     (isFree ? '#22C55E' : 'var(--gradient-primary)') + ';color:#fff;">' +
                     (isFree ? '🆓 مجاني' : '💰 ' + priceDisplay) +
-                    '</span></div></div></div>' +
+                    '</span></div></div></div></div>' +
                     '<div class="motivational-message" style="margin:16px 0;padding:12px 20px;border-radius:var(--radius);background:var(--white);border:1px solid rgba(231,42,155,0.06);text-align:center;font-weight:600;font-size:clamp(0.9rem,1vw,1rem);color:var(--text-dark);">' +
                     '<span class="emoji">' + motivationalMessage.split(' ')[0] + '</span> ' +
                     motivationalMessage + '</div>' +
@@ -5972,87 +5962,155 @@
         }
 
         // ============================================================
-        // CALCULATE COURSE PROGRESS
+        // 🏆 LEADERBOARD - ✅ FIXED: Real-time from Firebase with points
         // ============================================================
-        function calculateCourseProgress(courseId) {
-            var lessons = allLessons.filter(function(l) { return l.courseId === courseId; });
-            if (lessons.length === 0) return 0;
-            var completed = lessons.filter(function(l) {
-                return userCourseProgress[l.id] && userCourseProgress[l.id].watched;
-            });
-            return Math.round((completed.length / lessons.length) * 100);
-        }
 
         // ============================================================
-        // 🏆 LEADERBOARD - REAL-TIME FIXED
+        // 🔄 تحديث leaderboardTop5 تلقائياً من users
         // ============================================================
-        function startLeaderboardListener() {
-            if (leaderboardListener) return;
-
-            console.log('🔄 بدء استماع Real-Time للـ Leaderboard...');
-
-            leaderboardListener = database.ref('users').on('value', function(snapshot) {
-                if (!snapshot.exists()) {
-                    console.log('⚠️ لا يوجد مستخدمين');
-                    return;
-                }
-
+        function updateLeaderboardTop5() {
+            console.log('🔄 جاري تحديث المتصدرين...');
+            
+            // ✅ جلب جميع المستخدمين
+            database.ref('users').once('value').then(function(snapshot) {
                 var users = [];
+                
                 snapshot.forEach(function(child) {
                     var data = child.val();
-
+                    
                     // ✅ استبعاد المحظورين
                     if (data.banned !== true && data.isBanned !== true) {
                         users.push({
                             uid: child.key,
                             name: data.name || 'مستخدم',
-                            atoms: data.atoms || 0,
-                            grade: data.grade || 'غير محدد',
-                            photoURL: data.photoURL || ''
+                            points: data.atoms || 0,
+                            grade: data.grade || 'غير محدد'
                         });
                     }
                 });
-
-                // ✅ ترتيب تنازلي حسب الذرات (atoms)
-                users.sort(function(a, b) {
-                    return (b.atoms || 0) - (a.atoms || 0);
+                
+                // ✅ ترتيب تنازلي حسب النقاط
+                users.sort(function(a, b) { 
+                    return (b.points || 0) - (a.points || 0); 
                 });
-
+                
                 // ✅ أخذ أول 5 فقط
                 var top5 = users.slice(0, 5);
-
-                // ✅ تحديث العرض
-                renderLeaderboardUI(top5);
-                updateUserRank(users);
-
-            }, function(error) {
-                console.error('❌ خطأ في استماع Leaderboard:', error);
+                
+                // ✅ بناء البيانات
+                var leaderboardData = {};
+                top5.forEach(function(user, index) {
+                    leaderboardData[user.uid] = {
+                        name: user.name,
+                        points: user.points || 0,
+                        grade: user.grade || 'غير محدد',
+                        rank: index + 1,
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP
+                    };
+                });
+                
+                // ✅ حفظ في leaderboardTop5
+                database.ref('leaderboardTop5').set(leaderboardData).then(function() {
+                    console.log('✅ تم تحديث المتصدرين:', top5);
+                    if (top5.length === 0) {
+                        console.log('⚠️ لا يوجد مستخدمين');
+                    } else {
+                        console.log('🏆 أفضل 5:', top5.map(u => u.name + ': ' + u.points + ' نقطة').join(', '));
+                    }
+                });
+                
+            }).catch(function(err) {
+                console.error('❌ خطأ في تحديث المتصدرين:', err);
             });
         }
 
-        function stopLeaderboardListener() {
-            if (leaderboardListener) {
-                database.ref('users').off('value', leaderboardListener);
-                leaderboardListener = null;
-                console.log('🛑 تم إيقاف استماع Leaderboard');
-            }
+        // ============================================================
+        // 🔄 استماع لتغيرات النقاط وتحديث المتصدرين تلقائياً
+        // ============================================================
+        function listenToPointsChanges() {
+            // ✅ استمع لتغيرات النقاط في users
+            database.ref('users').on('child_changed', function(snapshot) {
+                var data = snapshot.val();
+                if (data && data.atoms !== undefined) {
+                    console.log('📊 تغيرت نقاط المستخدم:', snapshot.key, data.atoms);
+                    updateLeaderboardTop5();
+                }
+            });
+            
+            // ✅ استمع لإضافة مستخدم جديد
+            database.ref('users').on('child_added', function(snapshot) {
+                console.log('👤 مستخدم جديد:', snapshot.key);
+                updateLeaderboardTop5();
+            });
         }
 
-        function renderLeaderboardUI(top5) {
+        // ============================================================
+        // 🏆 تحميل وعرض المتصدرين من leaderboardTop5
+        // ============================================================
+        function loadLeaderboard() {
             var container = document.getElementById('leaderboardContainer');
             if (!container) return;
 
-            if (!top5 || top5.length === 0) {
+            // ✅ أولاً: تحديث البيانات من users
+            updateLeaderboardTop5();
+
+            try {
+                // ✅ قراءة من leaderboardTop5
+                database.ref('leaderboardTop5').once('value').then(function(snapshot) {
+                    var data = snapshot.val();
+                    
+                    if (!data) {
+                        container.innerHTML = `
+                            <div class="empty-state" style="padding:40px;">
+                                <div style="font-size:3rem;">🏆</div>
+                                <h3 style="margin-top:8px;">لا يوجد متصدرين</h3>
+                                <p style="color:var(--text-secondary);">كن أول من ينضم ويبدأ في جمع الذرات!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // ✅ تحويل البيانات إلى مصفوفة
+                    var users = Object.entries(data).map(([uid, info]) => ({
+                        id: uid,
+                        name: info.name || 'مستخدم',
+                        atoms: info.points || 0,
+                        photoURL: '',
+                        rank: info.rank || '--',
+                        coursesCount: 0
+                    }));
+
+                    // ✅ ترتيب حسب النقاط (تنازلياً)
+                    users.sort(function(a, b) { return b.atoms - a.atoms; });
+
+                    renderLeaderboard(users, container);
+                });
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
                 container.innerHTML = `
-                    <div class="empty-state" style="padding:40px;">
-                        <div style="font-size:3rem;">🏆</div>
-                        <h3 style="margin-top:8px;">لا يوجد متصدرين</h3>
-                        <p style="color:var(--text-secondary);">كن أول من ينضم ويبدأ في جمع الذرات!</p>
+                    <div style="text-align:center;padding:20px;color:#EF4444;">
+                        ⚠️ حدث خطأ في تحميل المتصدرين
+                        <br>
+                        <button onclick="window.APP.loadLeaderboard()" 
+                                class="btn-primary-premium btn-sm-premium" 
+                                style="margin-top:10px;">
+                            🔄 إعادة المحاولة
+                        </button>
                     </div>
                 `;
-                return;
+            }
+        }
+
+        // ============================================================
+        // 🏆 عرض المتصدرين في واجهة المستخدم
+        // ============================================================
+        function renderLeaderboard(users, container) {
+            if (!container) {
+                container = document.getElementById('leaderboardContainer');
+                if (!container) return;
             }
 
+            var top5 = users.slice(0, 5);
             var top3 = top5.slice(0, 3);
             var html = '';
 
@@ -6061,13 +6119,13 @@
                 html += `
                     <div class="leaderboard-podium" style="display:flex;justify-content:center;align-items:flex-end;gap:clamp(12px,2vw,20px);margin-bottom:30px;padding:20px 0;background:var(--white);border-radius:var(--radius-lg);flex-wrap:wrap;border:1px solid rgba(231,42,155,0.06);">
                 `;
-
+                
                 var podiumData = [
                     { index: 1, user: top3[1], class: 'silver', rank: '🥈' },
                     { index: 0, user: top3[0], class: 'gold', rank: '👑' },
                     { index: 2, user: top3[2], class: 'bronze', rank: '🥉' }
                 ];
-
+                
                 podiumData.forEach(function(p) {
                     if (!p.user) return;
                     var firstLetter = (p.user.name || '👤')[0].toUpperCase();
@@ -6116,45 +6174,32 @@
 
             // ✅ عرض ترتيب المستخدم الحالي
             if (currentUser && userData) {
-                var userRank = userData.rank || '--';
-                var userAtoms = userData.atoms || 0;
                 container.innerHTML += `
                     <div style="text-align:center;margin-top:16px;padding:12px;background:var(--white);border-radius:var(--radius);border:2px solid var(--primary);">
                         <span style="font-size:clamp(1rem,1.1vw,1.1rem);font-weight:700;color:var(--text-dark);">
-                            🏅 ترتيبك الحالي: <span style="color:var(--primary);font-size:clamp(1.1rem,1.2vw,1.3rem);">#${userRank}</span>
+                            🏅 ترتيبك الحالي: <span style="color:var(--primary);font-size:clamp(1.1rem,1.2vw,1.3rem);">#${userData.rank || '--'}</span>
                         </span>
-                        <span style="margin-right:16px;font-size:clamp(0.8rem,0.9vw,0.9rem);color:var(--text-secondary);">⚛️ ${userAtoms} ذرة</span>
+                        <span style="margin-right:16px;font-size:clamp(0.8rem,0.9vw,0.9rem);color:var(--text-secondary);">⚛️ ${userData.atoms || 0} ذرة</span>
                     </div>
                 `;
             }
         }
 
-        function updateUserRank(allUsers) {
-            if (!currentUser || !userData) return;
-
-            var rank = allUsers.findIndex(function(u) { return u.uid === currentUser.uid; }) + 1;
-            var rankDisplay = rank > 0 ? rank : '--';
-
-            if (userData.rank !== rankDisplay) {
-                userData.rank = rankDisplay;
-                database.ref('users/' + currentUser.uid + '/rank').set(rankDisplay);
-                cache.userData = userData;
-                updateCache();
-            }
-        }
-
         // ============================================================
-        // 🏆 SHOW LEADERBOARD - FIXED (removed duplicate)
+        // 🏆 عرض صفحة المتصدرين
         // ============================================================
         function showLeaderboard() {
             var main = document.getElementById('mainContent');
             if (!main) return;
-
+            
             main.innerHTML = `
                 <div style="max-width:1280px;margin:0 auto;padding:20px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
                         <button class="btn-outline-premium btn-sm-premium no-print" onclick="window.APP.showHome()">
                             <i class="fas fa-arrow-right"></i> العودة
+                        </button>
+                        <button class="btn-primary-premium btn-sm-premium" onclick="window.APP.updateLeaderboardTop5(); window.APP.loadLeaderboard();" style="min-height:36px;">
+                            🔄 تحديث المتصدرين
                         </button>
                     </div>
                     <h1 style="font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,2.5rem);color:var(--text-dark);margin:4px 0;">🏆 المتصدرين</h1>
@@ -6164,40 +6209,9 @@
                     </div>
                 </div>
             `;
-
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // ============================================================
-        // LOAD LEADERBOARD - FIXED: uses the real-time listener
-        // ============================================================
-        function loadLeaderboard() {
-            // ✅ تأكد من تشغيل المستمع
-            startLeaderboardListener();
-        }
-
-        // ============================================================
-        // UPDATE LEADERBOARD TOP5 - DEPRECATED (use real-time listener)
-        // ============================================================
-        function updateLeaderboardTop5() {
-            // ✅ هذه الدالة لم تعد ضرورية مع المستمع real-time
-            // لكن نحتفظ بها لتوافق مع الكود القديم
-            console.log('ℹ️ updateLeaderboardTop5: يتم التحديث تلقائياً عبر المستمع Real-Time');
-        }
-
-        // ============================================================
-        // LISTEN TO POINTS CHANGES - DEPRECATED (use real-time listener)
-        // ============================================================
-        function listenToPointsChanges() {
-            // ✅ هذه الدالة لم تعد ضرورية مع المستمع real-time
-            console.log('ℹ️ listenToPointsChanges: يتم التحديث تلقائياً عبر المستمع Real-Time');
-        }
-
-        // ============================================================
-        // RENDER LEADERBOARD - Internal use only
-        // ============================================================
-        function renderLeaderboard(users, container) {
-            renderLeaderboardUI(users);
+            loadLeaderboard();
         }
 
         // ============================================================
@@ -6214,7 +6228,7 @@
             var totalLessons = allLessons.length;
             var completedLessons = Object.keys(userCourseProgress).filter(function(key) { return userCourseProgress[
                     key] && userCourseProgress[key].watched; })
-                .length;
+            .length;
             var progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
             var studyTimeHours = Math.round(userData ? userData.studyTime || 0 : 0);
             var atoms = userData ? userData.atoms || 0 : 0;
@@ -6718,8 +6732,6 @@
                             id: resultData.id
                         };
 
-                        updatedData.lastActivityAt = firebase.database.ServerValue.TIMESTAMP;
-
                         return updatedData;
                     });
 
@@ -6756,7 +6768,6 @@
                         } else if (resultData.type === 'quiz') {
                             userData.quizzesPassed = (userData.quizzesPassed || 0) + 1;
                         }
-                        userData.lastActivityAt = Date.now();
                         cache.userData = userData;
                         updateCache();
                     }
@@ -6780,6 +6791,8 @@
                     if (currentUser) {
                         calculateUserRank(currentUser.uid, userData ? userData.atoms || 0 : 0);
                     }
+                    // ✅ تحديث المتصدرين
+                    updateLeaderboardTop5();
 
                     resolve(true);
                 } catch (error) {
@@ -6879,8 +6892,8 @@
                 }
 
                 var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
-                if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
-                    showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                if (course && !isUserSubscribed(course.id)) {
+                    showToast('🔒 هذا الكورس يحتاج اشتراك، يرجى الاشتراك أولاً', 'error');
                     showSubscriptionPage(course.id);
                     return;
                 }
@@ -6991,6 +7004,7 @@
                             return; // This will abort the transaction
                         }
 
+                        var now = firebase.database.ServerValue.TIMESTAMP;
                         var expiryDate = new Date();
                         expiryDate.setMinutes(expiryDate.getMinutes() + (examData.duration || 30));
 
@@ -7001,10 +7015,10 @@
                             type: type,
                             title: examData.title || 'امتحان',
                             status: 'in_progress',
-                            startedAt: firebase.database.ServerValue.TIMESTAMP,
+                            startedAt: now,
                             expiresAt: expiryDate.toISOString(),
                             duration: examData.duration || 30,
-                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                            createdAt: now
                         };
                     }, function(error, committed, snapshot) {
                         if (error) {
@@ -7107,8 +7121,8 @@
                 }
 
                 var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
-                if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
-                    showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                if (course && !isUserSubscribed(course.id)) {
+                    showToast('🔒 هذا الكورس يحتاج اشتراك، يرجى الاشتراك أولاً', 'error');
                     showSubscriptionPage(course.id);
                     return;
                 }
@@ -7205,6 +7219,7 @@
                             return;
                         }
 
+                        var now = firebase.database.ServerValue.TIMESTAMP;
                         var expiryDate = new Date();
                         expiryDate.setMinutes(expiryDate.getMinutes() + (quizData.duration || 15));
 
@@ -7215,10 +7230,10 @@
                             type: 'quiz',
                             title: quizData.title || 'كويز',
                             status: 'in_progress',
-                            startedAt: firebase.database.ServerValue.TIMESTAMP,
+                            startedAt: now,
                             expiresAt: expiryDate.toISOString(),
                             duration: quizData.duration || 15,
-                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                            createdAt: now
                         };
                     }, function(error, committed, snapshot) {
                         if (error) {
@@ -7312,8 +7327,8 @@
                     }
 
                     var course = allCourses.find(function(c) { return c.id === lesson.courseId; });
-                    if (course && course.isFree !== true && !isUserSubscribed(course.id)) {
-                        showToast('🔒 هذا الكورس مدفوع، يرجى الاشتراك أولاً', 'error');
+                    if (course && !isUserSubscribed(course.id)) {
+                        showToast('🔒 هذا الكورس يحتاج اشتراك، يرجى الاشتراك أولاً', 'error');
                         showSubscriptionPage(course.id);
                         return;
                     }
@@ -8649,7 +8664,7 @@
                 '<div class="faq-item"><div class="faq-question" onclick="window.APP.toggleFaq(this)"><span>📝 كيف أسجل في المنصة؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">يقوم الطالب بإدخال:<br><ul><li><strong>الاسم بالكامل</strong></li><li><strong>البريد الإلكتروني</strong></li><li><strong>رقم الهاتف</strong></li><li><strong>كلمة المرور</strong></li></ul>ثم يتم إنشاء الحساب مباشرة.</div></div>' +
                 '<div class="faq-item"><div class="faq-question" onclick="window.APP.toggleFaq(this)"><span>🔐 إذا كان لدي حساب بالفعل كيف أسجل الدخول؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">قم بإدخال:<br><ul><li><strong>البريد الإلكتروني</strong></li><li><strong>كلمة المرور</strong></li></ul>ثم اضغط على <span class="highlight">تسجيل الدخول</span>.</div></div>' +
                 '<div class="faq-item"><div class="faq-question" onclick="window.APP.toggleFaq(this)"><span>🎯 هل المنصة مناسبة للمبتدئين؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><strong>نعم</strong>، تم تصميم المنصة لتبدأ مع الطالب من الصفر حتى الاحتراف خطوة بخطوة.<br><br>📚 نبدأ معك من <strong>أساسيات الكيمياء</strong> ونمشي معاك لحد ما توصل لـ <strong>المستوى المتقدم</strong>.</div></div>' +
-                '<div class="faq-item"><div class="faq-question" onclick="window.APP.toggleFaq(this)"><span>💰 هل المنصة مجانية؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">المنصة تحتوي على <strong>كورسات مجانية</strong> و <strong>كورسات مدفوعة</strong>.<br><br>🆓 الكورسات المجانية متاحة للجميع.<br>💰 الكورسات المدفوعة توفر محتوى إضافي وامتحانات شاملة.</div></div>' +
+                '<div class="faq-item"><div class="faq-question" onclick="window.APP.toggleFaq(this)"><span>💰 هل المنصة مجانية؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">المنصة تحتوي على <strong>كورسات مجانية</strong> و <strong>كورسات مدفوعة</strong>.<br><br>🆓 الكورسات المجانية متاحة للجميع ولكن تحتاج اشتراك مجاني.<br>💰 الكورسات المدفوعة توفر محتوى إضافي وامتحانات شاملة.</div></div>' +
                 '<div class="faq-item"><div class="faq-question" onclick="window.APP.toggleFaq(this)"><span>📱 هل المنصة تعمل على الموبايل؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer"><strong>نعم</strong>، المنصة متوافقة تماماً مع جميع الأجهزة:<ul><li>📱 <strong>الهواتف الذكية</strong> (Android & iPhone)</li><li>💻 <strong>أجهزة الكمبيوتر</strong> (Windows & Mac)</li><li>📟 <strong>الأجهزة اللوحية</strong> (iPad & Android Tablets)</li></ul>يمكنك تحميل التطبيق من خلال زر <span class="highlight">"حمل التطبيق"</span> في الأعلى.</div></div>' +
                 '<div class="faq-item"><div class="faq-question" onclick="window.APP.toggleFaq(this)"><span>🏆 كيف أحصل على الذرات؟</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">تحصل على الذرات من خلال:<ul><li>🎥 <strong>مشاهدة الحصص</strong> (تحصل على ذرات عند إكمال المشاهدة)</li><li>📝 <strong>حل الامتحانات</strong> (كل امتحان يمنحك ذرات حسب درجتك)</li><li>🧪 <strong>حل الكويزات</strong> (كويزات الحصص تمنحك ذرات إضافية)</li><li>⭐ <strong>التفوق في الامتحانات</strong> (الحصول على 100% يمنحك ذرات إضافية)</li></ul>كلما زادت ذراتك، زاد <strong>ترتيبك</strong> في قائمة المتصدرين! 🏆</div></div></div></section>' +
 
@@ -8806,12 +8821,7 @@
                     });
                     showToast('✅ تم حظر المستخدم بنجاح', 'success');
                     addNotification(userId, '⛔ تم حظر حسابك', 'تم حظر حسابك بسبب: ' + banData.banReason, '🚫');
-                    database.ref('onlineSessions').orderByChild('uid').equalTo(userId).once('value').then(function(
-                        snap) {
-                        snap.forEach(function(child) {
-                            database.ref('onlineSessions/' + child.key).remove();
-                        });
-                    });
+                    database.ref('online/' + userId).remove();
                 });
             } catch (error) {
                 console.error('Error banning user:', error);
@@ -8903,21 +8913,34 @@
                         }
 
                         database.ref('subscriptionRequests/' + requestId + '/status').set('approved');
-                        database.ref('subscriptionRequests/' + requestId + '/approvedAt').set(firebase.database
-                            .ServerValue.TIMESTAMP);
+                        database.ref('subscriptionRequests/' + requestId + '/approvedAt').set(firebase
+                            .database.ServerValue.TIMESTAMP);
                         database.ref('subscriptionRequests/' + requestId + '/approvedBy').set(currentUser
                         .uid);
                         database.ref('subscriptionRequests/' + requestId + '/approvedByName').set(
                             currentUser.displayName || 'Admin');
 
-                        var subscriptionRef = database.ref('subscriptions').push();
+                        // ✅ استخدام بنية subscriptions/userId/courseId
+                        var subscriptionRef = database.ref('subscriptions/' + requestData.userId + '/' + requestData
+                            .courseId);
                         subscriptionRef.set({
                             userId: requestData.userId,
+                            userName: requestData.userName || 'مستخدم',
+                            userEmail: requestData.userEmail || '',
+                            userPhone: requestData.userPhone || '',
                             courseId: requestData.courseId,
+                            courseTitle: requestData.courseTitle || 'كورس',
+                            teacherName: requestData.teacherName || 'مستر زياد مبروك',
+                            courseType: requestData.courseType || 'مسجل',
+                            subscriptionType: 'paid',
+                            price: requestData.price || 0,
                             status: 'active',
-                            type: 'paid',
-                            createdAt: firebase.database.ServerValue.TIMESTAMP,
+                            subscribedAt: firebase.database.ServerValue.TIMESTAMP,
                             activatedAt: firebase.database.ServerValue.TIMESTAMP,
+                            lastOpenedAt: firebase.database.ServerValue.TIMESTAMP,
+                            openCount: 0,
+                            progressPercent: 0,
+                            lastActivityAt: firebase.database.ServerValue.TIMESTAMP,
                             requestId: requestId,
                             approvedBy: currentUser.uid,
                             approvedByName: currentUser.displayName || 'Admin'
@@ -8925,19 +8948,6 @@
 
                         database.ref('users/' + requestData.userId + '/premiumCourses/' + requestData
                             .courseId).set(true);
-
-                        database.ref('users/' + requestData.userId + '/subscriptions/' + requestData
-                            .courseId).set({
-                                courseName: requestData.courseTitle,
-                                type: 'premium',
-                                startDate: firebase.database.ServerValue.TIMESTAMP,
-                                expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-                                .toISOString(),
-                                active: true,
-                                approvedBy: currentUser.uid,
-                                approvedByName: currentUser.displayName || 'Admin',
-                                approvedAt: firebase.database.ServerValue.TIMESTAMP
-                            });
 
                         database.ref('adminLogs').push({
                             action: 'approve_subscription',
@@ -8987,8 +8997,8 @@
                         }
 
                         database.ref('subscriptionRequests/' + requestId + '/status').set('rejected');
-                        database.ref('subscriptionRequests/' + requestId + '/rejectedAt').set(firebase.database
-                            .ServerValue.TIMESTAMP);
+                        database.ref('subscriptionRequests/' + requestId + '/rejectedAt').set(firebase
+                            .database.ServerValue.TIMESTAMP);
                         database.ref('subscriptionRequests/' + requestId + '/rejectedBy').set(currentUser
                         .uid);
                         database.ref('subscriptionRequests/' + requestId + '/rejectedByName').set(
@@ -9021,7 +9031,7 @@
         }
 
         // ============================================================
-        // INIT
+        // INIT - ✅ Added leaderboard listener
         // ============================================================
         function setupScrollHandlers() {
             var backBtn = document.getElementById('backTop');
@@ -9048,7 +9058,10 @@
 
             checkInstallStatus();
 
-            console.log('🚀 Yalla Chemistry Platform v52.0 - FULLY FIXED');
+            // ✅ بدء الاستماع لتغيرات النقاط
+            listenToPointsChanges();
+
+            console.log('🚀 Yalla Chemistry Platform v50.0 - FULLY FIXED');
 
             var navToggle = document.getElementById('navToggle');
             if (navToggle) {
@@ -9101,22 +9114,17 @@
                         loadUserSubscriptions(user.uid);
                         loadUserProgress(user.uid);
                         loadNotifications(user.uid);
-
-                        // ✅ بدء الـ Real-Time Listener للـ Leaderboard
-                        startLeaderboardListener();
-
                         setTimeout(function() {
                             loadCourses();
                             loadLessons();
                             loadExams();
                             loadQuizzes();
                             loadLeaderboard();
+                            // ✅ تحديث المتصدرين عند تسجيل الدخول
+                            updateLeaderboardTop5();
                         }, 100);
                     });
                 } else {
-                    // ✅ إيقاف الـ Listener عند تسجيل الخروج
-                    stopLeaderboardListener();
-
                     loadCourses();
                     loadLessons();
                     loadExams();
@@ -9187,6 +9195,7 @@
             showDashboard: showDashboard,
             showLeaderboard: showLeaderboard,
             loadLeaderboard: loadLeaderboard,
+            updateLeaderboardTop5: updateLeaderboardTop5,
             showResults: showResults,
             showErrorBank: showErrorBank,
             startErrorExam: startErrorExam,
@@ -9241,17 +9250,12 @@
             startExamWithExistingAttempt: startExamWithExistingAttempt,
             startQuizWithExistingAttempt: startQuizWithExistingAttempt,
 
-            // 🏆 Leaderboard Real-Time
-            startLeaderboardListener: startLeaderboardListener,
-            stopLeaderboardListener: stopLeaderboardListener,
-            renderLeaderboardUI: renderLeaderboardUI,
-            updateLeaderboardTop5: updateLeaderboardTop5,
-            listenToPointsChanges: listenToPointsChanges,
-            renderLeaderboard: renderLeaderboard,
-
             scrollToTop: function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            },
+
+            // ⭐ NEW: Listen to points changes for leaderboard
+            listenToPointsChanges: listenToPointsChanges
         };
 
         window.APP = APP;
