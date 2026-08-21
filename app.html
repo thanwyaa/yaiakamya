@@ -3929,7 +3929,7 @@
         }
 
         // ============================================================
-        // CHECK COURSE ACCESS
+        // CHECK COURSE ACCESS - FIXED: لا يسمح بالدخول بدون اشتراك
         // ============================================================
         function checkCourseAccess(courseId) {
             if (!currentUser) {
@@ -3941,7 +3941,7 @@
                 showToast('الكورس غير موجود', 'error');
                 return false;
             }
-            // ✅ حتى الكورس المجاني يحتاج اشتراك
+            // ✅ يجب أن يكون لديه اشتراك فعال بغض النظر عن كونه مجاني أو مدفوع
             if (isUserSubscribed(courseId)) {
                 return true;
             }
@@ -3951,7 +3951,7 @@
         }
 
         // ============================================================
-        // SUBSCRIBE TO FREE COURSE - مع منع التكرار
+        // SUBSCRIBE TO FREE COURSE - مع منع التكرار و Server Timestamp
         // ============================================================
         function subscribeToFreeCourse(courseId) {
             if (!currentUser) {
@@ -3978,18 +3978,22 @@
             }
 
             // ✅ تعطيل الزر ومنع التكرار
-            var btn = document.querySelector('[onclick*="subscribeToFreeCourse"]') || 
+            var btn = document.getElementById('freeSubscribeBtn');
+            if (!btn) {
+                btn = document.querySelector('.btn-primary-premium[onclick*="subscribeToFreeCourse"]') || 
                       document.querySelector('.btn-primary-premium[onclick*="subscribe"]');
+            }
             if (btn) {
                 btn.disabled = true;
                 btn.textContent = '⏳ جاري الاشتراك...';
             }
 
             try {
-                var subscriptionRef = database.ref('subscriptions');
+                // ✅ استخدام Server Timestamp
+                var serverTimestamp = firebase.database.ServerValue.TIMESTAMP;
                 
                 // ✅ التحقق من عدم وجود اشتراك مكرر
-                subscriptionRef.orderByChild('userId').equalTo(currentUser.uid).once('value').then(function(snapshot) {
+                database.ref('subscriptions').orderByChild('userId').equalTo(currentUser.uid).once('value').then(function(snapshot) {
                     var exists = false;
                     snapshot.forEach(function(child) {
                         var data = child.val();
@@ -4001,13 +4005,14 @@
                     if (exists) {
                         showToast('✅ أنت مشترك بالفعل', 'info');
                         if (btn) { btn.disabled = false; btn.textContent = '📖 متابعة'; }
+                        // ✅ تحديث الاشتراكات المحلية
+                        loadUserSubscriptions(currentUser.uid);
                         openCoursePage(courseId);
                         return;
                     }
                     
                     // ✅ إنشاء اشتراك جديد
-                    var newSubRef = subscriptionRef.push();
-                    var now = firebase.database.ServerValue.TIMESTAMP;
+                    var newSubRef = database.ref('subscriptions').push();
                     
                     newSubRef.set({
                         userId: currentUser.uid,
@@ -4015,16 +4020,16 @@
                         userEmail: currentUser.email || '',
                         userPhone: userData ? userData.phone || '' : '',
                         courseId: courseId,
-                        courseTitle: course.title,
-                        teacherName: course.teacher || 'مستر زياد مبروك',
+                        courseTitle: course.title || '',
+                        teacherName: course.teacher || '',
                         courseType: course.type || 'مسجل',
                         subscriptionType: 'free',
                         price: '0',
                         status: 'active',
-                        createdAt: now,
-                        activatedAt: now
+                        createdAt: serverTimestamp,
+                        activatedAt: serverTimestamp
                     }).then(function() {
-                        // ✅ تحديث المحلي
+                        // ✅ تحديث premiumCourses في userData
                         if (userData) {
                             if (!userData.premiumCourses) userData.premiumCourses = {};
                             userData.premiumCourses[courseId] = true;
@@ -4040,6 +4045,7 @@
                             'تم تفعيل اشتراكك في كورس "' + course.title + '" مجاناً.', '🎉');
                         
                         if (btn) { btn.disabled = false; btn.textContent = '📖 متابعة'; }
+                        // ✅ فتح الكورس بعد نجاح الاشتراك
                         openCoursePage(courseId);
                     });
                 });
@@ -4052,7 +4058,7 @@
         }
 
         // ============================================================
-        // ⭐ NEW: CODE VERIFICATION SYSTEM
+        // ⭐ CODE VERIFICATION SYSTEM
         // ============================================================
         function verifyActivationCode(code, courseId) {
             if (!currentUser) {
@@ -4150,14 +4156,16 @@
                         }
 
                         var subscriptionRef = database.ref('subscriptions').push();
+                        var serverTimestamp = firebase.database.ServerValue.TIMESTAMP;
+                        
                         return subscriptionRef.set({
                             userId: currentUser.uid,
                             courseId: courseId,
                             status: 'active',
                             type: 'code',
                             code: code,
-                            activatedAt: new Date().toISOString(),
-                            createdAt: new Date().toISOString()
+                            activatedAt: serverTimestamp,
+                            createdAt: serverTimestamp
                         }).then(function() {
                             addNotification(
                                 currentUser.uid,
@@ -4181,18 +4189,12 @@
 
         function checkSubscriptionStatus(courseId) {
             if (!currentUser) return false;
-
-            if (isUserSubscribed(courseId)) return true;
-
-            try {
-                var userRef = database.ref('users/' + currentUser.uid);
-                return false;
-            } catch (err) {
-                console.error('Error checking subscription:', err);
-                return false;
-            }
+            return isUserSubscribed(courseId);
         }
 
+        // ============================================================
+        // SHOW PAID COURSE DETAILS - Dynamic من Firebase
+        // ============================================================
         function showPaidCourseDetails(courseId) {
             var course = allCourses.find(function(c) { return c.id === courseId; });
             if (!course) {
@@ -4212,13 +4214,14 @@
             }
 
             var price = isFree ? 'مجاني' : (course.price || 'غير محدد');
-            var teacher = course.teacher || 'مستر زياد مبروك';
+            var teacher = course.teacher || '';
             var duration = course.duration || 'غير محدد';
             var type = course.type || 'مسجل';
             var level = course.level || 'متقدم';
             var groupTelegram = course.telegramGroup || null;
             var groupWhatsApp = course.whatsappGroup || null;
             var description = course.description || '';
+            var details = course.details || '';
             var lessons = allLessons.filter(function(l) { return l.courseId === courseId; });
             var realLessonsCount = lessons.length;
 
@@ -4240,16 +4243,25 @@
                 (description ?
                     '<p style="font-size:clamp(1rem,1.1vw,1.2rem);color:var(--text-secondary);margin:12px 0;line-height:1.8;">' +
                     escapeHtml(description) + '</p>' : '') +
+                    
+                (details ?
+                    '<div style="background:var(--bg-light);padding:12px 16px;border-radius:var(--radius);margin:12px 0;border-right:4px solid var(--primary);">' +
+                    '<p style="font-size:clamp(0.9rem,0.95vw,1rem);color:var(--text-dark);line-height:1.8;">' +
+                    escapeHtml(details) + '</p></div>' : '') +
 
                 '<div class="course-details-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;">' +
-                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المدرس</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
-                escapeHtml(teacher) + '</span></div>' +
-                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المدة</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
-                escapeHtml(duration) + '</span></div>' +
-                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">النوع</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
-                escapeHtml(type) + '</span></div>' +
-                '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المستوى</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
-                escapeHtml(level) + '</span></div>' +
+                (teacher ?
+                    '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المدرس</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                    escapeHtml(teacher) + '</span></div>' : '') +
+                (duration && duration !== 'غير محدد' ?
+                    '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المدة</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                    escapeHtml(duration) + '</span></div>' : '') +
+                (type ?
+                    '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">النوع</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                    escapeHtml(type) + '</span></div>' : '') +
+                (level ?
+                    '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">المستوى</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">' +
+                    escapeHtml(level) + '</span></div>' : '') +
                 '<div style="background:var(--bg-light);padding:12px;border-radius:var(--radius);text-align:center;grid-column:1/-1;"><span style="display:block;font-size:0.7rem;color:var(--text-secondary);">عدد الحصص</span><span style="font-weight:700;font-size:clamp(0.9rem,1vw,1rem);">📚 ' +
                 realLessonsCount + ' حصة</span></div>' +
                 '</div>' +
@@ -4297,7 +4309,7 @@
         }
 
         // ============================================================
-        // ⭐ NEW: Verify and Activate Code
+        // ⭐ VERIFY AND ACTIVATE CODE
         // ============================================================
         function verifyAndActivateCode(courseId) {
             var codeInput = document.getElementById('activationCodeInput');
@@ -4650,23 +4662,40 @@
             });
         }
 
+        // ============================================================
+        // LOAD USER SUBSCRIPTIONS - Realtime Listener
+        // ============================================================
+        let subscriptionsListener = null;
+
         function loadUserSubscriptions(uid) {
-            if (cache.subscriptions.length > 0 && isCacheValid()) {
-                userSubscriptions = cache.subscriptions;
-                renderCourses(allCourses);
-                return;
+            // ✅ إزالة المستمع القديم إذا وجد
+            if (subscriptionsListener) {
+                subscriptionsListener.off();
+                subscriptionsListener = null;
             }
-            database.ref('subscriptions').orderByChild('userId').equalTo(uid).once('value').then(function(snapshot) {
+
+            // ✅ استخدام مستمع واحد فقط
+            subscriptionsListener = database.ref('subscriptions')
+                .orderByChild('userId')
+                .equalTo(uid);
+
+            subscriptionsListener.on('value', function(snapshot) {
                 userSubscriptions = [];
-                snapshot.forEach(function(child) {
-                    var data = child.val();
-                    userSubscriptions.push({ id: child.key, ...data });
-                });
+                if (snapshot.exists()) {
+                    snapshot.forEach(function(child) {
+                        var data = child.val();
+                        userSubscriptions.push({ id: child.key, ...data });
+                    });
+                }
                 cache.subscriptions = userSubscriptions;
                 updateCache();
                 renderCourses(allCourses);
-            }).catch(function(err) {
-                console.error('Error loading subscriptions:', err);
+                
+                // ✅ تحديث الواجهة إذا كانت صفحة الكورس مفتوحة
+                var main = document.getElementById('mainContent');
+                if (main) {
+                    // إعادة عرض الكورسات إذا لزم الأمر
+                }
             });
         }
 
@@ -5894,8 +5923,10 @@
         }
 
         // ============================================================
-        // 🏆 LEADERBOARD - قراءة من leaderboardTop5 مع تحديث تلقائي
+        // 🏆 LEADERBOARD - Realtime من Firebase
         // ============================================================
+        let leaderboardUnsubscribe = null;
+        let leaderboardUserUnsubscribe = null;
 
         // ============================================================
         // 🔄 تحديث leaderboardTop5 تلقائياً من users
@@ -5960,19 +5991,35 @@
         // 🔄 استماع لتغيرات النقاط وتحديث المتصدرين تلقائياً
         // ============================================================
         function listenToPointsChanges() {
+            // ✅ إزالة المستمع القديم
+            if (leaderboardUserUnsubscribe) {
+                leaderboardUserUnsubscribe.off();
+                leaderboardUserUnsubscribe = null;
+            }
+
             // ✅ استمع لتغيرات النقاط في users
-            database.ref('users').on('child_changed', function(snapshot) {
+            leaderboardUserUnsubscribe = database.ref('users');
+            leaderboardUserUnsubscribe.on('child_changed', function(snapshot) {
                 var data = snapshot.val();
                 if (data && data.atoms !== undefined) {
                     console.log('📊 تغيرت نقاط المستخدم:', snapshot.key, data.atoms);
                     updateLeaderboardTop5();
+                    // ✅ تحديث واجهة المتصدرين إذا كانت مفتوحة
+                    var container = document.getElementById('leaderboardContainer');
+                    if (container) {
+                        loadLeaderboard();
+                    }
                 }
             });
-            
+
             // ✅ استمع لإضافة مستخدم جديد
-            database.ref('users').on('child_added', function(snapshot) {
+            leaderboardUserUnsubscribe.on('child_added', function(snapshot) {
                 console.log('👤 مستخدم جديد:', snapshot.key);
                 updateLeaderboardTop5();
+                var container = document.getElementById('leaderboardContainer');
+                if (container) {
+                    loadLeaderboard();
+                }
             });
         }
 
@@ -5983,12 +6030,21 @@
             var container = document.getElementById('leaderboardContainer');
             if (!container) return;
 
+            // ✅ تأكد من وجود المستمع
+            listenToPointsChanges();
+
             // ✅ أولاً: تحديث البيانات من users
             updateLeaderboardTop5();
 
             try {
-                // ✅ قراءة من leaderboardTop5
-                database.ref('leaderboardTop5').once('value').then(function(snapshot) {
+                // ✅ استخدام مستمع Realtime للـ leaderboardTop5
+                if (leaderboardUnsubscribe) {
+                    leaderboardUnsubscribe.off();
+                    leaderboardUnsubscribe = null;
+                }
+
+                leaderboardUnsubscribe = database.ref('leaderboardTop5');
+                leaderboardUnsubscribe.on('value', function(snapshot) {
                     var data = snapshot.val();
                     
                     if (!data) {
@@ -6017,6 +6073,7 @@
 
                     renderLeaderboard(users, container);
                 });
+
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
                 container.innerHTML = `
@@ -6147,7 +6204,7 @@
         }
 
         // ============================================================
-        // DASHBOARD
+        // DASHBOARD (Unchanged - keep existing)
         // ============================================================
         function showDashboard() {
             if (!currentUser) {
@@ -6326,7 +6383,7 @@
         }
 
         // ============================================================
-        // ERROR BANK - FIXED: Shows only actual errors without duplication
+        // ERROR BANK (Unchanged - keep existing)
         // ============================================================
         function showErrorBank() {
             if (!currentUser) {
@@ -6401,7 +6458,7 @@
         }
 
         // ============================================================
-        // START ERROR EXAM - FIXED: Uses actual errors only
+        // START ERROR EXAM
         // ============================================================
         function startErrorExam() {
             if (!currentUser) {
@@ -6473,7 +6530,7 @@
         }
 
         // ============================================================
-        // START ERROR BASED EXAM - FIXED: Only shows actual errors
+        // START ERROR BASED EXAM
         // ============================================================
         function startErrorBasedExam() {
             if (!currentExamData || !currentExamData.isErrorExam) {
@@ -6492,7 +6549,7 @@
         }
 
         // ============================================================
-        // EXAM, QUIZ, ASSIGNMENT - Core Implementation with Server-side attempt tracking
+        // EXAM, QUIZ, ASSIGNMENT - Core Implementation
         // ============================================================
 
         // ============================================================
@@ -6781,34 +6838,27 @@
             var attemptId = 'exam_' + lessonId;
             var attemptPath = 'users/' + currentUser.uid + '/attempts/' + attemptId;
 
-            // ✅ التحقق من وجود محاولة سابقة
             database.ref(attemptPath).once('value').then(function(snapshot) {
                 if (snapshot.exists()) {
                     var attempt = snapshot.val();
-                    // ✅ إذا كانت المحاولة مكتملة، نمنع الدخول
                     if (attempt.status === 'completed') {
                         showToast('🚫 لا يمكن إعادة الاختبار، لقد سبق لك أداء هذا الاختبار.', 'warning');
                         showCompletedModal();
                         return;
                     }
                     if (attempt.status === 'in_progress') {
-                        // ✅ محاولة قيد التقدم - نسمح بالدخول مع الوقت المتبقي
                         var now = Date.now();
                         var expiry = new Date(attempt.expiresAt).getTime();
                         if (now > expiry) {
-                            // ✅ الوقت انتهى - Auto Submit
                             showToast('⏰ انتهى وقت الامتحان! يتم التسليم تلقائياً...', 'warning');
-                            // ✅ نبدأ الامتحان مع الوقت المنتهي
                             startExamWithExistingAttempt(attempt, lessonId);
                             return;
                         }
-                        // ✅ الوقت ما زال متبقياً - نسمح بالدخول
                         startExamWithExistingAttempt(attempt, lessonId);
                         return;
                     }
                 }
 
-                // ✅ لا توجد محاولة - نبدأ امتحان جديد
                 var lesson = allLessons.find(function(l) { return l.id === lessonId; });
                 if (!lesson) {
                     showToast('الحصة غير موجودة', 'error');
@@ -6833,7 +6883,6 @@
                 }, 'exam');
             }).catch(function(err) {
                 console.error('Error checking attempt:', err);
-                // في حالة الخطأ، نبدأ امتحان جديد
                 var lesson = allLessons.find(function(l) { return l.id === lessonId; });
                 if (!lesson) {
                     showToast('الحصة غير موجودة', 'error');
@@ -6851,7 +6900,7 @@
         }
 
         // ============================================================
-        // ⭐⭐ START EXAM WITH EXISTING ATTEMPT - For resume/refresh
+        // ⭐⭐ START EXAM WITH EXISTING ATTEMPT
         // ============================================================
         function startExamWithExistingAttempt(attempt, lessonId) {
             var lesson = allLessons.find(function(l) { return l.id === lessonId; });
@@ -6897,7 +6946,6 @@
                     _expiresAt: attempt.expiresAt
                 };
 
-                // ✅ تحميل الإجابات المحفوظة إن وجدت
                 var answersPath = 'users/' + currentUser.uid + '/exam_answers/' + examId + '/' + currentUser.uid;
                 database.ref(answersPath).once('value').then(function(ansSnapshot) {
                     if (ansSnapshot.exists()) {
@@ -6927,11 +6975,9 @@
                     var attemptId = type + '_' + lessonId;
                     var attemptPath = 'users/' + currentUser.uid + '/attempts/' + attemptId;
 
-                    // ✅ Use Transaction to prevent race conditions
                     database.ref(attemptPath).transaction(function(currentData) {
-                        // If attempt already exists, abort transaction
                         if (currentData !== null) {
-                            return; // This will abort the transaction
+                            return;
                         }
 
                         var now = new Date().toISOString();
@@ -6958,7 +7004,6 @@
                         }
 
                         if (!committed) {
-                            // Attempt already exists (race condition prevented)
                             showToast('🚫 لا يمكن بدء الامتحان، محاولة سابقة موجودة', 'warning');
                             showCompletedModal();
                             return;
@@ -7006,7 +7051,7 @@
         }
 
         // ============================================================
-        // ⭐⭐ OPEN LESSON QUIZ - FIXED: Proper attempt check
+        // ⭐⭐ OPEN LESSON QUIZ
         // ============================================================
         function openLessonQuiz(lessonId) {
             if (!currentUser) {
@@ -7079,7 +7124,7 @@
         }
 
         // ============================================================
-        // ⭐⭐ START QUIZ WITH EXISTING ATTEMPT - For resume/refresh
+        // ⭐⭐ START QUIZ WITH EXISTING ATTEMPT
         // ============================================================
         function startQuizWithExistingAttempt(attempt, lessonId) {
             var lesson = allLessons.find(function(l) { return l.id === lessonId; });
@@ -7220,7 +7265,7 @@
         }
 
         // ============================================================
-        // OPEN LESSON ASSIGNMENT - With Server-side attempt check
+        // OPEN LESSON ASSIGNMENT
         // ============================================================
         function openLessonAssignment(lessonId) {
             if (!currentUser) {
@@ -7485,7 +7530,7 @@
         }
 
         // ============================================================
-        // ⭐⭐ RENDER EXAM INTERFACE - FIXED: Time from Firebase
+        // ⭐⭐ RENDER EXAM INTERFACE
         // ============================================================
         function renderExamInterface(examData) {
             var main = document.getElementById('mainContent');
@@ -7493,7 +7538,6 @@
 
             var totalQuestions = examData.questions.length;
 
-            // ✅ حساب الوقت المتبقي من Firebase
             var remainingTime = examData.duration * 60;
             if (examData._startedAt && examData._expiresAt) {
                 var now = Date.now();
@@ -7534,7 +7578,6 @@
                 '<div id="unansweredWarning" style="display:none;margin-top:12px;padding:12px;background:rgba(239,68,68,0.06);border-radius:var(--radius);border-right:4px solid #EF4444;text-align:center;">' +
                 '</div></div>';
 
-            // ✅ إذا كان الوقت منتهياً، Auto Submit فوراً
             if (remainingTime <= 0) {
                 window._examLocked = true;
                 setTimeout(function() {
@@ -7549,7 +7592,7 @@
         }
 
         // ============================================================
-        // RENDER EXAM QUESTIONS HTML - FIXED: Options stay visible
+        // RENDER EXAM QUESTIONS HTML
         // ============================================================
         function renderExamQuestionsHTML(questions) {
             return questions.map(function(q, index) {
@@ -7584,16 +7627,14 @@
         }
 
         // ============================================================
-        // ⭐⭐ SELECT ANSWER - FIXED: Blocks after time ends
+        // ⭐⭐ SELECT ANSWER
         // ============================================================
         function selectAnswer(questionId, optionIndex) {
-            // ✅ إذا كان الامتحان مقفلاً أو قيد التسليم، نمنع التعديل بهدوء
             if (window._examLocked || window._isSubmitting) {
                 showToast('⏰ انتهى وقت الامتحان ويتم تسليمه تلقائياً', 'warning');
                 return;
             }
 
-            // ✅ نتحقق من الوقت المتبقي
             if (currentExamData && currentExamData._expiresAt) {
                 var now = Date.now();
                 var expiry = new Date(currentExamData._expiresAt).getTime();
@@ -7604,17 +7645,14 @@
                 }
             }
 
-            // ✅ Toggle: نفس الإجابة تلغي الاختيار
             if (examAnswers[questionId] === optionIndex) {
                 delete examAnswers[questionId];
             } else {
-                // ✅ أي إجابة مقبولة (صحيحة أو خاطئة)
                 examAnswers[questionId] = optionIndex;
             }
 
             updateAnsweredCount();
 
-            // ✅ إعادة بناء الـ HTML بالكامل لعرض التغييرات
             if (currentExamData && currentExamData.questions) {
                 var container = document.getElementById('examQuestionsContainer');
                 if (container) {
@@ -7631,19 +7669,11 @@
             }
         }
 
-        // ============================================================
-        // RE-RENDER EXAM OPTIONS - DEPRECATED (use full rebuild)
-        // ============================================================
-        function reRenderExamOptions() {
-            // ✅ This function is now empty - we use full rebuild instead
-            // This is more reliable and prevents UI issues
-        }
-
         var examTimerInterval = null;
         var examTimeLeft = 0;
 
         // ============================================================
-        // ⭐⭐ START EXAM TIMER - FIXED: Uses Firebase time
+        // ⭐⭐ START EXAM TIMER
         // ============================================================
         function startExamTimer(durationInSeconds) {
             var timerEl = document.getElementById('examTimer');
@@ -7654,7 +7684,6 @@
                 examTimerInterval = null;
             }
 
-            // ✅ حساب الوقت المتبقي من expiresAt في Firebase
             var remainingFromFirebase = 0;
             if (currentExamData && currentExamData._expiresAt) {
                 var now = Date.now();
@@ -7669,7 +7698,6 @@
                 examTimeLeft = durationInSeconds || 0;
             }
 
-            // ✅ إذا كان الوقت <= 0، نفذ Auto Submit فوراً
             if (examTimeLeft <= 0) {
                 timerEl.textContent = '00:00';
                 window._examLocked = true;
@@ -7685,7 +7713,6 @@
             timerEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
 
             examTimerInterval = setInterval(function() {
-                // ✅ كل tick نحسب الوقت المتبقي من expiresAt
                 if (currentExamData && currentExamData._expiresAt) {
                     var now = Date.now();
                     var expiry = new Date(currentExamData._expiresAt).getTime();
@@ -7701,7 +7728,6 @@
                     timerEl.textContent = '00:00';
                     window._examLocked = true;
                     showToast('⏰ انتهى الوقت! يتم تسليم الامتحان تلقائياً...', 'warning');
-                    // ✅ Auto Submit فوراً
                     submitExam(true);
                     return;
                 }
@@ -7728,17 +7754,15 @@
             if (isSubmitting || window._examLocked) return;
             window._examLocked = true;
             showToast('⏰ انتهى الوقت! يتم تسليم الامتحان تلقائياً...', 'warning');
-            // ✅ Pass true for auto submit (ignore unanswered questions)
             submitExam(true);
         }
 
         // ============================================================
-        // ⭐⭐ SUBMIT EXAM - FIXED: Manual vs Auto with proper validation
+        // ⭐⭐ SUBMIT EXAM
         // ============================================================
         function submitExam(isAuto) {
             isAuto = isAuto || false;
 
-            // ✅ منع التسليم المتكرر
             if (isSubmitting || window._examLocked) {
                 showToast('⏳ جاري تسليم الامتحان، يرجى الانتظار...', 'info');
                 return;
@@ -7755,7 +7779,6 @@
                 return;
             }
 
-            // ✅ قفل الامتحان فوراً لمنع أي تعديلات
             window._examLocked = true;
             isSubmitting = true;
 
@@ -7780,36 +7803,29 @@
                 var examData = currentExamData;
                 var unansweredQuestions = [];
 
-                // ✅ التحقق من الأسئلة غير المجابة
                 examData.questions.forEach(function(q) {
                     if (examAnswers[q.id] === undefined) {
                         unansweredQuestions.push(q.id);
                     }
                 });
 
-                // ✅ Manual submit: منع التسليم إذا كان هناك أسئلة غير مجابة
                 if (!isAuto && unansweredQuestions.length > 0) {
                     var msg = '⚠️ لا يمكن تسليم الامتحان الآن\nلديك ' + unansweredQuestions.length +
                         ' سؤال لم تتم الإجابة عنه.\nيجب الإجابة عن جميع الأسئلة أولاً.';
                     showToast(msg, 'warning');
 
-                    // ✅ تمييز الأسئلة غير المجابة
                     highlightUnansweredQuestions(unansweredQuestions);
 
-                    // ✅ فتح القفل للسماح للطالب بإكمال الإجابات
                     window._examLocked = false;
                     isSubmitting = false;
                     return;
                 }
 
-                // ✅ Auto Submit: تجاهل الأسئلة غير المجابة
-                // ✅ إيقاف Timer
                 if (examTimerInterval) {
                     clearInterval(examTimerInterval);
                     examTimerInterval = null;
                 }
 
-                // ✅ تحديث حالة الزر
                 var submitBtn = document.getElementById('submitExamBtn');
                 if (submitBtn) {
                     submitBtn.disabled = true;
@@ -7873,12 +7889,10 @@
 
                     var progressKey = examData.type + '_' + examData.lessonId;
 
-                    // ✅ حفظ الأخطاء
                     if (wrongQuestions.length > 0) {
                         saveWrongAnswersToErrorBank(wrongQuestions);
                     }
 
-                    // ✅ إكمال المحاولة
                     completeUserAttempt(attemptId, resultData).then(function() {
                         return awardPointsAndUpdateProgress(
                             currentUser.uid,
@@ -7905,7 +7919,6 @@
                             showToast('✅ تم تسليم ' + msg + ' بنجاح!', 'success');
                         }
 
-                        // ✅ قفل نهائي
                         window._examLocked = true;
                         isSubmitting = false;
                     });
@@ -7924,7 +7937,7 @@
         }
 
         // ============================================================
-        // HIGHLIGHT UNANSWERED QUESTIONS - Helper
+        // HIGHLIGHT UNANSWERED QUESTIONS
         // ============================================================
         function highlightUnansweredQuestions(unansweredIds) {
             if (!unansweredIds || unansweredIds.length === 0) return;
@@ -7932,7 +7945,6 @@
             var container = document.getElementById('examQuestionsContainer');
             if (!container) return;
 
-            // ✅ إعادة تعيين جميع التظليلات
             var allQuestions = container.querySelectorAll('.exam-question');
             allQuestions.forEach(function(q) {
                 q.style.border = '1px solid rgba(231,42,155,0.06)';
@@ -7940,7 +7952,6 @@
                 q.style.borderRadius = 'var(--radius)';
             });
 
-            // ✅ تظليل الأسئلة غير المجابة
             unansweredIds.forEach(function(qId) {
                 var questionEl = container.querySelector('.exam-question[data-question-id="' + qId + '"]');
                 if (questionEl) {
@@ -7950,13 +7961,11 @@
                 }
             });
 
-            // ✅ التمرير إلى أول سؤال غير مجاب
             var firstUnanswered = container.querySelector('.exam-question[style*="border: 3px solid #EF4444"]');
             if (firstUnanswered) {
                 firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
-            // ✅ عرض رسالة في الأعلى
             var warningEl = document.getElementById('unansweredWarning');
             if (warningEl) {
                 warningEl.style.display = 'block';
@@ -7965,7 +7974,7 @@
         }
 
         // ============================================================
-        // SAVE WRONG ANSWERS TO ERROR BANK - With deduplication
+        // SAVE WRONG ANSWERS TO ERROR BANK
         // ============================================================
         function saveWrongAnswersToErrorBank(wrongQuestions) {
             if (!currentUser || wrongQuestions.length === 0) return;
@@ -7990,7 +7999,7 @@
         }
 
         // ============================================================
-        // ⭐⭐ SHOW EXAM RESULT - FIXED: Shows score even if 0
+        // ⭐⭐ SHOW EXAM RESULT
         // ============================================================
         function showExamResult(resultData) {
             var main = document.getElementById('mainContent');
@@ -8057,7 +8066,7 @@
         }
 
         // ============================================================
-        // RESULTS (Unchanged)
+        // RESULTS
         // ============================================================
         function showResults() {
             if (!currentUser) {
@@ -8114,7 +8123,7 @@
         }
 
         // ============================================================
-        // CERTIFICATE, STUDENT CARD, ACHIEVEMENTS, AI INSIGHTS (Unchanged)
+        // CERTIFICATE, STUDENT CARD, ACHIEVEMENTS, AI INSIGHTS
         // ============================================================
         function showCertificate() {
             if (!currentUser) {
@@ -8465,7 +8474,7 @@
         }
 
         // ============================================================
-        // PRIVACY & TERMS (Unchanged)
+        // PRIVACY & TERMS
         // ============================================================
         function showPrivacy() {
             var main = document.getElementById('mainContent');
@@ -8488,7 +8497,7 @@
         }
 
         // ============================================================
-        // HOME PAGE - Premium Redesign with All Sections (Unchanged)
+        // HOME PAGE
         // ============================================================
         function showHome() {
             var main = document.getElementById('mainContent');
@@ -8610,7 +8619,7 @@
         }
 
         // ============================================================
-        // SCROLL REVEAL (Unchanged)
+        // SCROLL REVEAL
         // ============================================================
         function setupScrollReveal() {
             var observer = new IntersectionObserver(function(entries) {
@@ -8630,7 +8639,7 @@
         }
 
         // ============================================================
-        // ADMIN POPUP (Unchanged)
+        // ADMIN POPUP
         // ============================================================
         function showAdminPopup() {
             var popup = document.getElementById('adminPopup');
@@ -8667,7 +8676,7 @@
         }
 
         // ============================================================
-        // BAN SYSTEM - FIXED: Server-side permanent ban
+        // BAN SYSTEM
         // ============================================================
         function checkUserBan(uid) {
             if (!uid) return Promise.resolve({ isBanned: false });
@@ -8719,7 +8728,7 @@
         }
 
         // ============================================================
-        // BAN FUNCTIONS FOR ADMIN - Server-side
+        // BAN FUNCTIONS FOR ADMIN
         // ============================================================
         function banUser(userId, reason) {
             if (!currentUser) {
@@ -8816,7 +8825,7 @@
         }
 
         // ============================================================
-        // SUBSCRIPTION REQUEST HANDLING FOR ADMIN (Unchanged)
+        // SUBSCRIPTION REQUEST HANDLING FOR ADMIN
         // ============================================================
         function approveSubscription(requestId) {
             if (!currentUser) {
@@ -9093,7 +9102,7 @@
             hasCourseAccess: hasCourseAccess,
             checkCourseAccess: checkCourseAccess,
 
-            // ⭐ NEW: Code System
+            // Code System
             verifyActivationCode: verifyActivationCode,
             useActivationCode: useActivationCode,
             verifyAndActivateCode: verifyAndActivateCode,
@@ -9102,7 +9111,7 @@
             openLessonVideo: openLessonVideo,
             handleVideoExit: handleVideoExit,
 
-            // Exams - FIXED
+            // Exams
             openLessonExam: openLessonExam,
             openExamSecurityModal: openExamSecurityModal,
             closeExamSecurityModal: closeExamSecurityModal,
@@ -9169,13 +9178,14 @@
             approveSubscription: approveSubscription,
             rejectSubscription: rejectSubscription,
 
-            // New functions for error exam
+            // Error exam
             startErrorBasedExam: startErrorBasedExam,
             startExamWithExistingAttempt: startExamWithExistingAttempt,
             startQuizWithExistingAttempt: startQuizWithExistingAttempt,
 
             // Leaderboard
             updateLeaderboardTop5: updateLeaderboardTop5,
+            listenToPointsChanges: listenToPointsChanges,
 
             scrollToTop: function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
